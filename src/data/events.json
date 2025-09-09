@@ -1,0 +1,58 @@
+[
+  {
+    "id": "event-1",
+    "slug": "freshers-orientation-day",
+    "title": "Freshers' Orientation Day 2024",
+    "startsAt": "2024-11-20T09:00:00Z",
+    "endsAt": "2024-11-20T16:00:00Z",
+    "venue": "University Multipurpose Hall",
+    "descriptionMd": "## Freshers' Orientation Day 2024\n\nWelcome, new students! Join us for an exciting and informative Freshers' Orientation Day. This event is designed to help you settle into university life, understand campus resources, and connect with your peers and the Students' Union.\n\n**Highlights:**\n*   Welcome address from the Vice-Chancellor and SU President.\n*   Campus tour and introduction to key facilities.\n*   Interactive sessions on academic success, student welfare, and campus safety.\n*   Meet and greet with faculty representatives and student leaders.\n*   Opportunity to join various student clubs and societies.\n\n**What to Bring:**\n*   Your admission letter and student ID (if already issued).\n*   A notebook and pen for important information.\n*   An open mind and a readiness to make new friends!\n\nWe look forward to welcoming you to the KWASU family and helping you embark on a successful academic journey. Don't miss this crucial event!\n\n*Organized by KWASU SU Orientation Committee*",
+    "category": "Academic",
+    "rsvpOpen": true,
+    "agendaMd": "### Agenda\n*   **9:00 AM:** Arrival & Registration\n*   **9:30 AM:** Opening Remarks - SU President\n*   **10:00 AM:** Welcome Address - Vice-Chancellor\n*   **10:30 AM:** Campus Life & Resources - Dean of Students Affairs\n*   **11:30 AM:** Breakout Sessions (Academic, Welfare, Health)\n*   **1:00 PM:** Lunch Break\n*   **2:00 PM:** Club & Society Fair\n*   **3:30 PM:** Q&A with SU Executives\n*   **4:00 PM:** Closing Remarks"
+  },
+  {
+    "id": "event-2",
+    "slug": "kwasu-su-cultural-day",
+    "title": "KWASU SU Cultural Day Celebration",
+    "startsAt": "2024-12-05T10:00:00Z",
+    "endsAt": "2024-12-05T18:00:00Z",
+    "venue": "University Open Field",
+    "descriptionMd": "## KWASU SU Cultural Day Celebration\n\nExperience the rich diversity of cultures at KWASU! Our annual Cultural Day is a vibrant celebration showcasing the traditions, music, dance, and cuisine of various ethnic groups within our university community.\n\n**Activities Include:**\n*   Traditional dance performances.\n*   Cultural fashion parade.\n*   Exhibition of local arts and crafts.\n*   Tasting of diverse Nigerian delicacies.\n*   Inter-cultural quiz and games.\n\n**Dress Code:** Traditional attire or smart casual.\n\nThis event is a fantastic opportunity to learn about and appreciate the different cultures that make up our university. It's a day of unity, fun, and cultural exchange. Bring your friends and family!\n\n*Organized by KWASU SU Social & Cultural Department*",
+    "category": "Social",
+    "rsvpOpen": true
+  },
+  {
+    "id": "event-3",
+    "slug": "entrepreneurship-summit",
+    "title": "Student Entrepreneurship Summit",
+    "startsAt": "2024-11-25T09:30:00Z",
+    "endsAt": "2024-11-25T17:00:00Z",
+    "venue": "Faculty of Management Sciences Lecture Theatre",
+    "descriptionMd": "## Student Entrepreneurship Summit\n\nAre you an aspiring entrepreneur? Do you have a business idea you want to develop? Join us for the Student Entrepreneurship Summit, a day packed with insights, networking, and inspiration from successful young entrepreneurs.\n\n**Speakers & Topics:**\n*   Keynote address by a renowned startup founder.\n*   Panel discussions on funding, marketing, and innovation.\n*   Workshops on business plan development and pitching.\n*   Networking session with mentors and investors.\n\nThis summit is open to all students, regardless of their field of study. It's an invaluable opportunity to gain practical knowledge, connect with like-minded individuals, and take the first step towards building your own venture.\n\n**Registration is mandatory due to limited seating.** Secure your spot today!\n\n*Organized by KWASU SU Academic & Career Department*",
+    "category": "Academic",
+    "rsvpOpen": true
+  },
+  {
+    "id": "event-4",
+    "slug": "end-of-year-gala",
+    "title": "KWASU SU End-of-Year Gala Night",
+    "startsAt": "2024-12-15T19:00:00Z",
+    "endsAt": "2024-12-15T23:00:00Z",
+    "venue": "University Conference Center",
+    "descriptionMd": "## KWASU SU End-of-Year Gala Night\n\nJoin us for a glamorous evening to celebrate the end of a successful academic year! The KWASU SU End-of-Year Gala Night promises an unforgettable experience with fine dining, live music, awards, and entertainment.\n\n**Highlights:**\n*   Red carpet reception.\n*   Three-course dinner.\n*   Live band and DJ.\n*   Student Union Awards presentation.\n*   Networking and dancing.\n\n**Dress Code:** Formal (Black Tie Optional).\n\nThis is a perfect opportunity to unwind, celebrate achievements, and create lasting memories with your friends and colleagues. Tickets are limited and will be sold on a first-come, first-served basis.\n\n*Organized by KWASU SU Social & Welfare Department*",
+    "category": "Social",
+    "rsvpOpen": false
+  },
+  {
+    "id": "event-5",
+    "slug": "health-awareness-campaign",
+    "title": "Campus Health Awareness Campaign",
+    "startsAt": "2024-11-10T09:00:00Z",
+    "endsAt": "2024-11-10T15:00:00Z",
+    "venue": "University Clinic & Sports Complex",
+    "descriptionMd": "## Campus Health Awareness Campaign\n\nThe KWASU SU Health & Welfare Department, in collaboration with the University Clinic, is hosting a Campus Health Awareness Campaign. This event aims to promote healthy living, provide free health screenings, and educate students on various health topics.\n\n**Services Offered:**\n*   Free blood pressure checks.\n*   Blood sugar testing.\n*   HIV/AIDS awareness and counseling.\n*   Mental health awareness session.\n*   Nutrition and fitness tips.\n\nHealth is wealth! We encourage all students to take advantage of this opportunity to get a quick check-up and gain valuable health information. Experts will be on ground to answer your questions.\n\n*Organized by KWASU SU Health & Welfare Department*",
+    "category": "Welfare",
+    "rsvpOpen": true
+  }
+]
