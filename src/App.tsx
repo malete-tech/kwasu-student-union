@@ -17,23 +17,25 @@ const helmetContext = {}; // Required for react-helmet-async
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <HelmetProvider context={helmetContext}>
-      <TooltipProvider>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Layout />}>
-              <Route index element={<Index />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/executives" element={<Executives />} />
-              <Route path="/executives/:slug" element={<ExecutiveDetail />} />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Route>
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
-    </HelmetProvider>
-    <Sonner /> {/* Moved Sonner here as a sibling to the main app structure */}
+    <React.Fragment> {/* Ensure QueryClientProvider has a single child */}
+      <HelmetProvider context={helmetContext}>
+        <TooltipProvider>
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Layout />}>
+                <Route index element={<Index />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/executives" element={<Executives />} />
+                <Route path="/executives/:slug" element={<ExecutiveDetail />} />
+                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                <Route path="*" element={<NotFound />} />
+              </Route>
+            </Routes>
+          </BrowserRouter>
+        </TooltipProvider>
+      </HelmetProvider>
+      <Sonner />
+    </React.Fragment>
   </QueryClientProvider>
 );
 
