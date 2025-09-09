@@ -5,7 +5,6 @@ import { Link, NavLink } from "react-router-dom";
 import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { ThemeToggle } from "@/components/theme-toggle";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 const navLinks = [
@@ -31,7 +30,6 @@ const Header: React.FC = () => {
 
         {isMobile ? (
           <div className="flex items-center gap-2">
-            <ThemeToggle />
             <Sheet>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="icon" className="focus-visible:ring-brand-500">
@@ -73,7 +71,6 @@ const Header: React.FC = () => {
                 {link.name}
               </NavLink>
             ))}
-            <ThemeToggle />
           </nav>
         )}
       </div>

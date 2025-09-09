@@ -2,7 +2,6 @@
 
 import React from "react";
 import { Outlet } from "react-router-dom";
-import { ModeToggle } from "@/components/mode-toggle"; // Assuming this component will be created later
 
 const Layout = () => {
   return (
@@ -18,7 +17,7 @@ const Layout = () => {
           </div>
           <div className="flex flex-1 items-center justify-end space-x-4">
             <nav className="flex items-center space-x-1">
-              {/* <ModeToggle /> */} {/* Will uncomment when ModeToggle is implemented */}
+              {/* Theme toggle removed */}
             </nav>
           </div>
         </div>
