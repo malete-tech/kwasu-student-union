@@ -9,7 +9,7 @@ import NewsCard from "@/components/news-card";
 import EventCard from "@/components/event-card";
 import StudentSpotlightCard from "@/components/student-spotlight-card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"; // Added Card imports
+import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"; // Added missing import
 
 const Index = () => {
   const [latestNews, setLatestNews] = useState<News[]>([]);
