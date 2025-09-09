@@ -26,19 +26,19 @@ const StudentSpotlightCard: React.FC<StudentSpotlightCardProps> = ({ spotlight, 
       <CardHeader className="pb-2">
         <CardTitle className="text-xl font-semibold leading-tight">
           {spotlight.link ? (
-            <Link to={spotlight.link} className="hover:text-brand-500 focus-visible:ring-brand-500 focus-visible:ring-2 focus-visible:ring-offset-2 rounded-md outline-none">
+            <Link to={spotlight.link} className="hover:text-brand-500 focus-visible:ring-brand-gold focus-visible:ring-2 focus-visible:ring-offset-2 rounded-md outline-none">
               {spotlight.name}
             </Link>
           ) : (
             spotlight.name
           )}
         </CardTitle>
-        <CardDescription className="text-sm text-brand-600 dark:text-brand-300 font-medium">
+        <CardDescription className="text-sm text-brand-600 font-medium">
           {spotlight.achievement}
         </CardDescription>
       </CardHeader>
       <CardContent className="flex-grow">
-        <p className="text-sm text-gray-700 dark:text-gray-300 line-clamp-3">
+        <p className="text-sm text-gray-700 line-clamp-3">
           {spotlight.descriptionMd.split('\n')[0]} {/* Take first line as excerpt */}
         </p>
       </CardContent>

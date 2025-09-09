@@ -17,13 +17,13 @@ const Footer: React.FC = () => {
             Your voice, our mission. Empowering students for a better university experience.
           </p>
           <div className="flex space-x-4 mt-4">
-            <a href="#" aria-label="Twitter" className="hover:text-accent-foreground transition-colors">
+            <a href="#" aria-label="Twitter" className="hover:text-brand-gold transition-colors">
               <Twitter className="h-5 w-5" />
             </a>
-            <a href="#" aria-label="Instagram" className="hover:text-accent-foreground transition-colors">
+            <a href="#" aria-label="Instagram" className="hover:text-brand-gold transition-colors">
               <Instagram className="h-5 w-5" />
             </a>
-            <a href="#" aria-label="Facebook" className="hover:text-accent-foreground transition-colors">
+            <a href="#" aria-label="Facebook" className="hover:text-brand-gold transition-colors">
               <Facebook className="h-5 w-5" />
             </a>
           </div>
@@ -34,27 +34,27 @@ const Footer: React.FC = () => {
           <h3 className="text-xl font-semibold mb-4">Quick Links</h3>
           <ul className="space-y-2">
             <li>
-              <Link to="/news" className="text-sm opacity-80 hover:opacity-100 transition-opacity">
+              <Link to="/news" className="text-sm opacity-80 hover:opacity-100 hover:text-brand-gold transition-opacity">
                 News & Announcements
               </Link>
             </li>
             <li>
-              <Link to="/events" className="text-sm opacity-80 hover:opacity-100 transition-opacity">
+              <Link to="/events" className="text-sm opacity-80 hover:opacity-100 hover:text-brand-gold transition-opacity">
                 Events & Calendar
               </Link>
             </li>
             <li>
-              <Link to="/services/downloads" className="text-sm opacity-80 hover:opacity-100 transition-opacity">
+              <Link to="/services/downloads" className="text-sm opacity-80 hover:opacity-100 hover:text-brand-gold transition-opacity">
                 Downloads
               </Link>
             </li>
             <li>
-              <Link to="/about" className="text-sm opacity-80 hover:opacity-100 transition-opacity">
+              <Link to="/about" className="text-sm opacity-80 hover:opacity-100 hover:text-brand-gold transition-opacity">
                 Constitution
               </Link>
             </li>
             <li>
-              <Link to="/about" className="text-sm opacity-80 hover:opacity-100 transition-opacity">
+              <Link to="/about" className="text-sm opacity-80 hover:opacity-100 hover:text-brand-gold transition-opacity">
                 Student Handbook
               </Link>
             </li>
@@ -66,18 +66,23 @@ const Footer: React.FC = () => {
           <h3 className="text-xl font-semibold mb-4">Services</h3>
           <ul className="space-y-2">
             <li>
-              <Link to="/services/complaints" className="text-sm opacity-80 hover:opacity-100 transition-opacity">
+              <Link to="/services/complaints" className="text-sm opacity-80 hover:opacity-100 hover:text-brand-gold transition-opacity">
                 Submit Complaint
               </Link>
             </li>
             <li>
-              <Link to="/services/opportunities" className="text-sm opacity-80 hover:opacity-100 transition-opacity">
+              <Link to="/services/opportunities" className="text-sm opacity-80 hover:opacity-100 hover:text-brand-gold transition-opacity">
                 Opportunities
               </Link>
             </li>
             <li>
-              <Link to="/executives" className="text-sm opacity-80 hover:opacity-100 transition-opacity">
+              <Link to="/executives" className="text-sm opacity-80 hover:opacity-100 hover:text-brand-gold transition-opacity">
                 Meet the Executives
+              </Link>
+            </li>
+            <li>
+              <Link to="/services/suggestion-box" className="text-sm opacity-80 hover:opacity-100 hover:text-brand-gold transition-opacity">
+                Suggestion Box
               </Link>
             </li>
           </ul>
@@ -93,9 +98,9 @@ const Footer: React.FC = () => {
             <Input
               type="email"
               placeholder="Your email"
-              className="flex-grow bg-primary-foreground/20 border-primary-foreground/30 text-primary-foreground placeholder:text-primary-foreground/70 focus-visible:ring-primary-foreground"
+              className="flex-grow bg-primary-foreground/20 border-primary-foreground/30 text-primary-foreground placeholder:text-primary-foreground/70 focus-visible:ring-brand-gold"
             />
-            <Button type="submit" variant="secondary" className="bg-primary-foreground text-primary hover:bg-primary-foreground/90 focus-visible:ring-primary-foreground">
+            <Button type="submit" variant="secondary" className="bg-brand-gold text-primary hover:bg-brand-gold/90 focus-visible:ring-brand-gold">
               Subscribe
             </Button>
           </form>

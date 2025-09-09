@@ -8,7 +8,7 @@ import NewsCard from "@/components/news-card";
 import EventCard from "@/components/event-card";
 import StudentSpotlightCard from "@/components/student-spotlight-card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"; // Added missing import
+import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 
 const Index = () => {
   const [latestNews, setLatestNews] = useState<News[]>([]);
@@ -46,22 +46,22 @@ const Index = () => {
       </Helmet>
       <div className="flex flex-col">
         {/* Hero Section */}
-        <section className="min-h-[calc(100vh-4rem)] flex flex-col items-center justify-center bg-gradient-to-br from-brand-50 to-brand-100 dark:from-brand-900 dark:to-brand-800 text-brand-900 dark:text-brand-50 p-4">
+        <section className="min-h-[calc(100vh-4rem)] flex flex-col items-center justify-center bg-gradient-to-br from-brand-50 to-brand-100 text-brand-900 p-4">
           <div className="text-center max-w-4xl mx-auto py-16">
-            <h1 className="text-5xl md:text-6xl font-extrabold mb-4 leading-tight">
+            <h1 className="text-5xl md:text-6xl font-extrabold mb-4 leading-tight text-brand-700">
               Welcome to KWASU Students' Union
             </h1>
-            <p className="text-xl md:text-2xl text-brand-700 dark:text-brand-200 mb-8">
+            <p className="text-xl md:text-2xl text-brand-600 mb-8">
               Your voice, our mission. Empowering students for a better university experience.
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
-              <Button asChild className="bg-brand-500 hover:bg-brand-600 text-white px-8 py-6 text-lg focus-visible:ring-brand-500">
+              <Button asChild className="bg-brand-500 hover:bg-brand-600 text-white px-8 py-6 text-lg focus-visible:ring-brand-gold">
                 <Link to="/services/complaints">Submit Complaint</Link>
               </Button>
-              <Button asChild variant="outline" className="border-brand-500 text-brand-500 hover:bg-brand-50 hover:text-brand-600 dark:border-brand-400 dark:text-brand-400 dark:hover:bg-brand-900 dark:hover:text-brand-300 px-8 py-6 text-lg focus-visible:ring-brand-500">
+              <Button asChild variant="outline" className="border-brand-500 text-brand-500 hover:bg-brand-50 hover:text-brand-600 px-8 py-6 text-lg focus-visible:ring-brand-gold">
                 <Link to="/events">Check Events</Link>
               </Button>
-              <Button asChild variant="outline" className="border-brand-500 text-brand-500 hover:bg-brand-50 hover:text-brand-600 dark:border-brand-400 dark:text-brand-400 dark:hover:bg-brand-900 dark:hover:text-brand-300 px-8 py-6 text-lg focus-visible:ring-brand-500">
+              <Button asChild variant="outline" className="border-brand-500 text-brand-500 hover:bg-brand-50 hover:text-brand-600 px-8 py-6 text-lg focus-visible:ring-brand-gold">
                 <Link to="/executives">View Executives</Link>
               </Button>
             </div>
@@ -70,7 +70,7 @@ const Index = () => {
 
         {/* Latest Announcements Section */}
         <section className="container py-12 bg-background">
-          <h2 className="text-3xl font-bold text-center mb-8">Latest Announcements</h2>
+          <h2 className="text-3xl font-bold text-center mb-8 text-brand-700">Latest Announcements</h2>
           {loading ? (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {[...Array(3)].map((_, i) => (
@@ -103,15 +103,15 @@ const Index = () => {
             <p className="text-center text-muted-foreground">No announcements yet—check back soon.</p>
           )}
           <div className="text-center mt-8">
-            <Button asChild variant="outline" className="border-brand-500 text-brand-500 hover:bg-brand-50 hover:text-brand-600 dark:border-brand-400 dark:text-brand-400 dark:hover:bg-brand-900 dark:hover:text-brand-300 px-6 py-3 focus-visible:ring-brand-500">
+            <Button asChild variant="outline" className="border-brand-500 text-brand-500 hover:bg-brand-50 hover:text-brand-600 px-6 py-3 focus-visible:ring-brand-gold">
               <Link to="/news">View All Announcements</Link>
             </Button>
           </div>
         </section>
 
         {/* Upcoming Events Section */}
-        <section className="container py-12 bg-gray-50 dark:bg-gray-900">
-          <h2 className="text-3xl font-bold text-center mb-8">Upcoming Events</h2>
+        <section className="container py-12 bg-gray-50">
+          <h2 className="text-3xl font-bold text-center mb-8 text-brand-700">Upcoming Events</h2>
           {loading ? (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {[...Array(3)].map((_, i) => (
@@ -144,7 +144,7 @@ const Index = () => {
             <p className="text-center text-muted-foreground">No upcoming events yet—check back soon.</p>
           )}
           <div className="text-center mt-8">
-            <Button asChild className="bg-brand-500 hover:bg-brand-600 text-white px-6 py-3 focus-visible:ring-brand-500">
+            <Button asChild className="bg-brand-500 hover:bg-brand-600 text-white px-6 py-3 focus-visible:ring-brand-gold">
               <Link to="/events">View All Events</Link>
             </Button>
           </div>
@@ -152,7 +152,7 @@ const Index = () => {
 
         {/* Student Spotlight Section */}
         <section className="container py-12 bg-background">
-          <h2 className="text-3xl font-bold text-center mb-8">Student Spotlight</h2>
+          <h2 className="text-3xl font-bold text-center mb-8 text-brand-700">Student Spotlight</h2>
           {loading ? (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {[...Array(3)].map((_, i) => (
@@ -181,7 +181,7 @@ const Index = () => {
             <p className="text-center text-muted-foreground">No student spotlights yet—check back soon.</p>
           )}
           <div className="text-center mt-8">
-            <Button asChild variant="outline" className="border-brand-500 text-brand-500 hover:bg-brand-50 hover:text-brand-600 dark:border-brand-400 dark:text-brand-400 dark:hover:bg-brand-900 dark:hover:text-brand-300 px-6 py-3 focus-visible:ring-brand-500">
+            <Button asChild variant="outline" className="border-brand-500 text-brand-500 hover:bg-brand-50 hover:text-brand-600 px-6 py-3 focus-visible:ring-brand-gold">
               <Link to="/about">Learn More About Our Students</Link>
             </Button>
           </div>

@@ -22,7 +22,7 @@ const EventCard: React.FC<EventCardProps> = ({ event, className }) => {
     <Card className={cn("flex flex-col overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300", className)}>
       <CardHeader className="pb-2">
         <CardTitle className="text-xl font-semibold leading-tight">
-          <Link to={`/events/${event.slug}`} className="hover:text-brand-500 focus-visible:ring-brand-500 focus-visible:ring-2 focus-visible:ring-offset-2 rounded-md outline-none">
+          <Link to={`/events/${event.slug}`} className="hover:text-brand-500 focus-visible:ring-brand-gold focus-visible:ring-2 focus-visible:ring-offset-2 rounded-md outline-none">
             {event.title}
           </Link>
         </CardTitle>
@@ -41,12 +41,12 @@ const EventCard: React.FC<EventCardProps> = ({ event, className }) => {
         </CardDescription>
       </CardHeader>
       <CardContent className="flex-grow">
-        <p className="text-sm text-gray-700 dark:text-gray-300 line-clamp-3">
+        <p className="text-sm text-gray-700 line-clamp-3">
           {event.descriptionMd.split('\n')[0]} {/* Take first line as excerpt */}
         </p>
       </CardContent>
       <CardFooter className="flex flex-wrap gap-2 pt-4">
-        <Badge variant="secondary" className="bg-accent-100 text-accent-700 dark:bg-accent-900 dark:text-accent-100">
+        <Badge variant="secondary" className="bg-brand-100 text-brand-700">
           {event.category}
         </Badge>
         {event.rsvpOpen && (

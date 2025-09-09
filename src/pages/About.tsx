@@ -59,12 +59,12 @@ const About = () => {
         <meta name="description" content="Learn about the mission, vision, values, and history of KWASU Students' Union. Access our constitution and student handbook." />
       </Helmet>
       <div className="container py-12">
-        <h1 className="text-4xl font-bold text-center mb-10 text-brand-700 dark:text-brand-200">About KWASU Students' Union</h1>
+        <h1 className="text-4xl font-bold text-center mb-10 text-brand-700">About KWASU Students' Union</h1>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
             <Card className="p-6 shadow-lg rounded-2xl">
-              <CardContent className="prose dark:prose-invert max-w-none">
+              <CardContent className="prose max-w-none">
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>
                   {aboutContent}
                 </ReactMarkdown>
@@ -75,7 +75,7 @@ const About = () => {
           <div className="lg:col-span-1">
             <Card className="p-6 shadow-lg rounded-2xl">
               <CardHeader className="pb-4">
-                <CardTitle className="text-2xl font-semibold text-brand-700 dark:text-brand-200">Important Documents</CardTitle>
+                <CardTitle className="text-2xl font-semibold text-brand-700">Important Documents</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 {loading ? (
@@ -91,7 +91,7 @@ const About = () => {
                       key={doc.id}
                       asChild
                       variant="outline"
-                      className="w-full justify-start text-left h-auto py-3 px-4 border-brand-300 dark:border-brand-700 hover:bg-brand-50 dark:hover:bg-brand-800 focus-visible:ring-brand-500"
+                      className="w-full justify-start text-left h-auto py-3 px-4 border-brand-300 hover:bg-brand-50 focus-visible:ring-brand-gold"
                     >
                       <a href={doc.url} target="_blank" rel="noopener noreferrer" className="flex items-center">
                         <FileText className="mr-3 h-5 w-5 text-brand-500" />

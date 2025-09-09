@@ -27,7 +27,7 @@ const NewsCard: React.FC<NewsCardProps> = ({ news, className }) => {
       )}
       <CardHeader className="pb-2">
         <CardTitle className="text-xl font-semibold leading-tight">
-          <Link to={`/news/${news.slug}`} className="hover:text-brand-500 focus-visible:ring-brand-500 focus-visible:ring-2 focus-visible:ring-offset-2 rounded-md outline-none">
+          <Link to={`/news/${news.slug}`} className="hover:text-brand-500 focus-visible:ring-brand-gold focus-visible:ring-2 focus-visible:ring-offset-2 rounded-md outline-none">
             {news.title}
           </Link>
         </CardTitle>
@@ -36,13 +36,13 @@ const NewsCard: React.FC<NewsCardProps> = ({ news, className }) => {
         </CardDescription>
       </CardHeader>
       <CardContent className="flex-grow">
-        <p className="text-sm text-gray-700 dark:text-gray-300 line-clamp-3">
+        <p className="text-sm text-gray-700 line-clamp-3">
           {news.excerpt}
         </p>
       </CardContent>
       <CardFooter className="flex flex-wrap gap-2 pt-4">
         {news.tags.map((tag) => (
-          <Badge key={tag} variant="secondary" className="bg-brand-100 text-brand-700 dark:bg-brand-900 dark:text-brand-100">
+          <Badge key={tag} variant="secondary" className="bg-brand-100 text-brand-700">
             {tag}
           </Badge>
         ))}

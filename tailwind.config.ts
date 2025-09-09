@@ -51,6 +51,19 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        brand: { // KWASU Brand Colors
+          50: "hsl(150 60% 95%)",
+          100: "hsl(150 60% 90%)",
+          200: "hsl(150 60% 80%)",
+          300: "hsl(150 60% 70%)",
+          400: "hsl(150 60% 50%)",
+          500: "hsl(150 60% 40%)", // Main Green
+          600: "hsl(150 60% 30%)",
+          700: "hsl(150 60% 20%)", // Deep Green
+          800: "hsl(150 60% 15%)",
+          900: "hsl(150 60% 10%)",
+          gold: "hsl(40 80% 60%)", // Gold Accent
+        },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",

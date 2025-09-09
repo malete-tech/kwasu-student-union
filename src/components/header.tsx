@@ -23,9 +23,9 @@ const Header: React.FC = () => {
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between">
-        <Link to="/" className="flex items-center gap-2 text-lg font-bold text-brand-700 dark:text-brand-50 hover:text-brand-600 dark:hover:text-brand-100 focus-visible:ring-brand-500 rounded-md outline-none">
-          <img src="/kwasu-su-logo.png" alt="KWASU SU Logo" className="h-8 w-8" />
-          KWASU SU
+        <Link to="/" className="flex items-center text-lg font-bold text-brand-700 hover:text-brand-600 focus-visible:ring-brand-500 rounded-md outline-none">
+          <img src="/imageu-removebg-preview.png" alt="KWASU SU Logo" className="h-10 w-10" />
+          <span className="sr-only">KWASU SU Home</span>
         </Link>
 
         {isMobile ? (
@@ -44,8 +44,8 @@ const Header: React.FC = () => {
                       key={link.name}
                       to={link.href}
                       className={({ isActive }) =>
-                        `text-lg font-medium transition-colors hover:text-brand-500 dark:hover:text-brand-300 focus-visible:ring-brand-500 rounded-md outline-none ${
-                          isActive ? "text-brand-600 dark:text-brand-200" : "text-muted-foreground"
+                        `text-lg font-medium transition-colors hover:text-brand-500 focus-visible:ring-brand-500 rounded-md outline-none ${
+                          isActive ? "text-brand-700" : "text-muted-foreground"
                         }`
                       }
                     >
@@ -63,8 +63,8 @@ const Header: React.FC = () => {
                 key={link.name}
                 to={link.href}
                 className={({ isActive }) =>
-                  `text-sm font-medium transition-colors hover:text-brand-500 dark:hover:text-brand-300 focus-visible:ring-brand-500 rounded-md outline-none ${
-                    isActive ? "text-brand-600 dark:text-brand-200" : "text-muted-foreground"
+                  `text-sm font-medium transition-colors hover:text-brand-500 focus-visible:ring-brand-500 rounded-md outline-none ${
+                    isActive ? "text-brand-700" : "text-muted-foreground"
                   }`
                 }
               >
