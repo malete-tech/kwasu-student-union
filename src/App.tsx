@@ -3,6 +3,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
+import React from "react"; // Import React for React.Fragment
 
 import Layout from "./app/layout";
 import Index from "./pages/Index";
@@ -18,19 +19,21 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <HelmetProvider context={helmetContext}>
       <TooltipProvider>
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Layout />}>
-              <Route index element={<Index />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/executives" element={<Executives />} />
-              <Route path="/executives/:slug" element={<ExecutiveDetail />} />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Route>
-          </Routes>
-        </BrowserRouter>
+        <React.Fragment> {/* Wrap Sonner and BrowserRouter in a Fragment */}
+          <Sonner />
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Layout />}>
+                <Route index element={<Index />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/executives" element={<Executives />} />
+                <Route path="/executives/:slug" element={<ExecutiveDetail />} />
+                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                <Route path="*" element={<NotFound />} />
+              </Route>
+            </Routes>
+          </BrowserRouter>
+        </React.Fragment> {/* Close the Fragment */}
       </TooltipProvider>
     </HelmetProvider>
   </QueryClientProvider>
