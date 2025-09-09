@@ -1,4 +1,3 @@
-import { MadeWithDyad } from "@/components/made-with-dyad";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
@@ -187,8 +186,6 @@ const Index = () => {
             </Button>
           </div>
         </section>
-
-        <MadeWithDyad />
       </div>
     </>
   );
