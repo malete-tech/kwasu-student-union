@@ -19,23 +19,21 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <HelmetProvider context={helmetContext}>
       <TooltipProvider>
-        <React.Fragment> {/* Wrap Sonner and BrowserRouter in a Fragment */}
-          <Sonner />
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Layout />}>
-                <Route index element={<Index />} />
-                <Route path="/about" element={<About />} />
-                <Route path="/executives" element={<Executives />} />
-                <Route path="/executives/:slug" element={<ExecutiveDetail />} />
-                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                <Route path="*" element={<NotFound />} />
-              </Route>
-            </Routes>
-          </BrowserRouter>
-        </React.Fragment> {/* Close the Fragment */}
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Layout />}>
+              <Route index element={<Index />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/executives" element={<Executives />} />
+              <Route path="/executives/:slug" element={<ExecutiveDetail />} />
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Route>
+          </Routes>
+        </BrowserRouter>
       </TooltipProvider>
     </HelmetProvider>
+    <Sonner /> {/* Moved Sonner here as a sibling to the main app structure */}
   </QueryClientProvider>
 );
 
