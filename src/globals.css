@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Epilogue+Slab:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Epunda+Slab:ital,wght@0,300..900;1,300..900&display=swap');
 
 @layer base {
   :root {
@@ -53,6 +53,6 @@
   }
 
   body {
-    @apply bg-background text-foreground font-['Epilogue_Slab'] antialiased;
+    @apply bg-background text-foreground font-['Epunda_Slab'] antialiased;
   }
 }
