@@ -9,12 +9,8 @@ import { useIsMobile } from "@/hooks/use-mobile";
 
 const navLinks = [
   { name: "Home", href: "/" },
-  { name: "About SU", href: "/about" },
-  { name: "Executives", href: "/executives" },
   { name: "News & Announcements", href: "/news" },
   { name: "Events & Calendar", href: "/events" },
-  { name: "Services", href: "/services" },
-  { name: "Contact Us", href: "/contact" },
 ];
 
 const Header: React.FC = () => {
@@ -52,6 +48,9 @@ const Header: React.FC = () => {
                       {link.name}
                     </NavLink>
                   ))}
+                  <Button asChild className="w-full bg-brand-gold hover:bg-brand-gold/90 text-brand-900 focus-visible:ring-brand-gold">
+                    <Link to="/contact">Contact Us</Link>
+                  </Button>
                 </nav>
               </SheetContent>
             </Sheet>
@@ -71,6 +70,9 @@ const Header: React.FC = () => {
                 {link.name}
               </NavLink>
             ))}
+            <Button asChild className="bg-brand-gold hover:bg-brand-gold/90 text-brand-900 focus-visible:ring-brand-gold">
+              <Link to="/contact">Contact Us</Link>
+            </Button>
           </nav>
         )}
       </div>
