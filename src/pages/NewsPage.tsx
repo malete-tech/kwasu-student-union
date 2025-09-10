@@ -6,7 +6,7 @@ import { api } from "@/lib/api";
 import { News } from "@/types";
 import NewsCard from "@/components/news-card";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+// import { Button } from "@/components/ui/button"; // Removed unused import
 import { Search } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";

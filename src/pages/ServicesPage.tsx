@@ -3,9 +3,9 @@
 import React from "react";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { FileText, Briefcase, MessageSquare, Download, Lightbulb } from "lucide-react";
+import { Card, CardContent, CardTitle } from "@/components/ui/card"; // Removed CardHeader
+import { Button } => "@/components/ui/button";
+import { Briefcase, MessageSquare, Download, Lightbulb } from "lucide-react"; // Removed FileText
 
 interface ServiceCardProps {
   icon: React.ElementType;

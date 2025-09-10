@@ -40,6 +40,7 @@ const AnimatedNotifications: React.FC<AnimatedNotificationsProps> = ({ className
       }, 5000); // Change notification every 5 seconds
       return () => clearInterval(interval);
     }
+    return () => {}; // Ensure a cleanup function is always returned
   }, [announcements]);
 
   if (loading) {
@@ -81,9 +82,9 @@ const AnimatedNotifications: React.FC<AnimatedNotificationsProps> = ({ className
         {/* Previous (Outgoing) Notification */}
         {totalAnnouncements > 1 && (
           <AnnouncementCard
-            key={announcements[prevIndex].id + "-prev"}
-            title={announcements[prevIndex].title}
-            description={announcements[prevIndex].excerpt}
+            key={announcements[prevIndex]!.id + "-prev"}
+            title={announcements[prevIndex]!.title}
+            description={announcements[prevIndex]!.excerpt}
             className="absolute w-[90%] transition-all duration-500 ease-in-out"
             style={{
               transform: `translateY(-${verticalOffset}px) scale(0.9)`,
@@ -95,9 +96,9 @@ const AnimatedNotifications: React.FC<AnimatedNotificationsProps> = ({ className
 
         {/* Current (Pop Out) Notification */}
         <AnnouncementCard
-          key={announcements[activeIndex].id + "-current"}
-          title={announcements[activeIndex].title}
-          description={announcements[activeIndex].excerpt}
+          key={announcements[activeIndex]!.id + "-current"}
+          title={announcements[activeIndex]!.title}
+          description={announcements[activeIndex]!.excerpt}
           className="absolute w-[90%] transition-all duration-500 ease-in-out"
           style={{
             transform: `translateY(0px) scale(1)`,
@@ -109,9 +110,9 @@ const AnimatedNotifications: React.FC<AnimatedNotificationsProps> = ({ className
         {/* Next (Incoming) Notification */}
         {totalAnnouncements > 1 && (
           <AnnouncementCard
-            key={announcements[nextIndex].id + "-next"}
-            title={announcements[nextIndex].title}
-            description={announcements[nextIndex].excerpt}
+            key={announcements[nextIndex]!.id + "-next"}
+            title={announcements[nextIndex]!.title}
+            description={announcements[nextIndex]!.excerpt}
             className="absolute w-[90%] transition-all duration-500 ease-in-out"
             style={{
               transform: `translateY(${verticalOffset}px) scale(0.9)`,

@@ -14,7 +14,7 @@ import {
   LogOut,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
+// import { Separator } from "@/components/ui/separator"; // Removed unused import
 import { cn } from "@/lib/utils";
 
 interface AdminLink {

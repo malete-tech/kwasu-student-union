@@ -1,9 +1,9 @@
 "use client";
 
 import React from "react";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card"; // Removed CardContent
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { BellRing, Megaphone } from "lucide-react";
+import { BellRing } from "lucide-react"; // Removed Megaphone
 import { cn } from "@/lib/utils";
 
 interface AnnouncementCardProps {

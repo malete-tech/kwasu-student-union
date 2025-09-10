@@ -9,7 +9,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { format } from "date-fns";
+// import { format } from "date-fns"; // Removed unused import
 import { Button } from "@/components/ui/button"; // Added Button import
 
 const EventsPage: React.FC = () => {

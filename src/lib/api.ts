@@ -92,7 +92,7 @@ export const api = {
         ...complaint,
       } as Complaint);
     },
-    getById: (id: string): Promise<Complaint | undefined> => {
+    getById: (_id: string): Promise<Complaint | undefined> => {
       // This will fetch from localStorage later
       return simulateAsync(undefined); // Placeholder
     }

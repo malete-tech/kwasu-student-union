@@ -1,8 +1,7 @@
 "use client";
 
-import React from "react";
 import { Link } from "react-router-dom";
-import { Mail, Twitter, Instagram, Facebook } from "lucide-react";
+import { Twitter, Instagram, Facebook } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 

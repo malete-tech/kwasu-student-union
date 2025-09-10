@@ -4,9 +4,9 @@ import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { api } from "@/lib/api";
 import { Document } from "@/types";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card } from "@/components/ui/card"; // Removed CardContent, CardHeader, CardTitle
 import { Button } from "@/components/ui/button";
-import { FileText, Download, Search, Tag } from "lucide-react";
+import { FileText, Download, Search } from "lucide-react"; // Removed Tag
 import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -106,8 +106,7 @@ const DownloadsPage: React.FC = () => {
                     <Skeleton className="h-6 w-16" />
                     <Skeleton className="h-6 w-20" />
                   </div>
-                </div>
-              </Card>
+                </Card>
             ))}
           </div>
         ) : error ? (

@@ -6,7 +6,7 @@ import { api } from "@/lib/api";
 import { Opportunity } from "@/types";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card"; // Added CardFooter import
 import { Button } from "@/components/ui/button";
-import { Briefcase, CalendarDays, LinkIcon, Search, Tag } from "lucide-react";
+import { CalendarDays, LinkIcon, Search } from "lucide-react"; // Removed Briefcase, Tag
 import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";

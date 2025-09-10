@@ -1,19 +1,19 @@
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import { Link } from "react-router-dom"; // Keep Link as it's used in JSX
 import { Helmet } from "react-helmet-async";
 import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
-import { News, Event, StudentSpotlight } from "@/types";
-import NewsCard from "@/components/news-card";
-import EventCard from "@/components/event-card";
+import { StudentSpotlight } from "@/types"; // Removed News, Event
+// import NewsCard from "@/components/news-card"; // Removed unused import
+// import EventCard from "@/components/event-card"; // Removed unused import
 import StudentSpotlightCard from "@/components/student-spotlight-card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"; // Removed CardFooter
 import QuickLinks from "@/components/QuickLinks";
 import ExecutiveProfilesSection from "@/components/ExecutiveProfilesSection";
 import NewsFeedSection from "@/components/NewsFeedSection";
 import EventsCalendarSection from "@/components/EventsCalendarSection";
-import { CheckCircle, Search, ArrowRight, BarChart2, BookOpen } from "lucide-react";
+import { CheckCircle, Search, ArrowRight } from "lucide-react"; // Removed BarChart2, BookOpen
 import { Input } from "@/components/ui/input";
 import AnimatedNotifications from "@/components/AnimatedNotifications";
 import PhoneMockup from "@/components/PhoneMockup"; // New import
@@ -120,7 +120,7 @@ const Index = () => {
                   ) : error ? (
                     <div className="text-destructive text-sm text-center">{error}</div>
                   ) : studentSpotlights.length > 0 ? (
-                    <StudentSpotlightCard spotlight={studentSpotlights[0]} />
+                    <StudentSpotlightCard spotlight={studentSpotlights[0]!} />
                   ) : (
                     <p className="text-center text-muted-foreground text-sm">No student spotlight yet.</p>
                   )}
