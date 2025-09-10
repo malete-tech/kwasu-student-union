@@ -50,7 +50,7 @@ const AnimatedNotifications: React.FC<AnimatedNotificationsProps> = ({ className
 
   if (loading) {
     return (
-      <Card className={cn("relative w-full max-w-xs h-[280px] rounded-3xl shadow-2xl overflow-hidden bg-white/20 backdrop-blur-md border border-white/30 p-6 flex flex-col justify-center items-center", className)}>
+      <Card className={cn("relative w-full h-full rounded-3xl shadow-2xl overflow-hidden bg-white/20 backdrop-blur-md border border-white/30 p-6 flex flex-col justify-center items-center", className)}>
         <Skeleton className="h-[80px] w-full mb-4" />
         <Skeleton className="h-[80px] w-full mb-4" />
         <Skeleton className="h-[80px] w-full" />
@@ -60,7 +60,7 @@ const AnimatedNotifications: React.FC<AnimatedNotificationsProps> = ({ className
 
   if (error) {
     return (
-      <Card className={cn("relative w-full max-w-xs h-[280px] rounded-3xl shadow-2xl overflow-hidden bg-white/20 backdrop-blur-md border border-white/30 p-6 flex flex-col justify-center items-center text-destructive text-sm", className)}>
+      <Card className={cn("relative w-full h-full rounded-3xl shadow-2xl overflow-hidden bg-white/20 backdrop-blur-md border border-white/30 p-6 flex flex-col justify-center items-center text-destructive text-sm", className)}>
         {error}
       </Card>
     );
@@ -68,7 +68,7 @@ const AnimatedNotifications: React.FC<AnimatedNotificationsProps> = ({ className
 
   if (announcements.length === 0) {
     return (
-      <Card className={cn("relative w-full max-w-xs h-[280px] rounded-3xl shadow-2xl overflow-hidden bg-white/20 backdrop-blur-md border border-white/30 p-6 flex flex-col justify-center items-center text-muted-foreground text-sm", className)}>
+      <Card className={cn("relative w-full h-full rounded-3xl shadow-2xl overflow-hidden bg-white/20 backdrop-blur-md border border-white/30 p-6 flex flex-col justify-center items-center text-muted-foreground text-sm", className)}>
         No announcements available.
       </Card>
     );
@@ -77,7 +77,7 @@ const AnimatedNotifications: React.FC<AnimatedNotificationsProps> = ({ className
   const currentAnnouncement = announcements[currentIndex];
 
   return (
-    <Card className={cn("relative w-full max-w-xs h-[280px] rounded-3xl shadow-2xl overflow-hidden bg-white/20 backdrop-blur-md border border-white/30 p-6 flex flex-col justify-center items-center", className)}>
+    <Card className={cn("relative w-full h-full rounded-3xl shadow-2xl overflow-hidden bg-white/20 backdrop-blur-md border border-white/30 p-6 flex flex-col justify-center items-center", className)}>
       <div className="relative w-full h-full flex items-center justify-center">
         <AnnouncementCard
           key={currentAnnouncement.id} // Key to trigger re-render and transition
