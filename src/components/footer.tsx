@@ -12,7 +12,10 @@ const Footer: React.FC = () => {
       <div className="container grid grid-cols-1 md:grid-cols-4 gap-8">
         {/* About SU */}
         <div className="col-span-1">
-          <h3 className="text-xl font-semibold mb-4">KWASU SU</h3>
+          <Link to="/" className="flex items-center text-lg font-bold text-primary-foreground hover:text-brand-gold focus-visible:ring-brand-gold rounded-md outline-none mb-4">
+            <img src="/imageu-removebg-preview.png" alt="KWASU SU Logo" className="h-10 w-10 mr-2" />
+            <span>KWASU SU</span>
+          </Link>
           <p className="text-sm opacity-80">
             Your voice, our mission. Empowering students for a better university experience.
           </p>
@@ -108,6 +111,7 @@ const Footer: React.FC = () => {
       </div>
       <div className="container text-center text-sm opacity-70 mt-10 border-t border-primary-foreground/20 pt-8">
         &copy; {new Date().getFullYear()} KWASU Students' Union. All rights reserved.
+        <p className="mt-2">&copy; 2025 Powered by Malete Tech Forum. All rights reserved.</p>
       </div>
     </footer>
   );
