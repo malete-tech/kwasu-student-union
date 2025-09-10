@@ -9,8 +9,11 @@ import { useIsMobile } from "@/hooks/use-mobile";
 
 const navLinks = [
   { name: "Home", href: "/" },
-  { name: "News & Announcements", href: "/news" },
-  { name: "Events & Calendar", href: "/events" },
+  { name: "About SU", href: "/about" },
+  { name: "Executives", href: "/executives" },
+  { name: "News", href: "/news" },
+  { name: "Events", href: "/events" },
+  { name: "Services", href: "/services" },
 ];
 
 const Header: React.FC = () => {
