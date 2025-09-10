@@ -24,7 +24,7 @@ const Header: React.FC = () => {
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between">
         <Link to="/" className="flex items-center text-lg font-bold text-brand-700 hover:text-brand-600 focus-visible:ring-brand-500 rounded-md outline-none">
-          <img src="/kwasu-su-logo.png" alt="KWASU SU Logo" className="h-10 w-10" />
+          <img src="/imageu-removebg-preview.png" alt="KWASU SU Logo" className="h-10 w-10" />
           <span className="sr-only">KWASU SU Home</span>
         </Link>
 

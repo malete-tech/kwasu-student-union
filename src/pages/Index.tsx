@@ -8,7 +8,7 @@ import NewsCard from "@/components/news-card";
 import EventCard from "@/components/event-card";
 import StudentSpotlightCard from "@/components/student-spotlight-card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"; // Added CardTitle
 import QuickLinks from "@/components/QuickLinks";
 import AnnouncementCard from "@/components/AnnouncementCard";
 import ExecutiveProfilesSection from "@/components/ExecutiveProfilesSection";
@@ -46,22 +46,22 @@ const Index = () => {
         {/* Hero Section */}
         <section
           className="relative min-h-[calc(100vh-4rem)] flex items-center justify-center p-4 bg-cover bg-center"
-          style={{ backgroundImage: "url('/hero-background.png')" }} // New gradient background image
+          style={{ backgroundImage: "url('/placeholder-hero.jpg')" }} // Placeholder background image
         >
-          {/* Removed dark overlay as the background is light */}
-          <div className="relative z-10 text-center max-w-6xl mx-auto py-16 grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+          <div className="absolute inset-0 bg-gradient-to-r from-brand-700/80 to-brand-900/60"></div> {/* Dark overlay */}
+          <div className="relative z-10 text-white text-center max-w-6xl mx-auto py-16 grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
             <div className="text-left px-4">
-              <h1 className="text-5xl md:text-6xl font-extrabold mb-4 leading-tight text-brand-900"> {/* Changed text color to brand-900 */}
+              <h1 className="text-5xl md:text-6xl font-extrabold mb-4 leading-tight">
                 Your Voice, Your Union, Your Future
               </h1>
-              <p className="text-xl md:text-2xl mb-8 opacity-90 text-brand-800"> {/* Changed text color to brand-800 */}
+              <p className="text-xl md:text-2xl mb-8 opacity-90">
                 Empowering students for a better university experience.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
-                <Button asChild className="bg-brand-gold hover:bg-brand-gold/90 text-brand-900 px-8 py-6 text-lg font-semibold focus-visible:ring-brand-700">
+                <Button asChild className="bg-brand-gold hover:bg-brand-gold/90 text-brand-900 px-8 py-6 text-lg font-semibold focus-visible:ring-white">
                   <Link to="/about">Join Now</Link>
                 </Button>
-                <Button asChild variant="outline" className="border-brand-900 text-brand-900 hover:bg-brand-900/10 px-8 py-6 text-lg font-semibold focus-visible:ring-brand-700"> {/* Adjusted outline button for contrast */}
+                <Button asChild variant="outline" className="border-white text-white hover:bg-white/10 px-8 py-6 text-lg font-semibold focus-visible:ring-white">
                   <Link to="/contact">Contact Us</Link>
                 </Button>
               </div>
