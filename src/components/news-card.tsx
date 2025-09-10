@@ -36,7 +36,7 @@ const NewsCard: React.FC<NewsCardProps> = ({ news, className }) => {
         </CardDescription>
       </CardHeader>
       <CardContent className="flex-grow">
-        <p className="text-sm text-gray-700 line-clamp-3">
+        <p className="text-sm text-gray-700">
           {news.excerpt}
         </p>
       </CardContent>
