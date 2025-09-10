@@ -91,13 +91,8 @@ const Index = () => {
 
             {/* Right Image with Animated Notifications */}
             <div className="relative flex justify-center lg:justify-end">
-              <img
-                src="/pasted-image-2025-09-10T16-26-11-583Z.png"
-                alt="Students collaborating"
-                className="relative z-10 w-full max-w-lg rounded-3xl shadow-2xl object-cover"
-              />
-              {/* Replaced overlays with AnimatedNotifications */}
-              <AnimatedNotifications className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 w-[250px] h-[280px] lg:w-[300px] lg:h-[350px]" />
+              {/* Removed the placeholder image */}
+              <AnimatedNotifications className="relative z-20 w-[250px] h-[280px] lg:w-[300px] lg:h-[350px]" />
             </div>
           </div>
         </section>
