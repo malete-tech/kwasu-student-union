@@ -65,7 +65,7 @@ const ChartTooltip = RechartsPrimitive.Tooltip;
 
 const ChartTooltipContent = React.forwardRef<
   HTMLDivElement,
-  React.ComponentProps<typeof RechartsPrimitive.Tooltip> & {
+  Omit<React.ComponentProps<typeof RechartsPrimitive.Tooltip>, 'children'> & { // Omit children from RechartsPrimitive.Tooltip props
     hideLabel?: boolean;
     hideIndicator?: boolean;
     formatter?: (
@@ -75,6 +75,7 @@ const ChartTooltipContent = React.forwardRef<
       index: number,
       payload: Payload<any, any>[] // Use the imported Payload type with generic arguments
     ) => React.ReactNode;
+    className?: string; // Add className as a direct prop for the div
   }
 >(
   (
@@ -87,7 +88,7 @@ const ChartTooltipContent = React.forwardRef<
       label,
       labelFormatter,
       className, // Destructure className here for the outer div
-      ...props // Remaining props for RechartsPrimitive.Tooltip
+      // Removed ..._props as they are not used by this component's div
     },
     ref
   ) => {
@@ -109,7 +110,6 @@ const ChartTooltipContent = React.forwardRef<
           "grid min-w-[130px] items-center break-words rounded-md border border-slate-200 bg-white/95 p-1.5 text-sm text-slate-950 shadow-md backdrop-blur-2xl dark:border-slate-800 dark:bg-slate-950/95 dark:text-slate-50",
           className // Apply className here
         )}
-        // Do NOT spread ...props here, as they are for RechartsPrimitive.Tooltip, not a div
       >
         {!hideLabel && formattedLabel ? (
           <div className="border-b border-slate-200 p-1.5 pb-1 dark:border-slate-800">
