@@ -11,14 +11,27 @@ import NotFound from "./pages/NotFound";
 import About from "./pages/About";
 import Executives from "./pages/Executives";
 import ExecutiveDetail from "./pages/ExecutiveDetail";
-import NewsPage from "./pages/NewsPage"; // New import
-import NewsDetail from "./pages/NewsDetail"; // New import
-import EventsPage from "./pages/EventsPage"; // New import
-import EventDetail from "./pages/EventDetail"; // New import
-import ServicesPage from "./pages/ServicesPage"; // New import
-import DownloadsPage from "./pages/DownloadsPage"; // New import
-import OpportunitiesPage from "./pages/OpportunitiesPage"; // New import
-import ContactPage from "./pages/ContactPage"; // New import
+import NewsPage from "./pages/NewsPage";
+import NewsDetail from "./pages/NewsDetail";
+import EventsPage from "./pages/EventsPage";
+import EventDetail from "./pages/EventDetail";
+import ServicesPage from "./pages/ServicesPage";
+import DownloadsPage from "./pages/DownloadsPage";
+import OpportunitiesPage from "./pages/OpportunitiesPage";
+import ContactPage from "./pages/ContactPage";
+
+// Admin Imports
+import AdminLayout from "./app/AdminLayout";
+import AdminLoginPage from "./pages/admin/AdminLoginPage";
+import DashboardOverview from "./pages/admin/DashboardOverview";
+import NewsManagement from "./pages/admin/NewsManagement";
+import EventsManagement from "./pages/admin/EventsManagement";
+import ExecutivesManagement from "./pages/admin/ExecutivesManagement";
+import ComplaintsManagement from "./pages/admin/ComplaintsManagement";
+import DocumentsManagement from "./pages/admin/DocumentsManagement";
+import OpportunitiesManagement from "./pages/admin/OpportunitiesManagement";
+import StudentSpotlightManagement from "./pages/admin/StudentSpotlightManagement";
+
 
 const queryClient = new QueryClient();
 const helmetContext = {}; // Required for react-helmet-async
@@ -31,22 +44,40 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
+            {/* Public Routes */}
             <Route path="/" element={<Layout />}>
               <Route index element={<Index />} />
               <Route path="/about" element={<About />} />
               <Route path="/executives" element={<Executives />} />
               <Route path="/executives/:slug" element={<ExecutiveDetail />} />
-              <Route path="/news" element={<NewsPage />} /> {/* New route */}
-              <Route path="/news/:slug" element={<NewsDetail />} /> {/* New route */}
-              <Route path="/events" element={<EventsPage />} /> {/* New route */}
-              <Route path="/events/:slug" element={<EventDetail />} /> {/* New route */}
-              <Route path="/services" element={<ServicesPage />} /> {/* New route */}
-              <Route path="/services/downloads" element={<DownloadsPage />} /> {/* New route */}
-              <Route path="/services/opportunities" element={<OpportunitiesPage />} /> {/* New route */}
-              <Route path="/contact" element={<ContactPage />} /> {/* New route */}
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
+              <Route path="/news" element={<NewsPage />} />
+              <Route path="/news/:slug" element={<NewsDetail />} />
+              <Route path="/events" element={<EventsPage />} />
+              <Route path="/events/:slug" element={<EventDetail />} />
+              <Route path="/services" element={<ServicesPage />} />
+              <Route path="/services/downloads" element={<DownloadsPage />} />
+              <Route path="/services/opportunities" element={<OpportunitiesPage />} />
+              <Route path="/contact" element={<ContactPage />} />
+              {/* ADD ALL CUSTOM PUBLIC ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             </Route>
+
+            {/* Admin Login Route (Publicly accessible) */}
+            <Route path="/admin/login" element={<AdminLoginPage />} />
+
+            {/* Admin Protected Routes (Will be protected by auth later) */}
+            <Route path="/admin" element={<AdminLayout />}>
+              <Route index element={<DashboardOverview />} />
+              <Route path="news" element={<NewsManagement />} />
+              <Route path="events" element={<EventsManagement />} />
+              <Route path="executives" element={<ExecutivesManagement />} />
+              <Route path="complaints" element={<ComplaintsManagement />} />
+              <Route path="documents" element={<DocumentsManagement />} />
+              <Route path="opportunities" element={<OpportunitiesManagement />} />
+              <Route path="spotlight" element={<StudentSpotlightManagement />} />
+            </Route>
+
+            {/* Catch-all for 404 Not Found */}
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
       </TooltipProvider>
