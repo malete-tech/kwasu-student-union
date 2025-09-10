@@ -11,7 +11,7 @@ interface PhoneMockupProps {
 const PhoneMockup: React.FC<PhoneMockupProps> = ({ children, className }) => {
   return (
     <div className={cn(
-      "relative w-[300px] h-[300px] md:w-[340px] md:h-[340px] lg:w-[380px] lg:h-[380px] bg-gray-900 rounded-[3rem] shadow-2xl border-[10px] border-gray-800 overflow-hidden",
+      "relative w-[340px] h-[400px] md:w-[380px] md:h-[440px] lg:w-[420px] lg:h-[480px] bg-gray-900 rounded-[3rem] shadow-2xl border-[10px] border-gray-800 overflow-hidden",
       "flex items-center justify-center", // Center content vertically and horizontally
       className
     )}>

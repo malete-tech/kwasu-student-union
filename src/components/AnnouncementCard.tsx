@@ -12,6 +12,7 @@ interface AnnouncementCardProps {
   icon?: React.ElementType;
   avatarUrl?: string;
   className?: string;
+  style?: React.CSSProperties; // Added style prop
 }
 
 const AnnouncementCard: React.FC<AnnouncementCardProps> = ({
@@ -20,9 +21,10 @@ const AnnouncementCard: React.FC<AnnouncementCardProps> = ({
   icon: Icon = BellRing,
   avatarUrl,
   className,
+  style, // Accept the style prop
 }) => {
   return (
-    <Card className={cn("flex items-center p-4 bg-white/30 backdrop-blur-sm shadow-md rounded-xl border border-white/30 h-[80px]", className)}>
+    <Card className={cn("flex items-center p-4 bg-white/30 backdrop-blur-sm shadow-md rounded-xl border border-white/30 h-[80px]", className)} style={style}> {/* Apply the style prop */}
       <Avatar className="h-10 w-10 mr-4 flex-shrink-0">
         {avatarUrl ? (
           <AvatarImage src={avatarUrl} alt={title} />
