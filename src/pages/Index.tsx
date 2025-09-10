@@ -46,45 +46,45 @@ const Index = () => {
       </Helmet>
       <div className="flex flex-col">
         {/* Hero Section */}
-        <section className="relative w-full bg-gradient-to-br from-blue-50 to-indigo-50 py-16 md:py-24 lg:py-32 overflow-hidden">
+        <section className="relative w-full bg-gradient-to-br from-brand-900 to-brand-neon py-16 md:py-24 lg:py-32 overflow-hidden">
           <div className="container grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Left Content */}
             <div className="flex flex-col items-start text-center lg:text-left">
-              <div className="inline-flex items-center rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-700 mb-4">
+              <div className="inline-flex items-center rounded-full bg-brand-neon/20 px-3 py-1 text-sm font-medium text-brand-neon mb-4">
                 <CheckCircle className="h-4 w-4 mr-2" /> Your Voice, Your Future
               </div>
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 mb-6 leading-tight">
-                Empower Your Future with <span className="text-brand-700">KWASU SU</span>
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white mb-6 leading-tight">
+                Empower Your Future with <span className="text-brand-neon">KWASU SU</span>
               </h1>
-              <p className="text-lg md:text-xl text-gray-600 mb-8 max-w-xl">
+              <p className="text-lg md:text-xl text-brand-100 mb-8 max-w-xl">
                 Connecting students with opportunities, support, and a vibrant campus community.
               </p>
 
               {/* Search Input */}
               <div className="relative w-full max-w-md mb-8">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-brand-300" />
                 <Input
                   type="text"
                   placeholder="Search news, events, opportunities..."
-                  className="w-full pl-12 pr-4 py-3 rounded-full border-2 border-gray-200 focus-visible:ring-brand-gold focus-visible:border-brand-500 shadow-sm"
+                  className="w-full pl-12 pr-4 py-3 rounded-full border-2 border-brand-700 bg-brand-800 text-white placeholder:text-brand-300 focus-visible:ring-brand-gold focus-visible:border-brand-neon shadow-sm"
                 />
-                <Button className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-brand-500 hover:bg-brand-600 text-white px-6 py-2 focus-visible:ring-brand-gold">
+                <Button className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-brand-neon hover:bg-brand-neon/90 text-brand-900 px-6 py-2 focus-visible:ring-brand-gold">
                   <ArrowRight className="h-5 w-5" />
                 </Button>
               </div>
 
               {/* Features */}
               <div className="flex flex-wrap justify-center lg:justify-start gap-6 mt-4">
-                <div className="flex items-center gap-2 text-gray-700">
-                  <CheckCircle className="h-5 w-5 text-brand-500" />
+                <div className="flex items-center gap-2 text-brand-100">
+                  <CheckCircle className="h-5 w-5 text-brand-neon" />
                   <span className="font-medium">Advocacy</span>
                 </div>
-                <div className="flex items-center gap-2 text-gray-700">
-                  <CheckCircle className="h-5 w-5 text-brand-500" />
+                <div className="flex items-center gap-2 text-brand-100">
+                  <CheckCircle className="h-5 w-5 text-brand-neon" />
                   <span className="font-medium">Community</span>
                 </div>
-                <div className="flex items-center gap-2 text-gray-700">
-                  <CheckCircle className="h-5 w-5 text-brand-500" />
+                <div className="flex items-center gap-2 text-brand-100">
+                  <CheckCircle className="h-5 w-5 text-brand-neon" />
                   <span className="font-medium">Opportunities</span>
                 </div>
               </div>

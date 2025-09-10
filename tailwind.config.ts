@@ -65,6 +65,7 @@ export default {
           700: "hsl(150 60% 20%)", // Deep Green
           800: "hsl(150 60% 15%)",
           900: "hsl(150 60% 10%)",
+          neon: "hsl(150 90% 25%)", // New neon-like dark green
           gold: "hsl(40 80% 60%)", // Gold Accent
         },
         sidebar: {
