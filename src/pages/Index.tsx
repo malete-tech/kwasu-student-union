@@ -50,7 +50,7 @@ const Index = () => {
           <div className="container grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Left Content */}
             <div className="flex flex-col items-center text-center lg:items-start lg:text-left">
-              <div className="inline-flex items-center rounded-full bg-brand-neon/20 px-3 py-1 text-sm font-medium text-brand-neon mb-4">
+              <div className="inline-flex items-center rounded-full bg-brand-neon/20 px-3 py-1 text-sm font-medium text-white mb-4">
                 <CheckCircle className="h-4 w-4 mr-2" /> Your Voice, Your Future
               </div>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white mb-6 leading-tight">
@@ -68,7 +68,7 @@ const Index = () => {
                   placeholder="Search news, events, opportunities..."
                   className="w-full pl-12 pr-4 py-3 rounded-full border-2 border-brand-700 bg-brand-800 text-white placeholder:text-brand-300 focus-visible:ring-brand-gold focus-visible:border-brand-neon shadow-sm"
                 />
-                <Button className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-brand-neon hover:bg-brand-neon/90 text-brand-900 px-6 py-2 focus-visible:ring-brand-gold">
+                <Button className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-brand-neon hover:bg-brand-neon/90 text-white px-6 py-2 focus-visible:ring-brand-gold">
                   <ArrowRight className="h-5 w-5" />
                 </Button>
               </div>
@@ -76,15 +76,15 @@ const Index = () => {
               {/* Features */}
               <div className="flex flex-wrap justify-center lg:justify-start gap-6 mt-4">
                 <div className="flex items-center gap-2 text-brand-100">
-                  <CheckCircle className="h-5 w-5 text-brand-neon" />
+                  <CheckCircle className="h-5 w-5 text-brand-gold" />
                   <span className="font-medium">Advocacy</span>
                 </div>
                 <div className="flex items-center gap-2 text-brand-100">
-                  <CheckCircle className="h-5 w-5 text-brand-neon" />
+                  <CheckCircle className="h-5 w-5 text-brand-gold" />
                   <span className="font-medium">Community</span>
                 </div>
                 <div className="flex items-center gap-2 text-brand-100">
-                  <CheckCircle className="h-5 w-5 text-brand-neon" />
+                  <CheckCircle className="h-5 w-5 text-brand-gold" />
                   <span className="font-medium">Opportunities</span>
                 </div>
               </div>
