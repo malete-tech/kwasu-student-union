@@ -3,7 +3,6 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
-import React from "react"; // Import React for React.Fragment
 
 import Layout from "./app/layout";
 import Index from "./pages/Index";
@@ -17,25 +16,23 @@ const helmetContext = {}; // Required for react-helmet-async
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <React.Fragment> {/* Ensure QueryClientProvider has a single child */}
-      <HelmetProvider context={helmetContext}>
-        <TooltipProvider>
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Layout />}>
-                <Route index element={<Index />} />
-                <Route path="/about" element={<About />} />
-                <Route path="/executives" element={<Executives />} />
-                <Route path="/executives/:slug" element={<ExecutiveDetail />} />
-                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                <Route path="*" element={<NotFound />} />
-              </Route>
-            </Routes>
-          </BrowserRouter>
-        </TooltipProvider>
-      </HelmetProvider>
-      <Sonner />
-    </React.Fragment>
+    <HelmetProvider context={helmetContext}>
+      <TooltipProvider>
+        <Sonner />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Layout />}>
+              <Route index element={<Index />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/executives" element={<Executives />} />
+              <Route path="/executives/:slug" element={<ExecutiveDetail />} />
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      </TooltipProvider>
+    </HelmetProvider>
   </QueryClientProvider>
 );
 

@@ -51,6 +51,6 @@
   }
 
   body {
-    @apply bg-background text-foreground font-sans; /* Applied font-sans here */
+    @apply bg-background text-foreground;
   }
 }

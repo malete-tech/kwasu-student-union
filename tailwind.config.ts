@@ -17,9 +17,6 @@ export default {
       },
     },
     extend: {
-      fontFamily: {
-        sans: ["Epunda Slab", "sans-serif"], // Adding Epunda Slab to the sans-serif stack
-      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
