@@ -15,6 +15,7 @@ import NewsFeedSection from "@/components/NewsFeedSection";
 import EventsCalendarSection from "@/components/EventsCalendarSection";
 import { CheckCircle, Search, ArrowRight, BarChart2, BookOpen } from "lucide-react"; // Added new icons
 import { Input } from "@/components/ui/input"; // Added Input component
+import AnimatedNotifications from "@/components/AnimatedNotifications"; // New import
 
 const Index = () => {
   const [studentSpotlights, setStudentSpotlights] = useState<StudentSpotlight[]>([]);
@@ -88,29 +89,15 @@ const Index = () => {
               </div>
             </div>
 
-            {/* Right Image with Overlays */}
+            {/* Right Image with Animated Notifications */}
             <div className="relative flex justify-center lg:justify-end">
               <img
-                src="/pasted-image-2025-09-10T16-26-11-583Z.png" // Updated image source
-                alt="Students collaborating" // Updated alt text
+                src="/pasted-image-2025-09-10T16-26-11-583Z.png"
+                alt="Students collaborating"
                 className="relative z-10 w-full max-w-lg rounded-3xl shadow-2xl object-cover"
               />
-              {/* Overlay 1: No of students chart */}
-              <div className="absolute top-10 left-1/2 lg:left-auto lg:right-0 -translate-x-1/2 lg:translate-x-1/4 bg-white p-4 rounded-xl shadow-lg flex flex-col items-center min-w-[150px] z-20">
-                <span className="text-sm text-gray-500 mb-2">No of students</span>
-                <div className="flex gap-1 h-10 items-end">
-                  <div className="w-3 bg-blue-500 rounded-sm h-1/2"></div>
-                  <div className="w-3 bg-purple-500 rounded-sm h-3/4"></div>
-                  <div className="w-3 bg-green-500 rounded-sm h-full"></div>
-                  <div className="w-3 bg-yellow-500 rounded-sm h-2/3"></div>
-                </div>
-              </div>
-              {/* Overlay 2: Available courses badge */}
-              <div className="absolute bottom-10 left-1/4 lg:left-auto lg:right-1/2 translate-x-1/2 lg:translate-x-1/2 bg-white p-3 rounded-xl shadow-lg flex items-center z-20">
-                <BookOpen className="h-6 w-6 text-blue-500 mr-2" />
-                <span className="font-semibold text-gray-800">50+</span>
-                <span className="text-sm text-gray-500 ml-1">Available courses</span>
-              </div>
+              {/* Replaced overlays with AnimatedNotifications */}
+              <AnimatedNotifications className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 w-[250px] h-[280px] lg:w-[300px] lg:h-[350px]" />
             </div>
           </div>
         </section>
