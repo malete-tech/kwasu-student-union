@@ -8,13 +8,13 @@ import NewsCard from "@/components/news-card";
 import EventCard from "@/components/event-card";
 import StudentSpotlightCard from "@/components/student-spotlight-card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"; // Added CardTitle
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import QuickLinks from "@/components/QuickLinks";
-import AnnouncementCard from "@/components/AnnouncementCard";
 import ExecutiveProfilesSection from "@/components/ExecutiveProfilesSection";
 import NewsFeedSection from "@/components/NewsFeedSection";
 import EventsCalendarSection from "@/components/EventsCalendarSection";
-import { Megaphone, BookOpen } from "lucide-react";
+import { CheckCircle, Search, ArrowRight, BarChart2, BookOpen } from "lucide-react"; // Added new icons
+import { Input } from "@/components/ui/input"; // Added Input component
 
 const Index = () => {
   const [studentSpotlights, setStudentSpotlights] = useState<StudentSpotlight[]>([]);
@@ -44,41 +44,73 @@ const Index = () => {
       </Helmet>
       <div className="flex flex-col">
         {/* Hero Section */}
-        <section
-          className="relative min-h-[calc(100vh-4rem)] flex items-center justify-center p-4 bg-cover bg-center"
-          style={{ backgroundImage: "url('/placeholder-hero.jpg')" }} // Placeholder background image
-        >
-          <div className="absolute inset-0 bg-gradient-to-r from-brand-700/80 to-brand-900/60"></div> {/* Dark overlay */}
-          <div className="relative z-10 text-white text-center max-w-6xl mx-auto py-16 grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-            <div className="text-left px-4">
-              <h1 className="text-5xl md:text-6xl font-extrabold mb-4 leading-tight">
-                Your Voice, Your Union, Your Future
+        <section className="relative w-full bg-gradient-to-br from-blue-50 to-indigo-50 py-16 md:py-24 lg:py-32 overflow-hidden">
+          <div className="container grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            {/* Left Content */}
+            <div className="flex flex-col items-start text-center lg:text-left">
+              <div className="inline-flex items-center rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-700 mb-4">
+                <CheckCircle className="h-4 w-4 mr-2" /> Your Voice, Your Future
+              </div>
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 mb-6 leading-tight">
+                Empower Your Future with <span className="text-brand-700">KWASU SU</span>
               </h1>
-              <p className="text-xl md:text-2xl mb-8 opacity-90">
-                Empowering students for a better university experience.
+              <p className="text-lg md:text-xl text-gray-600 mb-8 max-w-xl">
+                Connecting students with opportunities, support, and a vibrant campus community.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Button asChild className="bg-brand-gold hover:bg-brand-gold/90 text-brand-900 px-8 py-6 text-lg font-semibold focus-visible:ring-white">
-                  <Link to="/about">Join Now</Link>
-                </Button>
-                <Button asChild variant="outline" className="border-white text-white hover:bg-white/10 px-8 py-6 text-lg font-semibold focus-visible:ring-white">
-                  <Link to="/contact">Contact Us</Link>
+
+              {/* Search Input */}
+              <div className="relative w-full max-w-md mb-8">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                <Input
+                  type="text"
+                  placeholder="Search news, events, opportunities..."
+                  className="w-full pl-12 pr-4 py-3 rounded-full border-2 border-gray-200 focus-visible:ring-brand-gold focus-visible:border-brand-500 shadow-sm"
+                />
+                <Button className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-brand-500 hover:bg-brand-600 text-white px-6 py-2 focus-visible:ring-brand-gold">
+                  <ArrowRight className="h-5 w-5" />
                 </Button>
               </div>
+
+              {/* Features */}
+              <div className="flex flex-wrap justify-center lg:justify-start gap-6 mt-4">
+                <div className="flex items-center gap-2 text-gray-700">
+                  <CheckCircle className="h-5 w-5 text-brand-500" />
+                  <span className="font-medium">Advocacy</span>
+                </div>
+                <div className="flex items-center gap-2 text-gray-700">
+                  <CheckCircle className="h-5 w-5 text-brand-500" />
+                  <span className="font-medium">Community</span>
+                </div>
+                <div className="flex items-center gap-2 text-gray-700">
+                  <CheckCircle className="h-5 w-5 text-brand-500" />
+                  <span className="font-medium">Opportunities</span>
+                </div>
+              </div>
             </div>
-            <div className="flex flex-col gap-4 px-4 mt-8 lg:mt-0">
-              <AnnouncementCard
-                title="New Study Spaces Opening Soon!"
-                description="Modern and conducive environments for your academic success."
-                icon={BookOpen}
-                className="bg-white/90 text-brand-900"
+
+            {/* Right Image with Overlays */}
+            <div className="relative flex justify-center lg:justify-end">
+              <img
+                src="/E-learning.jpg" // Using the provided image
+                alt="Student studying"
+                className="relative z-10 w-full max-w-lg rounded-3xl shadow-2xl object-cover"
               />
-              <AnnouncementCard
-                title="Volunteer Opportunities Available"
-                description="Make a difference and gain valuable experience."
-                icon={Megaphone}
-                className="bg-white/90 text-brand-900"
-              />
+              {/* Overlay 1: No of students chart */}
+              <div className="absolute top-10 left-1/2 lg:left-auto lg:right-0 -translate-x-1/2 lg:translate-x-1/4 bg-white p-4 rounded-xl shadow-lg flex flex-col items-center min-w-[150px] z-20">
+                <span className="text-sm text-gray-500 mb-2">No of students</span>
+                <div className="flex gap-1 h-10 items-end">
+                  <div className="w-3 bg-blue-500 rounded-sm h-1/2"></div>
+                  <div className="w-3 bg-purple-500 rounded-sm h-3/4"></div>
+                  <div className="w-3 bg-green-500 rounded-sm h-full"></div>
+                  <div className="w-3 bg-yellow-500 rounded-sm h-2/3"></div>
+                </div>
+              </div>
+              {/* Overlay 2: Available courses badge */}
+              <div className="absolute bottom-10 left-1/4 lg:left-auto lg:right-1/2 translate-x-1/2 lg:translate-x-1/2 bg-white p-3 rounded-xl shadow-lg flex items-center z-20">
+                <BookOpen className="h-6 w-6 text-blue-500 mr-2" />
+                <span className="font-semibold text-gray-800">50+</span>
+                <span className="text-sm text-gray-500 ml-1">Available courses</span>
+              </div>
             </div>
           </div>
         </section>
