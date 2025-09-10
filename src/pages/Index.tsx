@@ -49,7 +49,7 @@ const Index = () => {
         <section className="relative w-full bg-gradient-to-br from-brand-900 to-brand-neon py-16 md:py-24 lg:py-32 overflow-hidden">
           <div className="container grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Left Content */}
-            <div className="flex flex-col items-start text-center lg:text-left">
+            <div className="flex flex-col items-center text-center lg:items-start lg:text-left">
               <div className="inline-flex items-center rounded-full bg-brand-neon/20 px-3 py-1 text-sm font-medium text-brand-neon mb-4">
                 <CheckCircle className="h-4 w-4 mr-2" /> Your Voice, Your Future
               </div>
