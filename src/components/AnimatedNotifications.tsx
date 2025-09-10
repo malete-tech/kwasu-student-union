@@ -16,6 +16,8 @@ const AnimatedNotifications: React.FC<AnimatedNotificationsProps> = ({ className
   const [announcements, setAnnouncements] = useState<News[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isVisible, setIsVisible] = useState(true); // For pop-out animation
 
   useEffect(() => {
     const fetchAnnouncements = async () => {
@@ -33,11 +35,24 @@ const AnimatedNotifications: React.FC<AnimatedNotificationsProps> = ({ className
     fetchAnnouncements();
   }, []);
 
+  useEffect(() => {
+    if (announcements.length > 1) {
+      const interval = setInterval(() => {
+        setIsVisible(false); // Start fade-out
+        setTimeout(() => {
+          setCurrentIndex((prevIndex) => (prevIndex + 1) % announcements.length);
+          setIsVisible(true); // Start fade-in
+        }, 500); // Half of transition duration (must match CSS transition duration)
+      }, 5000); // Change notification every 5 seconds
+      return () => clearInterval(interval);
+    }
+  }, [announcements]);
+
   if (loading) {
     return (
-      <Card className={cn("relative w-full max-w-xs h-[280px] rounded-3xl shadow-2xl overflow-hidden bg-white p-4 flex flex-col justify-center items-center", className)}>
-        <Skeleton className="h-[80px] w-full mb-2" />
-        <Skeleton className="h-[80px] w-full mb-2" />
+      <Card className={cn("relative w-full max-w-xs h-[280px] rounded-3xl shadow-2xl overflow-hidden bg-white/20 backdrop-blur-md border border-white/30 p-6 flex flex-col justify-center items-center", className)}>
+        <Skeleton className="h-[80px] w-full mb-4" />
+        <Skeleton className="h-[80px] w-full mb-4" />
         <Skeleton className="h-[80px] w-full" />
       </Card>
     );
@@ -45,7 +60,7 @@ const AnimatedNotifications: React.FC<AnimatedNotificationsProps> = ({ className
 
   if (error) {
     return (
-      <Card className={cn("relative w-full max-w-xs h-[280px] rounded-3xl shadow-2xl overflow-hidden bg-white p-4 flex flex-col justify-center items-center text-destructive text-sm", className)}>
+      <Card className={cn("relative w-full max-w-xs h-[280px] rounded-3xl shadow-2xl overflow-hidden bg-white/20 backdrop-blur-md border border-white/30 p-6 flex flex-col justify-center items-center text-destructive text-sm", className)}>
         {error}
       </Card>
     );
@@ -53,26 +68,26 @@ const AnimatedNotifications: React.FC<AnimatedNotificationsProps> = ({ className
 
   if (announcements.length === 0) {
     return (
-      <Card className={cn("relative w-full max-w-xs h-[280px] rounded-3xl shadow-2xl overflow-hidden bg-white p-4 flex flex-col justify-center items-center text-muted-foreground text-sm", className)}>
+      <Card className={cn("relative w-full max-w-xs h-[280px] rounded-3xl shadow-2xl overflow-hidden bg-white/20 backdrop-blur-md border border-white/30 p-6 flex flex-col justify-center items-center text-muted-foreground text-sm", className)}>
         No announcements available.
       </Card>
     );
   }
 
-  // To create an infinite loop, duplicate the announcements
-  const loopedAnnouncements = [...announcements, ...announcements];
+  const currentAnnouncement = announcements[currentIndex];
 
   return (
-    <Card className={cn("relative w-full max-w-xs h-[280px] rounded-3xl shadow-2xl overflow-hidden bg-white p-4", className)}>
-      <div className="absolute inset-0 flex flex-col animate-slide-down-loop">
-        {loopedAnnouncements.map((newsItem, index) => (
-          <AnnouncementCard
-            key={`${newsItem.id}-${index}`} // Unique key for duplicated items
-            title={newsItem.title}
-            description={newsItem.excerpt}
-            className="mb-2 flex-shrink-0"
-          />
-        ))}
+    <Card className={cn("relative w-full max-w-xs h-[280px] rounded-3xl shadow-2xl overflow-hidden bg-white/20 backdrop-blur-md border border-white/30 p-6 flex flex-col justify-center items-center", className)}>
+      <div className="relative w-full h-full flex items-center justify-center">
+        <AnnouncementCard
+          key={currentAnnouncement.id} // Key to trigger re-render and transition
+          title={currentAnnouncement.title}
+          description={currentAnnouncement.excerpt}
+          className={cn(
+            "absolute transition-all duration-500 ease-in-out",
+            isVisible ? "opacity-100 scale-100" : "opacity-0 scale-95"
+          )}
+        />
       </div>
     </Card>
   );

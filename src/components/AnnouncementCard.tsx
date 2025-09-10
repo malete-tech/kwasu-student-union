@@ -22,7 +22,7 @@ const AnnouncementCard: React.FC<AnnouncementCardProps> = ({
   className,
 }) => {
   return (
-    <Card className={cn("flex items-center p-4 bg-white/80 backdrop-blur-sm shadow-md rounded-xl min-h-[80px] max-h-[80px] overflow-hidden", className)}>
+    <Card className={cn("flex items-center p-4 bg-white/30 backdrop-blur-sm shadow-md rounded-xl border border-white/30", className)}>
       <Avatar className="h-10 w-10 mr-4 flex-shrink-0">
         {avatarUrl ? (
           <AvatarImage src={avatarUrl} alt={title} />
