@@ -16,8 +16,8 @@ const OTPInputContext = React.createContext<
 
 const InputOTP = React.forwardRef<
   React.ElementRef<typeof OTPInput>,
-  React.ComponentPropsWithoutRef<typeof OTPInput>
->(({ className, containerClassName, children, ...props }, ref) => {
+  React.PropsWithChildren<React.ComponentPropsWithoutRef<typeof OTPInput>> // Add React.PropsWithChildren
+>(({ className, containerClassName, children, ...props }, ref) => { // Destructure children
   const [slots, setSlots] = React.useState<SlotProps[]>([]);
 
   return (
@@ -32,7 +32,7 @@ const InputOTP = React.forwardRef<
         onComplete={(value) => console.log(value)}
         {...props}
       >
-        {children}
+        {children} {/* Pass children directly */}
       </OTPInput>
     </OTPInputContext.Provider>
   );

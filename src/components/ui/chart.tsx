@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import * as RechartsPrimitive from "recharts";
+import { Payload } from "recharts/types/component/DefaultTooltipContent"; // Import Payload type
 
 import { cn } from "@/lib/utils";
 
@@ -19,12 +20,11 @@ export type ChartConfig = {
 
 type ChartContextProps = {
   config: ChartConfig;
-  children: React.ReactNode;
 };
 
 const ChartContext = React.createContext<ChartContextProps | null>(null);
 
-function ChartProvider({ config, children }: ChartContextProps) {
+function ChartProvider({ config, children }: React.PropsWithChildren<ChartContextProps>) {
   return (
     <ChartContext.Provider value={{ config }}>{children}</ChartContext.Provider>
   );
@@ -42,12 +42,11 @@ function useChart() {
 
 type ChartProps = React.ComponentProps<typeof RechartsPrimitive.ResponsiveContainer> & {
   config: ChartConfig;
-  children: React.ReactNode;
 };
 
 const Chart = React.forwardRef<
   HTMLDivElement,
-  ChartProps
+  React.PropsWithChildren<ChartProps>
 >(({ config, className, children, ...props }, ref) => (
   <ChartProvider config={config}>
     <div
@@ -72,9 +71,9 @@ const ChartTooltipContent = React.forwardRef<
     formatter?: (
       value: number,
       name: string,
-      item: RechartsPrimitive.Payload,
+      item: Payload<any, any>, // Use the imported Payload type with generic arguments
       index: number,
-      payload: RechartsPrimitive.Payload[]
+      payload: Payload<any, any>[] // Use the imported Payload type with generic arguments
     ) => React.ReactNode;
   }
 >(
@@ -82,13 +81,13 @@ const ChartTooltipContent = React.forwardRef<
     {
       active,
       payload,
-      className,
       formatter,
       hideLabel = false,
       hideIndicator = false,
       label,
       labelFormatter,
-      ...props
+      className, // Destructure className here for the outer div
+      ...props // Remaining props for RechartsPrimitive.Tooltip
     },
     ref
   ) => {
@@ -108,9 +107,9 @@ const ChartTooltipContent = React.forwardRef<
         ref={ref}
         className={cn(
           "grid min-w-[130px] items-center break-words rounded-md border border-slate-200 bg-white/95 p-1.5 text-sm text-slate-950 shadow-md backdrop-blur-2xl dark:border-slate-800 dark:bg-slate-950/95 dark:text-slate-50",
-          className
+          className // Apply className here
         )}
-        {...props}
+        // Do NOT spread ...props here, as they are for RechartsPrimitive.Tooltip, not a div
       >
         {!hideLabel && formattedLabel ? (
           <div className="border-b border-slate-200 p-1.5 pb-1 dark:border-slate-800">
@@ -119,7 +118,9 @@ const ChartTooltipContent = React.forwardRef<
         ) : null}
         <div className="space-y-1.5 p-1.5">
           {payload.map((item, index) => {
-            const [itemValue, itemConfig] = get  PayloadConfigFromPayload(config, item, item.dataKey);
+            // Ensure item.dataKey is a string before passing
+            const dataKey = typeof item.dataKey === 'string' ? item.dataKey : String(item.dataKey);
+            const [itemValue, itemConfig] = getPayloadConfigFromPayload(config, item, dataKey);
 
             return (
               <div
@@ -135,7 +136,7 @@ const ChartTooltipContent = React.forwardRef<
                   />
                 )}
                 {formatter ? (
-                  formatter(itemValue, item.name!, item, index, payload)
+                  formatter(itemValue as number, item.name!, item, index, payload)
                 ) : (
                   <div className="flex flex-1 justify-between">
                     {itemConfig?.label ? (
@@ -162,7 +163,7 @@ ChartTooltipContent.displayName = "ChartTooltipContent";
 
 function getPayloadConfigFromPayload(
   config: ChartConfig,
-  item: RechartsPrimitive.Payload,
+  item: Payload<any, any>, // Use the imported Payload type with generic arguments
   key: string
 ) {
   const itemConfig = config[key];

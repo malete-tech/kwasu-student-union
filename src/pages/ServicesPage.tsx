@@ -4,7 +4,7 @@ import React from "react";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import { Card, CardContent, CardTitle } from "@/components/ui/card"; // Removed CardHeader
-import { Button } => "@/components/ui/button";
+import { Button } from "@/components/ui/button"; // Corrected import syntax
 import { Briefcase, MessageSquare, Download, Lightbulb } from "lucide-react"; // Removed FileText
 
 interface ServiceCardProps {

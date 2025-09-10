@@ -106,7 +106,8 @@ const DownloadsPage: React.FC = () => {
                     <Skeleton className="h-6 w-16" />
                     <Skeleton className="h-6 w-20" />
                   </div>
-                </Card>
+                </div>
+              </Card>
             ))}
           </div>
         ) : error ? (

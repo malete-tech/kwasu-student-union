@@ -3,6 +3,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { User, CalendarDays, Newspaper, Users } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"; // Added missing imports
 // import { cn } from "@/lib/utils"; // Removed unused import
 
 interface QuickLinkItemProps {
