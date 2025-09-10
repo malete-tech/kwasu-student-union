@@ -91,8 +91,8 @@ const Index = () => {
             {/* Right Image with Overlays */}
             <div className="relative flex justify-center lg:justify-end">
               <img
-                src="/E-learning.jpg" // Using the provided image
-                alt="Student studying"
+                src="/pasted-image-2025-09-10T16-26-11-583Z.png" // Updated image source
+                alt="Students collaborating" // Updated alt text
                 className="relative z-10 w-full max-w-lg rounded-3xl shadow-2xl object-cover"
               />
               {/* Overlay 1: No of students chart */}
