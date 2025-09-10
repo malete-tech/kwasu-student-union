@@ -16,13 +16,11 @@ const AnimatedNotifications: React.FC<AnimatedNotificationsProps> = ({ className
   const [announcements, setAnnouncements] = useState<News[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isVisible, setIsVisible] = useState(true); // For pop-out animation
+  const [activeIndex, setActiveIndex] = useState(0); // Index of the central "pop out" notification
 
   useEffect(() => {
     const fetchAnnouncements = async () => {
       try {
-        // Fetch some news items to act as announcements
         const latestNews = await api.news.getLatest(5); // Get 5 latest news
         setAnnouncements(latestNews);
       } catch (err) {
@@ -38,11 +36,7 @@ const AnimatedNotifications: React.FC<AnimatedNotificationsProps> = ({ className
   useEffect(() => {
     if (announcements.length > 1) {
       const interval = setInterval(() => {
-        setIsVisible(false); // Start fade-out
-        setTimeout(() => {
-          setCurrentIndex((prevIndex) => (prevIndex + 1) % announcements.length);
-          setIsVisible(true); // Start fade-in
-        }, 500); // Half of transition duration (must match CSS transition duration)
+        setActiveIndex((prevIndex) => (prevIndex + 1) % announcements.length);
       }, 5000); // Change notification every 5 seconds
       return () => clearInterval(interval);
     }
@@ -74,20 +68,58 @@ const AnimatedNotifications: React.FC<AnimatedNotificationsProps> = ({ className
     );
   }
 
-  const currentAnnouncement = announcements[currentIndex];
+  const totalAnnouncements = announcements.length;
+  const prevIndex = (activeIndex - 1 + totalAnnouncements) % totalAnnouncements;
+  const nextIndex = (activeIndex + 1) % totalAnnouncements;
+
+  const cardHeight = 80; // From AnnouncementCard.tsx
+  const verticalOffset = cardHeight + 8; // Card height + a small gap for stacking
 
   return (
-    <Card className={cn("relative w-full h-full rounded-3xl shadow-2xl overflow-hidden bg-white/20 backdrop-blur-md border border-white/30 p-6 flex flex-col justify-center items-center", className)}>
-      <div className="relative w-full h-full flex items-center justify-center">
+    <Card className={cn("relative w-full h-full rounded-3xl shadow-2xl overflow-hidden bg-white/20 backdrop-blur-md border border-white/30 p-4 flex flex-col justify-center items-center", className)}>
+      <div className="relative w-full h-full flex flex-col items-center justify-center">
+        {/* Previous (Outgoing) Notification */}
+        {totalAnnouncements > 1 && (
+          <AnnouncementCard
+            key={announcements[prevIndex].id + "-prev"}
+            title={announcements[prevIndex].title}
+            description={announcements[prevIndex].excerpt}
+            className="absolute w-[90%] transition-all duration-500 ease-in-out"
+            style={{
+              transform: `translateY(-${verticalOffset}px) scale(0.9)`,
+              opacity: 0.4,
+              zIndex: 1,
+            }}
+          />
+        )}
+
+        {/* Current (Pop Out) Notification */}
         <AnnouncementCard
-          key={currentAnnouncement.id} // Key to trigger re-render and transition
-          title={currentAnnouncement.title}
-          description={currentAnnouncement.excerpt}
-          className={cn(
-            "absolute transition-all duration-500 ease-in-out",
-            isVisible ? "opacity-100 scale-100" : "opacity-0 scale-95"
-          )}
+          key={announcements[activeIndex].id + "-current"}
+          title={announcements[activeIndex].title}
+          description={announcements[activeIndex].excerpt}
+          className="absolute w-[90%] transition-all duration-500 ease-in-out"
+          style={{
+            transform: `translateY(0px) scale(1)`,
+            opacity: 1,
+            zIndex: 2,
+          }}
         />
+
+        {/* Next (Incoming) Notification */}
+        {totalAnnouncements > 1 && (
+          <AnnouncementCard
+            key={announcements[nextIndex].id + "-next"}
+            title={announcements[nextIndex].title}
+            description={announcements[nextIndex].excerpt}
+            className="absolute w-[90%] transition-all duration-500 ease-in-out"
+            style={{
+              transform: `translateY(${verticalOffset}px) scale(0.9)`,
+              opacity: 0.4,
+              zIndex: 1,
+            }}
+          />
+        )}
       </div>
     </Card>
   );
