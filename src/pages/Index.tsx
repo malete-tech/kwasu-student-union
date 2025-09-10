@@ -13,9 +13,10 @@ import QuickLinks from "@/components/QuickLinks";
 import ExecutiveProfilesSection from "@/components/ExecutiveProfilesSection";
 import NewsFeedSection from "@/components/NewsFeedSection";
 import EventsCalendarSection from "@/components/EventsCalendarSection";
-import { CheckCircle, Search, ArrowRight, BarChart2, BookOpen } from "lucide-react"; // Added new icons
-import { Input } from "@/components/ui/input"; // Added Input component
-import AnimatedNotifications from "@/components/AnimatedNotifications"; // New import
+import { CheckCircle, Search, ArrowRight, BarChart2, BookOpen } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import AnimatedNotifications from "@/components/AnimatedNotifications";
+import PhoneMockup from "@/components/PhoneMockup"; // New import
 
 const Index = () => {
   const [studentSpotlights, setStudentSpotlights] = useState<StudentSpotlight[]>([]);
@@ -89,10 +90,11 @@ const Index = () => {
               </div>
             </div>
 
-            {/* Right Image with Animated Notifications */}
+            {/* Right Phone Mockup with Animated Notifications */}
             <div className="relative flex justify-center lg:justify-end">
-              {/* Removed the placeholder image */}
-              <AnimatedNotifications className="relative z-20 w-[250px] h-[280px] lg:w-[300px] lg:h-[350px]" />
+              <PhoneMockup className="relative z-20">
+                <AnimatedNotifications className="absolute inset-0 p-4" />
+              </PhoneMockup>
             </div>
           </div>
         </section>
