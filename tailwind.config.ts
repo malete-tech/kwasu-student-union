@@ -17,6 +17,9 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        epunda: ["Epunda Slab", "serif"], // Added Epunda Slab
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",

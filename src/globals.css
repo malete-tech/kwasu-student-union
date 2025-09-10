@@ -53,6 +53,6 @@
   }
 
   body {
-    @apply bg-background text-foreground font-['Epunda_Slab'] antialiased;
+    @apply bg-background text-foreground font-epunda antialiased;
   }
 }
