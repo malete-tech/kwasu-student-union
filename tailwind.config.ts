@@ -18,7 +18,7 @@ export default {
     },
     extend: {
       fontFamily: {
-        epunda: ["Epunda Slab", "serif"], // Added Epunda Slab
+        "dm-sans": ["DM Sans", "sans-serif"], // Added DM Sans
       },
       colors: {
         border: "hsl(var(--border))",
