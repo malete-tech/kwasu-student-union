@@ -3,7 +3,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { Session, User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
-import { Profile } from '@/types'; // Assuming Profile type will be defined
+import { Profile } from '@/types';
 
 interface SessionContextType {
   session: Session | null;
@@ -50,17 +50,21 @@ export const SessionContextProvider: React.FC<{ children: React.ReactNode }> = (
             } else if (profileData) {
               setProfile(profileData as Profile);
               setIsAdmin(profileData.is_admin || false);
+              console.log("Initial session check - Profile Data:", profileData);
+              console.log("Initial session check - Is Admin:", profileData.is_admin || false);
             } else {
+              console.log("Initial session check - No profile found for user:", session.user.id);
               setProfile(null);
               setIsAdmin(false);
             }
           } else {
+            console.log("Initial session check - No user in session.");
             setProfile(null);
             setIsAdmin(false);
           }
         }
       } finally {
-        setLoading(false); // Ensure loading is always set to false
+        setLoading(false);
       }
     };
 
@@ -68,9 +72,6 @@ export const SessionContextProvider: React.FC<{ children: React.ReactNode }> = (
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (_event, newSession) => {
-        // For onAuthStateChange, we don't necessarily set loading to true at the start
-        // as it might cause a flicker if the session is already established.
-        // We only set loading to false once all checks are done.
         setSession(newSession);
         setUser(newSession?.user || null);
         if (newSession?.user) {
@@ -87,15 +88,19 @@ export const SessionContextProvider: React.FC<{ children: React.ReactNode }> = (
           } else if (profileData) {
             setProfile(profileData as Profile);
             setIsAdmin(profileData.is_admin || false);
+            console.log("Auth state change - Profile Data:", profileData);
+            console.log("Auth state change - Is Admin:", profileData.is_admin || false);
           } else {
+            console.log("Auth state change - No profile found for user:", newSession.user.id);
             setProfile(null);
             setIsAdmin(false);
           }
         } else {
+          console.log("Auth state change - No user in session.");
           setProfile(null);
           setIsAdmin(false);
         }
-        setLoading(false); // Ensure loading is set to false here too
+        setLoading(false);
       }
     );
 
