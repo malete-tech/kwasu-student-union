@@ -23,43 +23,50 @@ export const SessionContextProvider: React.FC<{ children: React.ReactNode }> = (
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
+    console.log("SessionContextProvider: Initializing useEffect.");
     const getSession = async () => {
+      console.log("SessionContextProvider: getSession() started. Setting loading to true.");
       setLoading(true);
       try {
-        const { data: { session }, error } = await supabase.auth.getSession();
+        const { data: { session: initialSession }, error } = await supabase.auth.getSession();
         if (error) {
-          console.error("Error getting session:", error);
+          console.error("SessionContextProvider: Error getting initial session:", error);
           setSession(null);
           setUser(null);
           setProfile(null);
           setIsAdmin(false);
         } else {
-          setSession(session);
-          setUser(session?.user || null);
-          if (session?.user) {
+          console.log("SessionContextProvider: Initial session data received:", initialSession);
+          setSession(initialSession);
+          setUser(initialSession?.user || null);
+          if (initialSession?.user) {
             const { data: profileData, error: profileError } = await supabase
               .from('profiles')
               .select('*')
-              .eq('id', session.user.id)
+              .eq('id', initialSession.user.id)
               .single();
 
             if (profileError && profileError.code !== 'PGRST116') { // PGRST116 means no rows found
-              console.error("Error fetching profile:", profileError);
+              console.error("SessionContextProvider: Error fetching profile for initial session:", profileError);
               setProfile(null);
               setIsAdmin(false);
             } else if (profileData) {
+              console.log("SessionContextProvider: Initial profile data:", profileData);
               setProfile(profileData as Profile);
               setIsAdmin(profileData.is_admin || false);
             } else {
+              console.log("SessionContextProvider: No profile found for initial session user.");
               setProfile(null);
               setIsAdmin(false);
             }
           } else {
+            console.log("SessionContextProvider: No user in initial session.");
             setProfile(null);
             setIsAdmin(false);
           }
         }
       } finally {
+        console.log("SessionContextProvider: getSession() finished. Setting loading to false.");
         setLoading(false);
       }
     };
@@ -67,7 +74,9 @@ export const SessionContextProvider: React.FC<{ children: React.ReactNode }> = (
     getSession();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (_event, newSession) => {
+      async (event, newSession) => {
+        console.log(`SessionContextProvider: Auth state change event: ${event}, newSession:`, newSession);
+        setLoading(true); // Set loading to true during auth state change processing
         setSession(newSession);
         setUser(newSession?.user || null);
         if (newSession?.user) {
@@ -78,25 +87,32 @@ export const SessionContextProvider: React.FC<{ children: React.ReactNode }> = (
             .single();
 
           if (profileError && profileError.code !== 'PGRST116') {
-            console.error("Error fetching profile on auth state change:", profileError);
+            console.error("SessionContextProvider: Error fetching profile on auth state change:", profileError);
             setProfile(null);
             setIsAdmin(false);
           } else if (profileData) {
+            console.log("SessionContextProvider: Profile data on auth state change:", profileData);
             setProfile(profileData as Profile);
             setIsAdmin(profileData.is_admin || false);
           } else {
+            console.log("SessionContextProvider: No profile found for user on auth state change.");
             setProfile(null);
             setIsAdmin(false);
           }
         } else {
+          console.log("SessionContextProvider: No user in new session on auth state change.");
           setProfile(null);
           setIsAdmin(false);
         }
+        console.log("SessionContextProvider: Auth state change processing finished. Setting loading to false.");
         setLoading(false);
       }
     );
 
-    return () => subscription.unsubscribe();
+    return () => {
+      console.log("SessionContextProvider: Cleaning up auth state change subscription.");
+      subscription.unsubscribe();
+    };
   }, []);
 
   return (
