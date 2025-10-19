@@ -28,7 +28,10 @@ export const SessionContextProvider: React.FC<{ children: React.ReactNode }> = (
       console.log("SessionContextProvider: getSession() started. Setting loading to true.");
       setLoading(true);
       try {
+        console.log("SessionContextProvider: Calling supabase.auth.getSession().");
         const { data: { session: initialSession }, error } = await supabase.auth.getSession();
+        console.log("SessionContextProvider: supabase.auth.getSession() returned.");
+
         if (error) {
           console.error("SessionContextProvider: Error getting initial session:", error);
           setSession(null);
@@ -40,11 +43,13 @@ export const SessionContextProvider: React.FC<{ children: React.ReactNode }> = (
           setSession(initialSession);
           setUser(initialSession?.user || null);
           if (initialSession?.user) {
+            console.log("SessionContextProvider: Fetching profile for initial session user:", initialSession.user.id);
             const { data: profileData, error: profileError } = await supabase
               .from('profiles')
               .select('*')
               .eq('id', initialSession.user.id)
               .single();
+            console.log("SessionContextProvider: Profile fetch for initial session returned.");
 
             if (profileError && profileError.code !== 'PGRST116') { // PGRST116 means no rows found
               console.error("SessionContextProvider: Error fetching profile for initial session:", profileError);
@@ -65,6 +70,8 @@ export const SessionContextProvider: React.FC<{ children: React.ReactNode }> = (
             setIsAdmin(false);
           }
         }
+      } catch (e) {
+        console.error("SessionContextProvider: Unexpected error in getSession:", e);
       } finally {
         console.log("SessionContextProvider: getSession() finished. Setting loading to false.");
         setLoading(false);
@@ -80,11 +87,13 @@ export const SessionContextProvider: React.FC<{ children: React.ReactNode }> = (
         setSession(newSession);
         setUser(newSession?.user || null);
         if (newSession?.user) {
+          console.log("SessionContextProvider: Fetching profile on auth state change for user:", newSession.user.id);
           const { data: profileData, error: profileError } = await supabase
             .from('profiles')
             .select('*')
             .eq('id', newSession.user.id)
             .single();
+          console.log("SessionContextProvider: Profile fetch on auth state change returned.");
 
           if (profileError && profileError.code !== 'PGRST116') {
             console.error("SessionContextProvider: Error fetching profile on auth state change:", profileError);

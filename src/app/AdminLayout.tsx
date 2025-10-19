@@ -20,13 +20,17 @@ const AdminLayout: React.FC = () => {
   const closeSheet = () => setIsSheetOpen(false);
 
   useEffect(() => {
-    if (!loading && !session) {
-      // If not loading and no session, redirect to login
-      navigate("/admin/login", { replace: true });
-    } else if (!loading && session && !isAdmin) {
-      // If logged in but not admin, redirect to home or a non-admin page
-      console.warn("Authenticated user is not an admin. Redirecting to home.");
-      navigate("/", { replace: true });
+    console.log("AdminLayout: useEffect triggered. Loading:", loading, "Session:", !!session, "IsAdmin:", isAdmin);
+    if (!loading) {
+      if (!session) {
+        // If not loading and no session, redirect to login
+        console.log("AdminLayout: No session found, redirecting to /admin/login.");
+        navigate("/admin/login", { replace: true });
+      } else if (!isAdmin) {
+        // If logged in but not admin, redirect to home or a non-admin page
+        console.warn("AdminLayout: Authenticated user is not an admin. Redirecting to home.");
+        navigate("/", { replace: true });
+      }
     }
   }, [session, isAdmin, loading, navigate]);
 
@@ -43,9 +47,8 @@ const AdminLayout: React.FC = () => {
     closeSheet(); // Close sheet on logout
   };
 
-  if (loading || (!session && !loading) || (session && !isAdmin && !loading)) {
+  if (loading) {
     // Show a loading spinner or a simple message while checking auth state
-    // Or if not authenticated, or authenticated but not admin, the useEffect will handle redirection
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-100">
         <p className="text-brand-700">Checking administrator access...</p>
