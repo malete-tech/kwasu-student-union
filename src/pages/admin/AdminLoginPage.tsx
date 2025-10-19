@@ -59,28 +59,29 @@ const AdminLoginPage: React.FC = () => {
                       brand: 'hsl(var(--brand-500))', // Main brand green for primary actions
                       brandAccent: 'hsl(var(--brand-gold))', // Gold accent for secondary actions/focus
                       
-                      // Backgrounds
+                      // Button styling
                       defaultButtonBackground: 'hsl(var(--brand-500))',
                       defaultButtonBackgroundHover: 'hsl(var(--brand-600))',
-                      inputBackground: 'hsl(var(--background))', // White
-                      
-                      // Text colors
                       defaultButtonText: 'hsl(var(--primary-foreground))', // White
+                      
+                      // Input styling
+                      inputBackground: 'hsl(var(--background))', // White
                       inputText: 'hsl(var(--foreground))', // Dark text
                       inputPlaceholder: 'hsl(var(--muted-foreground))', // Gray placeholder
-                      anchorTextColor: 'hsl(var(--brand-500))', // Links
-                      anchorTextHoverColor: 'hsl(var(--brand-600))',
+                      inputBorder: 'hsl(var(--brand-300))', // More visible border
+                      inputBorderHover: 'hsl(var(--brand-400))',
+                      inputBorderFocus: 'hsl(var(--brand-500))', // Main brand green on focus
                       
-                      // Borders
-                      inputBorder: 'hsl(var(--border))', // Light gray border
-                      inputBorderHover: 'hsl(var(--input))', // Slightly darker on hover
-                      inputBorderFocus: 'hsl(var(--ring))', // Brand green on focus
+                      // Link styling
+                      anchorTextColor: 'hsl(var(--brand-700))', // Darker green for links
+                      anchorTextHoverColor: 'hsl(var(--brand-800))', // Even darker on hover
                     },
                   },
                 },
               }}
               theme="light"
               redirectTo={window.location.origin + '/admin'} // Redirect to admin dashboard on success
+              className="w-full" // Ensure the Auth component takes full width
             />
             <p className="mt-6 text-center text-sm text-muted-foreground">
               <Link to="/" className="font-medium text-brand-500 hover:text-brand-600 hover:underline">
