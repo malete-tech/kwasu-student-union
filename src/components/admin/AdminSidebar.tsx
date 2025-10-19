@@ -14,7 +14,6 @@ import {
   LogOut,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-// import { Separator } from "@/components/ui/separator"; // Removed unused import
 import { cn } from "@/lib/utils";
 
 interface AdminLink {
@@ -44,7 +43,7 @@ const AdminSidebar: React.FC = () => {
   };
 
   return (
-    <aside className="flex flex-col h-full w-64 bg-brand-800 text-white p-4 shadow-xl">
+    <aside className="flex flex-col h-screen w-64 bg-brand-800 text-white p-4 shadow-xl">
       <div className="flex items-center justify-center h-16 mb-6">
         <Link to="/admin" className="flex items-center text-2xl font-bold text-brand-gold hover:text-brand-gold/90 focus-visible:ring-brand-gold rounded-md outline-none">
           <img src="/imageu-removebg-preview.png" alt="KWASU SU Logo" className="h-8 w-8 mr-2" />
