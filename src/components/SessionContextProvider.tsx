@@ -4,6 +4,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { Session, User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { Profile } from '@/types';
+import { PostgrestError } from '@supabase/supabase-js'; // Import PostgrestError
 
 interface SessionContextType {
   session: Session | null;
@@ -11,6 +12,12 @@ interface SessionContextType {
   profile: Profile | null;
   isAdmin: boolean;
   loading: boolean;
+}
+
+// Define a type for the expected result from the Supabase profile fetch
+interface SupabaseProfileQueryResult {
+  data: Profile | null;
+  error: PostgrestError | null;
 }
 
 const SessionContext = createContext<SessionContextType | undefined>(undefined);
@@ -35,24 +42,44 @@ export const SessionContextProvider: React.FC<{ children: React.ReactNode }> = (
           setUser(newSession?.user || null);
 
           if (newSession?.user) {
-            console.log("SessionContextProvider: Attempting to fetch profile for user ID:", newSession.user.id);
-            const { data: profileData, error: profileError } = await supabase
+            const userId = newSession.user.id;
+            console.log("SessionContextProvider: Attempting to fetch profile for user ID:", userId);
+
+            // Add a timeout to the profile fetch to detect if it's hanging
+            const profileFetchPromise = supabase
               .from('profiles')
               .select('*')
-              .eq('id', newSession.user.id)
+              .eq('id', userId)
               .single();
+
+            const timeoutPromise = new Promise<never>((_, reject) => // Explicitly type timeoutPromise to reject
+              setTimeout(() => reject(new Error("Profile fetch timed out after 5 seconds.")), 5000)
+            );
+
+            let profileData: Profile | null = null;
+            let profileError: PostgrestError | Error | null = null; // Allow PostgrestError or generic Error
+
+            try {
+              // Assert the type of the result from Promise.race
+              const result = await Promise.race([profileFetchPromise, timeoutPromise]) as SupabaseProfileQueryResult;
+              profileData = result.data;
+              profileError = result.error;
+            } catch (e: any) {
+              profileError = e instanceof Error ? e : new Error(String(e)); // Ensure it's an Error object
+              console.error("SessionContextProvider: Error or timeout during profile fetch:", e);
+            }
             
             if (profileError) {
-              if (profileError.code === 'PGRST116') { // No rows found
-                console.warn("SessionContextProvider: No profile found for user ID:", newSession.user.id);
+              if (profileError instanceof PostgrestError && profileError.code === 'PGRST116') { // No rows found
+                console.warn("SessionContextProvider: No profile found for user ID:", userId);
               } else {
-                console.error("SessionContextProvider: Error fetching profile:", profileError);
+                console.error("SessionContextProvider: Supabase error fetching profile:", profileError);
               }
               setProfile(null);
               setIsAdmin(false);
             } else if (profileData) {
               console.log("SessionContextProvider: Profile data fetched:", profileData);
-              setProfile(profileData as Profile);
+              setProfile(profileData);
               setIsAdmin(profileData.is_admin || false);
             } else {
               console.log("SessionContextProvider: Profile data was null/undefined after fetch. Setting isAdmin to false.");
