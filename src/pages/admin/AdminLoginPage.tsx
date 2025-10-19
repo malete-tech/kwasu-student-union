@@ -56,8 +56,25 @@ const AdminLoginPage: React.FC = () => {
                 variables: {
                   default: {
                     colors: {
-                      brand: 'hsl(var(--brand-500))', // Your main brand green
-                      brandAccent: 'hsl(var(--brand-gold))', // Your gold accent
+                      brand: 'hsl(var(--brand-500))', // Main brand green for primary actions
+                      brandAccent: 'hsl(var(--brand-gold))', // Gold accent for secondary actions/focus
+                      
+                      // Backgrounds
+                      defaultButtonBackground: 'hsl(var(--brand-500))',
+                      defaultButtonBackgroundHover: 'hsl(var(--brand-600))',
+                      inputBackground: 'hsl(var(--background))', // White
+                      
+                      // Text colors
+                      defaultButtonText: 'hsl(var(--primary-foreground))', // White
+                      inputText: 'hsl(var(--foreground))', // Dark text
+                      inputPlaceholder: 'hsl(var(--muted-foreground))', // Gray placeholder
+                      anchorTextColor: 'hsl(var(--brand-500))', // Links
+                      anchorTextHoverColor: 'hsl(var(--brand-600))',
+                      
+                      // Borders
+                      inputBorder: 'hsl(var(--border))', // Light gray border
+                      inputBorderHover: 'hsl(var(--input))', // Slightly darker on hover
+                      inputBorderFocus: 'hsl(var(--ring))', // Brand green on focus
                     },
                   },
                 },
