@@ -51,6 +51,7 @@ const AdminLoginPage: React.FC = () => {
             <Auth
               supabaseClient={supabase}
               providers={[]} // No third-party providers unless specified
+              view="sign_in" // Explicitly set the view to sign_in
               appearance={{
                 theme: ThemeSupa,
                 variables: {
@@ -76,6 +77,21 @@ const AdminLoginPage: React.FC = () => {
                       anchorTextColor: 'hsl(var(--brand-700))', // Darker green for links
                       anchorTextHoverColor: 'hsl(var(--brand-800))', // Even darker on hover
                     },
+                    space: {
+                      buttonPadding: '10px 15px', // Explicit padding for buttons
+                      inputPadding: '10px 15px',   // Explicit padding for inputs
+                      labelBottomMargin: '8px', // Margin below labels
+                    },
+                    // Border radius properties directly under default
+                    radius: '0.5rem', // Apply border radius to all elements that respect it
+                    buttonBorderRadius: '0.5rem', // Explicit button border radius
+                    inputBorderRadius: '0.5rem', // Explicit input border radius
+                    font: {
+                      size: '1rem', // Base font size
+                      button: '1rem', // Button font size
+                      input: '1rem', // Input font size
+                      label: '0.875rem', // Label font size
+                    }
                   },
                 },
               }}
