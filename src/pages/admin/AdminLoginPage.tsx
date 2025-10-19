@@ -27,19 +27,24 @@ const AdminLoginPage: React.FC = () => {
   useEffect(() => {
     if (!loading) { // Only act once loading is complete
       if (session && isAdmin) {
+        // If user is logged in and is an admin, redirect to admin dashboard
         navigate("/admin", { replace: true });
       } else if (session && !isAdmin) {
-        console.warn("User is logged in but not an admin. Redirecting to home.");
-        navigate("/", { replace: true });
+        // If user is logged in but NOT an admin, show a toast and keep them on the login page
+        // The AdminLayout will handle redirecting non-admins from /admin routes.
+        toast.error("You do not have administrator privileges.");
       }
-      // If !session, stay on login page
+      // If !session, stay on login page to allow login/register
     }
   }, [session, isAdmin, loading, navigate]);
 
   const handleAuthSuccess = () => {
     if (currentView === "register") {
       setCurrentView("login");
+      toast.success("Registration successful! Please check your email to confirm your account, then sign in.");
     }
+    // If login was successful and user is admin, useEffect will handle redirect.
+    // If login was successful but user is not admin, the useEffect will show a toast.
   };
 
   const handleForgotPasswordSubmit = async () => {
