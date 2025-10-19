@@ -1,29 +1,58 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Link, useNavigate } from "react-router-dom";
-import { Auth } from '@supabase/auth-ui-react';
-import { ThemeSupa } from '@supabase/auth-ui-shared';
-import { supabase } from "@/integrations/supabase/client";
-import { useSession } from "@/components/SessionContextProvider"; // Import useSession
-import AdminAuthHero from "@/components/admin/AdminAuthHero"; // Import the new hero component
+import { useSession } from "@/components/SessionContextProvider";
+import AdminAuthHero from "@/components/admin/AdminAuthHero";
+import AdminLoginForm from "@/components/admin/AdminLoginForm";
+import AdminRegisterForm from "@/components/admin/AdminRegisterForm";
+import { resetPassword } from "@/utils/auth-helpers";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+
+type AuthView = "login" | "register";
 
 const AdminLoginPage: React.FC = () => {
   const navigate = useNavigate();
-  const { session, isAdmin, loading } = useSession(); // Use the session context
+  const { session, isAdmin, loading } = useSession();
+  const [currentView, setCurrentView] = useState<AuthView>("login");
+  const [isForgotPasswordDialogOpen, setIsForgotPasswordDialogOpen] = useState(false);
+  const [forgotPasswordEmail, setForgotPasswordEmail] = useState("");
 
   useEffect(() => {
     if (!loading && session && isAdmin) {
-      // If already logged in and is admin, redirect to admin dashboard
       navigate("/admin", { replace: true });
     } else if (!loading && session && !isAdmin) {
-      // If logged in but not admin, maybe show an error or redirect to a non-admin page
       console.warn("User is logged in but not an admin. Redirecting to home.");
       navigate("/", { replace: true });
     }
   }, [session, isAdmin, loading, navigate]);
+
+  const handleAuthSuccess = () => {
+    // After successful login/signup, the onAuthStateChange listener in SessionContextProvider
+    // will detect the new session and trigger the redirect in the useEffect above.
+    // For signup, we might want to stay on the login page and show a message.
+    if (currentView === "register") {
+      setCurrentView("login"); // Switch back to login after successful registration
+    }
+  };
+
+  const handleForgotPasswordSubmit = async () => {
+    if (!forgotPasswordEmail) {
+      toast.error("Please enter your email address.");
+      return;
+    }
+    const success = await resetPassword(forgotPasswordEmail);
+    if (success) {
+      setIsForgotPasswordDialogOpen(false);
+      setForgotPasswordEmail("");
+    }
+  };
 
   if (loading) {
     return (
@@ -46,7 +75,7 @@ const AdminLoginPage: React.FC = () => {
             <AdminAuthHero />
           </div>
 
-          {/* Right Section: Login Form */}
+          {/* Right Section: Login/Register Form */}
           <Card className="p-8 space-y-6 shadow-none rounded-none lg:rounded-r-2xl flex flex-col justify-center">
             <CardHeader className="text-center pb-4">
               {/* Logo */}
@@ -54,58 +83,28 @@ const AdminLoginPage: React.FC = () => {
                 <img src="/imageu-removebg-preview.png" alt="KWASU SU Logo" className="h-10 w-10 mr-2" />
                 <span className="text-2xl">Admin Panel</span>
               </Link>
-              <CardTitle className="text-3xl font-bold text-brand-700">Admin Login</CardTitle>
+              <CardTitle className="text-3xl font-bold text-brand-700">
+                {currentView === "login" ? "Admin Login" : "Admin Register"}
+              </CardTitle>
               <CardDescription className="text-muted-foreground">
-                Sign in to manage the KWASU SU website content.
+                {currentView === "login"
+                  ? "Sign in to manage the KWASU SU website content."
+                  : "Create an account to access the admin panel."}
               </CardDescription>
             </CardHeader>
             <CardContent className="flex-grow">
-              <Auth
-                supabaseClient={supabase}
-                providers={[]} // No social providers as requested
-                view="sign_in" // Explicitly set the view to sign_in
-                appearance={{
-                  theme: ThemeSupa,
-                  variables: {
-                    default: {
-                      colors: {
-                        // Primary brand color for buttons and main accents
-                        brand: 'hsl(var(--brand-700))', // Dark Green for primary buttons
-                        brandAccent: 'hsl(var(--brand-800))', // Even darker green on hover
-                        
-                        // Ensure text is white for primary buttons
-                        defaultButtonText: 'hsl(var(--primary-foreground))', // White
-                        
-                        // Input styling
-                        inputBackground: 'hsl(var(--background))', // White
-                        inputText: 'hsl(var(--foreground))', // Dark text
-                        inputPlaceholder: 'hsl(var(--muted-foreground))', // Gray placeholder
-                        inputBorder: 'hsl(var(--border))', // Light gray border
-                        inputBorderHover: 'hsl(var(--input))', // Slightly darker on hover
-                        inputBorderFocus: 'hsl(var(--ring))', // Brand green on focus
-                        
-                        // Link styling
-                        anchorTextColor: 'hsl(var(--brand-700))', // Darker green for links
-                        anchorTextHoverColor: 'hsl(var(--brand-800))', // Even darker on hover
-                      },
-                      space: {
-                        buttonPadding: '10px 15px', // Explicit padding for buttons
-                        inputPadding: '10px 15px',   // Explicit padding for inputs
-                        labelBottomMargin: '8px', // Margin below labels
-                      },
-                      radii: { 
-                        buttonBorderRadius: '0.5rem',  // Button specific radius
-                        inputBorderRadius: '0.5rem',   // Input specific radius
-                      },
-                      fonts: { 
-                        // Font families can be set here, e.g., bodyFontFamily: 'Epunda Slab'
-                      }
-                    },
-                  },
-                }}
-                theme="light"
-                redirectTo={window.location.origin + '/admin'} // Redirect to admin dashboard on success
-              />
+              {currentView === "login" ? (
+                <AdminLoginForm
+                  onSuccess={handleAuthSuccess}
+                  onSwitchToRegister={() => setCurrentView("register")}
+                  onForgotPassword={() => setIsForgotPasswordDialogOpen(true)}
+                />
+              ) : (
+                <AdminRegisterForm
+                  onSuccess={handleAuthSuccess}
+                  onSwitchToLogin={() => setCurrentView("login")}
+                />
+              )}
             </CardContent>
             <p className="mt-6 text-center text-sm text-muted-foreground">
               <Link to="/" className="font-medium text-brand-500 hover:text-brand-600 hover:underline">
@@ -115,6 +114,37 @@ const AdminLoginPage: React.FC = () => {
           </Card>
         </div>
       </div>
+
+      {/* Forgot Password Dialog */}
+      <Dialog open={isForgotPasswordDialogOpen} onOpenChange={setIsForgotPasswordDialogOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Forgot Password</DialogTitle>
+            <DialogDescription>
+              Enter your email address and we'll send you a link to reset your password.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid gap-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="your@example.com"
+                value={forgotPasswordEmail}
+                onChange={(e) => setForgotPasswordEmail(e.target.value)}
+                className="focus-visible:ring-brand-gold"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsForgotPasswordDialogOpen(false)}>Cancel</Button>
+            <Button type="submit" onClick={handleForgotPasswordSubmit} className="bg-brand-700 hover:bg-brand-800 text-white focus-visible:ring-brand-gold">
+              Send Reset Link
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   );
 };
