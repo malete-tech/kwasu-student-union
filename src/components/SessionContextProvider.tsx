@@ -27,7 +27,7 @@ export const SessionContextProvider: React.FC<{ children: React.ReactNode }> = (
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, newSession) => {
-        console.log(`SessionContextProvider: Auth state change event: ${event}, newSession:`, newSession);
+        console.log(`SessionContextProvider: Auth state change event: ${event}. Setting loading to true.`);
         setLoading(true); // Always set loading to true at the start of an auth state change
 
         try {
@@ -35,15 +35,19 @@ export const SessionContextProvider: React.FC<{ children: React.ReactNode }> = (
           setUser(newSession?.user || null);
 
           if (newSession?.user) {
-            console.log("SessionContextProvider: Attempting to fetch profile for user:", newSession.user.id);
+            console.log("SessionContextProvider: Attempting to fetch profile for user ID:", newSession.user.id);
             const { data: profileData, error: profileError } = await supabase
               .from('profiles')
               .select('*')
               .eq('id', newSession.user.id)
               .single();
-
-            if (profileError && profileError.code !== 'PGRST116') { // PGRST116 means no rows found, which is fine
-              console.error("SessionContextProvider: Error fetching profile:", profileError);
+            
+            if (profileError) {
+              if (profileError.code === 'PGRST116') { // No rows found
+                console.warn("SessionContextProvider: No profile found for user ID:", newSession.user.id);
+              } else {
+                console.error("SessionContextProvider: Error fetching profile:", profileError);
+              }
               setProfile(null);
               setIsAdmin(false);
             } else if (profileData) {
@@ -51,7 +55,7 @@ export const SessionContextProvider: React.FC<{ children: React.ReactNode }> = (
               setProfile(profileData as Profile);
               setIsAdmin(profileData.is_admin || false);
             } else {
-              console.log("SessionContextProvider: No profile found for user. Setting isAdmin to false.");
+              console.log("SessionContextProvider: Profile data was null/undefined after fetch. Setting isAdmin to false.");
               setProfile(null);
               setIsAdmin(false);
             }
@@ -68,7 +72,7 @@ export const SessionContextProvider: React.FC<{ children: React.ReactNode }> = (
           setProfile(null);
           setIsAdmin(false);
         } finally {
-          console.log("SessionContextProvider: Auth state change processing finished. Setting loading to false.");
+          console.log(`SessionContextProvider: Auth state change processing finished for event ${event}. Setting loading to false.`);
           setLoading(false);
         }
       }

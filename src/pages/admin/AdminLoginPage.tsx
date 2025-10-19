@@ -25,14 +25,17 @@ const AdminLoginPage: React.FC = () => {
   const [forgotPasswordEmail, setForgotPasswordEmail] = useState("");
 
   useEffect(() => {
+    console.log("AdminLoginPage: useEffect triggered. Loading:", loading, "Session:", !!session, "IsAdmin:", isAdmin);
     if (!loading) { // Only act once loading is complete
       if (session && isAdmin) {
         // If user is logged in and is an admin, redirect to admin dashboard
+        console.log("AdminLoginPage: Session and isAdmin are true, redirecting to /admin.");
         navigate("/admin", { replace: true });
       } else if (session && !isAdmin) {
         // If user is logged in but NOT an admin, show a toast and keep them on the login page
-        // The AdminLayout will handle redirecting non-admins from /admin routes.
+        console.warn("AdminLoginPage: Authenticated user is not an admin. Showing error toast.");
         toast.error("You do not have administrator privileges.");
+        // No redirect here, user stays on login page but sees the error.
       }
       // If !session, stay on login page to allow login/register
     }
