@@ -71,11 +71,9 @@ const AdminLoginPage: React.FC = () => {
                       colors: {
                         // Primary brand color for buttons and main accents
                         brand: 'hsl(var(--brand-700))', // Dark Green for primary buttons
-                        brandAccent: 'hsl(var(--brand-gold))', // Gold accent for secondary actions/focus
+                        brandAccent: 'hsl(var(--brand-800))', // Even darker green on hover
                         
-                        // Button styling
-                        defaultButtonBackground: 'hsl(var(--brand-700))', // Dark Green
-                        defaultButtonBackgroundHover: 'hsl(var(--brand-800))', // Even darker green on hover
+                        // Ensure text is white for primary buttons
                         defaultButtonText: 'hsl(var(--primary-foreground))', // White
                         
                         // Input styling
@@ -95,13 +93,12 @@ const AdminLoginPage: React.FC = () => {
                         inputPadding: '10px 15px',   // Explicit padding for inputs
                         labelBottomMargin: '8px', // Margin below labels
                       },
-                      radii: { // Corrected: radii object for border radius properties
+                      radii: { 
                         buttonBorderRadius: '0.5rem',  // Button specific radius
                         inputBorderRadius: '0.5rem',   // Input specific radius
                       },
                       fonts: { 
-                        // Font sizes are not directly configurable here.
-                        // They are typically controlled by global CSS or the theme's base styles.
+                        // Font families can be set here, e.g., bodyFontFamily: 'Epunda Slab'
                       }
                     },
                   },
