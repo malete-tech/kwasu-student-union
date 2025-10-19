@@ -25,46 +25,52 @@ export const SessionContextProvider: React.FC<{ children: React.ReactNode }> = (
   useEffect(() => {
     const getSession = async () => {
       setLoading(true);
-      const { data: { session }, error } = await supabase.auth.getSession();
-      if (error) {
-        console.error("Error getting session:", error);
-        setSession(null);
-        setUser(null);
-        setProfile(null);
-        setIsAdmin(false);
-      } else {
-        setSession(session);
-        setUser(session?.user || null);
-        if (session?.user) {
-          const { data: profileData, error: profileError } = await supabase
-            .from('profiles')
-            .select('*')
-            .eq('id', session.user.id)
-            .single();
+      try {
+        const { data: { session }, error } = await supabase.auth.getSession();
+        if (error) {
+          console.error("Error getting session:", error);
+          setSession(null);
+          setUser(null);
+          setProfile(null);
+          setIsAdmin(false);
+        } else {
+          setSession(session);
+          setUser(session?.user || null);
+          if (session?.user) {
+            const { data: profileData, error: profileError } = await supabase
+              .from('profiles')
+              .select('*')
+              .eq('id', session.user.id)
+              .single();
 
-          if (profileError && profileError.code !== 'PGRST116') { // PGRST116 means no rows found
-            console.error("Error fetching profile:", profileError);
-            setProfile(null);
-            setIsAdmin(false);
-          } else if (profileData) {
-            setProfile(profileData as Profile);
-            setIsAdmin(profileData.is_admin || false);
+            if (profileError && profileError.code !== 'PGRST116') { // PGRST116 means no rows found
+              console.error("Error fetching profile:", profileError);
+              setProfile(null);
+              setIsAdmin(false);
+            } else if (profileData) {
+              setProfile(profileData as Profile);
+              setIsAdmin(profileData.is_admin || false);
+            } else {
+              setProfile(null);
+              setIsAdmin(false);
+            }
           } else {
             setProfile(null);
             setIsAdmin(false);
           }
-        } else {
-          setProfile(null);
-          setIsAdmin(false);
         }
+      } finally {
+        setLoading(false); // Ensure loading is always set to false
       }
-      setLoading(false);
     };
 
     getSession();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (_event, newSession) => {
+        // For onAuthStateChange, we don't necessarily set loading to true at the start
+        // as it might cause a flicker if the session is already established.
+        // We only set loading to false once all checks are done.
         setSession(newSession);
         setUser(newSession?.user || null);
         if (newSession?.user) {
@@ -89,7 +95,7 @@ export const SessionContextProvider: React.FC<{ children: React.ReactNode }> = (
           setProfile(null);
           setIsAdmin(false);
         }
-        setLoading(false);
+        setLoading(false); // Ensure loading is set to false here too
       }
     );
 
