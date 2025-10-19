@@ -7,11 +7,10 @@ import {
   StudentSpotlight,
   Complaint,
 } from "@/types";
+import { supabase } from "@/integrations/supabase/client"; // Import Supabase client
 
-// Import mock data
-import newsData from "@/data/news.json";
+// Import mock data (keeping for other sections not yet migrated to Supabase)
 import eventsData from "@/data/events.json";
-import executivesData from "@/data/executives.json";
 import documentsData from "@/data/documents.json";
 import opportunitiesData from "@/data/opportunities.json";
 import studentSpotlightData from "@/data/student-spotlight.json";
@@ -28,21 +27,94 @@ const simulateAsync = <T>(data: T): Promise<T> => {
 
 export const api = {
   news: {
-    getAll: (): Promise<News[]> => simulateAsync(newsData as News[]),
-    getLatest: (count: number): Promise<News[]> =>
-      simulateAsync(
-        (newsData as News[])
-          .sort(
-            (a, b) =>
-              new Date(b.publishedAt).getTime() -
-              new Date(a.publishedAt).getTime(),
-          )
-          .slice(0, count),
-      ),
-    getBySlug: (slug: string): Promise<News | undefined> =>
-      simulateAsync(
-        (newsData as News[]).find((item) => item.slug === slug),
-      ),
+    getAll: async (): Promise<News[]> => {
+      const { data, error } = await supabase.from('news').select('*').order('published_at', { ascending: false });
+      if (error) {
+        console.error("Supabase error fetching news:", error);
+        throw new Error(error.message);
+      }
+      return data as News[];
+    },
+    getLatest: async (count: number): Promise<News[]> => {
+      const { data, error } = await supabase.from('news').select('*').order('published_at', { ascending: false }).limit(count);
+      if (error) {
+        console.error("Supabase error fetching latest news:", error);
+        throw new Error(error.message);
+      }
+      return data as News[];
+    },
+    getBySlug: async (slug: string): Promise<News | undefined> => {
+      const { data, error } = await supabase.from('news').select('*').eq('slug', slug).single();
+      if (error && error.code !== 'PGRST116') { // PGRST116 means no rows found
+        console.error("Supabase error fetching news by slug:", error);
+        throw new Error(error.message);
+      }
+      return data as News | undefined;
+    },
+    create: async (news: Omit<News, 'id' | 'created_at'>): Promise<News> => {
+      const { data, error } = await supabase.from('news').insert(news).select().single();
+      if (error) {
+        console.error("Supabase error creating news:", error);
+        throw new Error(error.message);
+      }
+      return data as News;
+    },
+    update: async (id: string, news: Partial<Omit<News, 'id' | 'created_at'>>): Promise<News> => {
+      const { data, error } = await supabase.from('news').update(news).eq('id', id).select().single();
+      if (error) {
+        console.error("Supabase error updating news:", error);
+        throw new Error(error.message);
+      }
+      return data as News;
+    },
+    delete: async (id: string): Promise<void> => {
+      const { error } = await supabase.from('news').delete().eq('id', id);
+      if (error) {
+        console.error("Supabase error deleting news:", error);
+        throw new Error(error.message);
+      }
+    },
+  },
+  executives: {
+    getAll: async (): Promise<Executive[]> => {
+      const { data, error } = await supabase.from('executives').select('*').order('tenure_start', { ascending: false });
+      if (error) {
+        console.error("Supabase error fetching executives:", error);
+        throw new Error(error.message);
+      }
+      return data as Executive[];
+    },
+    getBySlug: async (slug: string): Promise<Executive | undefined> => {
+      const { data, error } = await supabase.from('executives').select('*').eq('slug', slug).single();
+      if (error && error.code !== 'PGRST116') { // PGRST116 means no rows found
+        console.error("Supabase error fetching executive by slug:", error);
+        throw new Error(error.message);
+      }
+      return data as Executive | undefined;
+    },
+    create: async (executive: Omit<Executive, 'id' | 'created_at'>): Promise<Executive> => {
+      const { data, error } = await supabase.from('executives').insert(executive).select().single();
+      if (error) {
+        console.error("Supabase error creating executive:", error);
+        throw new Error(error.message);
+      }
+      return data as Executive;
+    },
+    update: async (id: string, executive: Partial<Omit<Executive, 'id' | 'created_at'>>): Promise<Executive> => {
+      const { data, error } = await supabase.from('executives').update(executive).eq('id', id).select().single();
+      if (error) {
+        console.error("Supabase error updating executive:", error);
+        throw new Error(error.message);
+      }
+      return data as Executive;
+    },
+    delete: async (id: string): Promise<void> => {
+      const { error } = await supabase.from('executives').delete().eq('id', id);
+      if (error) {
+        console.error("Supabase error deleting executive:", error);
+        throw new Error(error.message);
+      }
+    },
   },
   events: {
     getAll: (): Promise<Event[]> => simulateAsync(eventsData as Event[]),
@@ -59,14 +131,6 @@ export const api = {
     getBySlug: (slug: string): Promise<Event | undefined> =>
       simulateAsync(
         (eventsData as Event[]).find((item) => item.slug === slug),
-      ),
-  },
-  executives: {
-    getAll: (): Promise<Executive[]> =>
-      simulateAsync(executivesData as Executive[]),
-    getBySlug: (slug: string): Promise<Executive | undefined> =>
-      simulateAsync(
-        (executivesData as Executive[]).find((item) => item.slug === slug),
       ),
   },
   documents: {
