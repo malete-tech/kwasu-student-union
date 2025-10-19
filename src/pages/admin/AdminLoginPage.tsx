@@ -25,20 +25,20 @@ const AdminLoginPage: React.FC = () => {
   const [forgotPasswordEmail, setForgotPasswordEmail] = useState("");
 
   useEffect(() => {
-    if (!loading && session && isAdmin) {
-      navigate("/admin", { replace: true });
-    } else if (!loading && session && !isAdmin) {
-      console.warn("User is logged in but not an admin. Redirecting to home.");
-      navigate("/", { replace: true });
+    if (!loading) { // Only act once loading is complete
+      if (session && isAdmin) {
+        navigate("/admin", { replace: true });
+      } else if (session && !isAdmin) {
+        console.warn("User is logged in but not an admin. Redirecting to home.");
+        navigate("/", { replace: true });
+      }
+      // If !session, stay on login page
     }
   }, [session, isAdmin, loading, navigate]);
 
   const handleAuthSuccess = () => {
-    // After successful login/signup, the onAuthStateChange listener in SessionContextProvider
-    // will detect the new session and trigger the redirect in the useEffect above.
-    // For signup, we might want to stay on the login page and show a message.
     if (currentView === "register") {
-      setCurrentView("login"); // Switch back to login after successful registration
+      setCurrentView("login");
     }
   };
 
