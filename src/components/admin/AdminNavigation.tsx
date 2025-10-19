@@ -33,7 +33,11 @@ const adminNavLinks: AdminLink[] = [
   { name: "Spotlight", href: "/admin/spotlight", icon: Star },
 ];
 
-const AdminSidebar: React.FC = () => {
+interface AdminNavigationProps {
+  onLinkClick?: () => void;
+}
+
+const AdminNavigation: React.FC<AdminNavigationProps> = ({ onLinkClick }) => {
   // Placeholder for logout logic
   const handleLogout = () => {
     console.log("Admin logout initiated...");
@@ -43,9 +47,9 @@ const AdminSidebar: React.FC = () => {
   };
 
   return (
-    <aside className="flex flex-col h-screen w-64 bg-brand-800 text-white p-4 shadow-xl">
+    <div className="flex flex-col h-full"> {/* Changed from h-screen to h-full */}
       <div className="flex items-center justify-center h-16 mb-6">
-        <Link to="/admin" className="flex items-center text-2xl font-bold text-brand-gold hover:text-brand-gold/90 focus-visible:ring-brand-gold rounded-md outline-none">
+        <Link to="/admin" className="flex items-center text-2xl font-bold text-brand-gold hover:text-brand-gold/90 focus-visible:ring-brand-gold rounded-md outline-none" onClick={onLinkClick}>
           <img src="/imageu-removebg-preview.png" alt="KWASU SU Logo" className="h-8 w-8 mr-2" />
           Admin Panel
         </Link>
@@ -63,6 +67,7 @@ const AdminSidebar: React.FC = () => {
                 isActive ? "bg-brand-700 text-brand-gold" : "text-brand-100"
               )
             }
+            onClick={onLinkClick}
           >
             <link.icon className="h-5 w-5" />
             <span>{link.name}</span>
@@ -72,15 +77,18 @@ const AdminSidebar: React.FC = () => {
       <div className="mt-auto pt-4 border-t border-brand-700">
         <Button
           variant="ghost"
-          onClick={handleLogout}
+          onClick={() => {
+            handleLogout();
+            onLinkClick?.(); // Close sheet on logout
+          }}
           className="w-full justify-start text-brand-100 hover:bg-brand-700 hover:text-destructive focus-visible:ring-destructive"
         >
           <LogOut className="mr-3 h-5 w-5" />
           Logout
         </Button>
       </div>
-    </aside>
+    </div>
   );
 };
 
-export default AdminSidebar;
+export default AdminNavigation;
