@@ -7,7 +7,7 @@ import NewsCard from "@/components/news-card";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search } from "lucide-react"; // Removed Filter
+import { Search } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
@@ -93,10 +93,10 @@ const NewsFeedSection: React.FC = () => {
         </div>
 
         {loading ? (
-          <div className="grid grid-cols-1 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"> {/* Updated grid for skeleton */}
             {[...Array(3)].map((_, i) => (
-              <Card key={i} className="flex flex-col sm:flex-row overflow-hidden shadow-sm">
-                <Skeleton className="h-32 w-full sm:w-40 flex-shrink-0" />
+              <Card key={i} className="flex flex-col overflow-hidden shadow-sm">
+                <Skeleton className="h-32 w-full flex-shrink-0" /> {/* Adjusted skeleton for card layout */}
                 <div className="p-4 flex-grow space-y-2">
                   <Skeleton className="h-5 w-3/4" />
                   <Skeleton className="h-3 w-1/2" />
@@ -109,9 +109,9 @@ const NewsFeedSection: React.FC = () => {
         ) : error ? (
           <div className="text-destructive text-sm text-center">{error}</div>
         ) : filteredNews.length > 0 ? (
-          <div className="grid grid-cols-1 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"> {/* Changed to a responsive grid */}
             {filteredNews.slice(0, 3).map((newsItem) => ( // Limit to 3 for homepage
-              <NewsCard key={newsItem.id} news={newsItem} className="flex-row" />
+              <NewsCard key={newsItem.id} news={newsItem} className="flex-col" />
             ))}
           </div>
         ) : (
