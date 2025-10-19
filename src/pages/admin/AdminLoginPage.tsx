@@ -40,7 +40,7 @@ const AdminLoginPage: React.FC = () => {
         <meta name="description" content="Administrator login page for KWASU Students' Union dashboard." />
       </Helmet>
       <div className="min-h-screen flex items-center justify-center bg-brand-50 py-12 px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 max-w-6xl w-full bg-white shadow-lg rounded-2xl overflow-hidden min-h-[600px]">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 max-w-6xl w-full bg-white shadow-lg rounded-2xl overflow-hidden min-h-[600px]">
           {/* Left Section: AdminAuthHero (Hidden on small screens) */}
           <div className="hidden lg:flex">
             <AdminAuthHero />
