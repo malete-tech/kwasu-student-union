@@ -35,19 +35,12 @@ const adminNavLinks: AdminLink[] = [
 
 interface AdminNavigationProps {
   onLinkClick?: () => void;
+  onLogout: () => void; // Added onLogout prop
 }
 
-const AdminNavigation: React.FC<AdminNavigationProps> = ({ onLinkClick }) => {
-  // Placeholder for logout logic
-  const handleLogout = () => {
-    console.log("Admin logout initiated...");
-    // In a real app, this would clear authentication state and redirect to login
-    // For now, we'll just redirect to the admin login page
-    window.location.href = "/admin/login";
-  };
-
+const AdminNavigation: React.FC<AdminNavigationProps> = ({ onLinkClick, onLogout }) => {
   return (
-    <div className="flex flex-col h-full"> {/* Changed from h-screen to h-full */}
+    <div className="flex flex-col h-full">
       <div className="flex items-center justify-center h-16 mb-6">
         <Link to="/admin" className="flex items-center text-2xl font-bold text-brand-gold hover:text-brand-gold/90 focus-visible:ring-brand-gold rounded-md outline-none" onClick={onLinkClick}>
           <img src="/imageu-removebg-preview.png" alt="KWASU SU Logo" className="h-8 w-8 mr-2" />
@@ -77,10 +70,7 @@ const AdminNavigation: React.FC<AdminNavigationProps> = ({ onLinkClick }) => {
       <div className="mt-auto pt-4 border-t border-brand-700">
         <Button
           variant="ghost"
-          onClick={() => {
-            handleLogout();
-            onLinkClick?.(); // Close sheet on logout
-          }}
+          onClick={onLogout} // Use the onLogout prop
           className="w-full justify-start text-brand-100 hover:bg-brand-700 hover:text-destructive focus-visible:ring-destructive"
         >
           <LogOut className="mr-3 h-5 w-5" />

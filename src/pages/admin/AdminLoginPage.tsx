@@ -1,22 +1,37 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
-import { LogIn } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { Auth } from '@supabase/auth-ui-react';
+import { ThemeSupa } from '@supabase/auth-ui-shared';
+import { supabase } from "@/integrations/supabase/client";
+import { useSession } from "@/components/SessionContextProvider"; // Import useSession
 
 const AdminLoginPage: React.FC = () => {
-  // Placeholder for login logic
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // In a real app, this would involve calling an authentication service (e.g., Supabase)
-    console.log("Admin login attempt...");
-    // On successful login, redirect to /admin
-  };
+  const navigate = useNavigate();
+  const { session, isAdmin, loading } = useSession(); // Use the session context
+
+  useEffect(() => {
+    if (!loading && session && isAdmin) {
+      // If already logged in and is admin, redirect to admin dashboard
+      navigate("/admin", { replace: true });
+    } else if (!loading && session && !isAdmin) {
+      // If logged in but not admin, maybe show an error or redirect to a non-admin page
+      // For now, we'll just log it and keep them on the login page or redirect to home
+      console.warn("User is logged in but not an admin. Redirecting to home.");
+      navigate("/", { replace: true });
+    }
+  }, [session, isAdmin, loading, navigate]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-brand-50 py-12 px-4 sm:px-6 lg:px-8">
+        <p className="text-brand-700">Loading authentication state...</p>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -33,38 +48,23 @@ const AdminLoginPage: React.FC = () => {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form className="space-y-6" onSubmit={handleSubmit}>
-              <div>
-                <Label htmlFor="email">Email address</Label>
-                <Input
-                  id="email"
-                  name="email"
-                  type="email"
-                  autoComplete="email"
-                  required
-                  placeholder="admin@kwasusu.edu"
-                  className="mt-1 focus-visible:ring-brand-gold"
-                />
-              </div>
-              <div>
-                <Label htmlFor="password">Password</Label>
-                <Input
-                  id="password"
-                  name="password"
-                  type="password"
-                  autoComplete="current-password"
-                  required
-                  placeholder="••••••••"
-                  className="mt-1 focus-visible:ring-brand-gold"
-                />
-              </div>
-              <Button
-                type="submit"
-                className="w-full bg-brand-500 hover:bg-brand-600 text-white focus-visible:ring-brand-gold"
-              >
-                <LogIn className="mr-2 h-4 w-4" /> Sign In
-              </Button>
-            </form>
+            <Auth
+              supabaseClient={supabase}
+              providers={[]} // No third-party providers unless specified
+              appearance={{
+                theme: ThemeSupa,
+                variables: {
+                  default: {
+                    colors: {
+                      brand: 'hsl(var(--brand-500))', // Your main brand green
+                      brandAccent: 'hsl(var(--brand-gold))', // Your gold accent
+                    },
+                  },
+                },
+              }}
+              theme="light"
+              redirectTo={window.location.origin + '/admin'} // Redirect to admin dashboard on success
+            />
             <p className="mt-6 text-center text-sm text-muted-foreground">
               <Link to="/" className="font-medium text-brand-500 hover:text-brand-600 hover:underline">
                 Return to public site

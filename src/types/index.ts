@@ -92,3 +92,13 @@ export interface StudentSpotlight {
   photoUrl?: string;
   link?: string; // Optional link to a full story or profile
 }
+
+// Profile
+export interface Profile {
+  id: string;
+  first_name?: string;
+  last_name?: string;
+  avatar_url?: string;
+  is_admin: boolean;
+  updated_at?: string;
+}
