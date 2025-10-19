@@ -99,18 +99,15 @@ const AdminLoginPage: React.FC = () => {
                         buttonBorderRadius: '0.5rem',  // Button specific radius
                         inputBorderRadius: '0.5rem',   // Input specific radius
                       },
-                      fonts: { // Corrected: 'font' changed to 'fonts'
-                        size: '1rem', // Base font size
-                        button: '1rem', // Button font size
-                        input: '1rem', // Input font size
-                        label: '0.875rem', // Label font size
+                      fonts: { 
+                        // Font sizes are not directly configurable here.
+                        // They are typically controlled by global CSS or the theme's base styles.
                       }
                     },
                   },
                 }}
                 theme="light"
                 redirectTo={window.location.origin + '/admin'} // Redirect to admin dashboard on success
-                className="w-full" // Ensure the Auth component takes full width
               />
             </CardContent>
             <p className="mt-6 text-center text-sm text-muted-foreground">
