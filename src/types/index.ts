@@ -4,7 +4,7 @@ export interface Executive {
   slug: string;
   name: string;
   role: string;
-  faculty: string;
+  faculty?: string; // Made optional
   tenureStart: string; // YYYY-MM-DD
   tenureEnd: string; // YYYY-MM-DD
   photoUrl?: string;

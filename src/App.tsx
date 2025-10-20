@@ -27,9 +27,11 @@ import AdminUpdatePasswordPage from "./pages/admin/AdminUpdatePasswordPage";
 import DashboardOverview from "./pages/admin/DashboardOverview";
 import NewsManagement from "./pages/admin/NewsManagement";
 import AddNewsArticle from "./pages/admin/AddNewsArticle";
-import EditNewsArticle from "./pages/admin/EditNewsArticle"; // New import
+import EditNewsArticle from "./pages/admin/EditNewsArticle";
 import EventsManagement from "./pages/admin/EventsManagement";
 import ExecutivesManagement from "./pages/admin/ExecutivesManagement";
+import AddExecutive from "./pages/admin/AddExecutive"; // New import
+import EditExecutive from "./pages/admin/EditExecutive"; // New import
 import ComplaintsManagement from "./pages/admin/ComplaintsManagement";
 import DocumentsManagement from "./pages/admin/DocumentsManagement";
 import OpportunitiesManagement from "./pages/admin/OpportunitiesManagement";
@@ -73,9 +75,11 @@ const App = () => (
               <Route index element={<DashboardOverview />} />
               <Route path="news" element={<NewsManagement />} />
               <Route path="news/add" element={<AddNewsArticle />} />
-              <Route path="news/edit/:slug" element={<EditNewsArticle />} /> {/* New route */}
+              <Route path="news/edit/:slug" element={<EditNewsArticle />} />
               <Route path="events" element={<EventsManagement />} />
               <Route path="executives" element={<ExecutivesManagement />} />
+              <Route path="executives/add" element={<AddExecutive />} /> {/* New route */}
+              <Route path="executives/edit/:slug" element={<EditExecutive />} /> {/* New route */}
               <Route path="complaints" element={<ComplaintsManagement />} />
               <Route path="documents" element={<DocumentsManagement />} />
               <Route path="opportunities" element={<OpportunitiesManagement />} />
