@@ -10,7 +10,7 @@ import { Executive } from "@/types";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Mail, Twitter, Instagram, Phone, ArrowLeft } from "lucide-react"; // Removed User
+import { Mail, Twitter, Instagram, Phone, ArrowLeft } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const ExecutiveDetail = () => {
@@ -184,29 +184,10 @@ const ExecutiveDetail = () => {
             </Card>
           </div>
 
-          {/* Executive Details (Bio, Manifesto, Projects) */}
+          {/* Executive Details (Projects) */}
           <div className="lg:col-span-2 space-y-8">
-            <Card className="p-6 shadow-lg rounded-2xl">
-              <CardHeader className="pb-4">
-                <CardTitle className="text-2xl font-semibold text-brand-700">Biography</CardTitle>
-              </CardHeader>
-              <CardContent className="prose max-w-none">
-                <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                  {executive.bioMd}
-                </ReactMarkdown>
-              </CardContent>
-            </Card>
-
-            <Card className="p-6 shadow-lg rounded-2xl">
-              <CardHeader className="pb-4">
-                <CardTitle className="text-2xl font-semibold text-brand-700">Manifesto</CardTitle>
-              </CardHeader>
-              <CardContent className="prose max-w-none">
-                <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                  {executive.manifestoMd}
-                </ReactMarkdown>
-              </CardContent>
-            </Card>
+            {/* Removed Biography Card */}
+            {/* Removed Manifesto Card */}
 
             {executive.projectsMd && (
               <Card className="p-6 shadow-lg rounded-2xl">

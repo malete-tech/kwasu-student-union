@@ -30,8 +30,8 @@ const formSchema = z.object({
   tenureStart: z.date({ required_error: "Tenure start date is required." }),
   tenureEnd: z.date({ required_error: "Tenure end date is required." }),
   photoUrl: z.string().optional(),
-  bioMd: z.string().min(1, { message: "Biography is required." }),
-  manifestoMd: z.string().min(1, { message: "Manifesto is required." }),
+  // bioMd: z.string().min(1, { message: "Biography is required." }), // Removed
+  // manifestoMd: z.string().min(1, { message: "Manifesto is required." }), // Removed
   projectsMd: z.string().optional(),
   contactEmail: z.string().email({ message: "Invalid email address." }).optional().or(z.literal('')),
   contactTwitter: z.string().optional().or(z.literal('')),
@@ -57,8 +57,8 @@ const EditExecutive: React.FC = () => {
       tenureStart: new Date(),
       tenureEnd: new Date(),
       photoUrl: undefined,
-      bioMd: "",
-      manifestoMd: "",
+      // bioMd: "", // Removed
+      // manifestoMd: "", // Removed
       projectsMd: "",
       contactEmail: "",
       contactTwitter: "",
@@ -86,8 +86,8 @@ const EditExecutive: React.FC = () => {
             tenureStart: new Date(fetchedExecutive.tenureStart),
             tenureEnd: new Date(fetchedExecutive.tenureEnd),
             photoUrl: fetchedExecutive.photoUrl || undefined,
-            bioMd: fetchedExecutive.bioMd,
-            manifestoMd: fetchedExecutive.manifestoMd,
+            // bioMd: fetchedExecutive.bioMd, // Removed
+            // manifestoMd: fetchedExecutive.manifestoMd, // Removed
             projectsMd: fetchedExecutive.projectsMd || undefined,
             contactEmail: fetchedExecutive.contacts?.email || "",
             contactTwitter: fetchedExecutive.contacts?.twitter || "",
@@ -137,11 +137,11 @@ const EditExecutive: React.FC = () => {
         slug: values.slug,
         role: values.role,
         faculty: values.faculty || undefined,
-        tenureStart: values.tenureStart.toISOString().split('T')[0]!, // Added non-null assertion
-        tenureEnd: values.tenureEnd.toISOString().split('T')[0]!, // Added non-null assertion
+        tenureStart: values.tenureStart.toISOString().split('T')[0]!,
+        tenureEnd: values.tenureEnd.toISOString().split('T')[0]!,
         photoUrl: values.photoUrl || undefined,
-        bioMd: values.bioMd,
-        manifestoMd: values.manifestoMd,
+        // bioMd: values.bioMd, // Removed
+        // manifestoMd: values.manifestoMd, // Removed
         projectsMd: values.projectsMd || undefined,
         contacts: {
           email: values.contactEmail || undefined,
@@ -232,174 +232,150 @@ const EditExecutive: React.FC = () => {
                       <FormLabel>Name</FormLabel>
                       <FormControl>
                         <Input placeholder="John Doe" {...field} className="focus-visible:ring-brand-gold" />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="slug"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Slug</FormLabel>
-                      <FormControl>
-                        <Input placeholder="john-doe-president" {...field} className="focus-visible:ring-brand-gold" />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="role"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Role</FormLabel>
-                      <FormControl>
-                        <Input placeholder="President" {...field} className="focus-visible:ring-brand-gold" />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="faculty"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Faculty (Optional)</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Social Sciences" {...field} className="focus-visible:ring-brand-gold" />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <FormField
-                    control={form.control}
-                    name="tenureStart"
-                    render={({ field }) => (
-                      <FormItem className="flex flex-col">
-                        <FormLabel>Tenure Start Date</FormLabel>
-                        <Popover>
-                          <PopoverTrigger asChild>
-                            <FormControl>
-                              <Button
-                                variant={"outline"}
-                                className={cn(
-                                  "w-full pl-3 text-left font-normal focus-visible:ring-brand-gold",
-                                  !field.value && "text-muted-foreground"
-                                )}
-                              >
-                                {field.value ? (
-                                  format(field.value, "PPP")
-                                ) : (
-                                  <span>Pick a date</span>
-                                )}
-                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                              </Button>
-                            </FormControl>
-                          </PopoverTrigger>
-                          <PopoverContent className="w-auto p-0" align="start">
-                            <Calendar
-                              mode="single"
-                              selected={field.value}
-                              onSelect={field.onChange}
-                              initialFocus
-                            />
-                          </PopoverContent>
-                        </Popover>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="tenureEnd"
-                    render={({ field }) => (
-                      <FormItem className="flex flex-col">
-                        <FormLabel>Tenure End Date</FormLabel>
-                        <Popover>
-                          <PopoverTrigger asChild>
-                            <FormControl>
-                              <Button
-                                variant={"outline"}
-                                className={cn(
-                                  "w-full pl-3 text-left font-normal focus-visible:ring-brand-gold",
-                                  !field.value && "text-muted-foreground"
-                                )}
-                              >
-                                {field.value ? (
-                                  format(field.value, "PPP")
-                                ) : (
-                                  <span>Pick a date</span>
-                                )}
-                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                              </Button>
-                            </FormControl>
-                          </PopoverTrigger>
-                          <PopoverContent className="w-auto p-0" align="start">
-                            <Calendar
-                              mode="single"
-                              selected={field.value}
-                              onSelect={field.onChange}
-                              initialFocus
-                            />
-                          </PopoverContent>
-                        </Popover>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-                <FormField
-                  control={form.control}
-                  name="photoUrl"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Photo</FormLabel>
-                      <FormControl>
-                        <ImageUpload
-                          label="Upload Executive Photo"
-                          bucketName="executive-photos"
-                          folderPath="public"
-                          value={field.value}
-                          onChange={field.onChange}
-                          disabled={isSubmitting}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="bioMd"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Biography (Markdown)</FormLabel>
-                      <FormControl>
-                        <Textarea placeholder="Write a short biography using Markdown..." rows={5} {...field} className="focus-visible:ring-brand-gold" />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="manifestoMd"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Manifesto (Markdown)</FormLabel>
-                      <FormControl>
-                        <Textarea placeholder="Outline the executive's manifesto using Markdown..." rows={7} {...field} className="focus-visible:ring-brand-gold" />
-                      </FormControl>
-                      <FormMessage />
+                    </FormControl>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
+              <FormField
+                control={form.control}
+                name="slug"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Slug</FormLabel>
+                    <FormControl>
+                      <Input placeholder="john-doe-president" {...field} className="focus-visible:ring-brand-gold" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="role"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Role</FormLabel>
+                    <FormControl>
+                      <Input placeholder="President" {...field} className="focus-visible:ring-brand-gold" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="faculty"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Faculty (Optional)</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Social Sciences" {...field} className="focus-visible:ring-brand-gold" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="tenureStart"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col">
+                      <FormLabel>Tenure Start Date</FormLabel>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <FormControl>
+                            <Button
+                              variant={"outline"}
+                              className={cn(
+                                "w-full pl-3 text-left font-normal focus-visible:ring-brand-gold",
+                                !field.value && "text-muted-foreground"
+                              )}
+                            >
+                              {field.value ? (
+                                format(field.value, "PPP")
+                              ) : (
+                                <span>Pick a date</span>
+                              )}
+                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                            </Button>
+                          </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                          <Calendar
+                            mode="single"
+                            selected={field.value}
+                            onSelect={field.onChange}
+                            initialFocus
+                          />
+                        </PopoverContent>
+                      </Popover>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="tenureEnd"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col">
+                      <FormLabel>Tenure End Date</FormLabel>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <FormControl>
+                            <Button
+                              variant={"outline"}
+                              className={cn(
+                                "w-full pl-3 text-left font-normal focus-visible:ring-brand-gold",
+                                !field.value && "text-muted-foreground"
+                              )}
+                            >
+                              {field.value ? (
+                                format(field.value, "PPP")
+                              ) : (
+                                <span>Pick a date</span>
+                              )}
+                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                            </Button>
+                          </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                          <Calendar
+                            mode="single"
+                            selected={field.value}
+                            onSelect={field.onChange}
+                            initialFocus
+                          />
+                        </PopoverContent>
+                      </Popover>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <FormField
+                control={form.control}
+                name="photoUrl"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Photo</FormLabel>
+                    <FormControl>
+                      <ImageUpload
+                        label="Upload Executive Photo"
+                        bucketName="executive-photos"
+                        folderPath="public"
+                        value={field.value}
+                        onChange={field.onChange}
+                        disabled={isSubmitting}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              {/* Removed Biography Field */}
+              {/* Removed Manifesto Field */}
               <FormField
                 control={form.control}
                 name="projectsMd"

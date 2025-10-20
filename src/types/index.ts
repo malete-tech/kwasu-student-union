@@ -8,8 +8,8 @@ export interface Executive {
   tenureStart: string; // YYYY-MM-DD
   tenureEnd: string; // YYYY-MM-DD
   photoUrl?: string;
-  bioMd: string;
-  manifestoMd: string;
+  // bioMd: string; // Removed
+  // manifestoMd: string; // Removed
   projectsMd?: string; // Optional projects section
   contacts: {
     email?: string;

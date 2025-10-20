@@ -28,8 +28,8 @@ const formSchema = z.object({
   tenureStart: z.date({ required_error: "Tenure start date is required." }),
   tenureEnd: z.date({ required_error: "Tenure end date is required." }),
   photoUrl: z.string().optional(),
-  bioMd: z.string().min(1, { message: "Biography is required." }),
-  manifestoMd: z.string().min(1, { message: "Manifesto is required." }),
+  // bioMd: z.string().min(1, { message: "Biography is required." }), // Removed
+  // manifestoMd: z.string().min(1, { message: "Manifesto is required." }), // Removed
   projectsMd: z.string().optional(),
   contactEmail: z.string().email({ message: "Invalid email address." }).optional().or(z.literal('')),
   contactTwitter: z.string().optional().or(z.literal('')),
@@ -51,8 +51,8 @@ const AddExecutive: React.FC = () => {
       tenureStart: new Date(),
       tenureEnd: new Date(),
       photoUrl: undefined,
-      bioMd: "",
-      manifestoMd: "",
+      // bioMd: "", // Removed
+      // manifestoMd: "", // Removed
       projectsMd: "",
       contactEmail: "",
       contactTwitter: "",
@@ -82,11 +82,11 @@ const AddExecutive: React.FC = () => {
         slug: values.slug,
         role: values.role,
         faculty: values.faculty || undefined,
-        tenureStart: values.tenureStart.toISOString().split('T')[0]!, // Added non-null assertion
-        tenureEnd: values.tenureEnd.toISOString().split('T')[0]!, // Added non-null assertion
+        tenureStart: values.tenureStart.toISOString().split('T')[0]!,
+        tenureEnd: values.tenureEnd.toISOString().split('T')[0]!,
         photoUrl: values.photoUrl || undefined,
-        bioMd: values.bioMd,
-        manifestoMd: values.manifestoMd,
+        // bioMd: values.bioMd, // Removed
+        // manifestoMd: values.manifestoMd, // Removed
         projectsMd: values.projectsMd || undefined,
         contacts: {
           email: values.contactEmail || undefined,
@@ -274,32 +274,8 @@ const AddExecutive: React.FC = () => {
                   </FormItem>
                 )}
               />
-              <FormField
-                control={form.control}
-                name="bioMd"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Biography (Markdown)</FormLabel>
-                    <FormControl>
-                      <Textarea placeholder="Write a short biography using Markdown..." rows={5} {...field} className="focus-visible:ring-brand-gold" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="manifestoMd"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Manifesto (Markdown)</FormLabel>
-                    <FormControl>
-                      <Textarea placeholder="Outline the executive's manifesto using Markdown..." rows={7} {...field} className="focus-visible:ring-brand-gold" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              {/* Removed Biography Field */}
+              {/* Removed Manifesto Field */}
               <FormField
                 control={form.control}
                 name="projectsMd"

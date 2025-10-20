@@ -132,8 +132,8 @@ export const api = {
         tenureStart: item.tenure_start,
         tenureEnd: item.tenure_end,
         photoUrl: item.photo_url,
-        bioMd: item.bio_md,
-        manifestoMd: item.manifesto_md,
+        // bioMd: item.bio_md, // Removed
+        // manifestoMd: item.manifesto_md, // Removed
         projectsMd: item.projects_md,
       })) as Executive[];
     },
@@ -150,8 +150,8 @@ export const api = {
         tenureStart: data.tenure_start,
         tenureEnd: data.tenure_end,
         photoUrl: data.photo_url,
-        bioMd: data.bio_md,
-        manifestoMd: data.manifesto_md,
+        // bioMd: data.bio_md, // Removed
+        // manifestoMd: data.manifesto_md, // Removed
         projectsMd: data.projects_md,
       } as Executive;
     },
@@ -165,8 +165,8 @@ export const api = {
         tenure_start: executive.tenureStart,
         tenure_end: executive.tenureEnd,
         photo_url: executive.photoUrl,
-        bio_md: executive.bioMd,
-        manifesto_md: executive.manifestoMd,
+        // bio_md: executive.bioMd, // Removed
+        // manifesto_md: executive.manifestoMd, // Removed
         projects_md: executive.projectsMd,
         contacts: executive.contacts,
       }).select().single();
@@ -180,8 +180,8 @@ export const api = {
         tenureStart: data.tenure_start,
         tenureEnd: data.tenure_end,
         photoUrl: data.photo_url,
-        bioMd: data.bio_md,
-        manifestoMd: data.manifesto_md,
+        // bioMd: data.bio_md, // Removed
+        // manifestoMd: data.manifesto_md, // Removed
         projectsMd: data.projects_md,
       } as Executive;
     },
@@ -194,8 +194,8 @@ export const api = {
       if (executive.tenureStart !== undefined) updatePayload['tenure_start'] = executive.tenureStart;
       if (executive.tenureEnd !== undefined) updatePayload['tenure_end'] = executive.tenureEnd;
       if (executive.photoUrl !== undefined) updatePayload['photo_url'] = executive.photoUrl;
-      if (executive.bioMd !== undefined) updatePayload['bio_md'] = executive.bioMd;
-      if (executive.manifestoMd !== undefined) updatePayload['manifesto_md'] = executive.manifestoMd;
+      // if (executive.bioMd !== undefined) updatePayload['bio_md'] = executive.bioMd; // Removed
+      // if (executive.manifestoMd !== undefined) updatePayload['manifesto_md'] = executive.manifestoMd; // Removed
       if (executive.projectsMd !== undefined) updatePayload['projects_md'] = executive.projectsMd;
       if (executive.contacts !== undefined) updatePayload['contacts'] = executive.contacts;
 
@@ -210,8 +210,8 @@ export const api = {
         tenureStart: data.tenure_start,
         tenureEnd: data.tenure_end,
         photoUrl: data.photo_url,
-        bioMd: data.bio_md,
-        manifestoMd: data.manifesto_md,
+        // bioMd: data.bio_md, // Removed
+        // manifestoMd: data.manifesto_md, // Removed
         projectsMd: data.projects_md,
       } as Executive;
     },
