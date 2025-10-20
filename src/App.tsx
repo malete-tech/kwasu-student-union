@@ -23,9 +23,10 @@ import ContactPage from "./pages/ContactPage";
 // Admin Imports
 import AdminLayout from "./app/AdminLayout";
 import AdminLoginPage from "./pages/admin/AdminLoginPage";
-import AdminUpdatePasswordPage from "./pages/admin/AdminUpdatePasswordPage"; // New import
+import AdminUpdatePasswordPage from "./pages/admin/AdminUpdatePasswordPage";
 import DashboardOverview from "./pages/admin/DashboardOverview";
 import NewsManagement from "./pages/admin/NewsManagement";
+import AddNewsArticle from "./pages/admin/AddNewsArticle"; // New import
 import EventsManagement from "./pages/admin/EventsManagement";
 import ExecutivesManagement from "./pages/admin/ExecutivesManagement";
 import ComplaintsManagement from "./pages/admin/ComplaintsManagement";
@@ -64,12 +65,13 @@ const App = () => (
 
             {/* Admin Login Route (Publicly accessible) */}
             <Route path="/admin/login" element={<AdminLoginPage />} />
-            <Route path="/admin/update-password" element={<AdminUpdatePasswordPage />} /> {/* New route */}
+            <Route path="/admin/update-password" element={<AdminUpdatePasswordPage />} />
 
             {/* Admin Protected Routes (Will be protected by auth later) */}
             <Route path="/admin" element={<AdminLayout />}>
               <Route index element={<DashboardOverview />} />
               <Route path="news" element={<NewsManagement />} />
+              <Route path="news/add" element={<AddNewsArticle />} /> {/* New route */}
               <Route path="events" element={<EventsManagement />} />
               <Route path="executives" element={<ExecutivesManagement />} />
               <Route path="complaints" element={<ComplaintsManagement />} />
