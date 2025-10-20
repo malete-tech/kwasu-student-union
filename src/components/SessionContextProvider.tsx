@@ -86,7 +86,7 @@ export const SessionContextProvider: React.FC<{ children: React.ReactNode }> = (
       console.log("SessionContextProvider: Cleaning up auth state change subscription.");
       subscription.unsubscribe();
     };
-  }, [fetchProfile]); // Depend on fetchProfile
+  }, [fetchProfile]);
 
   return (
     <SessionContext.Provider value={{ session, user, profile, isAdmin, loading }}>
