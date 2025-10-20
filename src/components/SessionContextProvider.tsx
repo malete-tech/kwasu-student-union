@@ -4,23 +4,36 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { Session, User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { Profile } from '@/types';
-
+import { PostgrestError } from '@supabase/supabase-js';
 
 interface SessionContextType {
   session: Session | null;
   user: User | null;
   profile: Profile | null;
-  isAdmin: boolean | undefined; // Changed to allow undefined
+  isAdmin: boolean;
   loading: boolean;
 }
 
-const SessionContext = createContext<SessionContextType | undefined>(undefined);
+// Define a type for the expected result from the Supabase profile fetch
+interface SupabaseProfileQueryResult {
+  data: Profile | null;
+  error: PostgrestError | null;
+}
+
+// Provide a default object to createContext that matches SessionContextType
+const SessionContext = createContext<SessionContextType>({
+  session: null,
+  user: null,
+  profile: null,
+  isAdmin: false, // Default to false
+  loading: true,  // Default to true
+});
 
 export const SessionContextProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
-  const [isAdmin, setIsAdmin] = useState<boolean | undefined>(undefined); // Initialize as undefined
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
@@ -29,7 +42,7 @@ export const SessionContextProvider: React.FC<{ children: React.ReactNode }> = (
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, newSession) => {
         console.log(`SessionContextProvider: Auth state change event: ${event}. Setting loading to true.`);
-        setLoading(true);
+        setLoading(true); // Always set loading to true at the start of an auth state change
 
         try {
           setSession(newSession);
@@ -39,20 +52,36 @@ export const SessionContextProvider: React.FC<{ children: React.ReactNode }> = (
             const userId = newSession.user.id;
             console.log("SessionContextProvider: Attempting to fetch profile for user ID:", userId);
 
-            const { data: profileData, error: profileError } = await supabase
+            const profileFetchPromise = supabase
               .from('profiles')
               .select('*')
               .eq('id', userId)
               .single();
+
+            const timeoutPromise = new Promise<never>((_, reject) =>
+              setTimeout(() => reject(new Error("Profile fetch timed out after 5 seconds.")), 5000)
+            );
+
+            let profileData: Profile | null = null;
+            let profileError: PostgrestError | Error | null = null;
+
+            try {
+              const result = await Promise.race([profileFetchPromise, timeoutPromise]) as SupabaseProfileQueryResult;
+              profileData = result.data;
+              profileError = result.error;
+            } catch (e: any) {
+              profileError = e instanceof Error ? e : new Error(String(e));
+              console.error("SessionContextProvider: Error or timeout during profile fetch:", e);
+            }
             
             if (profileError) {
-              if (profileError.code === 'PGRST116') { // No rows found
+              if (profileError instanceof PostgrestError && profileError.code === 'PGRST116') {
                 console.warn("SessionContextProvider: No profile found for user ID:", userId);
               } else {
                 console.error("SessionContextProvider: Supabase error fetching profile:", profileError);
               }
               setProfile(null);
-              setIsAdmin(false); // Explicitly set to false if no profile or error
+              setIsAdmin(false);
             } else if (profileData) {
               console.log("SessionContextProvider: Profile data fetched:", profileData);
               setProfile(profileData);
@@ -65,7 +94,7 @@ export const SessionContextProvider: React.FC<{ children: React.ReactNode }> = (
           } else {
             console.log("SessionContextProvider: No user in session. Resetting profile and isAdmin.");
             setProfile(null);
-            setIsAdmin(false); // Explicitly set to false if no user
+            setIsAdmin(false);
           }
         } catch (e) {
           console.error("SessionContextProvider: Unexpected error during auth state change processing:", e);
@@ -75,7 +104,6 @@ export const SessionContextProvider: React.FC<{ children: React.ReactNode }> = (
           setIsAdmin(false);
         } finally {
           console.log(`SessionContextProvider: Auth state change processing finished for event ${event}. Setting loading to false.`);
-          console.log(`SessionContextProvider: Final state - session: ${!!newSession}, user: ${!!newSession?.user}, isAdmin: ${isAdmin}, profile: ${!!profile}`);
           setLoading(false);
         }
       }
@@ -97,6 +125,7 @@ export const SessionContextProvider: React.FC<{ children: React.ReactNode }> = (
 export const useSession = () => {
   const context = useContext(SessionContext);
   if (context === undefined) {
+    // This error should ideally not be thrown with the default value provided to createContext
     throw new Error('useSession must be used within a SessionContextProvider');
   }
   return context;
