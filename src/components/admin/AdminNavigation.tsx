@@ -35,7 +35,7 @@ const adminNavLinks: AdminLink[] = [
 
 interface AdminNavigationProps {
   onLinkClick?: () => void;
-  onLogout: () => void; // Added onLogout prop
+  onLogout: () => void;
 }
 
 const AdminNavigation: React.FC<AdminNavigationProps> = ({ onLinkClick, onLogout }) => {
@@ -47,12 +47,12 @@ const AdminNavigation: React.FC<AdminNavigationProps> = ({ onLinkClick, onLogout
           Admin Panel
         </Link>
       </div>
-      <nav className="flex-1 space-y-2">
+      <nav className="flex-1 space-y-2 overflow-y-auto pb-4"> {/* Added overflow-y-auto and pb-4 */}
         {adminNavLinks.map((link) => (
           <NavLink
             key={link.name}
             to={link.href}
-            end={link.href === "/admin"} // 'end' prop for exact match on dashboard
+            end={link.href === "/admin"}
             className={({ isActive }) =>
               cn(
                 "flex items-center gap-3 px-4 py-2 rounded-md text-sm font-medium transition-colors",
@@ -70,13 +70,12 @@ const AdminNavigation: React.FC<AdminNavigationProps> = ({ onLinkClick, onLogout
       <div className="mt-auto pt-4 border-t border-brand-700">
         <Button
           variant="ghost"
-          onClick={onLogout} // Use the onLogout prop
+          onClick={onLogout}
           className="w-full justify-start text-brand-100 hover:bg-brand-700 hover:text-destructive focus-visible:ring-destructive"
         >
           <LogOut className="mr-3 h-5 w-5" />
           Logout
-        </Button>
-      </div>
+        </Button>      </div>
     </div>
   );
 };
