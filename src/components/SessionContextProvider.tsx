@@ -14,19 +14,17 @@ interface SessionContextType {
   loading: boolean;
 }
 
-// Define a type for the expected result from the Supabase profile fetch
 interface SupabaseProfileQueryResult {
   data: Profile | null;
   error: PostgrestError | null;
 }
 
-// Provide a default object to createContext that matches SessionContextType
 const SessionContext = createContext<SessionContextType>({
   session: null,
   user: null,
   profile: null,
-  isAdmin: false, // Default to false
-  loading: true,  // Default to true
+  isAdmin: false,
+  loading: true,
 });
 
 export const SessionContextProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -37,74 +35,107 @@ export const SessionContextProvider: React.FC<{ children: React.ReactNode }> = (
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    console.log("SessionContextProvider: Initializing auth state listener.");
+    console.log("SessionContextProvider: Initializing auth state listener and fetching initial session.");
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, newSession) => {
-        console.log(`SessionContextProvider: Auth state change event: ${event}. Setting loading to true.`);
-        setLoading(true); // Always set loading to true at the start of an auth state change
+    const getInitialSession = async () => {
+      setLoading(true);
+      try {
+        const { data: { session: initialSession }, error: sessionError } = await supabase.auth.getSession();
+        if (sessionError) {
+          console.error("SessionContextProvider: Error fetching initial session:", sessionError);
+          throw sessionError;
+        }
+        console.log("SessionContextProvider: Initial session fetched:", initialSession ? "present" : "null");
+        await handleSessionChange(initialSession); // Process the initial session
+      } catch (e) {
+        console.error("SessionContextProvider: Error during initial session fetch:", e);
+        setSession(null);
+        setUser(null);
+        setProfile(null);
+        setIsAdmin(false);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-        try {
-          setSession(newSession);
-          setUser(newSession?.user || null);
+    const handleSessionChange = async (newSession: Session | null) => {
+      console.log(`SessionContextProvider: Processing session change. New session: ${newSession ? "present" : "null"}.`);
+      setLoading(true); // Set loading true while processing session change
 
-          if (newSession?.user) {
-            const userId = newSession.user.id;
-            console.log("SessionContextProvider: Attempting to fetch profile for user ID:", userId);
+      try {
+        setSession(newSession);
+        setUser(newSession?.user || null);
 
-            const profileFetchPromise = supabase
-              .from('profiles')
-              .select('*')
-              .eq('id', userId)
-              .single();
+        if (newSession?.user) {
+          const userId = newSession.user.id;
+          console.log("SessionContextProvider: User present. Attempting to fetch profile for user ID:", userId);
 
-            const timeoutPromise = new Promise<never>((_, reject) =>
-              setTimeout(() => reject(new Error("Profile fetch timed out after 5 seconds.")), 5000)
-            );
+          const profileFetchPromise = supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', userId)
+            .single();
 
-            let profileData: Profile | null = null;
-            let profileError: PostgrestError | Error | null = null;
+          const timeoutPromise = new Promise<never>((_, reject) =>
+            setTimeout(() => reject(new Error("Profile fetch timed out after 5 seconds.")), 5000)
+          );
 
-            try {
-              const result = await Promise.race([profileFetchPromise, timeoutPromise]) as SupabaseProfileQueryResult;
-              profileData = result.data;
-              profileError = result.error;
-            } catch (e: any) {
-              profileError = e instanceof Error ? e : new Error(String(e));
-              console.error("SessionContextProvider: Error or timeout during profile fetch:", e);
-            }
-            
-            if (profileError) {
-              if (profileError instanceof PostgrestError && profileError.code === 'PGRST116') {
-                console.warn("SessionContextProvider: No profile found for user ID:", userId);
-              } else {
-                console.error("SessionContextProvider: Supabase error fetching profile:", profileError);
-              }
-              setProfile(null);
-              setIsAdmin(false);
-            } else if (profileData) {
-              console.log("SessionContextProvider: Profile data fetched:", profileData);
-              setProfile(profileData);
-              setIsAdmin(profileData.is_admin || false);
+          let profileData: Profile | null = null;
+          let profileError: PostgrestError | Error | null = null;
+
+          try {
+            const result = await Promise.race([profileFetchPromise, timeoutPromise]) as SupabaseProfileQueryResult;
+            profileData = result.data;
+            profileError = result.error;
+          } catch (e: any) {
+            profileError = e instanceof Error ? e : new Error(String(e));
+            console.error("SessionContextProvider: Error or timeout during profile fetch:", e);
+          }
+          
+          if (profileError) {
+            if (profileError instanceof PostgrestError && profileError.code === 'PGRST116') {
+              console.warn("SessionContextProvider: No profile found for user ID:", userId);
             } else {
-              console.log("SessionContextProvider: Profile data was null/undefined after fetch. Setting isAdmin to false.");
-              setProfile(null);
-              setIsAdmin(false);
+              console.error("SessionContextProvider: Supabase error fetching profile:", profileError);
             }
+            setProfile(null);
+            setIsAdmin(false);
+          } else if (profileData) {
+            console.log("SessionContextProvider: Profile data fetched:", profileData);
+            setProfile(profileData);
+            setIsAdmin(profileData.is_admin || false);
           } else {
-            console.log("SessionContextProvider: No user in session. Resetting profile and isAdmin.");
+            console.log("SessionContextProvider: Profile data was null/undefined after fetch. Setting isAdmin to false.");
             setProfile(null);
             setIsAdmin(false);
           }
-        } catch (e) {
-          console.error("SessionContextProvider: Unexpected error during auth state change processing:", e);
-          setSession(null);
-          setUser(null);
+        } else {
+          console.log("SessionContextProvider: No user in session. Resetting profile and isAdmin.");
           setProfile(null);
           setIsAdmin(false);
-        } finally {
-          console.log(`SessionContextProvider: Auth state change processing finished for event ${event}. Setting loading to false.`);
-          setLoading(false);
+        }
+      } catch (e) {
+        console.error("SessionContextProvider: Unexpected error during session change processing:", e);
+        setSession(null);
+        setUser(null);
+        setProfile(null);
+        setIsAdmin(false);
+      } finally {
+        console.log("SessionContextProvider: Session change processing finished. Setting loading to false.");
+        setLoading(false);
+      }
+    };
+
+    // Fetch initial session on mount
+    getInitialSession();
+
+    // Set up auth state change listener
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, newSession) => {
+        console.log(`SessionContextProvider: Auth state change event: ${event}.`);
+        // Only process if the session actually changed or it's an initial session event
+        if (event === 'SIGNED_IN' || event === 'SIGNED_OUT' || event === 'USER_UPDATED' || event === 'INITIAL_SESSION') {
+          await handleSessionChange(newSession);
         }
       }
     );
@@ -113,7 +144,7 @@ export const SessionContextProvider: React.FC<{ children: React.ReactNode }> = (
       console.log("SessionContextProvider: Cleaning up auth state change subscription.");
       subscription.unsubscribe();
     };
-  }, []);
+  }, []); // Empty dependency array means this runs once on mount
 
   return (
     <SessionContext.Provider value={{ session, user, profile, isAdmin, loading }}>
@@ -125,7 +156,6 @@ export const SessionContextProvider: React.FC<{ children: React.ReactNode }> = (
 export const useSession = () => {
   const context = useContext(SessionContext);
   if (context === undefined) {
-    // This error should ideally not be thrown with the default value provided to createContext
     throw new Error('useSession must be used within a SessionContextProvider');
   }
   return context;
