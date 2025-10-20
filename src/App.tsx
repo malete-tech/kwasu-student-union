@@ -26,7 +26,8 @@ import AdminLoginPage from "./pages/admin/AdminLoginPage";
 import AdminUpdatePasswordPage from "./pages/admin/AdminUpdatePasswordPage";
 import DashboardOverview from "./pages/admin/DashboardOverview";
 import NewsManagement from "./pages/admin/NewsManagement";
-import AddNewsArticle from "./pages/admin/AddNewsArticle"; // New import
+import AddNewsArticle from "./pages/admin/AddNewsArticle";
+import EditNewsArticle from "./pages/admin/EditNewsArticle"; // New import
 import EventsManagement from "./pages/admin/EventsManagement";
 import ExecutivesManagement from "./pages/admin/ExecutivesManagement";
 import ComplaintsManagement from "./pages/admin/ComplaintsManagement";
@@ -71,7 +72,8 @@ const App = () => (
             <Route path="/admin" element={<AdminLayout />}>
               <Route index element={<DashboardOverview />} />
               <Route path="news" element={<NewsManagement />} />
-              <Route path="news/add" element={<AddNewsArticle />} /> {/* New route */}
+              <Route path="news/add" element={<AddNewsArticle />} />
+              <Route path="news/edit/:slug" element={<EditNewsArticle />} /> {/* New route */}
               <Route path="events" element={<EventsManagement />} />
               <Route path="executives" element={<ExecutivesManagement />} />
               <Route path="complaints" element={<ComplaintsManagement />} />

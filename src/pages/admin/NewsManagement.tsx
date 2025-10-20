@@ -112,9 +112,11 @@ const NewsManagement: React.FC = () => {
                     </div>
                   </div>
                   <div className="flex space-x-2">
-                    <Button variant="outline" size="icon" className="text-brand-500 hover:bg-brand-50 focus-visible:ring-brand-gold">
-                      <Edit className="h-4 w-4" />
-                      <span className="sr-only">Edit</span>
+                    <Button asChild variant="outline" size="icon" className="text-brand-500 hover:bg-brand-50 focus-visible:ring-brand-gold">
+                      <Link to={`/admin/news/edit/${article.slug}`}> {/* Link to the edit page */}
+                        <Edit className="h-4 w-4" />
+                        <span className="sr-only">Edit</span>
+                      </Link>
                     </Button>
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
