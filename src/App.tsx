@@ -30,8 +30,8 @@ import AddNewsArticle from "./pages/admin/AddNewsArticle";
 import EditNewsArticle from "./pages/admin/EditNewsArticle";
 import EventsManagement from "./pages/admin/EventsManagement";
 import ExecutivesManagement from "./pages/admin/ExecutivesManagement";
-import AddExecutive from "./pages/admin/AddExecutive"; // New import
-import EditExecutive from "./pages/admin/EditExecutive"; // New import
+import AddExecutive from "./pages/admin/AddExecutive";
+import EditExecutive from "./pages/admin/EditExecutive";
 import ComplaintsManagement from "./pages/admin/ComplaintsManagement";
 import DocumentsManagement from "./pages/admin/DocumentsManagement";
 import OpportunitiesManagement from "./pages/admin/OpportunitiesManagement";
@@ -78,8 +78,8 @@ const App = () => (
               <Route path="news/edit/:slug" element={<EditNewsArticle />} />
               <Route path="events" element={<EventsManagement />} />
               <Route path="executives" element={<ExecutivesManagement />} />
-              <Route path="executives/add" element={<AddExecutive />} /> {/* New route */}
-              <Route path="executives/edit/:slug" element={<EditExecutive />} /> {/* New route */}
+              <Route path="executives/add" element={<AddExecutive />} />
+              <Route path="executives/edit/:slug" element={<EditExecutive />} />
               <Route path="complaints" element={<ComplaintsManagement />} />
               <Route path="documents" element={<DocumentsManagement />} />
               <Route path="opportunities" element={<OpportunitiesManagement />} />

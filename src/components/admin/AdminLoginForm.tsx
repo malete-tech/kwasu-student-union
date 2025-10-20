@@ -17,11 +17,10 @@ const formSchema = z.object({
 
 interface AdminLoginFormProps {
   onSuccess: () => void;
-  onSwitchToRegister: () => void;
   onForgotPassword: () => void;
 }
 
-const AdminLoginForm: React.FC<AdminLoginFormProps> = ({ onSuccess, onSwitchToRegister, onForgotPassword }) => {
+const AdminLoginForm: React.FC<AdminLoginFormProps> = ({ onSuccess, onForgotPassword }) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -74,12 +73,6 @@ const AdminLoginForm: React.FC<AdminLoginFormProps> = ({ onSuccess, onSwitchToRe
         <Button type="submit" className="w-full bg-brand-700 hover:bg-brand-800 text-white focus-visible:ring-brand-gold">
           Sign In
         </Button>
-        <p className="text-center text-sm text-muted-foreground">
-          Don't have an account?{" "}
-          <Button type="button" variant="link" onClick={onSwitchToRegister} className="px-0 text-brand-500 hover:text-brand-600 focus-visible:ring-brand-gold">
-            Sign Up
-          </Button>
-        </p>
       </form>
     </Form>
   );

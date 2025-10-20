@@ -7,7 +7,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { useSession } from "@/components/SessionContextProvider";
 import AdminAuthHero from "@/components/admin/AdminAuthHero";
 import AdminLoginForm from "@/components/admin/AdminLoginForm";
-import AdminRegisterForm from "@/components/admin/AdminRegisterForm";
 import { resetPassword } from "@/utils/auth-helpers";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -15,12 +14,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 
-type AuthView = "login" | "register";
-
 const AdminLoginPage: React.FC = () => {
   const navigate = useNavigate();
   const { session, isAdmin, loading } = useSession();
-  const [currentView, setCurrentView] = useState<AuthView>("login");
   const [isForgotPasswordDialogOpen, setIsForgotPasswordDialogOpen] = useState(false);
   const [forgotPasswordEmail, setForgotPasswordEmail] = useState("");
 
@@ -37,15 +33,11 @@ const AdminLoginPage: React.FC = () => {
         toast.error("You do not have administrator privileges.");
         // No redirect here, user stays on login page but sees the error.
       }
-      // If !session, stay on login page to allow login/register
+      // If !session, stay on login page to allow login
     }
   }, [session, isAdmin, loading, navigate]);
 
   const handleAuthSuccess = () => {
-    if (currentView === "register") {
-      setCurrentView("login");
-      toast.success("Registration successful! Please check your email to confirm your account, then sign in.");
-    }
     // If login was successful and user is admin, useEffect will handle redirect.
     // If login was successful but user is not admin, the useEffect will show a toast.
   };
@@ -83,7 +75,7 @@ const AdminLoginPage: React.FC = () => {
             <AdminAuthHero />
           </div>
 
-          {/* Right Section: Login/Register Form */}
+          {/* Right Section: Login Form */}
           <Card className="p-8 space-y-6 shadow-none rounded-none lg:rounded-r-2xl flex flex-col justify-center">
             <CardHeader className="text-center pb-4">
               {/* Logo */}
@@ -92,27 +84,17 @@ const AdminLoginPage: React.FC = () => {
                 <span className="text-2xl">Admin Panel</span>
               </Link>
               <CardTitle className="text-3xl font-bold text-brand-700">
-                {currentView === "login" ? "Admin Login" : "Admin Register"}
+                Admin Login
               </CardTitle>
               <CardDescription className="text-muted-foreground">
-                {currentView === "login"
-                  ? "Sign in to manage the KWASU SU website content."
-                  : "Create an account to access the admin panel."}
+                Sign in to manage the KWASU SU website content.
               </CardDescription>
             </CardHeader>
             <CardContent className="flex-grow">
-              {currentView === "login" ? (
-                <AdminLoginForm
-                  onSuccess={handleAuthSuccess}
-                  onSwitchToRegister={() => setCurrentView("register")}
-                  onForgotPassword={() => setIsForgotPasswordDialogOpen(true)}
-                />
-              ) : (
-                <AdminRegisterForm
-                  onSuccess={handleAuthSuccess}
-                  onSwitchToLogin={() => setCurrentView("login")}
-                />
-              )}
+              <AdminLoginForm
+                onSuccess={handleAuthSuccess}
+                onForgotPassword={() => setIsForgotPasswordDialogOpen(true)}
+              />
             </CardContent>
             <p className="mt-6 text-center text-sm text-muted-foreground">
               <Link to="/" className="font-medium text-brand-500 hover:text-brand-600 hover:underline">
