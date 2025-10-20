@@ -16,15 +16,7 @@ interface NewsCardProps {
 const NewsCard: React.FC<NewsCardProps> = ({ news, className }) => {
   return (
     <Card className={cn("flex flex-col overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300", className)}>
-      {news.coverUrl && (
-        <div className="relative h-48 w-full overflow-hidden">
-          <img
-            src={news.coverUrl}
-            alt={news.title}
-            className="absolute inset-0 h-full w-full object-cover"
-          />
-        </div>
-      )}
+      {/* Removed news.coverUrl image display */}
       <CardHeader className="pb-2">
         <CardTitle className="text-xl font-semibold leading-tight">
           <Link to={`/news/${news.slug}`} className="hover:text-brand-500 focus-visible:ring-brand-gold focus-visible:ring-2 focus-visible:ring-offset-2 rounded-md outline-none">

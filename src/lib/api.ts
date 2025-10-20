@@ -32,7 +32,7 @@ export const api = {
         ...item,
         bodyMd: item.body_md,
         publishedAt: item.published_at,
-        coverUrl: item.cover_url,
+        // coverUrl: item.cover_url, // Removed
       })) as News[];
     },
     getLatest: async (count: number): Promise<News[]> => {
@@ -46,7 +46,7 @@ export const api = {
         ...item,
         bodyMd: item.body_md,
         publishedAt: item.published_at,
-        coverUrl: item.cover_url,
+        // coverUrl: item.cover_url, // Removed
       })) as News[];
     },
     getBySlug: async (slug: string): Promise<News | undefined> => {
@@ -61,7 +61,7 @@ export const api = {
         ...data,
         bodyMd: data.body_md,
         publishedAt: data.published_at,
-        coverUrl: data.cover_url,
+        // coverUrl: data.cover_url, // Removed
       } as News;
     },
     create: async (news: Omit<News, 'id' | 'created_at'>): Promise<News> => {
@@ -73,7 +73,7 @@ export const api = {
         body_md: news.bodyMd, // Map frontend bodyMd to database body_md
         tags: news.tags,
         published_at: news.publishedAt, // Map frontend publishedAt to database published_at
-        cover_url: news.coverUrl, // Map frontend coverUrl to database cover_url
+        // cover_url: news.coverUrl, // Removed
       }).select().single();
       if (error) {
         console.error("Supabase error creating news:", error);
@@ -84,7 +84,7 @@ export const api = {
         ...data,
         bodyMd: data.body_md,
         publishedAt: data.published_at,
-        coverUrl: data.cover_url,
+        // coverUrl: data.cover_url, // Removed
       } as News;
     },
     update: async (id: string, news: Partial<Omit<News, 'id' | 'created_at'>>): Promise<News> => {
@@ -96,7 +96,7 @@ export const api = {
       if (news.bodyMd !== undefined) updatePayload['body_md'] = news.bodyMd;
       if (news.tags !== undefined) updatePayload['tags'] = news.tags;
       if (news.publishedAt !== undefined) updatePayload['published_at'] = news.publishedAt;
-      if (news.coverUrl !== undefined) updatePayload['cover_url'] = news.coverUrl;
+      // if (news.coverUrl !== undefined) updatePayload['cover_url'] = news.coverUrl; // Removed
 
       const { data, error } = await supabase.from('news').update(updatePayload).eq('id', id).select().single();
       if (error) {
@@ -108,7 +108,7 @@ export const api = {
         ...data,
         bodyMd: data.body_md,
         publishedAt: data.published_at,
-        coverUrl: data.cover_url,
+        // coverUrl: data.cover_url, // Removed
       } as News;
     },
     delete: async (id: string): Promise<void> => {

@@ -79,7 +79,7 @@ const NewsManagement: React.FC = () => {
             <div className="space-y-4">
               {[...Array(5)].map((_, i) => (
                 <div key={i} className="flex items-center space-x-4 p-2 border-b last:border-b-0">
-                  <Skeleton className="h-12 w-12 rounded-md" />
+                  {/* Removed Skeleton for cover image */}
                   <div className="flex-1 space-y-2">
                     <Skeleton className="h-4 w-3/4" />
                     <Skeleton className="h-3 w-1/2" />
@@ -98,9 +98,7 @@ const NewsManagement: React.FC = () => {
               {newsArticles.map((article) => (
                 <div key={article.id} className="flex items-center justify-between p-4 border rounded-lg shadow-sm">
                   <div className="flex items-center space-x-4">
-                    {article.coverUrl && (
-                      <img src={article.coverUrl} alt={article.title} className="h-12 w-12 object-cover rounded-md flex-shrink-0" />
-                    )}
+                    {/* Removed article.coverUrl image display */}
                     <div>
                       <h3 className="font-semibold text-brand-800">{article.title}</h3>
                       <p className="text-sm text-muted-foreground">

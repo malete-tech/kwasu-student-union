@@ -28,7 +28,7 @@ export interface News {
   bodyMd: string;
   tags: string[]; // e.g., 'academic', 'welfare', 'events', 'opportunities'
   publishedAt: string; // ISO 8601 string
-  coverUrl?: string;
+  // coverUrl?: string; // Removed
 }
 
 // Event

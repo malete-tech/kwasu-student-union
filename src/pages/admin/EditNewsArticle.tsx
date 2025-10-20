@@ -17,7 +17,7 @@ import { cn } from "@/lib/utils";
 import { CalendarIcon } from "@radix-ui/react-icons";
 import { api } from "@/lib/api";
 import { toast } from "sonner";
-import ImageUpload from "@/components/ImageUpload";
+// import ImageUpload from "@/components/ImageUpload"; // Removed
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 // import { News } from "@/types"; // Removed unused import
@@ -30,7 +30,7 @@ const formSchema = z.object({
   bodyMd: z.string().min(1, { message: "Body content is required." }),
   tags: z.string().min(1, { message: "At least one tag is required." }),
   publishedAt: z.date({ required_error: "Published date is required." }),
-  coverUrl: z.string().optional(),
+  // coverUrl: z.string().optional(), // Removed
 });
 
 const EditNewsArticle: React.FC = () => {
@@ -50,7 +50,7 @@ const EditNewsArticle: React.FC = () => {
       bodyMd: "",
       tags: "",
       publishedAt: new Date(),
-      coverUrl: undefined,
+      // coverUrl: undefined, // Removed
     },
   });
 
@@ -72,7 +72,7 @@ const EditNewsArticle: React.FC = () => {
             bodyMd: fetchedArticle.bodyMd,
             tags: fetchedArticle.tags.join(', '),
             publishedAt: new Date(fetchedArticle.publishedAt),
-            coverUrl: fetchedArticle.coverUrl,
+            // coverUrl: fetchedArticle.coverUrl, // Removed
           });
         } else {
           setError("News article not found.");
@@ -120,7 +120,7 @@ const EditNewsArticle: React.FC = () => {
         bodyMd: values.bodyMd,
         tags: values.tags.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0),
         publishedAt: values.publishedAt.toISOString(),
-        coverUrl: values.coverUrl,
+        // coverUrl: values.coverUrl, // Removed
       };
       await api.news.update(articleId, updatedNews);
       toast.success("News article updated successfully!");
@@ -299,26 +299,7 @@ const EditNewsArticle: React.FC = () => {
                     </FormItem>
                   )}
                 />
-                <FormField
-                  control={form.control}
-                  name="coverUrl"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Cover Image</FormLabel>
-                      <FormControl>
-                        <ImageUpload
-                          label="Upload Cover Image"
-                          bucketName="news-covers"
-                          folderPath="public"
-                          value={field.value}
-                          onChange={field.onChange}
-                          disabled={isSubmitting}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                {/* Removed ImageUpload component */}
                 <Button type="submit" className="w-full bg-brand-700 hover:bg-brand-800 text-white focus-visible:ring-brand-gold" disabled={isSubmitting}>
                   {isSubmitting ? (
                     <>

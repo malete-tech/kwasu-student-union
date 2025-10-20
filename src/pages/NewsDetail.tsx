@@ -49,7 +49,7 @@ const NewsDetail: React.FC = () => {
       <div className="container py-12">
         <Skeleton className="h-10 w-48 mb-8" />
         <Card className="shadow-lg rounded-2xl p-6">
-          <Skeleton className="h-64 w-full mb-6" />
+          {/* Removed Skeleton for cover image */}
           <Skeleton className="h-10 w-3/4 mb-4" />
           <Skeleton className="h-5 w-1/3 mb-6" />
           <div className="space-y-3">
@@ -112,15 +112,7 @@ const NewsDetail: React.FC = () => {
         </Button>
 
         <Card className="shadow-lg rounded-2xl p-6">
-          {news.coverUrl && (
-            <div className="relative h-64 w-full overflow-hidden rounded-lg mb-6">
-              <img
-                src={news.coverUrl}
-                alt={news.title}
-                className="absolute inset-0 h-full w-full object-cover"
-              />
-            </div>
-          )}
+          {/* Removed news.coverUrl image display */}
           <CardHeader className="px-0 pt-0 pb-4">
             <CardTitle className="text-4xl font-bold text-brand-700 mb-2">{news.title}</CardTitle>
             <CardDescription className="flex items-center text-sm text-muted-foreground">

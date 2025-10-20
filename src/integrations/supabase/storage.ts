@@ -1,25 +1,48 @@
-import { supabase } from "./client";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
-export const uploadImage = async (file: File, bucketName: string, path: string): Promise<string | null> => {
-  const { data, error } = await supabase.storage.from(bucketName).upload(path, file, {
-    cacheControl: '3600',
-    upsert: false,
-  });
+export const uploadImage = async (
+  file: File,
+  bucketName: string,
+  folderPath: string,
+): Promise<string | null> => {
+  const fileExt = file.name.split(".").pop();
+  const fileName = `${Math.random()}.${fileExt}`;
+  const filePath = `${folderPath}/${fileName}`;
 
-  if (error) {
-    console.error("Error uploading image:", error);
-    throw error;
+  const { error: uploadError } = await supabase.storage
+    .from(bucketName)
+    .upload(filePath, file);
+
+  if (uploadError) {
+    console.error("Error uploading image:", uploadError);
+    toast.error(`Image upload failed: ${uploadError.message}`);
+    return null;
   }
 
-  // Get public URL
-  const { data: publicUrlData } = supabase.storage.from(bucketName).getPublicUrl(data.path);
-  return publicUrlData.publicUrl;
+  const { data } = supabase.storage.from(bucketName).getPublicUrl(filePath);
+  return data.publicUrl;
 };
 
-export const deleteImage = async (bucketName: string, path: string): Promise<void> => {
-  const { error } = await supabase.storage.from(bucketName).remove([path]);
-  if (error) {
-    console.error("Error deleting image:", error);
-    throw error;
+export const deleteImage = async (
+  url: string,
+  bucketName: string,
+  folderPath: string,
+): Promise<boolean> => {
+  if (!url) return true; // Nothing to delete
+
+  const pathSegments = url.split('/');
+  const fileName = pathSegments[pathSegments.length - 1];
+  const filePath = `${folderPath}/${fileName}`;
+
+  const { error: deleteError } = await supabase.storage
+    .from(bucketName)
+    .remove([filePath]);
+
+  if (deleteError) {
+    console.error("Error deleting image:", deleteError);
+    toast.error(`Image deletion failed: ${deleteError.message}`);
+    return false;
   }
+  return true;
 };
