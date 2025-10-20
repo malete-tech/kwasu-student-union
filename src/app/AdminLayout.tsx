@@ -21,8 +21,8 @@ const AdminLayout: React.FC = () => {
 
   useEffect(() => {
     console.log("AdminLayout: useEffect triggered. Loading:", loading, "Session:", !!session, "IsAdmin:", isAdmin);
-    // Only act once loading is complete AND isAdmin is definitively set (not undefined)
-    if (!loading && isAdmin !== undefined) {
+    // Only act once loading is complete
+    if (!loading) {
       if (!session) {
         // If not loading and no session, redirect to login
         console.log("AdminLayout: No session found, redirecting to /admin/login.");
@@ -49,7 +49,7 @@ const AdminLayout: React.FC = () => {
   };
 
   // Show a loading spinner or a simple message while checking auth state
-  if (loading || isAdmin === undefined) { 
+  if (loading) { 
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-100">
         <p className="text-brand-700">Checking administrator access...</p>
