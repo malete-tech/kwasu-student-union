@@ -33,7 +33,13 @@ export const api = {
         console.error("Supabase error fetching news:", error);
         throw new Error(error.message);
       }
-      return data as News[];
+      // Convert snake_case from DB to camelCase for frontend type
+      return data.map(item => ({
+        ...item,
+        bodyMd: item.body_md,
+        publishedAt: item.published_at,
+        coverUrl: item.cover_url,
+      })) as News[];
     },
     getLatest: async (count: number): Promise<News[]> => {
       const { data, error } = await supabase.from('news').select('*').order('published_at', { ascending: false }).limit(count);
@@ -41,7 +47,13 @@ export const api = {
         console.error("Supabase error fetching latest news:", error);
         throw new Error(error.message);
       }
-      return data as News[];
+      // Convert snake_case from DB to camelCase for frontend type
+      return data.map(item => ({
+        ...item,
+        bodyMd: item.body_md,
+        publishedAt: item.published_at,
+        coverUrl: item.cover_url,
+      })) as News[];
     },
     getBySlug: async (slug: string): Promise<News | undefined> => {
       const { data, error } = await supabase.from('news').select('*').eq('slug', slug).single();
@@ -49,46 +61,61 @@ export const api = {
         console.error("Supabase error fetching news by slug:", error);
         throw new Error(error.message);
       }
-      return data as News | undefined;
+      if (!data) return undefined;
+      // Convert snake_case from DB to camelCase for frontend type
+      return {
+        ...data,
+        bodyMd: data.body_md,
+        publishedAt: data.published_at,
+        coverUrl: data.cover_url,
+      } as News;
     },
     create: async (news: Omit<News, 'id' | 'created_at'>): Promise<News> => {
-      const { title, slug, excerpt, bodyMd, tags, publishedAt, coverUrl } = news;
+      // Explicitly construct payload with snake_case keys for Supabase insert
       const { data, error } = await supabase.from('news').insert({
-        title,
-        slug,
-        excerpt,
-        body_md: bodyMd,
-        tags,
-        published_at: publishedAt,
-        cover_url: coverUrl,
+        title: news.title,
+        slug: news.slug,
+        excerpt: news.excerpt,
+        body_md: news.bodyMd, // Map frontend bodyMd to database body_md
+        tags: news.tags,
+        published_at: news.publishedAt, // Map frontend publishedAt to database published_at
+        cover_url: news.coverUrl, // Map frontend coverUrl to database cover_url
       }).select().single();
       if (error) {
         console.error("Supabase error creating news:", error);
         throw new Error(error.message);
       }
-      return data as News;
+      // Convert returned snake_case data back to camelCase for frontend type
+      return {
+        ...data,
+        bodyMd: data.body_md,
+        publishedAt: data.published_at,
+        coverUrl: data.cover_url,
+      } as News;
     },
     update: async (id: string, news: Partial<Omit<News, 'id' | 'created_at'>>): Promise<News> => {
-      const updatePayload: Record<string, any> = { ...news };
-      if (updatePayload['bodyMd'] !== undefined) {
-        updatePayload['body_md'] = updatePayload['bodyMd'];
-        delete updatePayload['bodyMd'];
-      }
-      if (updatePayload['publishedAt'] !== undefined) {
-        updatePayload['published_at'] = updatePayload['publishedAt'];
-        delete updatePayload['publishedAt'];
-      }
-      if (updatePayload['coverUrl'] !== undefined) {
-        updatePayload['cover_url'] = updatePayload['coverUrl'];
-        delete updatePayload['coverUrl'];
-      }
+      // Explicitly construct payload with snake_case keys for Supabase update
+      const updatePayload: Record<string, any> = {};
+      if (news.title !== undefined) updatePayload['title'] = news.title;
+      if (news.slug !== undefined) updatePayload['slug'] = news.slug;
+      if (news.excerpt !== undefined) updatePayload['excerpt'] = news.excerpt;
+      if (news.bodyMd !== undefined) updatePayload['body_md'] = news.bodyMd;
+      if (news.tags !== undefined) updatePayload['tags'] = news.tags;
+      if (news.publishedAt !== undefined) updatePayload['published_at'] = news.publishedAt;
+      if (news.coverUrl !== undefined) updatePayload['cover_url'] = news.coverUrl;
 
       const { data, error } = await supabase.from('news').update(updatePayload).eq('id', id).select().single();
       if (error) {
         console.error("Supabase error updating news:", error);
         throw new Error(error.message);
       }
-      return data as News;
+      // Convert returned snake_case data back to camelCase for frontend type
+      return {
+        ...data,
+        bodyMd: data.body_md,
+        publishedAt: data.published_at,
+        coverUrl: data.cover_url,
+      } as News;
     },
     delete: async (id: string): Promise<void> => {
       const { error } = await supabase.from('news').delete().eq('id', id);

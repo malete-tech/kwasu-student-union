@@ -103,7 +103,12 @@ const NewsManagement: React.FC = () => {
                     )}
                     <div>
                       <h3 className="font-semibold text-brand-800">{article.title}</h3>
-                      <p className="text-sm text-muted-foreground">Published: {format(new Date(article.publishedAt), "PPP")}</p>
+                      <p className="text-sm text-muted-foreground">
+                        Published:{" "}
+                        {article.publishedAt && !isNaN(new Date(article.publishedAt).getTime())
+                          ? format(new Date(article.publishedAt), "PPP")
+                          : "N/A"}
+                      </p>
                     </div>
                   </div>
                   <div className="flex space-x-2">
