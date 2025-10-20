@@ -32,95 +32,82 @@ export const SessionContextProvider: React.FC<{ children: React.ReactNode }> = (
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(true); // Start as true
 
   useEffect(() => {
     console.log("SessionContextProvider: Initializing auth state listener.");
 
-    const handleSessionChange = async (newSession: Session | null, event: string) => {
+    const handleAuthEvent = async (event: string, newSession: Session | null) => {
       console.log(`SessionContextProvider: Processing auth event: ${event}. New session: ${newSession ? "present" : "null"}.`);
-      setLoading(true); // Set loading true while processing session change
+      setLoading(true); // Always set loading true at the start of an auth event processing
 
-      try {
-        setSession(newSession);
-        setUser(newSession?.user || null);
+      setSession(newSession);
+      setUser(newSession?.user || null);
+      setProfile(null); // Reset profile and isAdmin until re-fetched
+      setIsAdmin(false);
 
-        if (newSession?.user) {
-          const userId = newSession.user.id;
-          console.log("SessionContextProvider: User present. Attempting to fetch profile for user ID:", userId);
+      if (newSession?.user) {
+        const userId = newSession.user.id;
+        console.log("SessionContextProvider: User present. Attempting to fetch profile for user ID:", userId);
 
-          const profileFetchPromise = supabase
-            .from('profiles')
-            .select('*')
-            .eq('id', userId)
-            .single();
+        const profileFetchPromise = supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', userId)
+          .single();
 
-          // Increased timeout to 10 seconds
-          const timeoutPromise = new Promise<never>((_, reject) =>
-            setTimeout(() => reject(new Error("Profile fetch timed out after 10 seconds.")), 10000)
-          );
+        const timeoutPromise = new Promise<never>((_, reject) =>
+          setTimeout(() => reject(new Error("Profile fetch timed out after 10 seconds.")), 10000)
+        );
 
-          let profileData: Profile | null = null;
-          let profileError: PostgrestError | Error | null = null;
-
-          try {
-            const result = await Promise.race([profileFetchPromise, timeoutPromise]) as SupabaseProfileQueryResult;
-            profileData = result.data;
-            profileError = result.error;
-          } catch (e: any) {
-            profileError = e instanceof Error ? e : new Error(String(e));
-            console.error("SessionContextProvider: Error or timeout during profile fetch:", e);
+        try {
+          const result = await Promise.race([profileFetchPromise, timeoutPromise]) as SupabaseProfileQueryResult;
+          if (result.data) {
+            console.log("SessionContextProvider: Profile data fetched:", result.data);
+            setProfile(result.data);
+            setIsAdmin(result.data.is_admin || false);
+          } else if (result.error && result.error.code === 'PGRST116') {
+            console.warn("SessionContextProvider: No profile found for user ID:", userId);
+          } else if (result.error) {
+            console.error("SessionContextProvider: Supabase error fetching profile:", result.error);
           }
-          
-          if (profileError) {
-            if (profileError instanceof PostgrestError && profileError.code === 'PGRST116') {
-              console.warn("SessionContextProvider: No profile found for user ID:", userId);
-            } else {
-              console.error("SessionContextProvider: Supabase error fetching profile:", profileError);
-            }
-            setProfile(null);
-            setIsAdmin(false);
-          } else if (profileData) {
-            console.log("SessionContextProvider: Profile data fetched:", profileData);
-            setProfile(profileData);
-            setIsAdmin(profileData.is_admin || false);
-          } else {
-            console.log("SessionContextProvider: Profile data was null/undefined after fetch. Setting isAdmin to false.");
-            setProfile(null);
-            setIsAdmin(false);
-          }
-        } else {
-          console.log("SessionContextProvider: No user in session. Resetting profile and isAdmin.");
-          setProfile(null);
-          setIsAdmin(false);
+        } catch (e: any) {
+          console.error("SessionContextProvider: Error or timeout during profile fetch:", e);
+          // If timeout or other error, profile and isAdmin remain null/false as set above
         }
-      } catch (e) {
-        console.error("SessionContextProvider: Unexpected error during session change processing:", e);
-        setSession(null);
-        setUser(null);
-        setProfile(null);
-        setIsAdmin(false);
-      } finally {
-        console.log(`SessionContextProvider: Auth state change processing finished for event ${event}. Setting loading to false.`);
-        setLoading(false);
+      } else {
+        console.log("SessionContextProvider: No user in session. Profile and isAdmin remain null/false.");
       }
+      console.log(`SessionContextProvider: Auth state change processing finished for event ${event}. Setting loading to false.`);
+      setLoading(false); // Set loading false only after all profile logic is done
     };
 
     // Set up auth state change listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, newSession) => {
-        // Only process if the session actually changed or it's an initial session event
-        if (event === 'SIGNED_IN' || event === 'SIGNED_OUT' || event === 'USER_UPDATED' || event === 'INITIAL_SESSION') {
-          await handleSessionChange(newSession, event);
-        }
+        await handleAuthEvent(event, newSession);
       }
     );
+
+    // Also fetch initial session explicitly to ensure state is set on first load
+    // This is important for cases where onAuthStateChange 'INITIAL_SESSION' might not fire immediately
+    // or if the component mounts after it has fired.
+    const getInitialSession = async () => {
+      const { data: { session: initialSession } } = await supabase.auth.getSession();
+      if (initialSession) {
+        await handleAuthEvent('INITIAL_SESSION_FETCH', initialSession);
+      } else {
+        await handleAuthEvent('INITIAL_SESSION_FETCH', null);
+      }
+    };
+    getInitialSession();
+
 
     return () => {
       console.log("SessionContextProvider: Cleaning up auth state change subscription.");
       subscription.unsubscribe();
     };
-  }, []); // Empty dependency array means this runs once on mount
+  }, []);
 
   return (
     <SessionContext.Provider value={{ session, user, profile, isAdmin, loading }}>
