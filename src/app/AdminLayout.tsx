@@ -15,7 +15,7 @@ const AdminLayout: React.FC = () => {
   const isMobile = useIsMobile();
   const [isSheetOpen, setIsSheetOpen] = React.useState(false);
   const navigate = useNavigate();
-  const { session, profile, loading } = useSession(); // Use session and profile, remove isAdmin
+  const { session, profile, loading } = useSession(); // Use session and profile
 
   const closeSheet = () => setIsSheetOpen(false);
 

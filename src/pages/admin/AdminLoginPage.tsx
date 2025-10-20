@@ -16,7 +16,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 
 const AdminLoginPage: React.FC = () => {
   const navigate = useNavigate();
-  const { session, profile, loading } = useSession(); // Use session and profile, remove isAdmin
+  const { session, profile, loading } = useSession(); // Use session and profile
   const [isForgotPasswordDialogOpen, setIsForgotPasswordDialogOpen] = useState(false);
   const [forgotPasswordEmail, setForgotPasswordEmail] = useState("");
 

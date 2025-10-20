@@ -9,7 +9,6 @@ interface SessionContextType {
   session: Session | null;
   user: User | null;
   profile: Profile | null;
-  isAdmin: boolean; // Still keep isAdmin for convenience in components
   loading: boolean; // Indicates if the initial auth state check is complete
 }
 
@@ -17,7 +16,6 @@ const SessionContext = createContext<SessionContextType>({
   session: null,
   user: null,
   profile: null,
-  isAdmin: false,
   loading: true, // Start as true, indicating we are checking auth state
 });
 
@@ -25,7 +23,6 @@ export const SessionContextProvider: React.FC<{ children: React.ReactNode }> = (
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
-  const [isAdmin, setIsAdmin] = useState<boolean>(false); // isAdmin now derived from profile existence
   const [loading, setLoading] = useState<boolean>(true); // True until initial check is done
 
   const fetchProfile = useCallback(async (userId: string): Promise<Profile | null> => {
@@ -62,11 +59,9 @@ export const SessionContextProvider: React.FC<{ children: React.ReactNode }> = (
           if (fetchedProfile) {
             console.log("SessionContextProvider: Profile data fetched:", fetchedProfile);
             setProfile(fetchedProfile);
-            setIsAdmin(true); // Admin if profile exists
           } else {
             console.warn("SessionContextProvider: Profile not found or fetch failed for user ID:", newSession.user.id);
             setProfile(null);
-            setIsAdmin(false); // Not admin if no profile
           }
         } else {
           // User signed out or no session
@@ -74,7 +69,6 @@ export const SessionContextProvider: React.FC<{ children: React.ReactNode }> = (
           setSession(null);
           setUser(null);
           setProfile(null);
-          setIsAdmin(false);
         }
         // After all async operations for this auth event are complete, set loading to false
         console.log(`SessionContextProvider: Auth state change processing finished for event ${event}. Setting loading to false.`);
@@ -89,7 +83,7 @@ export const SessionContextProvider: React.FC<{ children: React.ReactNode }> = (
   }, [fetchProfile]);
 
   return (
-    <SessionContext.Provider value={{ session, user, profile, isAdmin, loading }}>
+    <SessionContext.Provider value={{ session, user, profile, loading }}>
       {children}
     </SessionContext.Provider>
   );
