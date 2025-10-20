@@ -9,7 +9,7 @@ interface SessionContextType {
   session: Session | null;
   user: User | null;
   profile: Profile | null;
-  isAdmin: boolean;
+  isAdmin: boolean; // Still keep isAdmin for convenience in components
   loading: boolean; // Indicates if the initial auth state check is complete
 }
 
@@ -25,7 +25,7 @@ export const SessionContextProvider: React.FC<{ children: React.ReactNode }> = (
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
-  const [isAdmin, setIsAdmin] = useState<boolean>(false);
+  const [isAdmin, setIsAdmin] = useState<boolean>(false); // isAdmin now derived from profile existence
   const [loading, setLoading] = useState<boolean>(true); // True until initial check is done
 
   const fetchProfile = useCallback(async (userId: string): Promise<Profile | null> => {
@@ -62,11 +62,11 @@ export const SessionContextProvider: React.FC<{ children: React.ReactNode }> = (
           if (fetchedProfile) {
             console.log("SessionContextProvider: Profile data fetched:", fetchedProfile);
             setProfile(fetchedProfile);
-            setIsAdmin(true); // Set isAdmin to true if a profile is found
+            setIsAdmin(true); // Admin if profile exists
           } else {
             console.warn("SessionContextProvider: Profile not found or fetch failed for user ID:", newSession.user.id);
             setProfile(null);
-            setIsAdmin(false);
+            setIsAdmin(false); // Not admin if no profile
           }
         } else {
           // User signed out or no session

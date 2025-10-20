@@ -16,30 +16,30 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 
 const AdminLoginPage: React.FC = () => {
   const navigate = useNavigate();
-  const { session, isAdmin, loading } = useSession();
+  const { session, profile, loading } = useSession(); // Use session and profile, remove isAdmin
   const [isForgotPasswordDialogOpen, setIsForgotPasswordDialogOpen] = useState(false);
   const [forgotPasswordEmail, setForgotPasswordEmail] = useState("");
 
   useEffect(() => {
-    console.log("AdminLoginPage: useEffect triggered. Loading:", loading, "Session:", !!session, "IsAdmin:", isAdmin);
+    console.log("AdminLoginPage: useEffect triggered. Loading:", loading, "Session:", !!session, "Profile:", !!profile);
     if (!loading) { // Only act once loading is complete
-      if (session && isAdmin) {
-        // If user is logged in and is an admin, redirect to admin dashboard
-        console.log("AdminLoginPage: Session and isAdmin are true, redirecting to /admin.");
+      if (session && profile) {
+        // If user is logged in and has a profile, redirect to admin dashboard
+        console.log("AdminLoginPage: Session and profile are true, redirecting to /admin.");
         navigate("/admin", { replace: true });
-      } else if (session && !isAdmin) {
-        // If user is logged in but NOT an admin, show a toast and keep them on the login page
-        console.warn("AdminLoginPage: Authenticated user is not an admin. Showing error toast.");
+      } else if (session && !profile) {
+        // If user is logged in but has NO profile, show a toast and keep them on the login page
+        console.warn("AdminLoginPage: Authenticated user has no profile. Showing error toast.");
         toast.error("You do not have administrator privileges.");
         // No redirect here, user stays on login page but sees the error.
       }
       // If !session, stay on login page to allow login
     }
-  }, [session, isAdmin, loading, navigate]);
+  }, [session, profile, loading, navigate]);
 
   const handleAuthSuccess = () => {
-    // If login was successful and user is admin, useEffect will handle redirect.
-    // If login was successful but user is not admin, the useEffect will show a toast.
+    // If login was successful and user has a profile, useEffect will handle redirect.
+    // If login was successful but user has no profile, the useEffect will show a toast.
   };
 
   const handleForgotPasswordSubmit = async () => {

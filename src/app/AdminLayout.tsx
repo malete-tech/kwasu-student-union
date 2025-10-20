@@ -15,25 +15,25 @@ const AdminLayout: React.FC = () => {
   const isMobile = useIsMobile();
   const [isSheetOpen, setIsSheetOpen] = React.useState(false);
   const navigate = useNavigate();
-  const { session, isAdmin, loading } = useSession(); // Use the session context
+  const { session, profile, loading } = useSession(); // Use session and profile, remove isAdmin
 
   const closeSheet = () => setIsSheetOpen(false);
 
   useEffect(() => {
-    console.log("AdminLayout: useEffect triggered. Loading:", loading, "Session:", !!session, "IsAdmin:", isAdmin);
-    // Only act once loading is complete AND isAdmin is definitively set (not undefined)
-    if (!loading && isAdmin !== undefined) {
+    console.log("AdminLayout: useEffect triggered. Loading:", loading, "Session:", !!session, "Profile:", !!profile);
+    // Only act once loading is complete
+    if (!loading) {
       if (!session) {
         // If not loading and no session, redirect to login
         console.log("AdminLayout: No session found, redirecting to /admin/login.");
         navigate("/admin/login", { replace: true });
-      } else if (!isAdmin) {
-        // If logged in but not admin, redirect to home or a non-admin page
-        console.warn("AdminLayout: Authenticated user is not an admin. Redirecting to home.");
+      } else if (!profile) {
+        // If logged in but no profile, redirect to home (not an admin)
+        console.warn("AdminLayout: Authenticated user has no profile. Redirecting to home.");
         navigate("/", { replace: true });
       }
     }
-  }, [session, isAdmin, loading, navigate]);
+  }, [session, profile, loading, navigate]);
 
   // Placeholder for logout logic
   const handleLogout = async () => {
@@ -49,7 +49,7 @@ const AdminLayout: React.FC = () => {
   };
 
   // Show a loading spinner or a simple message while checking auth state
-  if (loading || isAdmin === undefined) { 
+  if (loading || (session && profile === undefined)) { // Also check if profile is still undefined while session exists
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-100">
         <p className="text-brand-700">Checking administrator access...</p>
@@ -57,8 +57,8 @@ const AdminLayout: React.FC = () => {
     );
   }
 
-  // Only render the layout if session exists and user is an admin
-  if (session && isAdmin) {
+  // Only render the layout if session and profile exist (meaning user is an admin)
+  if (session && profile) {
     return (
       <>
         <Helmet>

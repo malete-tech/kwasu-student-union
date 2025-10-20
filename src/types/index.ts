@@ -99,6 +99,5 @@ export interface Profile {
   first_name?: string;
   last_name?: string;
   avatar_url?: string;
-  is_admin: boolean;
   updated_at?: string;
 }
