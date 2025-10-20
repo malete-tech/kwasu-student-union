@@ -136,18 +136,18 @@ const EditExecutive: React.FC = () => {
         name: values.name,
         slug: values.slug,
         role: values.role,
-        faculty: values.faculty || undefined, // Changed from null to undefined
-        tenureStart: values.tenureStart.toISOString().split('T')[0],
-        tenureEnd: values.tenureEnd.toISOString().split('T')[0],
-        photoUrl: values.photoUrl || undefined, // Changed from null to undefined
+        faculty: values.faculty || undefined,
+        tenureStart: values.tenureStart.toISOString().split('T')[0]!, // Added non-null assertion
+        tenureEnd: values.tenureEnd.toISOString().split('T')[0]!, // Added non-null assertion
+        photoUrl: values.photoUrl || undefined,
         bioMd: values.bioMd,
         manifestoMd: values.manifestoMd,
-        projectsMd: values.projectsMd || undefined, // Changed from null to undefined
+        projectsMd: values.projectsMd || undefined,
         contacts: {
-          email: values.contactEmail || undefined, // Changed from null to undefined
-          twitter: values.contactTwitter || undefined, // Changed from null to undefined
-          instagram: values.contactInstagram || undefined, // Changed from null to undefined
-          phone: values.contactPhone || undefined, // Changed from null to undefined
+          email: values.contactEmail || undefined,
+          twitter: values.contactTwitter || undefined,
+          instagram: values.contactInstagram || undefined,
+          phone: values.contactPhone || undefined,
         },
       };
       await api.executives.update(executiveId, updatedExecutive);
@@ -445,7 +445,7 @@ const EditExecutive: React.FC = () => {
                 name="contactInstagram"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Instagram Handle</Label>
+                    <FormLabel>Instagram Handle</FormLabel>
                     <FormControl>
                       <Input placeholder="johndoe_kwasu" {...field} className="focus-visible:ring-brand-gold" />
                     </FormControl>
