@@ -21,8 +21,8 @@ const AdminLayout: React.FC = () => {
 
   useEffect(() => {
     console.log("AdminLayout: useEffect triggered. Loading:", loading, "Session:", !!session, "IsAdmin:", isAdmin);
-    // Only act once loading is complete
-    if (!loading) {
+    // Only act once loading is complete AND isAdmin is definitively set (not undefined)
+    if (!loading && isAdmin !== undefined) {
       if (!session) {
         // If not loading and no session, redirect to login
         console.log("AdminLayout: No session found, redirecting to /admin/login.");
@@ -49,7 +49,7 @@ const AdminLayout: React.FC = () => {
   };
 
   // Show a loading spinner or a simple message while checking auth state
-  if (loading) { 
+  if (loading || isAdmin === undefined) { 
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-100">
         <p className="text-brand-700">Checking administrator access...</p>
@@ -68,12 +68,12 @@ const AdminLayout: React.FC = () => {
         <div className="flex min-h-screen bg-gray-100">
           {/* Desktop Sidebar */}
           {!isMobile && (
-            <aside className="flex flex-col h-screen w-64 bg-brand-800 text-white p-4 shadow-xl">
+            <aside className="fixed top-0 left-0 flex flex-col h-screen w-64 bg-brand-800 text-white p-4 shadow-xl z-40">
               <AdminNavigation onLogout={handleLogout} /> {/* Pass handleLogout */}
             </aside>
           )}
 
-          <div className="flex-1 flex flex-col">
+          <div className="flex-1 flex flex-col lg:ml-64"> {/* Added ml-64 for desktop */}
             <header className="w-full bg-white shadow-sm h-16 flex items-center px-6 justify-between lg:justify-start">
               <h1 className="text-2xl font-semibold text-brand-700">Admin Dashboard</h1>
               {/* Mobile Menu Button */}
