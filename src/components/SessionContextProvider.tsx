@@ -80,7 +80,7 @@ export const SessionContextProvider: React.FC<{ children: React.ReactNode }> = (
           if (fetchedProfile) {
             console.log("SessionContextProvider: Profile data fetched:", fetchedProfile);
             setProfile(fetchedProfile);
-            setIsAdmin(fetchedProfile.is_admin || false);
+            setIsAdmin(true); // Set isAdmin to true if a profile is found
           } else {
             console.warn("SessionContextProvider: Profile not found or fetch failed for user ID:", newSession.user.id);
             setProfile(null);
