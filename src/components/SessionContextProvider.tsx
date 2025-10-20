@@ -4,7 +4,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { Session, User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { Profile } from '@/types';
-import { PostgrestError } from '@supabase/supabase-js';
+
 
 interface SessionContextType {
   session: Session | null;
@@ -12,11 +12,6 @@ interface SessionContextType {
   profile: Profile | null;
   isAdmin: boolean;
   loading: boolean;
-}
-
-interface SupabaseProfileQueryResult {
-  data: Profile | null;
-  error: PostgrestError | null;
 }
 
 const SessionContext = createContext<SessionContextType>({
@@ -37,6 +32,26 @@ export const SessionContextProvider: React.FC<{ children: React.ReactNode }> = (
   useEffect(() => {
     console.log("SessionContextProvider: Initializing auth state listener.");
 
+    const fetchProfileWithTimeout = async (userId: string): Promise<Profile | null> => {
+      try {
+        const { data, error } = await Promise.race([
+          supabase.from('profiles').select('*').eq('id', userId).single(),
+          new Promise<never>((_, reject) =>
+            setTimeout(() => reject(new Error("Profile fetch timed out after 10 seconds.")), 10000)
+          )
+        ]);
+
+        if (error && error.code !== 'PGRST116') { // PGRST116 means no rows found
+          console.error("SessionContextProvider: Supabase error fetching profile:", error);
+          return null;
+        }
+        return data as Profile | null;
+      } catch (e: any) {
+        console.error("SessionContextProvider: Error or timeout during profile fetch:", e);
+        return null; // Return null on timeout or other errors
+      }
+    };
+
     const handleAuthEvent = async (event: string, newSession: Session | null) => {
       console.log(`SessionContextProvider: Processing auth event: ${event}. New session: ${newSession ? "present" : "null"}.`);
       setLoading(true); // Always set loading true at the start of an auth event processing
@@ -49,31 +64,15 @@ export const SessionContextProvider: React.FC<{ children: React.ReactNode }> = (
       if (newSession?.user) {
         const userId = newSession.user.id;
         console.log("SessionContextProvider: User present. Attempting to fetch profile for user ID:", userId);
-
-        const profileFetchPromise = supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', userId)
-          .single();
-
-        const timeoutPromise = new Promise<never>((_, reject) =>
-          setTimeout(() => reject(new Error("Profile fetch timed out after 10 seconds.")), 10000)
-        );
-
-        try {
-          const result = await Promise.race([profileFetchPromise, timeoutPromise]) as SupabaseProfileQueryResult;
-          if (result.data) {
-            console.log("SessionContextProvider: Profile data fetched:", result.data);
-            setProfile(result.data);
-            setIsAdmin(result.data.is_admin || false);
-          } else if (result.error && result.error.code === 'PGRST116') {
-            console.warn("SessionContextProvider: No profile found for user ID:", userId);
-          } else if (result.error) {
-            console.error("SessionContextProvider: Supabase error fetching profile:", result.error);
-          }
-        } catch (e: any) {
-          console.error("SessionContextProvider: Error or timeout during profile fetch:", e);
-          // If timeout or other error, profile and isAdmin remain null/false as set above
+        const fetchedProfile = await fetchProfileWithTimeout(userId);
+        
+        if (fetchedProfile) {
+          console.log("SessionContextProvider: Profile data fetched:", fetchedProfile);
+          setProfile(fetchedProfile);
+          setIsAdmin(fetchedProfile.is_admin || false);
+        } else {
+          console.warn("SessionContextProvider: Profile not found or fetch failed for user ID:", userId);
+          // Profile and isAdmin remain null/false as initialized
         }
       } else {
         console.log("SessionContextProvider: No user in session. Profile and isAdmin remain null/false.");
@@ -89,19 +88,9 @@ export const SessionContextProvider: React.FC<{ children: React.ReactNode }> = (
       }
     );
 
-    // Also fetch initial session explicitly to ensure state is set on first load
-    // This is important for cases where onAuthStateChange 'INITIAL_SESSION' might not fire immediately
-    // or if the component mounts after it has fired.
-    const getInitialSession = async () => {
-      const { data: { session: initialSession } } = await supabase.auth.getSession();
-      if (initialSession) {
-        await handleAuthEvent('INITIAL_SESSION_FETCH', initialSession);
-      } else {
-        await handleAuthEvent('INITIAL_SESSION_FETCH', null);
-      }
-    };
-    getInitialSession();
-
+    // The onAuthStateChange 'INITIAL_SESSION' event should cover the initial load.
+    // Explicitly fetching initial session here is redundant and can cause race conditions.
+    // Removed: getInitialSession();
 
     return () => {
       console.log("SessionContextProvider: Cleaning up auth state change subscription.");
