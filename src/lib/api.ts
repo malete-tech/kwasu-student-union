@@ -52,7 +52,16 @@ export const api = {
       return data as News | undefined;
     },
     create: async (news: Omit<News, 'id' | 'created_at'>): Promise<News> => {
-      const { data, error } = await supabase.from('news').insert(news).select().single();
+      const { title, slug, excerpt, bodyMd, tags, publishedAt, coverUrl } = news;
+      const { data, error } = await supabase.from('news').insert({
+        title,
+        slug,
+        excerpt,
+        body_md: bodyMd,
+        tags,
+        published_at: publishedAt,
+        cover_url: coverUrl,
+      }).select().single();
       if (error) {
         console.error("Supabase error creating news:", error);
         throw new Error(error.message);
@@ -60,7 +69,21 @@ export const api = {
       return data as News;
     },
     update: async (id: string, news: Partial<Omit<News, 'id' | 'created_at'>>): Promise<News> => {
-      const { data, error } = await supabase.from('news').update(news).eq('id', id).select().single();
+      const updatePayload: Record<string, any> = { ...news };
+      if (updatePayload['bodyMd'] !== undefined) {
+        updatePayload['body_md'] = updatePayload['bodyMd'];
+        delete updatePayload['bodyMd'];
+      }
+      if (updatePayload['publishedAt'] !== undefined) {
+        updatePayload['published_at'] = updatePayload['publishedAt'];
+        delete updatePayload['publishedAt'];
+      }
+      if (updatePayload['coverUrl'] !== undefined) {
+        updatePayload['cover_url'] = updatePayload['coverUrl'];
+        delete updatePayload['coverUrl'];
+      }
+
+      const { data, error } = await supabase.from('news').update(updatePayload).eq('id', id).select().single();
       if (error) {
         console.error("Supabase error updating news:", error);
         throw new Error(error.message);
