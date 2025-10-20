@@ -35,31 +35,10 @@ export const SessionContextProvider: React.FC<{ children: React.ReactNode }> = (
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    console.log("SessionContextProvider: Initializing auth state listener and fetching initial session.");
+    console.log("SessionContextProvider: Initializing auth state listener.");
 
-    const getInitialSession = async () => {
-      setLoading(true);
-      try {
-        const { data: { session: initialSession }, error: sessionError } = await supabase.auth.getSession();
-        if (sessionError) {
-          console.error("SessionContextProvider: Error fetching initial session:", sessionError);
-          throw sessionError;
-        }
-        console.log("SessionContextProvider: Initial session fetched:", initialSession ? "present" : "null");
-        await handleSessionChange(initialSession); // Process the initial session
-      } catch (e) {
-        console.error("SessionContextProvider: Error during initial session fetch:", e);
-        setSession(null);
-        setUser(null);
-        setProfile(null);
-        setIsAdmin(false);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    const handleSessionChange = async (newSession: Session | null) => {
-      console.log(`SessionContextProvider: Processing session change. New session: ${newSession ? "present" : "null"}.`);
+    const handleSessionChange = async (newSession: Session | null, event: string) => {
+      console.log(`SessionContextProvider: Processing auth event: ${event}. New session: ${newSession ? "present" : "null"}.`);
       setLoading(true); // Set loading true while processing session change
 
       try {
@@ -76,8 +55,9 @@ export const SessionContextProvider: React.FC<{ children: React.ReactNode }> = (
             .eq('id', userId)
             .single();
 
+          // Increased timeout to 10 seconds
           const timeoutPromise = new Promise<never>((_, reject) =>
-            setTimeout(() => reject(new Error("Profile fetch timed out after 5 seconds.")), 5000)
+            setTimeout(() => reject(new Error("Profile fetch timed out after 10 seconds.")), 10000)
           );
 
           let profileData: Profile | null = null;
@@ -121,21 +101,17 @@ export const SessionContextProvider: React.FC<{ children: React.ReactNode }> = (
         setProfile(null);
         setIsAdmin(false);
       } finally {
-        console.log("SessionContextProvider: Session change processing finished. Setting loading to false.");
+        console.log(`SessionContextProvider: Auth state change processing finished for event ${event}. Setting loading to false.`);
         setLoading(false);
       }
     };
 
-    // Fetch initial session on mount
-    getInitialSession();
-
     // Set up auth state change listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, newSession) => {
-        console.log(`SessionContextProvider: Auth state change event: ${event}.`);
         // Only process if the session actually changed or it's an initial session event
         if (event === 'SIGNED_IN' || event === 'SIGNED_OUT' || event === 'USER_UPDATED' || event === 'INITIAL_SESSION') {
-          await handleSessionChange(newSession);
+          await handleSessionChange(newSession, event);
         }
       }
     );
