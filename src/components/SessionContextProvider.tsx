@@ -10,7 +10,7 @@ interface SessionContextType {
   session: Session | null;
   user: User | null;
   profile: Profile | null;
-  isAdmin: boolean;
+  isAdmin: boolean | undefined; // Changed to allow undefined
   loading: boolean;
 }
 
@@ -20,7 +20,7 @@ export const SessionContextProvider: React.FC<{ children: React.ReactNode }> = (
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
-  const [isAdmin, setIsAdmin] = useState<boolean>(false);
+  const [isAdmin, setIsAdmin] = useState<boolean | undefined>(undefined); // Initialize as undefined
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
@@ -52,7 +52,7 @@ export const SessionContextProvider: React.FC<{ children: React.ReactNode }> = (
                 console.error("SessionContextProvider: Supabase error fetching profile:", profileError);
               }
               setProfile(null);
-              setIsAdmin(false);
+              setIsAdmin(false); // Explicitly set to false if no profile or error
             } else if (profileData) {
               console.log("SessionContextProvider: Profile data fetched:", profileData);
               setProfile(profileData);
@@ -65,7 +65,7 @@ export const SessionContextProvider: React.FC<{ children: React.ReactNode }> = (
           } else {
             console.log("SessionContextProvider: No user in session. Resetting profile and isAdmin.");
             setProfile(null);
-            setIsAdmin(false);
+            setIsAdmin(false); // Explicitly set to false if no user
           }
         } catch (e) {
           console.error("SessionContextProvider: Unexpected error during auth state change processing:", e);
@@ -75,6 +75,7 @@ export const SessionContextProvider: React.FC<{ children: React.ReactNode }> = (
           setIsAdmin(false);
         } finally {
           console.log(`SessionContextProvider: Auth state change processing finished for event ${event}. Setting loading to false.`);
+          console.log(`SessionContextProvider: Final state - session: ${!!newSession}, user: ${!!newSession?.user}, isAdmin: ${isAdmin}, profile: ${!!profile}`);
           setLoading(false);
         }
       }
