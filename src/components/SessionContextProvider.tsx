@@ -21,6 +21,9 @@ const SessionContext = createContext<SessionContextType>({
   loading: true, // Start as true, indicating we are checking auth state
 });
 
+// Define a timeout for profile fetching (e.g., 10 seconds)
+const PROFILE_FETCH_TIMEOUT_MS = 10000; 
+
 export const SessionContextProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
@@ -28,9 +31,23 @@ export const SessionContextProvider: React.FC<{ children: React.ReactNode }> = (
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true); // True until initial check is done
 
-  const fetchUserProfile = useCallback(async (userId: string) => {
+  const fetchProfileWithTimeout = useCallback(async (userId: string): Promise<Profile | null> => {
+    const profilePromise = supabase.from('profiles').select('*').eq('id', userId).single();
+    const timeoutPromise = new Promise<null>((resolve) =>
+      setTimeout(() => {
+        console.warn(`SessionContextProvider: Profile fetch timed out after ${PROFILE_FETCH_TIMEOUT_MS / 1000} seconds for user ID: ${userId}`);
+        resolve(null); // Resolve with null on timeout
+      }, PROFILE_FETCH_TIMEOUT_MS)
+    );
+
     try {
-      const { data, error } = await supabase.from('profiles').select('*').eq('id', userId).single();
+      const result = await Promise.race([profilePromise, timeoutPromise]);
+
+      if (result === null) {
+        return null; // Timeout occurred
+      }
+
+      const { data, error } = result; // Destructure data and error from the resolved promise
 
       if (error && error.code !== 'PGRST116') { // PGRST116 means no rows found
         console.error("SessionContextProvider: Supabase error fetching profile:", error);
@@ -50,7 +67,7 @@ export const SessionContextProvider: React.FC<{ children: React.ReactNode }> = (
       async (event, newSession) => {
         console.log(`SessionContextProvider: Auth event: ${event}. New session: ${newSession ? "present" : "null"}`);
         
-        // Reset loading to true for any new auth event processing
+        // Always set loading to true at the start of processing a new auth event
         setLoading(true); 
 
         if (newSession) {
@@ -58,7 +75,7 @@ export const SessionContextProvider: React.FC<{ children: React.ReactNode }> = (
           setUser(newSession.user);
 
           console.log("SessionContextProvider: User present. Attempting to fetch profile for user ID:", newSession.user.id);
-          const fetchedProfile = await fetchUserProfile(newSession.user.id);
+          const fetchedProfile = await fetchProfileWithTimeout(newSession.user.id);
           
           if (fetchedProfile) {
             console.log("SessionContextProvider: Profile data fetched:", fetchedProfile);
@@ -87,7 +104,7 @@ export const SessionContextProvider: React.FC<{ children: React.ReactNode }> = (
       console.log("SessionContextProvider: Cleaning up auth state change subscription.");
       subscription.unsubscribe();
     };
-  }, [fetchUserProfile]); // Depend on fetchUserProfile
+  }, [fetchProfileWithTimeout]); // Depend on fetchProfileWithTimeout
 
   return (
     <SessionContext.Provider value={{ session, user, profile, isAdmin, loading }}>
