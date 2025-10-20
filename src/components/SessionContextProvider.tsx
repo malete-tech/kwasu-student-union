@@ -5,7 +5,6 @@ import { Session, User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { Profile } from '@/types';
 
-
 interface SessionContextType {
   session: Session | null;
   user: User | null;
@@ -32,12 +31,14 @@ export const SessionContextProvider: React.FC<{ children: React.ReactNode }> = (
   useEffect(() => {
     console.log("SessionContextProvider: Initializing auth state listener.");
 
+    const PROFILE_FETCH_TIMEOUT = 30000; // Increased timeout to 30 seconds
+
     const fetchProfileWithTimeout = async (userId: string): Promise<Profile | null> => {
       try {
         const { data, error } = await Promise.race([
           supabase.from('profiles').select('*').eq('id', userId).single(),
           new Promise<never>((_, reject) =>
-            setTimeout(() => reject(new Error("Profile fetch timed out after 10 seconds.")), 10000)
+            setTimeout(() => reject(new Error(`Profile fetch timed out after ${PROFILE_FETCH_TIMEOUT / 1000} seconds.`)), PROFILE_FETCH_TIMEOUT)
           )
         ]);
 
