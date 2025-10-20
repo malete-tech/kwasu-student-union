@@ -1,16 +1,83 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Users, Newspaper, CalendarDays, MessageSquare } from "lucide-react";
+import { api } from "@/lib/api";
+// Removed unused imports: import { News, Event, Executive } from "@/types";
+import { Skeleton } from "@/components/ui/skeleton";
+import { format } from "date-fns";
+import { Link } from "react-router-dom";
 
 const DashboardOverview: React.FC = () => {
+  const [totalNews, setTotalNews] = useState<number | null>(null);
+  const [upcomingEventsCount, setUpcomingEventsCount] = useState<number | null>(null);
+  const [activeExecutivesCount, setActiveExecutivesCount] = useState<number | null>(null);
+  const [recentActivities, setRecentActivities] = useState<Array<{ type: 'news' | 'event'; title: string; date: string; link: string }>>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        // Fetch counts
+        const newsData = await api.news.getAll();
+        setTotalNews(newsData.length);
+
+        const eventsData = await api.events.getUpcoming(100); // Fetch more to get an accurate count of upcoming
+        setUpcomingEventsCount(eventsData.length);
+
+        const executivesData = await api.executives.getAll();
+        setActiveExecutivesCount(executivesData.length);
+
+        // Fetch recent activities (latest 3 news, next 2 events)
+        const latestNews = await api.news.getLatest(3);
+        const nextEvents = await api.events.getUpcoming(2);
+
+        const combinedActivities = [
+          ...latestNews.map(n => ({
+            type: 'news' as const,
+            title: n.title,
+            date: n.publishedAt,
+            link: `/admin/news/edit/${n.slug}`
+          })),
+          ...nextEvents.map(e => ({
+            type: 'event' as const,
+            title: e.title,
+            date: e.startsAt,
+            link: `/admin/events/edit/${e.slug}` // Assuming an edit event route exists
+          }))
+        ];
+
+        // Sort activities by date, most recent first for news, soonest first for events
+        combinedActivities.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+        setRecentActivities(combinedActivities.slice(0, 5)); // Limit to 5 recent activities
+
+      } catch (err) {
+        console.error("Failed to fetch dashboard data:", err);
+        setError("Failed to load dashboard data. Please try again.");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
   return (
     <div className="space-y-6">
       <h2 className="text-3xl font-bold text-brand-700">Welcome to the Admin Dashboard!</h2>
       <p className="text-muted-foreground">
         Here you can manage all aspects of the KWASU Students' Union website.
       </p>
+
+      {error && (
+        <div className="text-destructive text-center text-lg p-4 border border-destructive rounded-md">
+          {error}
+        </div>
+      )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <Card className="shadow-lg rounded-xl">
@@ -19,8 +86,12 @@ const DashboardOverview: React.FC = () => {
             <Newspaper className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">50+</div>
-            <p className="text-xs text-muted-foreground">+20% from last month</p>
+            {loading ? (
+              <Skeleton className="h-8 w-1/2" />
+            ) : (
+              <div className="text-2xl font-bold">{totalNews !== null ? totalNews : "N/A"}</div>
+            )}
+            <p className="text-xs text-muted-foreground">+20% from last month</p> {/* Placeholder for trend */}
           </CardContent>
         </Card>
         <Card className="shadow-lg rounded-xl">
@@ -29,8 +100,12 @@ const DashboardOverview: React.FC = () => {
             <CalendarDays className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">12</div>
-            <p className="text-xs text-muted-foreground">+3 new this week</p>
+            {loading ? (
+              <Skeleton className="h-8 w-1/2" />
+            ) : (
+              <div className="text-2xl font-bold">{upcomingEventsCount !== null ? upcomingEventsCount : "N/A"}</div>
+            )}
+            <p className="text-xs text-muted-foreground">+3 new this week</p> {/* Placeholder for trend */}
           </CardContent>
         </Card>
         <Card className="shadow-lg rounded-xl">
@@ -39,7 +114,11 @@ const DashboardOverview: React.FC = () => {
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">15</div>
+            {loading ? (
+              <Skeleton className="h-8 w-1/2" />
+            ) : (
+              <div className="text-2xl font-bold">{activeExecutivesCount !== null ? activeExecutivesCount : "N/A"}</div>
+            )}
             <p className="text-xs text-muted-foreground">Current tenure</p>
           </CardContent>
         </Card>
@@ -49,7 +128,7 @@ const DashboardOverview: React.FC = () => {
             <MessageSquare className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">7</div>
+            <div className="text-2xl font-bold">7</div> {/* Static for now, as complaints are not in Supabase */}
             <p className="text-xs text-muted-foreground">Needs attention</p>
           </CardContent>
         </Card>
@@ -58,12 +137,28 @@ const DashboardOverview: React.FC = () => {
       <Card className="shadow-lg rounded-xl p-6">
         <CardTitle className="text-xl font-semibold mb-4 text-brand-700">Recent Activity</CardTitle>
         <CardContent>
-          <ul className="list-disc list-inside text-muted-foreground space-y-2">
-            <li>John Doe updated "KWASU SU Elections 2024" news article.</li>
-            <li>New event "Freshers' Welcome Party" added by Jane Smith.</li>
-            <li>Complaint #C-20241234 status changed to "In Review".</li>
-            <li>New document "Revised Student Handbook" uploaded.</li>
-          </ul>
+          {loading ? (
+            <div className="space-y-2">
+              {[...Array(3)].map((_, i) => (
+                <Skeleton key={i} className="h-5 w-full" />
+              ))}
+            </div>
+          ) : recentActivities.length > 0 ? (
+            <ul className="list-disc list-inside text-muted-foreground space-y-2">
+              {recentActivities.map((activity, index) => (
+                <li key={index}>
+                  <Link to={activity.link} className="text-brand-500 hover:underline">
+                    {activity.type === 'news' ? "News Update:" : "Event Update:"} {activity.title}
+                  </Link>
+                  <span className="ml-2 text-xs text-gray-500">
+                    ({format(new Date(activity.date), "MMM dd, yyyy")})
+                  </span>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-muted-foreground text-sm">No recent activity to display.</p>
+          )}
         </CardContent>
       </Card>
     </div>
