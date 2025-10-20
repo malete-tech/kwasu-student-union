@@ -9,12 +9,6 @@ import {
 } from "@/types";
 import { supabase } from "@/integrations/supabase/client"; // Import Supabase client
 
-// Import mock data (keeping for other sections not yet migrated to Supabase)
-import eventsData from "@/data/events.json";
-import documentsData from "@/data/documents.json";
-import opportunitiesData from "@/data/opportunities.json";
-import studentSpotlightData from "@/data/student-spotlight.json";
-
 const SIMULATED_DELAY = 500; // milliseconds
 
 const simulateAsync = <T>(data: T): Promise<T> => {
@@ -132,7 +126,16 @@ export const api = {
         console.error("Supabase error fetching executives:", error);
         throw new Error(error.message);
       }
-      return data as Executive[];
+      // Convert snake_case from DB to camelCase for frontend type
+      return data.map(item => ({
+        ...item,
+        tenureStart: item.tenure_start,
+        tenureEnd: item.tenure_end,
+        photoUrl: item.photo_url,
+        bioMd: item.bio_md,
+        manifestoMd: item.manifesto_md,
+        projectsMd: item.projects_md,
+      })) as Executive[];
     },
     getBySlug: async (slug: string): Promise<Executive | undefined> => {
       const { data, error } = await supabase.from('executives').select('*').eq('slug', slug).single();
@@ -140,23 +143,77 @@ export const api = {
         console.error("Supabase error fetching executive by slug:", error);
         throw new Error(error.message);
       }
-      return data as Executive | undefined;
+      if (!data) return undefined;
+      // Convert snake_case from DB to camelCase for frontend type
+      return {
+        ...data,
+        tenureStart: data.tenure_start,
+        tenureEnd: data.tenure_end,
+        photoUrl: data.photo_url,
+        bioMd: data.bio_md,
+        manifestoMd: data.manifesto_md,
+        projectsMd: data.projects_md,
+      } as Executive;
     },
     create: async (executive: Omit<Executive, 'id' | 'created_at'>): Promise<Executive> => {
-      const { data, error } = await supabase.from('executives').insert(executive).select().single();
+      // Explicitly construct payload with snake_case keys for Supabase insert
+      const { data, error } = await supabase.from('executives').insert({
+        name: executive.name,
+        slug: executive.slug,
+        role: executive.role,
+        faculty: executive.faculty,
+        tenure_start: executive.tenureStart,
+        tenure_end: executive.tenureEnd,
+        photo_url: executive.photoUrl,
+        bio_md: executive.bioMd,
+        manifesto_md: executive.manifestoMd,
+        projects_md: executive.projectsMd,
+        contacts: executive.contacts,
+      }).select().single();
       if (error) {
         console.error("Supabase error creating executive:", error);
         throw new Error(error.message);
       }
-      return data as Executive;
+      // Convert returned snake_case data back to camelCase for frontend type
+      return {
+        ...data,
+        tenureStart: data.tenure_start,
+        tenureEnd: data.tenure_end,
+        photoUrl: data.photo_url,
+        bioMd: data.bio_md,
+        manifestoMd: data.manifesto_md,
+        projectsMd: data.projects_md,
+      } as Executive;
     },
     update: async (id: string, executive: Partial<Omit<Executive, 'id' | 'created_at'>>): Promise<Executive> => {
-      const { data, error } = await supabase.from('executives').update(executive).eq('id', id).select().single();
+      const updatePayload: Record<string, any> = {};
+      if (executive.name !== undefined) updatePayload['name'] = executive.name;
+      if (executive.slug !== undefined) updatePayload['slug'] = executive.slug;
+      if (executive.role !== undefined) updatePayload['role'] = executive.role;
+      if (executive.faculty !== undefined) updatePayload['faculty'] = executive.faculty;
+      if (executive.tenureStart !== undefined) updatePayload['tenure_start'] = executive.tenureStart;
+      if (executive.tenureEnd !== undefined) updatePayload['tenure_end'] = executive.tenureEnd;
+      if (executive.photoUrl !== undefined) updatePayload['photo_url'] = executive.photoUrl;
+      if (executive.bioMd !== undefined) updatePayload['bio_md'] = executive.bioMd;
+      if (executive.manifestoMd !== undefined) updatePayload['manifesto_md'] = executive.manifestoMd;
+      if (executive.projectsMd !== undefined) updatePayload['projects_md'] = executive.projectsMd;
+      if (executive.contacts !== undefined) updatePayload['contacts'] = executive.contacts;
+
+      const { data, error } = await supabase.from('executives').update(updatePayload).eq('id', id).select().single();
       if (error) {
         console.error("Supabase error updating executive:", error);
         throw new Error(error.message);
       }
-      return data as Executive;
+      // Convert returned snake_case data back to camelCase for frontend type
+      return {
+        ...data,
+        tenureStart: data.tenure_start,
+        tenureEnd: data.tenure_end,
+        photoUrl: data.photo_url,
+        bioMd: data.bio_md,
+        manifestoMd: data.manifesto_md,
+        projectsMd: data.projects_md,
+      } as Executive;
     },
     delete: async (id: string): Promise<void> => {
       const { error } = await supabase.from('executives').delete().eq('id', id);
@@ -167,33 +224,98 @@ export const api = {
     },
   },
   events: {
-    getAll: (): Promise<Event[]> => simulateAsync(eventsData as Event[]),
-    getUpcoming: (count: number): Promise<Event[]> =>
-      simulateAsync(
-        (eventsData as Event[])
-          .filter((event) => new Date(event.startsAt) > new Date())
-          .sort(
-            (a, b) =>
-              new Date(a.startsAt).getTime() - new Date(b.startsAt).getTime(),
-          )
-          .slice(0, count),
-      ),
-    getBySlug: (slug: string): Promise<Event | undefined> =>
-      simulateAsync(
-        (eventsData as Event[]).find((item) => item.slug === slug),
-      ),
+    getAll: async (): Promise<Event[]> => {
+      const { data, error } = await supabase.from('events').select('*').order('starts_at', { ascending: true });
+      if (error) {
+        console.error("Supabase error fetching events:", error);
+        throw new Error(error.message);
+      }
+      return data.map(item => ({
+        ...item,
+        startsAt: item.starts_at,
+        endsAt: item.ends_at,
+        descriptionMd: item.description_md,
+        rsvpOpen: item.rsvp_open,
+        agendaMd: item.agenda_md,
+      })) as Event[];
+    },
+    getUpcoming: async (count: number): Promise<Event[]> => {
+      const { data, error } = await supabase.from('events')
+        .select('*')
+        .gte('starts_at', new Date().toISOString()) // Only future events
+        .order('starts_at', { ascending: true })
+        .limit(count);
+      if (error) {
+        console.error("Supabase error fetching upcoming events:", error);
+        throw new Error(error.message);
+      }
+      return data.map(item => ({
+        ...item,
+        startsAt: item.starts_at,
+        endsAt: item.ends_at,
+        descriptionMd: item.description_md,
+        rsvpOpen: item.rsvp_open,
+        agendaMd: item.agenda_md,
+      })) as Event[];
+    },
+    getBySlug: async (slug: string): Promise<Event | undefined> => {
+      const { data, error } = await supabase.from('events').select('*').eq('slug', slug).single();
+      if (error && error.code !== 'PGRST116') {
+        console.error("Supabase error fetching event by slug:", error);
+        throw new Error(error.message);
+      }
+      if (!data) return undefined;
+      return {
+        ...data,
+        startsAt: data.starts_at,
+        endsAt: data.ends_at,
+        descriptionMd: data.description_md,
+        rsvpOpen: data.rsvp_open,
+        agendaMd: data.agenda_md,
+      } as Event;
+    },
   },
   documents: {
-    getAll: (): Promise<Document[]> =>
-      simulateAsync(documentsData as Document[]),
+    getAll: async (): Promise<Document[]> => {
+      const { data, error } = await supabase.from('documents').select('*').order('updated_at', { ascending: false });
+      if (error) {
+        console.error("Supabase error fetching documents:", error);
+        throw new Error(error.message);
+      }
+      return data.map(item => ({
+        ...item,
+        updatedAt: item.updated_at,
+        fileType: item.file_type,
+        fileSize: item.file_size,
+      })) as Document[];
+    },
   },
   opportunities: {
-    getAll: (): Promise<Opportunity[]> =>
-      simulateAsync(opportunitiesData as Opportunity[]),
+    getAll: async (): Promise<Opportunity[]> => {
+      const { data, error } = await supabase.from('opportunities').select('*').order('deadline', { ascending: true });
+      if (error) {
+        console.error("Supabase error fetching opportunities:", error);
+        throw new Error(error.message);
+      }
+      return data.map(item => ({
+        ...item,
+        descriptionMd: item.description_md,
+      })) as Opportunity[];
+    },
   },
   studentSpotlight: {
-    getAll: (): Promise<StudentSpotlight[]> =>
-      simulateAsync(studentSpotlightData as StudentSpotlight[]),
+    getAll: async (): Promise<StudentSpotlight[]> => {
+      const { data, error } = await supabase.from('student_spotlight').select('*').order('created_at', { ascending: false });
+      if (error) {
+        console.error("Supabase error fetching student spotlight:", error);
+        throw new Error(error.message);
+      }
+      return data.map(item => ({
+        ...item,
+        descriptionMd: item.description_md,
+        photoUrl: item.photo_url,
+      })) as StudentSpotlight[];
+    },
   },
   complaints: {
     // This will be handled by localStorage, not static JSON
