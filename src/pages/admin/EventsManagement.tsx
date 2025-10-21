@@ -98,22 +98,22 @@ const EventsManagement: React.FC = () => {
             <div className="space-y-4">
               {events.map((event) => (
                 <div key={event.id} className="flex items-center justify-between p-4 border rounded-lg shadow-sm">
-                  <div className="flex items-center space-x-4">
-                    <div className="p-2 rounded-full bg-brand-100 text-brand-700">
+                  <div className="flex items-center space-x-4 flex-1 min-w-0"> {/* Added flex-1 min-w-0 here */}
+                    <div className="p-2 rounded-full bg-brand-100 text-brand-700 flex-shrink-0">
                       <CalendarDays className="h-6 w-6" />
                     </div>
-                    <div>
-                      <h3 className="font-semibold text-brand-800">{event.title}</h3>
-                      <p className="text-sm text-muted-foreground">
+                    <div className="flex-1 min-w-0"> {/* Added flex-1 min-w-0 here */}
+                      <h3 className="font-semibold text-brand-800 truncate">{event.title}</h3> {/* Added truncate */}
+                      <p className="text-sm text-muted-foreground truncate"> {/* Added truncate */}
                         {format(new Date(event.startsAt), "PPP HH:mm")}
                         {event.endsAt && ` - ${format(new Date(event.endsAt), "PPP HH:mm")}`}
                       </p>
-                      <Badge variant="secondary" className="mt-1 bg-brand-100 text-brand-700">
+                      <Badge variant="secondary" className="mt-1 bg-brand-100 text-brand-700 flex-shrink-0">
                         {event.category}
                       </Badge>
                     </div>
                   </div>
-                  <div className="flex space-x-2">
+                  <div className="flex space-x-2 flex-shrink-0"> {/* Added flex-shrink-0 to buttons */}
                     <Button asChild variant="outline" size="icon" className="text-brand-500 hover:bg-brand-50 focus-visible:ring-brand-gold">
                       <Link to={`/admin/events/edit/${event.slug}`}>
                         <Edit className="h-4 w-4" />
