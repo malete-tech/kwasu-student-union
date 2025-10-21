@@ -10,6 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { FileText, Download } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import AboutHero from "@/components/AboutHero"; // New import
 
 const aboutContent = `
 ## Our Mission
@@ -58,8 +59,11 @@ const About = () => {
         <title>About Us | KWASU Students' Union</title>
         <meta name="description" content="Learn about the mission, vision, values, and history of KWASU Students' Union. Access our constitution and student handbook." />
       </Helmet>
+      
+      <AboutHero /> {/* Integrated the new hero section here */}
+
       <div className="container py-12">
-        <h1 className="text-4xl font-bold text-center mb-10 text-brand-700">About KWASU Students' Union</h1>
+        {/* Removed the h1 tag as it's now part of the hero section */}
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
