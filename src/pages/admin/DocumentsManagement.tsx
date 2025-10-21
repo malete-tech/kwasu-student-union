@@ -90,14 +90,14 @@ const DocumentsManagement: React.FC = () => {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h2 className="text-3xl font-bold text-brand-700">Documents Management</h2>
+        <h2 className="text-2xl sm:text-3xl font-bold text-brand-700">Documents Management</h2>
         <Button asChild className="bg-brand-500 hover:bg-brand-600 text-white focus-visible:ring-brand-gold">
           <Link to="/admin/documents/add">
             <PlusCircle className="mr-2 h-4 w-4" /> Upload New Document
           </Link>
         </Button>
       </div>
-      <Card className="shadow-lg rounded-xl p-6">
+      <Card className="shadow-lg rounded-xl p-4 sm:p-6">
         <CardHeader className="pb-4">
           <CardTitle className="text-xl font-semibold text-brand-700">Manage Downloadable Documents</CardTitle>
         </CardHeader>
