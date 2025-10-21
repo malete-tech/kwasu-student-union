@@ -16,30 +16,23 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 
 const AdminLoginPage: React.FC = () => {
   const navigate = useNavigate();
-  const { session, profile, loading } = useSession(); // Use session and profile
+  const { session, loading } = useSession();
   const [isForgotPasswordDialogOpen, setIsForgotPasswordDialogOpen] = useState(false);
   const [forgotPasswordEmail, setForgotPasswordEmail] = useState("");
 
   useEffect(() => {
-    console.log("AdminLoginPage: useEffect triggered. Loading:", loading, "Session:", !!session, "Profile:", !!profile);
-    if (!loading) { // Only act once loading is complete
-      if (session && profile) {
-        // If user is logged in and has a profile, redirect to admin dashboard
-        console.log("AdminLoginPage: Session and profile are true, redirecting to /admin.");
+    console.log("AdminLoginPage: useEffect triggered. Loading:", loading, "Session:", !!session);
+    if (!loading) {
+      if (session) {
+        console.log("AdminLoginPage: Session is true, redirecting to /admin.");
         navigate("/admin", { replace: true });
-      } else if (session && !profile) {
-        // If user is logged in but has NO profile, show a toast and keep them on the login page
-        console.warn("AdminLoginPage: Authenticated user has no profile. Showing error toast.");
-        toast.error("You do not have administrator privileges.");
-        // No redirect here, user stays on login page but sees the error.
       }
-      // If !session, stay on login page to allow login
     }
-  }, [session, profile, loading, navigate]);
+  }, [session, loading, navigate]);
 
   const handleAuthSuccess = () => {
-    // If login was successful and user has a profile, useEffect will handle redirect.
-    // If login was successful but user has no profile, the useEffect will show a toast.
+    // The useEffect above will now handle the redirect if a session is established.
+    // No specific profile check needed here.
   };
 
   const handleForgotPasswordSubmit = async () => {
@@ -113,7 +106,7 @@ const AdminLoginPage: React.FC = () => {
             <DialogDescription>
               Enter your email address and we'll send you a link to reset your password.
             </DialogDescription>
-          </DialogHeader>
+          </DialogHeader> {/* Corrected: Removed duplicate </DialogDescription> and added closing </DialogHeader> */}
           <div className="grid gap-4 py-4">
             <div className="grid gap-2">
               <Label htmlFor="email">Email</Label>

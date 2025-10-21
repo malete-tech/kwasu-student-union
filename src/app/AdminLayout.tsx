@@ -10,32 +10,30 @@ import { Menu } from "lucide-react";
 import AdminNavigation from "@/components/admin/AdminNavigation";
 import { useSession } from "@/components/SessionContextProvider";
 import { supabase } from "@/integrations/supabase/client";
+// Removed toast import as it's no longer needed for profile timeout errors
+
+// Removed PROFILE_LOAD_TIMEOUT constant
 
 const AdminLayout: React.FC = () => {
   const isMobile = useIsMobile();
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const navigate = useNavigate();
-  const { session, profile, loading } = useSession();
+  const { session, loading } = useSession(); // Removed profile from destructuring
+  // Removed timeoutReached state
 
   const closeSheet = () => setIsSheetOpen(false);
 
   useEffect(() => {
-    console.log("AdminLayout auth:", { loading, hasSession: !!session, profile });
+    console.log("AdminLayout auth:", { loading, hasSession: !!session }); // Simplified log
 
     if (loading) return; // still checking initial state
 
     if (!session) {
       console.log("No session → redirecting to /admin/login");
       navigate("/admin/login", { replace: true });
-      return;
     }
-
-    // redirect only after profile fetch completes (profile !== undefined)
-    if (profile === null) {
-      console.warn("Session present but no profile → redirecting to /");
-      navigate("/", { replace: true });
-    }
-  }, [session, profile, loading, navigate]);
+    // Removed all profile-specific redirect logic and timeout handling
+  }, [session, loading, navigate]); // Removed profile and timeoutReached from dependencies
 
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
@@ -45,8 +43,8 @@ const AdminLayout: React.FC = () => {
     closeSheet();
   };
 
-  // show loader until profile fetch completes
-  if (loading || profile === undefined) {
+  // show loader until initial session check completes
+  if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-100">
         <p className="text-brand-700">Checking administrator access...</p>
@@ -54,8 +52,8 @@ const AdminLayout: React.FC = () => {
     );
   }
 
-  // render only when both session & profile confirmed
-  if (session && profile) {
+  // render only if a session exists (any authenticated user can access admin)
+  if (session) {
     return (
       <>
         <Helmet>
@@ -97,7 +95,7 @@ const AdminLayout: React.FC = () => {
     );
   }
 
-  return null;
+  return null; // Should ideally not be reached if !session redirects
 };
 
 export default AdminLayout;

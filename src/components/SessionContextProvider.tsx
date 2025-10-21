@@ -1,48 +1,31 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react"; // Removed useCallback
 import { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
-import { Profile } from "@/types";
+// Removed Profile import as it's no longer used here
 
 interface SessionContextType {
   session: Session | null;
   user: User | null;
-  profile: Profile | null | undefined; // undefined = still fetching
+  // Removed profile from context type
   loading: boolean;
 }
 
 const SessionContext = createContext<SessionContextType>({
   session: null,
   user: null,
-  profile: undefined,
+  // Removed profile from default context value
   loading: true,
 });
 
 export const SessionContextProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
-  const [profile, setProfile] = useState<Profile | null | undefined>(undefined);
+  // Removed profile state
   const [loading, setLoading] = useState<boolean>(true);
 
-  const fetchProfile = useCallback(async (userId: string) => {
-    try {
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("id", userId)
-        .single();
-
-      if (error && error.code !== "PGRST116") {
-        console.error("Error fetching profile:", error);
-        return null;
-      }
-      return data as Profile | null;
-    } catch (err) {
-      console.error("Unexpected profile fetch error:", err);
-      return null;
-    }
-  }, []);
+  // Removed fetchProfile useCallback
 
   useEffect(() => {
     let isMounted = true; // race-safety guard
@@ -56,13 +39,7 @@ export const SessionContextProvider: React.FC<{ children: React.ReactNode }> = (
       setUser(currentSession?.user ?? null);
       setLoading(false); // stop blocking early
 
-      if (currentSession?.user) {
-        setProfile(undefined); // signal profile loading
-        const fetchedProfile = await fetchProfile(currentSession.user.id);
-        if (isMounted) setProfile(fetchedProfile ?? null);
-      } else {
-        setProfile(null);
-      }
+      // Removed profile fetching logic
     };
 
     init();
@@ -74,23 +51,17 @@ export const SessionContextProvider: React.FC<{ children: React.ReactNode }> = (
       setSession(newSession);
       setUser(newSession?.user ?? null);
 
-      if (newSession?.user) {
-        setProfile(undefined);
-        const fetchedProfile = await fetchProfile(newSession.user.id);
-        if (isMounted) setProfile(fetchedProfile ?? null);
-      } else {
-        setProfile(null);
-      }
+      // Removed profile fetching logic
     });
 
     return () => {
       isMounted = false;
       subscription.unsubscribe();
     };
-  }, [fetchProfile]);
+  }, []); // Removed fetchProfile from dependencies
 
   return (
-    <SessionContext.Provider value={{ session, user, profile, loading }}>
+    <SessionContext.Provider value={{ session, user, loading }}>
       {children}
     </SessionContext.Provider>
   );
