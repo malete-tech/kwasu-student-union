@@ -109,8 +109,7 @@ const Footer: React.FC = () => {
         </div>
       </div>
       <div className="container text-center text-sm opacity-70 mt-10 border-t border-primary-foreground/20 pt-8">
-        &copy; {new Date().getFullYear()} KWASU Students' Union. All rights reserved.
-        <p className="mt-2">&copy; 2025 Powered by Malete Tech Forum. All rights reserved.</p>
+        &copy; {new Date().getFullYear()} KWASU Students' Union. Powered by Malete Tech Forum. All rights reserved.
       </div>
     </footer>
   );
