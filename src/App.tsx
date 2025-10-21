@@ -29,13 +29,15 @@ import NewsManagement from "./pages/admin/NewsManagement";
 import AddNewsArticle from "./pages/admin/AddNewsArticle";
 import EditNewsArticle from "./pages/admin/EditNewsArticle";
 import EventsManagement from "./pages/admin/EventsManagement";
-import AddEvent from "./pages/admin/AddEvent"; // New import
-import EditEvent from "./pages/admin/EditEvent"; // New import
+import AddEvent from "./pages/admin/AddEvent";
+import EditEvent from "./pages/admin/EditEvent";
 import ExecutivesManagement from "./pages/admin/ExecutivesManagement";
 import AddExecutive from "./pages/admin/AddExecutive";
 import EditExecutive from "./pages/admin/EditExecutive";
 import ComplaintsManagement from "./pages/admin/ComplaintsManagement";
 import DocumentsManagement from "./pages/admin/DocumentsManagement";
+import AddDocument from "./pages/admin/AddDocument"; // New import
+import EditDocument from "./pages/admin/EditDocument"; // New import
 import OpportunitiesManagement from "./pages/admin/OpportunitiesManagement";
 import StudentSpotlightManagement from "./pages/admin/StudentSpotlightManagement";
 
@@ -79,13 +81,15 @@ const App = () => (
               <Route path="news/add" element={<AddNewsArticle />} />
               <Route path="news/edit/:slug" element={<EditNewsArticle />} />
               <Route path="events" element={<EventsManagement />} />
-              <Route path="events/add" element={<AddEvent />} /> {/* New route */}
-              <Route path="events/edit/:slug" element={<EditEvent />} /> {/* New route */}
+              <Route path="events/add" element={<AddEvent />} />
+              <Route path="events/edit/:slug" element={<EditEvent />} />
               <Route path="executives" element={<ExecutivesManagement />} />
               <Route path="executives/add" element={<AddExecutive />} />
               <Route path="executives/edit/:slug" element={<EditExecutive />} />
               <Route path="complaints" element={<ComplaintsManagement />} />
               <Route path="documents" element={<DocumentsManagement />} />
+              <Route path="documents/add" element={<AddDocument />} /> {/* New route */}
+              <Route path="documents/edit/:id" element={<EditDocument />} /> {/* New route */}
               <Route path="opportunities" element={<OpportunitiesManagement />} />
               <Route path="spotlight" element={<StudentSpotlightManagement />} />
             </Route>
