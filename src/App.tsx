@@ -36,10 +36,12 @@ import AddExecutive from "./pages/admin/AddExecutive";
 import EditExecutive from "./pages/admin/EditExecutive";
 import ComplaintsManagement from "./pages/admin/ComplaintsManagement";
 import DocumentsManagement from "./pages/admin/DocumentsManagement";
-import AddDocument from "./pages/admin/AddDocument"; // New import
-import EditDocument from "./pages/admin/EditDocument"; // New import
+import AddDocument from "./pages/admin/AddDocument";
+import EditDocument from "./pages/admin/EditDocument";
 import OpportunitiesManagement from "./pages/admin/OpportunitiesManagement";
 import StudentSpotlightManagement from "./pages/admin/StudentSpotlightManagement";
+import AddStudentSpotlight from "./pages/admin/AddStudentSpotlight"; // New import
+import EditStudentSpotlight from "./pages/admin/EditStudentSpotlight"; // New import
 
 
 const queryClient = new QueryClient();
@@ -88,10 +90,12 @@ const App = () => (
               <Route path="executives/edit/:slug" element={<EditExecutive />} />
               <Route path="complaints" element={<ComplaintsManagement />} />
               <Route path="documents" element={<DocumentsManagement />} />
-              <Route path="documents/add" element={<AddDocument />} /> {/* New route */}
-              <Route path="documents/edit/:id" element={<EditDocument />} /> {/* New route */}
+              <Route path="documents/add" element={<AddDocument />} />
+              <Route path="documents/edit/:id" element={<EditDocument />} />
               <Route path="opportunities" element={<OpportunitiesManagement />} />
               <Route path="spotlight" element={<StudentSpotlightManagement />} />
+              <Route path="spotlight/add" element={<AddStudentSpotlight />} /> {/* New route */}
+              <Route path="spotlight/edit/:id" element={<EditStudentSpotlight />} /> {/* New route */}
             </Route>
 
             {/* Catch-all for 404 Not Found */}
