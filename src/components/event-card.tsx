@@ -6,8 +6,9 @@ import { Event } from "@/types";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
-import { MapPin, CalendarDays } from "lucide-react";
+import { MapPin, CalendarDays, ExternalLink } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button"; // Import Button
 
 interface EventCardProps {
   event: Event;
@@ -51,6 +52,13 @@ const EventCard: React.FC<EventCardProps> = ({ event, className }) => {
         </Badge>
         {event.rsvpOpen && (
           <Badge className="bg-brand-500 text-white">RSVP Open</Badge>
+        )}
+        {event.rsvpOpen && event.rsvpLink && (
+          <Button asChild size="sm" className="ml-auto bg-brand-gold hover:bg-brand-gold/90 text-brand-900 focus-visible:ring-brand-gold">
+            <a href={event.rsvpLink} target="_blank" rel="noopener noreferrer">
+              RSVP <ExternalLink className="ml-1 h-3 w-3" />
+            </a>
+          </Button>
         )}
       </CardFooter>
     </Card>

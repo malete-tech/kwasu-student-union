@@ -236,6 +236,7 @@ export const api = {
         endsAt: item.ends_at,
         descriptionMd: item.description_md,
         rsvpOpen: item.rsvp_open,
+        rsvpLink: item.rsvp_link, // New: Map rsvp_link
         agendaMd: item.agenda_md,
       })) as Event[];
     },
@@ -255,6 +256,7 @@ export const api = {
         endsAt: item.ends_at,
         descriptionMd: item.description_md,
         rsvpOpen: item.rsvp_open,
+        rsvpLink: item.rsvp_link, // New: Map rsvp_link
         agendaMd: item.agenda_md,
       })) as Event[];
     },
@@ -271,6 +273,7 @@ export const api = {
         endsAt: data.ends_at,
         descriptionMd: data.description_md,
         rsvpOpen: data.rsvp_open,
+        rsvpLink: data.rsvp_link, // New: Map rsvp_link
         agendaMd: data.agenda_md,
       } as Event;
     },
@@ -284,6 +287,7 @@ export const api = {
         description_md: event.descriptionMd,
         category: event.category,
         rsvp_open: event.rsvpOpen,
+        rsvp_link: event.rsvpLink, // New: Add rsvp_link
         agenda_md: event.agendaMd,
       }).select().single();
       if (error) {
@@ -296,6 +300,7 @@ export const api = {
         endsAt: data.ends_at,
         descriptionMd: data.description_md,
         rsvpOpen: data.rsvp_open,
+        rsvpLink: data.rsvp_link, // New: Map rsvp_link
         agendaMd: data.agenda_md,
       } as Event;
     },
@@ -309,6 +314,7 @@ export const api = {
       if (event.descriptionMd !== undefined) updatePayload['description_md'] = event.descriptionMd;
       if (event.category !== undefined) updatePayload['category'] = event.category;
       if (event.rsvpOpen !== undefined) updatePayload['rsvp_open'] = event.rsvpOpen;
+      if (event.rsvpLink !== undefined) updatePayload['rsvp_link'] = event.rsvpLink; // New: Add rsvp_link
       if (event.agendaMd !== undefined) updatePayload['agenda_md'] = event.agendaMd;
 
       const { data, error } = await supabase.from('events').update(updatePayload).eq('id', id).select().single();
@@ -322,6 +328,7 @@ export const api = {
         endsAt: data.ends_at,
         descriptionMd: data.description_md,
         rsvpOpen: data.rsvp_open,
+        rsvpLink: data.rsvp_link, // New: Map rsvp_link
         agendaMd: data.agenda_md,
       } as Event;
     },

@@ -32,6 +32,7 @@ const formSchema = z.object({
   descriptionMd: z.string().min(1, { message: "Description is required." }),
   category: z.string().min(1, { message: "Category is required." }),
   rsvpOpen: z.boolean().default(false),
+  rsvpLink: z.string().url({ message: "Invalid URL." }).optional().or(z.literal('')), // New: RSVP Link
   agendaMd: z.string().optional(),
 }).refine((data) => {
   if (data.endsAt && data.endsAt < data.startsAt) {
@@ -62,6 +63,7 @@ const EditEvent: React.FC = () => {
       descriptionMd: "",
       category: "",
       rsvpOpen: false,
+      rsvpLink: "", // New: Default value
       agendaMd: "",
     },
   });
@@ -86,6 +88,7 @@ const EditEvent: React.FC = () => {
             descriptionMd: fetchedEvent.descriptionMd,
             category: fetchedEvent.category,
             rsvpOpen: fetchedEvent.rsvpOpen,
+            rsvpLink: fetchedEvent.rsvpLink || "", // New: Populate rsvpLink
             agendaMd: fetchedEvent.agendaMd || "",
           });
         } else {
@@ -135,6 +138,7 @@ const EditEvent: React.FC = () => {
         descriptionMd: values.descriptionMd,
         category: values.category,
         rsvpOpen: values.rsvpOpen,
+        rsvpLink: values.rsvpLink || undefined, // New: Include rsvpLink
         agendaMd: values.agendaMd || undefined,
       };
       await api.events.update(eventId, updatedEvent);
@@ -434,6 +438,22 @@ const EditEvent: React.FC = () => {
                           Check this if students can RSVP for this event.
                         </FormDescription>
                       </div>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="rsvpLink"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>RSVP Link (Optional)</FormLabel>
+                      <FormControl>
+                        <Input placeholder="https://example.com/rsvp" {...field} className="focus-visible:ring-brand-gold" />
+                      </FormControl>
+                      <FormDescription>
+                        Provide a direct link for students to RSVP or register for the event.
+                      </FormDescription>
+                      <FormMessage />
                     </FormItem>
                   )}
                 />

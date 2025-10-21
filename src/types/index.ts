@@ -42,6 +42,7 @@ export interface Event {
   descriptionMd: string;
   category: string; // e.g., 'Academic', 'Social', 'Sports'
   rsvpOpen: boolean;
+  rsvpLink?: string; // New: Optional RSVP link
   agendaMd?: string; // Optional agenda section
 }
 

@@ -9,7 +9,7 @@ import { api } from "@/lib/api";
 import { Event } from "@/types";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, CalendarDays, MapPin, Tag, Clock } from "lucide-react";
+import { ArrowLeft, CalendarDays, MapPin, Tag, Clock, ExternalLink } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
@@ -152,7 +152,7 @@ const EventDetail: React.FC = () => {
               </div>
             )}
           </CardContent>
-          <div className="flex flex-wrap gap-2 mt-6 border-t pt-4">
+          <div className="flex flex-wrap items-center gap-2 mt-6 border-t pt-4">
             <span className="flex items-center text-sm font-medium text-brand-700">
               <Tag className="mr-2 h-4 w-4" /> Category:
             </span>
@@ -161,6 +161,13 @@ const EventDetail: React.FC = () => {
             </Badge>
             {event.rsvpOpen && (
               <Badge className="bg-brand-500 text-white">RSVP Open</Badge>
+            )}
+            {event.rsvpOpen && event.rsvpLink && (
+              <Button asChild size="sm" className="ml-auto bg-brand-gold hover:bg-brand-gold/90 text-brand-900 focus-visible:ring-brand-gold">
+                <a href={event.rsvpLink} target="_blank" rel="noopener noreferrer">
+                  RSVP Now <ExternalLink className="ml-2 h-4 w-4" />
+                </a>
+              </Button>
             )}
           </div>
         </Card>
