@@ -23,17 +23,17 @@ const ExecutiveCard: React.FC<ExecutiveCardProps> = ({ executive, className }) =
         </AvatarFallback>
       </Avatar>
       <CardHeader className="p-0 pb-2">
-        <CardTitle className="text-xl font-semibold leading-tight">
+        <CardTitle className="text-xl font-semibold leading-tight truncate">
           <Link to={`/executives/${executive.slug}`} className="hover:text-brand-500 focus-visible:ring-brand-gold focus-visible:ring-2 focus-visible:ring-offset-2 rounded-md outline-none">
             {executive.name}
           </Link>
         </CardTitle>
-        <CardDescription className="text-sm text-brand-600 font-medium">
+        <CardDescription className="text-sm text-brand-600 font-medium truncate">
           {executive.role}
         </CardDescription>
       </CardHeader>
       <CardContent className="p-0 text-sm text-muted-foreground">
-        <p>{executive.faculty}</p>
+        <p className="truncate">{executive.faculty}</p>
         <p className="text-xs mt-1">
           {executive.tenureStart.substring(0, 4)} - {executive.tenureEnd.substring(0, 4)}
         </p>

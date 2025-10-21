@@ -18,7 +18,7 @@ const NewsCard: React.FC<NewsCardProps> = ({ news, className }) => {
     <Card className={cn("flex flex-col overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300", className)}>
       {/* Removed news.coverUrl image display */}
       <CardHeader className="pb-2">
-        <CardTitle className="text-xl font-semibold leading-tight">
+        <CardTitle className="text-xl font-semibold leading-tight truncate">
           <Link to={`/news/${news.slug}`} className="hover:text-brand-500 focus-visible:ring-brand-gold focus-visible:ring-2 focus-visible:ring-offset-2 rounded-md outline-none">
             {news.title}
           </Link>

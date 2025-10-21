@@ -22,14 +22,14 @@ const EventCard: React.FC<EventCardProps> = ({ event, className }) => {
   return (
     <Card className={cn("flex flex-col overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300", className)}>
       <CardHeader className="pb-2">
-        <CardTitle className="text-xl font-semibold leading-tight">
+        <CardTitle className="text-xl font-semibold leading-tight truncate">
           <Link to={`/events/${event.slug}`} className="hover:text-brand-500 focus-visible:ring-brand-gold focus-visible:ring-2 focus-visible:ring-offset-2 rounded-md outline-none">
             {event.title}
           </Link>
         </CardTitle>
         <CardDescription className="flex items-center text-sm text-muted-foreground">
-          <CalendarDays className="mr-1 h-4 w-4" />
-          <span>
+          <CalendarDays className="mr-1 h-4 w-4 flex-shrink-0" />
+          <span className="min-w-0 overflow-hidden text-ellipsis">
             {format(startDate, "MMM dd, yyyy")}
             {endDate && format(startDate, "yyyy-MM-dd") !== format(endDate, "yyyy-MM-dd")
               ? ` - ${format(endDate, "MMM dd, yyyy")}`
@@ -37,8 +37,8 @@ const EventCard: React.FC<EventCardProps> = ({ event, className }) => {
           </span>
         </CardDescription>
         <CardDescription className="flex items-center text-sm text-muted-foreground">
-          <MapPin className="mr-1 h-4 w-4" />
-          <span>{event.venue}</span>
+          <MapPin className="mr-1 h-4 w-4 flex-shrink-0" />
+          <span className="min-w-0 overflow-hidden text-ellipsis">{event.venue}</span>
         </CardDescription>
       </CardHeader>
       <CardContent className="flex-grow">
