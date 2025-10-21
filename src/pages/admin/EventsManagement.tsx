@@ -97,12 +97,12 @@ const EventsManagement: React.FC = () => {
           ) : (
             <div className="space-y-4">
               {events.map((event) => (
-                <div key={event.id} className="flex items-center justify-between p-4 border rounded-lg shadow-sm">
-                  <div className="flex items-center space-x-4 flex-1 min-w-0">
+                <div key={event.id} className="flex flex-col sm:flex-row sm:items-center justify-between p-4 border rounded-lg shadow-sm"> {/* Changed to flex-col on mobile, flex-row on sm+ */}
+                  <div className="flex items-center space-x-4 flex-1 min-w-0 mb-2 sm:mb-0"> {/* Added mb-2 sm:mb-0 for spacing */}
                     <div className="p-2 rounded-full bg-brand-100 text-brand-700 flex-shrink-0">
                       <CalendarDays className="h-6 w-6" />
                     </div>
-                    <div className="flex-1 min-w-0 max-w-full"> {/* Added max-w-full here */}
+                    <div className="flex-1 min-w-0">
                       <h3 className="font-semibold text-brand-800 truncate">{event.title}</h3>
                       <p className="text-sm text-muted-foreground truncate">
                         {format(new Date(event.startsAt), "MMM dd, yyyy HH:mm")}
@@ -118,7 +118,7 @@ const EventsManagement: React.FC = () => {
                       </Badge>
                     </div>
                   </div>
-                  <div className="flex space-x-2 flex-shrink-0">
+                  <div className="flex space-x-2 flex-shrink-0 mt-2 sm:mt-0"> {/* Added mt-2 sm:mt-0 for spacing */}
                     <Button asChild variant="outline" size="icon" className="text-brand-500 hover:bg-brand-50 focus-visible:ring-brand-gold">
                       <Link to={`/admin/events/edit/${event.slug}`}>
                         <Edit className="h-4 w-4" />
