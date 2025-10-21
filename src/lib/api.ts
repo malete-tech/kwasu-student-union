@@ -274,6 +274,64 @@ export const api = {
         agendaMd: data.agenda_md,
       } as Event;
     },
+    create: async (event: Omit<Event, 'id' | 'created_at'>): Promise<Event> => {
+      const { data, error } = await supabase.from('events').insert({
+        title: event.title,
+        slug: event.slug,
+        starts_at: event.startsAt,
+        ends_at: event.endsAt,
+        venue: event.venue,
+        description_md: event.descriptionMd,
+        category: event.category,
+        rsvp_open: event.rsvpOpen,
+        agenda_md: event.agendaMd,
+      }).select().single();
+      if (error) {
+        console.error("Supabase error creating event:", error);
+        throw new Error(error.message);
+      }
+      return {
+        ...data,
+        startsAt: data.starts_at,
+        endsAt: data.ends_at,
+        descriptionMd: data.description_md,
+        rsvpOpen: data.rsvp_open,
+        agendaMd: data.agenda_md,
+      } as Event;
+    },
+    update: async (id: string, event: Partial<Omit<Event, 'id' | 'created_at'>>): Promise<Event> => {
+      const updatePayload: Record<string, any> = {};
+      if (event.title !== undefined) updatePayload['title'] = event.title;
+      if (event.slug !== undefined) updatePayload['slug'] = event.slug;
+      if (event.startsAt !== undefined) updatePayload['starts_at'] = event.startsAt;
+      if (event.endsAt !== undefined) updatePayload['ends_at'] = event.endsAt;
+      if (event.venue !== undefined) updatePayload['venue'] = event.venue;
+      if (event.descriptionMd !== undefined) updatePayload['description_md'] = event.descriptionMd;
+      if (event.category !== undefined) updatePayload['category'] = event.category;
+      if (event.rsvpOpen !== undefined) updatePayload['rsvp_open'] = event.rsvpOpen;
+      if (event.agendaMd !== undefined) updatePayload['agenda_md'] = event.agendaMd;
+
+      const { data, error } = await supabase.from('events').update(updatePayload).eq('id', id).select().single();
+      if (error) {
+        console.error("Supabase error updating event:", error);
+        throw new Error(error.message);
+      }
+      return {
+        ...data,
+        startsAt: data.starts_at,
+        endsAt: data.ends_at,
+        descriptionMd: data.description_md,
+        rsvpOpen: data.rsvp_open,
+        agendaMd: data.agenda_md,
+      } as Event;
+    },
+    delete: async (id: string): Promise<void> => {
+      const { error } = await supabase.from('events').delete().eq('id', id);
+      if (error) {
+        console.error("Supabase error deleting event:", error);
+        throw new Error(error.message);
+      }
+    },
   },
   documents: {
     getAll: async (): Promise<Document[]> => {
