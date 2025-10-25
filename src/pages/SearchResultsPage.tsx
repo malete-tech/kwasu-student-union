@@ -5,7 +5,7 @@ import { Helmet } from "react-helmet-async";
 import { useSearchParams, Link } from "react-router-dom";
 import { api } from "@/lib/api";
 import { News, Event, Opportunity } from "@/types";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Search, Newspaper, CalendarDays, Briefcase, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
