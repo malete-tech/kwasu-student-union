@@ -1,27 +1,27 @@
 import { Button } from "@/components/ui/button";
-// import { Link } from "react-router-dom"; // Link is used via Button asChild
 import { Helmet } from "react-helmet-async";
 import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
-import { StudentSpotlight } from "@/types"; // Removed News, Event
-// import NewsCard from "@/components/news-card"; // Removed unused import
-// import EventCard from "@/components/event-card"; // Removed unused import
+import { StudentSpotlight } from "@/types";
 import StudentSpotlightCard from "@/components/student-spotlight-card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"; // Removed CardFooter
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import QuickLinks from "@/components/QuickLinks";
 import ExecutiveProfilesSection from "@/components/ExecutiveProfilesSection";
 import NewsFeedSection from "@/components/NewsFeedSection";
 import EventsCalendarSection from "@/components/EventsCalendarSection";
-import { CheckCircle, Search, ArrowRight } from "lucide-react"; // Removed BarChart2, BookOpen
+import { CheckCircle, Search, ArrowRight } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import AnimatedNotifications from "@/components/AnimatedNotifications";
-import PhoneMockup from "@/components/PhoneMockup"; // New import
+import PhoneMockup from "@/components/PhoneMockup";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 
 const Index = () => {
   const [studentSpotlights, setStudentSpotlights] = useState<StudentSpotlight[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [localSearchTerm, setLocalSearchTerm] = useState(""); // State for the input value
+  const navigate = useNavigate(); // Hook for navigation
 
   useEffect(() => {
     const fetchData = async () => {
@@ -37,6 +37,13 @@ const Index = () => {
     };
     fetchData();
   }, []);
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (localSearchTerm.trim()) {
+      navigate(`/search?q=${encodeURIComponent(localSearchTerm.trim())}`);
+    }
+  };
 
   return (
     <>
@@ -60,18 +67,20 @@ const Index = () => {
                 Connecting students with opportunities, support, and a vibrant campus community.
               </p>
 
-              {/* Search Input */}
-              <div className="relative w-full max-w-md mb-8">
+              {/* Search Input Form */}
+              <form onSubmit={handleSearchSubmit} className="relative w-full max-w-md mb-8">
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-brand-300" />
                 <Input
                   type="text"
                   placeholder="Search news, events, opportunities..."
                   className="w-full pl-12 pr-4 py-3 rounded-full border-2 border-brand-700 bg-brand-800 text-white placeholder:text-brand-300 focus-visible:ring-brand-gold focus-visible:border-brand-neon shadow-sm"
+                  value={localSearchTerm}
+                  onChange={(e) => setLocalSearchTerm(e.target.value)}
                 />
-                <Button className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-brand-neon hover:bg-brand-neon/90 text-white px-6 py-2 focus-visible:ring-brand-gold">
+                <Button type="submit" className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-brand-neon hover:bg-brand-neon/90 text-white px-6 py-2 focus-visible:ring-brand-gold">
                   <ArrowRight className="h-5 w-5" />
                 </Button>
-              </div>
+              </form>
 
               {/* Features */}
               <div className="flex flex-wrap justify-center lg:justify-start gap-6 mt-4">

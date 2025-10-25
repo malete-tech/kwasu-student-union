@@ -19,6 +19,7 @@ import ServicesPage from "./pages/ServicesPage";
 import DownloadsPage from "./pages/DownloadsPage";
 import OpportunitiesPage from "./pages/OpportunitiesPage";
 import ContactPage from "./pages/ContactPage";
+import SearchResultsPage from "./pages/SearchResultsPage"; // New import
 
 // Admin Imports
 import AdminLayout from "./app/AdminLayout";
@@ -40,8 +41,8 @@ import AddDocument from "./pages/admin/AddDocument";
 import EditDocument from "./pages/admin/EditDocument";
 import OpportunitiesManagement from "./pages/admin/OpportunitiesManagement";
 import StudentSpotlightManagement from "./pages/admin/StudentSpotlightManagement";
-import AddStudentSpotlight from "./pages/admin/AddStudentSpotlight"; // New import
-import EditStudentSpotlight from "./pages/admin/EditStudentSpotlight"; // New import
+import AddStudentSpotlight from "./pages/admin/AddStudentSpotlight";
+import EditStudentSpotlight from "./pages/admin/EditStudentSpotlight";
 
 
 const queryClient = new QueryClient();
@@ -69,6 +70,7 @@ const App = () => (
               <Route path="/services/downloads" element={<DownloadsPage />} />
               <Route path="/services/opportunities" element={<OpportunitiesPage />} />
               <Route path="/contact" element={<ContactPage />} />
+              <Route path="/search" element={<SearchResultsPage />} /> {/* New Search Route */}
               {/* ADD ALL CUSTOM PUBLIC ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             </Route>
 
@@ -94,8 +96,8 @@ const App = () => (
               <Route path="documents/edit/:id" element={<EditDocument />} />
               <Route path="opportunities" element={<OpportunitiesManagement />} />
               <Route path="spotlight" element={<StudentSpotlightManagement />} />
-              <Route path="spotlight/add" element={<AddStudentSpotlight />} /> {/* New route */}
-              <Route path="spotlight/edit/:id" element={<EditStudentSpotlight />} /> {/* New route */}
+              <Route path="spotlight/add" element={<AddStudentSpotlight />} />
+              <Route path="spotlight/edit/:id" element={<EditStudentSpotlight />} />
             </Route>
 
             {/* Catch-all for 404 Not Found */}
