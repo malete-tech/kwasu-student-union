@@ -65,8 +65,12 @@ const Header: React.FC = () => {
                         )
                       }
                     >
-                      <link.icon className={cn("h-5 w-5", isActive ? "text-white" : "text-brand-500")} />
-                      <span className="text-lg font-medium">{link.name}</span>
+                      {({ isActive }) => (
+                        <>
+                          <link.icon className={cn("h-5 w-5", isActive ? "text-white" : "text-brand-500")} />
+                          <span className="text-lg font-medium">{link.name}</span>
+                        </>
+                      )}
                     </NavLink>
                   ))}
                 </nav>
