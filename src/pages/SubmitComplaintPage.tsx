@@ -67,7 +67,8 @@ const SubmitComplaintPage: React.FC = () => {
     setIsSubmitting(true);
     try {
       const complaintPayload = {
-        userId: values.isAnonymous ? undefined : user?.id, // Only link if not anonymous
+        // Explicitly use null for anonymous submissions to match SQL NULL type
+        userId: values.isAnonymous ? null : user?.id, 
         category: values.category as ComplaintCategory,
         title: values.title,
         description: values.description,

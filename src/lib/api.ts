@@ -530,7 +530,7 @@ export const api = {
     },
   },
   complaints: {
-    submit: async (complaint: Omit<Complaint, 'id' | 'createdAt' | 'status' | 'timeline' | 'userId'> & { userId?: string }): Promise<Complaint> => {
+    submit: async (complaint: Omit<Complaint, 'id' | 'createdAt' | 'status' | 'timeline' | 'userId'> & { userId?: string | null }): Promise<Complaint> => {
       const { data, error } = await supabase.from('complaints').insert({
         user_id: complaint.userId,
         category: complaint.category,
