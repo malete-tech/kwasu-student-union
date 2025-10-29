@@ -592,7 +592,7 @@ export const api = {
     },
     updateStatus: async (complaintId: string, newStatus: ComplaintStatus, note?: string): Promise<Complaint> => {
       // 1. Update the status in the complaints table
-      const { data: complaintData, error: updateError } = await supabase.from('complaints')
+      const { data: _complaintData, error: updateError } = await supabase.from('complaints')
         .update({ status: newStatus })
         .eq('id', complaintId)
         .select()
