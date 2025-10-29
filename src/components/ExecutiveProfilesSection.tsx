@@ -54,7 +54,7 @@ const ExecutiveProfilesSection: React.FC = () => {
         ) : error ? (
           <div className="text-destructive text-sm text-center">{error}</div>
         ) : executives.length > 0 ? (
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {executives.map((executive) => (
               <ExecutiveCard key={executive.id} executive={executive} className="p-4 shadow-none border-none" />
             ))}
