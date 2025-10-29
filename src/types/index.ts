@@ -48,18 +48,28 @@ export interface Event {
 
 // Complaint
 export type ComplaintCategory = 'Welfare' | 'Academics' | 'Fees' | 'Security' | 'Other';
-export type ComplaintStatus = 'Queued' | 'In Review' | 'Resolved';
+export type ComplaintStatus = 'Queued' | 'In Review' | 'Resolved' | 'Closed'; // Added 'Closed'
+
+export interface ComplaintTimelineEntry {
+  id: string;
+  complaintId: string;
+  status: ComplaintStatus;
+  note?: string;
+  timestamp: string; // ISO 8601 string
+}
 
 export interface Complaint {
   id: string;
+  userId?: string; // New: Optional user ID (null for anonymous)
   category: ComplaintCategory;
   title: string;
   description: string;
   contactEmail?: string;
   contactPhone?: string;
+  isAnonymous: boolean; // New: Flag for anonymous submission
   createdAt: string; // ISO 8601 string
   status: ComplaintStatus;
-  timeline: { status: ComplaintStatus; timestamp: string; note?: string }[];
+  timeline: ComplaintTimelineEntry[]; // Updated to use ComplaintTimelineEntry[]
 }
 
 // Document (Downloads)

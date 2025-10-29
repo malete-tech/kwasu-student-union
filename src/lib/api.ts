@@ -6,18 +6,37 @@ import {
   Opportunity,
   StudentSpotlight,
   Complaint,
+  ComplaintStatus,
+  ComplaintTimelineEntry,
 } from "@/types";
 import { supabase } from "@/integrations/supabase/client"; // Import Supabase client
 
-const SIMULATED_DELAY = 500; // milliseconds
+// Removed unused SIMULATED_DELAY and simulateAsync function
 
-const simulateAsync = <T>(data: T): Promise<T> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(data);
-    }, SIMULATED_DELAY);
-  });
-};
+// Helper function to convert DB snake_case to frontend camelCase for complaints
+const mapComplaintFromDb = (item: any): Complaint => ({
+  id: item.id,
+  category: item.category,
+  title: item.title,
+  description: item.description,
+  contactEmail: item.contact_email,
+  contactPhone: item.contact_phone,
+  isAnonymous: item.is_anonymous,
+  status: item.status,
+  createdAt: item.created_at,
+  userId: item.user_id, // Include user_id for admin view
+  timeline: item.complaint_timeline ? item.complaint_timeline.map(mapTimelineFromDb) : [],
+});
+
+// Helper function to convert DB snake_case to frontend camelCase for timeline
+const mapTimelineFromDb = (item: any): ComplaintTimelineEntry => ({
+  id: item.id,
+  complaintId: item.complaint_id,
+  status: item.status,
+  note: item.note,
+  timestamp: item.timestamp,
+});
+
 
 export const api = {
   news: {
@@ -78,6 +97,7 @@ export const api = {
       if (error) {
         console.error("Supabase error creating news:", error);
         throw new Error(error.message);
+        // @ts-ignore
       }
       // Convert returned snake_case data back to camelCase for frontend type
       return {
@@ -102,6 +122,7 @@ export const api = {
       if (error) {
         console.error("Supabase error updating news:", error);
         throw new Error(error.message);
+        // @ts-ignore
       }
       // Convert returned snake_case data back to camelCase for frontend type
       return {
@@ -173,6 +194,7 @@ export const api = {
       if (error) {
         console.error("Supabase error creating executive:", error);
         throw new Error(error.message);
+        // @ts-ignore
       }
       // Convert returned snake_case data back to camelCase for frontend type
       return {
@@ -203,6 +225,7 @@ export const api = {
       if (error) {
         console.error("Supabase error updating executive:", error);
         throw new Error(error.message);
+        // @ts-ignore
       }
       // Convert returned snake_case data back to camelCase for frontend type
       return {
@@ -293,6 +316,7 @@ export const api = {
       if (error) {
         console.error("Supabase error creating event:", error);
         throw new Error(error.message);
+        // @ts-ignore
       }
       return {
         ...data,
@@ -321,6 +345,7 @@ export const api = {
       if (error) {
         console.error("Supabase error updating event:", error);
         throw new Error(error.message);
+        // @ts-ignore
       }
       return {
         ...data,
@@ -379,6 +404,7 @@ export const api = {
       if (error) {
         console.error("Supabase error creating document:", error);
         throw new Error(error.message);
+        // @ts-ignore
       }
       return {
         ...data,
@@ -400,6 +426,7 @@ export const api = {
       if (error) {
         console.error("Supabase error updating document:", error);
         throw new Error(error.message);
+        // @ts-ignore
       }
       return {
         ...data,
@@ -466,6 +493,7 @@ export const api = {
       if (error) {
         console.error("Supabase error creating student spotlight:", error);
         throw new Error(error.message);
+        // @ts-ignore
       }
       return {
         ...data,
@@ -485,6 +513,7 @@ export const api = {
       if (error) {
         console.error("Supabase error updating student spotlight:", error);
         throw new Error(error.message);
+        // @ts-ignore
       }
       return {
         ...data,
@@ -501,20 +530,98 @@ export const api = {
     },
   },
   complaints: {
-    // This will be handled by localStorage, not static JSON
-    submit: (complaint: Omit<Complaint, 'id' | 'createdAt' | 'status' | 'timeline'>): Promise<Complaint> => {
-      return simulateAsync({
-        id: `C-${new Date().getFullYear()}${Math.floor(1000 + Math.random() * 9000)}`,
-        createdAt: new Date().toISOString(),
-        status: 'Queued',
-        timeline: [{ status: 'Queued', timestamp: new Date().toISOString(), note: 'Complaint received.' }],
-        ...complaint,
-      } as Complaint);
+    submit: async (complaint: Omit<Complaint, 'id' | 'createdAt' | 'status' | 'timeline' | 'userId'> & { userId?: string }): Promise<Complaint> => {
+      const { data, error } = await supabase.from('complaints').insert({
+        user_id: complaint.userId,
+        category: complaint.category,
+        title: complaint.title,
+        description: complaint.description,
+        contact_email: complaint.contactEmail,
+        contact_phone: complaint.contactPhone,
+        is_anonymous: complaint.isAnonymous,
+      }).select().single();
+
+      if (error) {
+        console.error("Supabase error submitting complaint:", error);
+        throw new Error(error.message);
+        // @ts-ignore
+      }
+      return mapComplaintFromDb(data);
     },
-    getById: (_id: string): Promise<Complaint | undefined> => {
-      // This will fetch from localStorage later
-      return simulateAsync(undefined); // Placeholder
-    }
+    getAll: async (): Promise<Complaint[]> => {
+      // Admin function: fetch all complaints and their timelines
+      const { data, error } = await supabase.from('complaints')
+        .select(`
+          *,
+          complaint_timeline (
+            id,
+            status,
+            note,
+            timestamp
+          )
+        `)
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error("Supabase error fetching all complaints:", error);
+        throw new Error(error.message);
+      }
+      return data.map(mapComplaintFromDb);
+    },
+    getById: async (id: string): Promise<Complaint | undefined> => {
+      // User/Admin function: fetch a single complaint with its timeline
+      const { data, error } = await supabase.from('complaints')
+        .select(`
+          *,
+          complaint_timeline (
+            id,
+            status,
+            note,
+            timestamp
+          )
+        `)
+        .eq('id', id)
+        .single();
+
+      if (error && error.code !== 'PGRST116') {
+        console.error("Supabase error fetching complaint by ID:", error);
+        throw new Error(error.message);
+      }
+      if (!data) return undefined;
+      return mapComplaintFromDb(data);
+    },
+    updateStatus: async (complaintId: string, newStatus: ComplaintStatus, note?: string): Promise<Complaint> => {
+      // 1. Update the status in the complaints table
+      const { data: complaintData, error: updateError } = await supabase.from('complaints')
+        .update({ status: newStatus })
+        .eq('id', complaintId)
+        .select()
+        .single();
+
+      if (updateError) {
+        console.error("Supabase error updating complaint status:", updateError);
+        throw new Error(updateError.message);
+      }
+
+      // 2. Insert a new entry into the timeline table
+      const { error: timelineError } = await supabase.from('complaint_timeline')
+        .insert({
+          complaint_id: complaintId,
+          status: newStatus,
+          note: note,
+        });
+
+      if (timelineError) {
+        console.error("Supabase error inserting timeline entry:", timelineError);
+        // Note: We proceed even if timeline fails, as status update succeeded.
+      }
+
+      // 3. Fetch the full updated complaint with timeline (optional, but good for consistency)
+      const updatedComplaint = await api.complaints.getById(complaintId);
+      if (!updatedComplaint) throw new Error("Failed to retrieve updated complaint.");
+
+      return updatedComplaint;
+    },
   },
   search: {
     searchAll: async (term: string): Promise<{ news: News[], events: Event[], opportunities: Opportunity[] }> => {

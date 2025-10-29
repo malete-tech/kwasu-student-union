@@ -19,7 +19,8 @@ import ServicesPage from "./pages/ServicesPage";
 import DownloadsPage from "./pages/DownloadsPage";
 import OpportunitiesPage from "./pages/OpportunitiesPage";
 import ContactPage from "./pages/ContactPage";
-import SearchResultsPage from "./pages/SearchResultsPage"; // New import
+import SearchResultsPage from "./pages/SearchResultsPage";
+import SubmitComplaintPage from "./pages/SubmitComplaintPage"; // New import
 
 // Admin Imports
 import AdminLayout from "./app/AdminLayout";
@@ -36,6 +37,7 @@ import ExecutivesManagement from "./pages/admin/ExecutivesManagement";
 import AddExecutive from "./pages/admin/AddExecutive";
 import EditExecutive from "./pages/admin/EditExecutive";
 import ComplaintsManagement from "./pages/admin/ComplaintsManagement";
+import ComplaintDetailPage from "./pages/admin/ComplaintDetailPage"; // New import
 import DocumentsManagement from "./pages/admin/DocumentsManagement";
 import AddDocument from "./pages/admin/AddDocument";
 import EditDocument from "./pages/admin/EditDocument";
@@ -69,8 +71,9 @@ const App = () => (
               <Route path="/services" element={<ServicesPage />} />
               <Route path="/services/downloads" element={<DownloadsPage />} />
               <Route path="/services/opportunities" element={<OpportunitiesPage />} />
+              <Route path="/services/complaints" element={<SubmitComplaintPage />} /> {/* New Public Complaint Submission Route */}
               <Route path="/contact" element={<ContactPage />} />
-              <Route path="/search" element={<SearchResultsPage />} /> {/* New Search Route */}
+              <Route path="/search" element={<SearchResultsPage />} />
               {/* ADD ALL CUSTOM PUBLIC ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             </Route>
 
@@ -91,6 +94,7 @@ const App = () => (
               <Route path="executives/add" element={<AddExecutive />} />
               <Route path="executives/edit/:slug" element={<EditExecutive />} />
               <Route path="complaints" element={<ComplaintsManagement />} />
+              <Route path="complaints/:id" element={<ComplaintDetailPage />} /> {/* New Admin Complaint Detail Route */}
               <Route path="documents" element={<DocumentsManagement />} />
               <Route path="documents/add" element={<AddDocument />} />
               <Route path="documents/edit/:id" element={<EditDocument />} />
