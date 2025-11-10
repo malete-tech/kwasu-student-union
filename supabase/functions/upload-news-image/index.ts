@@ -209,7 +209,7 @@ serve(async (req: Request) => {
         });
       }
       
-      const result = await deleteFromCloudary(publicId);
+      const result = await deleteFromCloudinary(publicId);
       
       // Cloudinary returns { result: 'ok' } on success, or { result: 'not found' } if resource doesn't exist, which is fine.
       if (result.error) {
