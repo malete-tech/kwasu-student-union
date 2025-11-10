@@ -52,7 +52,8 @@ async function generateSignature(params: Record<string, string | number>): Promi
 
   // 2. Generate HMAC-SHA1 signature and convert to Hex
   const encoder = new TextEncoder();
-  const key = encoder.encode(CLOUDINARY_API_SECRET);
+  // CRITICAL FIX: Trim the secret key to remove potential whitespace from environment variables
+  const key = encoder.encode(CLOUDINARY_API_SECRET.trim()); 
   const data = encoder.encode(stringToSign);
   
   const signatureBuffer = await crypto.subtle.sign(
