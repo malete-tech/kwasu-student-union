@@ -43,6 +43,8 @@ import DocumentsManagement from "./pages/admin/DocumentsManagement";
 import AddDocument from "./pages/admin/AddDocument";
 import EditDocument from "./pages/admin/EditDocument";
 import OpportunitiesManagement from "./pages/admin/OpportunitiesManagement";
+import AddOpportunity from "./pages/admin/AddOpportunity";
+import EditOpportunity from "./pages/admin/EditOpportunity";
 import SpotlightManagement from "./pages/admin/SpotlightManagement"; // Renamed
 import AddSpotlight from "./pages/admin/AddSpotlight"; // Renamed
 import EditSpotlight from "./pages/admin/EditSpotlight"; // Renamed
@@ -101,6 +103,8 @@ const App = () => (
               <Route path="documents/add" element={<AddDocument />} />
               <Route path="documents/edit/:id" element={<EditDocument />} />
               <Route path="opportunities" element={<OpportunitiesManagement />} />
+              <Route path="opportunities/add" element={<AddOpportunity />} />
+              <Route path="opportunities/edit/:id" element={<EditOpportunity />} />
               <Route path="spotlight" element={<SpotlightManagement />} />
               <Route path="spotlight/add" element={<AddSpotlight />} />
               <Route path="spotlight/edit/:id" element={<EditSpotlight />} />
