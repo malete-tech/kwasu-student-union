@@ -1,6 +1,10 @@
+// @ts-ignore
 import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
+// @ts-ignore
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.0';
+// @ts-ignore
 import { HmacSha1 } from "https://deno.land/std@0.224.0/crypto/hmac_sha1.ts";
+// @ts-ignore
 import { encode } from "https://deno.land/std@0.224.0/encoding/base64.ts";
 
 // @ts-ignore
