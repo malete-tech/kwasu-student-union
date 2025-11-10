@@ -13,6 +13,7 @@ export const news = {
       ...item,
       bodyMd: item.body_md,
       publishedAt: item.published_at,
+      coverUrl: item.cover_url, // Added coverUrl mapping
     })) as News[];
   },
   getLatest: async (count: number): Promise<News[]> => {
@@ -26,6 +27,7 @@ export const news = {
       ...item,
       bodyMd: item.body_md,
       publishedAt: item.published_at,
+      coverUrl: item.cover_url, // Added coverUrl mapping
     })) as News[];
   },
   getBySlug: async (slug: string): Promise<News | undefined> => {
@@ -40,6 +42,7 @@ export const news = {
       ...data,
       bodyMd: data.body_md,
       publishedAt: data.published_at,
+      coverUrl: data.cover_url, // Added coverUrl mapping
     } as News;
   },
   create: async (news: Omit<News, 'id' | 'created_at'>): Promise<News> => {
@@ -51,6 +54,7 @@ export const news = {
       body_md: news.bodyMd, // Map frontend bodyMd to database body_md
       tags: news.tags,
       published_at: news.publishedAt, // Map frontend publishedAt to database published_at
+      cover_url: news.coverUrl, // Added cover_url
     }).select().single();
     if (error) {
       console.error("Supabase error creating news:", error);
@@ -62,6 +66,7 @@ export const news = {
       ...data,
       bodyMd: data.body_md,
       publishedAt: data.published_at,
+      coverUrl: data.cover_url, // Added coverUrl mapping
     } as News;
   },
   update: async (id: string, news: Partial<Omit<News, 'id' | 'created_at'>>): Promise<News> => {
@@ -73,6 +78,7 @@ export const news = {
     if (news.bodyMd !== undefined) updatePayload['body_md'] = news.bodyMd;
     if (news.tags !== undefined) updatePayload['tags'] = news.tags;
     if (news.publishedAt !== undefined) updatePayload['published_at'] = news.publishedAt;
+    if (news.coverUrl !== undefined) updatePayload['cover_url'] = news.coverUrl; // Added cover_url
 
     const { data, error } = await supabase.from('news').update(updatePayload).eq('id', id).select().single();
     if (error) {
@@ -85,6 +91,7 @@ export const news = {
       ...data,
       bodyMd: data.body_md,
       publishedAt: data.published_at,
+      coverUrl: data.cover_url, // Added coverUrl mapping
     } as News;
   },
   delete: async (id: string): Promise<void> => {

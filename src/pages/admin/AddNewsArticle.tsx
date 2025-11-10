@@ -17,9 +17,9 @@ import { cn } from "@/lib/utils";
 import { CalendarIcon } from "@radix-ui/react-icons";
 import { api } from "@/lib/api";
 import { toast } from "sonner";
-// import ImageUpload from "@/components/ImageUpload"; // Removed
 import { Link, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
+import NewsImageUpload from "@/components/NewsImageUpload"; // New Import
 
 const formSchema = z.object({
   title: z.string().min(1, { message: "Title is required." }),
@@ -28,7 +28,7 @@ const formSchema = z.object({
   bodyMd: z.string().min(1, { message: "Body content is required." }),
   tags: z.string().min(1, { message: "At least one tag is required." }),
   publishedAt: z.date({ required_error: "Published date is required." }),
-  // coverUrl: z.string().optional(), // Removed
+  coverUrl: z.string().optional(), // Added coverUrl
 });
 
 const AddNewsArticle: React.FC = () => {
@@ -44,7 +44,7 @@ const AddNewsArticle: React.FC = () => {
       bodyMd: "",
       tags: "",
       publishedAt: new Date(),
-      // coverUrl: undefined, // Removed
+      coverUrl: undefined, // Added default value
     },
   });
 
@@ -71,7 +71,7 @@ const AddNewsArticle: React.FC = () => {
         bodyMd: values.bodyMd,
         tags: values.tags.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0),
         publishedAt: values.publishedAt.toISOString(),
-        // coverUrl: values.coverUrl, // Removed
+        coverUrl: values.coverUrl, // Included coverUrl
       };
       await api.news.create(newNews);
       toast.success("News article added successfully!");
@@ -82,7 +82,7 @@ const AddNewsArticle: React.FC = () => {
         bodyMd: "",
         tags: "",
         publishedAt: new Date(),
-        // coverUrl: undefined, // Removed
+        coverUrl: undefined, // Reset coverUrl
       });
       navigate("/admin/news"); // Navigate back to news management list
     } catch (error) {
@@ -136,6 +136,24 @@ const AddNewsArticle: React.FC = () => {
                       <FormLabel>Slug</FormLabel>
                       <FormControl>
                         <Input placeholder="kwasu-su-elections-2024" {...field} className="focus-visible:ring-brand-gold" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="coverUrl"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Cover Image (Optional)</FormLabel>
+                      <FormControl>
+                        <NewsImageUpload
+                          label="Upload Cover Image"
+                          value={field.value}
+                          onChange={field.onChange}
+                          disabled={isSubmitting}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -218,7 +236,6 @@ const AddNewsArticle: React.FC = () => {
                     </FormItem>
                   )}
                 />
-                {/* Removed ImageUpload component */}
                 <Button type="submit" className="w-full bg-brand-700 hover:bg-brand-800 text-white focus-visible:ring-brand-gold" disabled={isSubmitting}>
                   {isSubmitting ? (
                     <>

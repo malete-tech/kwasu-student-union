@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { PlusCircle, Edit, Trash2, Loader2 } from "lucide-react";
+import { PlusCircle, Edit, Trash2, Loader2, Image } from "lucide-react";
 import { api } from "@/lib/api";
 import { News } from "@/types";
 import { toast } from "sonner";
@@ -21,8 +21,11 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { format } from "date-fns";
+import { deleteImageFromCloudinary, getCloudinaryPublicId } from "@/utils/cloudinary-upload"; // New Import
+import { useSession } from "@/components/SessionContextProvider"; // New Import
 
 const NewsManagement: React.FC = () => {
+  const { session } = useSession();
   const [newsArticles, setNewsArticles] = useState<News[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -46,12 +49,30 @@ const NewsManagement: React.FC = () => {
     fetchNews();
   }, []);
 
-  const handleDelete = async (id: string) => {
-    setDeletingId(id);
+  const handleDelete = async (article: News) => {
+    if (!session?.access_token) {
+      toast.error("Authentication token missing for deletion.");
+      return;
+    }
+
+    setDeletingId(article.id);
     try {
-      await api.news.delete(id);
+      // 1. Delete image from Cloudinary if URL exists
+      if (article.coverUrl) {
+        const publicId = getCloudinaryPublicId(article.coverUrl);
+        if (publicId) {
+          const imageDeleted = await deleteImageFromCloudinary(publicId, session.access_token);
+          if (!imageDeleted) {
+            // Log error but proceed to delete DB record if image deletion fails
+            console.warn(`Failed to delete Cloudinary image for article ${article.id}. Proceeding with DB deletion.`);
+          }
+        }
+      }
+
+      // 2. Delete DB record
+      await api.news.delete(article.id);
       toast.success("News article deleted successfully!");
-      setNewsArticles((prev) => prev.filter((article) => article.id !== id));
+      setNewsArticles((prev) => prev.filter((a) => a.id !== article.id));
     } catch (error) {
       console.error("Failed to delete news article:", error);
       toast.error("Failed to delete news article. Please try again.");
@@ -79,7 +100,7 @@ const NewsManagement: React.FC = () => {
             <div className="space-y-4">
               {[...Array(5)].map((_, i) => (
                 <div key={i} className="flex items-center space-x-4 p-2 border-b last:border-b-0">
-                  {/* Removed Skeleton for cover image */}
+                  <Skeleton className="h-12 w-12 rounded-md" />
                   <div className="flex-1 space-y-2">
                     <Skeleton className="h-4 w-3/4" />
                     <Skeleton className="h-3 w-1/2" />
@@ -98,7 +119,13 @@ const NewsManagement: React.FC = () => {
               {newsArticles.map((article) => (
                 <div key={article.id} className="flex items-center justify-between p-4 border rounded-lg shadow-sm">
                   <div className="flex items-center space-x-4">
-                    {/* Removed article.coverUrl image display */}
+                    <div className="h-12 w-12 flex-shrink-0 rounded-md overflow-hidden bg-gray-100 border flex items-center justify-center">
+                      {article.coverUrl ? (
+                        <img src={article.coverUrl} alt="Cover" className="h-full w-full object-cover" />
+                      ) : (
+                        <Image className="h-6 w-6 text-muted-foreground" />
+                      )}
+                    </div>
                     <div>
                       <h3 className="font-semibold text-brand-800">{article.title}</h3>
                       <p className="text-sm text-muted-foreground">
@@ -132,12 +159,12 @@ const NewsManagement: React.FC = () => {
                           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                           <AlertDialogDescription>
                             This action cannot be undone. This will permanently delete the news article
-                            "{article.title}" from your database.
+                            "{article.title}" from your database, and attempt to delete the associated image from Cloudinary.
                           </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
                           <AlertDialogCancel>Cancel</AlertDialogCancel>
-                          <AlertDialogAction onClick={() => handleDelete(article.id)} className="bg-destructive hover:bg-destructive/90">
+                          <AlertDialogAction onClick={() => handleDelete(article)} className="bg-destructive hover:bg-destructive/90">
                             Delete
                           </AlertDialogAction>
                         </AlertDialogFooter>
