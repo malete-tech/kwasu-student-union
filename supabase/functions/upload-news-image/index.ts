@@ -3,7 +3,7 @@ import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
 // @ts-ignore
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.0';
 // @ts-ignore
-import { HmacSha1 } from "https://deno.land/std@0.224.0/crypto/mod.ts"; // Updated path
+import { HmacSha1 } from "https://deno.land/std@0.224.0/crypto/mod.ts";
 // @ts-ignore
 import { encode } from "https://deno.land/std@0.224.0/encoding/base64.ts";
 
@@ -31,6 +31,8 @@ const supabase = createClient(
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, content-disposition',
+  // Explicitly adding Access-Control-Allow-Methods for preflight response
+  'Access-Control-Allow-Methods': 'POST, OPTIONS', 
 };
 
 // Utility to generate Cloudinary signature
@@ -126,7 +128,8 @@ async function deleteFromCloudinary(publicId: string) {
 
 serve(async (req: Request) => {
   if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders });
+    // Handle CORS preflight request
+    return new Response(null, { status: 200, headers: corsHeaders });
   }
 
   // 1. Authentication Check (Admin only)
