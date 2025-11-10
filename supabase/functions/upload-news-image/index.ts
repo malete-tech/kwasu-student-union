@@ -31,13 +31,15 @@ const supabase = createClient(
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, content-disposition',
-  // Explicitly adding Access-Control-Allow-Methods for preflight response
   'Access-Control-Allow-Methods': 'POST, OPTIONS', 
 };
 
 // Utility to generate Cloudinary signature
 async function generateSignature(params: Record<string, string | number>): Promise<string> {
-  if (!CLOUDINARY_API_SECRET) throw new Error("Cloudinary API Secret not configured.");
+  if (!CLOUDINARY_API_SECRET) {
+    console.error("Error: CLOUDINARY_API_SECRET is not configured.");
+    throw new Error("Cloudinary API Secret not configured.");
+  }
   
   const sortedKeys = Object.keys(params).sort();
   const stringToSign = sortedKeys
@@ -55,6 +57,7 @@ async function generateSignature(params: Record<string, string | number>): Promi
 // Utility to upload base64 data to Cloudinary
 async function uploadToCloudinary(base64Data: string, folder: string) {
   if (!CLOUDINARY_CLOUD_NAME || !CLOUDINARY_API_KEY || !CLOUDINARY_API_SECRET) {
+    console.error("Cloudinary credentials missing during upload attempt.");
     throw new Error("Cloudinary credentials missing.");
   }
 
@@ -92,6 +95,7 @@ async function uploadToCloudinary(base64Data: string, folder: string) {
 // Utility to delete image from Cloudinary
 async function deleteFromCloudinary(publicId: string) {
   if (!CLOUDINARY_CLOUD_NAME || !CLOUDINARY_API_KEY || !CLOUDINARY_API_SECRET) {
+    console.error("Cloudinary credentials missing during delete attempt.");
     throw new Error("Cloudinary credentials missing.");
   }
 
@@ -204,6 +208,7 @@ serve(async (req: Request) => {
 
   } catch (error) {
     console.error("Edge Function Error:", error);
+    // Return a 500 response with the error message
     return new Response(JSON.stringify({ error: (error as Error).message }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
