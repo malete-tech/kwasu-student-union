@@ -17,6 +17,7 @@ export interface Executive {
     instagram?: string;
     phone?: string;
   };
+  displayOrder: number; // New: Manual display order
 }
 
 // News

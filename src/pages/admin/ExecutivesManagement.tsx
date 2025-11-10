@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { PlusCircle, Edit, Trash2, Loader2, User } from "lucide-react";
+import { PlusCircle, Edit, Trash2, Loader2, User, ArrowUp, ArrowDown } from "lucide-react";
 import { api } from "@/lib/api";
 import { Executive } from "@/types";
 import { toast } from "sonner";
@@ -32,6 +32,7 @@ const ExecutivesManagement: React.FC = () => {
     setLoading(true);
     setError(null);
     try {
+      // API now sorts by display_order ascending
       const data = await api.executives.getAll();
       setExecutives(data);
     } catch (err) {
@@ -45,6 +46,39 @@ const ExecutivesManagement: React.FC = () => {
   useEffect(() => {
     fetchExecutives();
   }, []);
+
+  const handleReorder = async (executive: Executive, direction: 'up' | 'down') => {
+    const currentIndex = executives.findIndex(e => e.id === executive.id);
+    if (currentIndex === -1) return;
+
+    const targetIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1;
+
+    if (targetIndex < 0 || targetIndex >= executives.length) {
+      return; // Cannot move further
+    }
+
+    const currentExecutive = executives[currentIndex]!;
+    const targetExecutive = executives[targetIndex]!;
+
+    // Swap display orders in the database
+    setDeletingId(executive.id); // Use deletingId temporarily to show loading state on the moving item
+    try {
+      // Swap the display_order values
+      await api.executives.reorder(currentExecutive.id, targetExecutive.displayOrder);
+      await api.executives.reorder(targetExecutive.id, currentExecutive.displayOrder);
+      
+      toast.success(`Moved ${executive.name} ${direction}.`);
+      
+      // Re-fetch the list to ensure correct sorting based on DB changes
+      await fetchExecutives(); 
+
+    } catch (error) {
+      console.error(`Failed to move executive ${direction}:`, error);
+      toast.error(`Failed to reorder executive. Please try again.`);
+    } finally {
+      setDeletingId(null);
+    }
+  };
 
   const handleDelete = async (id: string) => {
     setDeletingId(id);
@@ -95,7 +129,7 @@ const ExecutivesManagement: React.FC = () => {
             <p className="text-center text-muted-foreground">No executive profiles found. Start by adding a new one!</p>
           ) : (
             <div className="space-y-4">
-              {executives.map((executive) => (
+              {executives.map((executive, index) => (
                 <div key={executive.id} className="flex items-center justify-between p-4 border rounded-lg shadow-sm">
                   <div className="flex items-center space-x-4">
                     <Avatar className="h-12 w-12">
@@ -110,6 +144,28 @@ const ExecutivesManagement: React.FC = () => {
                     </div>
                   </div>
                   <div className="flex space-x-2">
+                    {/* Reorder Buttons */}
+                    <Button 
+                      variant="outline" 
+                      size="icon" 
+                      onClick={() => handleReorder(executive, 'up')}
+                      disabled={index === 0 || deletingId !== null}
+                      className="text-brand-500 hover:bg-brand-50 focus-visible:ring-brand-gold"
+                    >
+                      <ArrowUp className="h-4 w-4" />
+                      <span className="sr-only">Move Up</span>
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      size="icon" 
+                      onClick={() => handleReorder(executive, 'down')}
+                      disabled={index === executives.length - 1 || deletingId !== null}
+                      className="text-brand-500 hover:bg-brand-50 focus-visible:ring-brand-gold"
+                    >
+                      <ArrowDown className="h-4 w-4" />
+                      <span className="sr-only">Move Down</span>
+                    </Button>
+
                     <Button asChild variant="outline" size="icon" className="text-brand-500 hover:bg-brand-50 focus-visible:ring-brand-gold">
                       <Link to={`/admin/executives/edit/${executive.slug}`}>
                         <Edit className="h-4 w-4" />
