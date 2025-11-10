@@ -40,18 +40,14 @@ async function generateSignature(params: Record<string, string | number>): Promi
   }
   
   // 1. Filter and sort parameters strictly
-  const validKeys = ['timestamp', 'folder', 'public_id'];
-  const filteredParams: Record<string, string | number> = {};
-  
-  for (const key of validKeys) {
-    if (params[key] !== undefined && params[key] !== null && params[key] !== "") {
-      filteredParams[key] = params[key];
-    }
-  }
+  // Use all keys provided in params, as they are already filtered by the caller (uploadToCloudinary/deleteFromCloudinary)
+  const filteredParams = params;
 
   const sortedKeys = Object.keys(filteredParams).sort();
+  
+  // Crucial step: Ensure values are converted to strings and concatenated correctly
   const stringToSign = sortedKeys
-    .map(key => `${key}=${String(filteredParams[key])}`) // Explicitly convert value to string
+    .map(key => `${key}=${String(filteredParams[key])}`)
     .join('&');
 
   // 2. Generate HMAC-SHA1 signature and convert to Hex
