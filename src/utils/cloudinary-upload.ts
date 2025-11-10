@@ -59,6 +59,7 @@ export const uploadImageToCloudinary = async (
     const result = await response.json();
 
     if (!response.ok || result.error) {
+      console.error("Cloudinary Edge Function Error Response:", result);
       throw new Error(result.error || "Upload failed on the server.");
     }
 
@@ -92,6 +93,7 @@ export const deleteImageFromCloudinary = async (
     const result = await response.json();
 
     if (!response.ok || result.error) {
+      console.error("Cloudinary Edge Function Error Response (Delete):", result);
       throw new Error(result.error || "Deletion failed on the server.");
     }
 
