@@ -2,10 +2,7 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 // @ts-ignore
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.0';
-// @ts-ignore
-import { HmacSha1 } from "https://deno.land/std@0.190.0/crypto/mod.ts";
-// @ts-ignore
-import { encode } from "https://deno.land/std@0.190.0/encoding/base64.ts";
+// Removed HmacSha1 and encode imports as they are replaced by crypto.subtle
 
 // @ts-ignore
 const CLOUDINARY_CLOUD_NAME = Deno.env.get('CLOUDINARY_CLOUD_NAME');
@@ -32,27 +29,46 @@ const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, content-disposition',
   'Access-Control-Allow-Methods': 'POST, OPTIONS', 
-  'Access-Control-Max-Age': '86400', // Cache preflight response for 24 hours
+  'Access-Control-Max-Age': '86400',
 };
 
-// Utility to generate Cloudinary signature
+// Utility to generate Cloudinary signature (FIXED IMPLEMENTATION)
 async function generateSignature(params: Record<string, string | number>): Promise<string> {
   if (!CLOUDINARY_API_SECRET) {
     console.error("Error: CLOUDINARY_API_SECRET is not configured.");
     throw new Error("Cloudinary API Secret not configured.");
   }
   
-  const sortedKeys = Object.keys(params).sort();
+  // 1. Filter and sort parameters strictly
+  const validKeys = ['timestamp', 'folder', 'public_id'];
+  const filteredParams: Record<string, string | number> = {};
+  
+  for (const key of validKeys) {
+    if (params[key] !== undefined && params[key] !== null && params[key] !== "") {
+      filteredParams[key] = params[key];
+    }
+  }
+
+  const sortedKeys = Object.keys(filteredParams).sort();
   const stringToSign = sortedKeys
-    .filter(key => params[key] !== undefined && params[key] !== null && params[key] !== "")
-    .map(key => `${key}=${params[key]}`)
+    .map(key => `${key}=${filteredParams[key]}`)
     .join('&');
 
-  const hmac = new HmacSha1(CLOUDINARY_API_SECRET);
-  hmac.update(stringToSign);
-  // @ts-ignore
-  const signature = encode(await hmac.digest());
-  return signature;
+  // 2. Generate HMAC-SHA1 signature and convert to Hex
+  const encoder = new TextEncoder();
+  const key = encoder.encode(CLOUDINARY_API_SECRET);
+  const data = encoder.encode(stringToSign);
+  
+  const signatureBuffer = await crypto.subtle.sign(
+    "HMAC",
+    await crypto.subtle.importKey("raw", key, { name: "HMAC", hash: "SHA-1" }, false, ["sign"]),
+    data
+  );
+  
+  const signatureArray = Array.from(new Uint8Array(signatureBuffer));
+  const signatureHex = signatureArray.map(b => b.toString(16).padStart(2, "0")).join("");
+  
+  return signatureHex;
 }
 
 // Utility to upload base64 data to Cloudinary
@@ -193,7 +209,7 @@ serve(async (req: Request) => {
         });
       }
       
-      const result = await deleteFromCloudinary(publicId);
+      const result = await deleteFromCloudary(publicId);
       
       // Cloudinary returns { result: 'ok' } on success, or { result: 'not found' } if resource doesn't exist, which is fine.
       if (result.error) {
