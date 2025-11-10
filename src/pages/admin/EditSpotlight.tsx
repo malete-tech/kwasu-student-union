@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Loader2, ArrowLeft } from "lucide-react";
@@ -13,8 +13,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { api } from "@/lib/api";
 import { toast } from "sonner";
 import ImageUpload from "@/components/ImageUpload";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const formSchema = z.object({
   name: z.string().min(1, { message: "Name is required." }),
@@ -24,9 +25,12 @@ const formSchema = z.object({
   link: z.string().url({ message: "Invalid URL." }).optional().or(z.literal('')),
 });
 
-const AddStudentSpotlight: React.FC = () => {
-  const [isSubmitting, setIsSubmitting] = useState(false);
+const EditSpotlight: React.FC = () => {
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [loadingSpotlight, setLoadingSpotlight] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -39,37 +43,107 @@ const AddStudentSpotlight: React.FC = () => {
     },
   });
 
+  useEffect(() => {
+    const fetchSpotlight = async () => {
+      if (!id) {
+        setError("Spotlight ID is missing.");
+        setLoadingSpotlight(false);
+        return;
+      }
+      try {
+        const fetchedSpotlight = await api.spotlight.getById(id);
+        if (fetchedSpotlight) {
+          form.reset({
+            name: fetchedSpotlight.name,
+            achievement: fetchedSpotlight.achievement,
+            descriptionMd: fetchedSpotlight.descriptionMd,
+            photoUrl: fetchedSpotlight.photoUrl || undefined,
+            link: fetchedSpotlight.link || "",
+          });
+        } else {
+          setError("Spotlight entry not found.");
+        }
+      } catch (err) {
+        console.error("Failed to fetch spotlight for editing:", err);
+        setError("Failed to load spotlight. Please try again later.");
+      } finally {
+        setLoadingSpotlight(false);
+      }
+    };
+    fetchSpotlight();
+  }, [id, form]);
+
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    if (!id) {
+      toast.error("Cannot update: Spotlight ID is missing.");
+      return;
+    }
     setIsSubmitting(true);
     try {
-      const newSpotlight = {
+      const updatedSpotlight = {
         name: values.name,
         achievement: values.achievement,
         descriptionMd: values.descriptionMd,
         photoUrl: values.photoUrl || undefined,
         link: values.link || undefined,
       };
-      await api.studentSpotlight.create(newSpotlight);
-      toast.success("Student spotlight added successfully!");
-      form.reset();
+      await api.spotlight.update(id, updatedSpotlight);
+      toast.success("Spotlight entry updated successfully!");
       navigate("/admin/spotlight");
     } catch (error) {
-      console.error("Failed to add student spotlight:", error);
-      toast.error("Failed to add student spotlight. Please try again.");
+      console.error("Failed to update spotlight entry:", error);
+      toast.error("Failed to update spotlight entry. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
   };
 
+  if (loadingSpotlight) {
+    return (
+      <div className="space-y-6">
+        <Skeleton className="h-10 w-64 mb-6" />
+        <Card className="shadow-lg rounded-xl p-6">
+          <Skeleton className="h-8 w-1/3 mb-4" />
+          <div className="space-y-6">
+            <Skeleton className="h-10 w-full" />
+            <Skeleton className="h-10 w-full" />
+            <Skeleton className="h-48 w-full" />
+            <Skeleton className="h-12 w-full" />
+          </div>
+        </Card>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="space-y-6">
+        <h2 className="text-3xl font-bold text-brand-700">Edit Spotlight</h2>
+        <Card className="shadow-lg rounded-xl p-6">
+          <CardContent className="text-destructive text-center text-lg">
+            {error}
+            <div className="mt-6">
+              <Button asChild variant="outline" className="border-brand-500 text-brand-500 hover:bg-brand-50 hover:text-brand-600 focus-visible:ring-brand-gold">
+                <Link to="/admin/spotlight">
+                  <ArrowLeft className="mr-2 h-4 w-4" /> Back to Spotlight Management
+                </Link>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <>
       <Helmet>
-        <title>Add Student Spotlight | KWASU SU Admin</title>
-        <meta name="description" content="Add a new student spotlight entry to the KWASU Students' Union website." />
+        <title>Edit Spotlight | KWASU SU Admin</title>
+        <meta name="description" content="Edit an existing spotlight entry on the KWASU Students' Union website." />
       </Helmet>
       <div className="space-y-6">
         <div className="flex justify-between items-center">
-          <h2 className="text-3xl font-bold text-brand-700">Add New Student Spotlight</h2>
+          <h2 className="text-3xl font-bold text-brand-700">Edit Spotlight</h2>
           <Button asChild variant="outline" className="border-brand-500 text-brand-500 hover:bg-brand-50 hover:text-brand-600 focus-visible:ring-brand-gold">
             <Link to="/admin/spotlight">
               <ArrowLeft className="mr-2 h-4 w-4" /> Back to Spotlight Management
@@ -78,7 +152,7 @@ const AddStudentSpotlight: React.FC = () => {
         </div>
         <Card className="shadow-lg rounded-xl p-6">
           <CardHeader className="pb-4">
-            <CardTitle className="text-xl font-semibold text-brand-700">New Spotlight Details</CardTitle>
+            <CardTitle className="text-xl font-semibold text-brand-700">Edit Spotlight Details</CardTitle>
           </CardHeader>
           <CardContent>
             <Form {...form}>
@@ -165,10 +239,10 @@ const AddStudentSpotlight: React.FC = () => {
                   {isSubmitting ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Adding Spotlight...
+                      Updating Spotlight...
                     </>
                   ) : (
-                    "Add Student Spotlight"
+                    "Update Spotlight"
                   )}
                 </Button>
               </form>
@@ -180,4 +254,4 @@ const AddStudentSpotlight: React.FC = () => {
   );
 };
 
-export default AddStudentSpotlight;
+export default EditSpotlight;

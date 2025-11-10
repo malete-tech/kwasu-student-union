@@ -95,7 +95,7 @@ export interface Opportunity {
 }
 
 // Student Spotlight (for homepage)
-export interface StudentSpotlight {
+export interface Spotlight {
   id: string;
   name: string;
   achievement: string;

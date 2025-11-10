@@ -30,7 +30,7 @@ const adminNavLinks: AdminLink[] = [
   { name: "Complaints", href: "/admin/complaints", icon: MessageSquare },
   { name: "Documents", href: "/admin/documents", icon: Download },
   { name: "Opportunities", href: "/admin/opportunities", icon: Briefcase },
-  { name: "Spotlight", href: "/admin/spotlight", icon: Star }, // Added Student Spotlight link
+  { name: "Spotlight", href: "/admin/spotlight", icon: Star }, // Updated name
 ];
 
 interface AdminNavigationProps {

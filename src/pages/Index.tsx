@@ -2,8 +2,8 @@ import { Button } from "@/components/ui/button";
 import { Helmet } from "react-helmet-async";
 import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
-import { StudentSpotlight } from "@/types";
-import StudentSpotlightCard from "@/components/student-spotlight-card";
+import { Spotlight } from "@/types";
+import SpotlightCard from "@/components/SpotlightCard";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import QuickLinks from "@/components/QuickLinks";
@@ -14,10 +14,10 @@ import { CheckCircle, Search, ArrowRight } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import AnimatedNotifications from "@/components/AnimatedNotifications";
 import PhoneMockup from "@/components/PhoneMockup";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useNavigate, Link } from "react-router-dom"; // Import Link
 
 const Index = () => {
-  const [studentSpotlights, setStudentSpotlights] = useState<StudentSpotlight[]>([]);
+  const [spotlights, setSpotlights] = useState<Spotlight[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [localSearchTerm, setLocalSearchTerm] = useState(""); // State for the input value
@@ -26,8 +26,8 @@ const Index = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const spotlights = await api.studentSpotlight.getAll();
-        setStudentSpotlights(spotlights.slice(0, 1)); // Limit to 1 for the homepage spotlight
+        const fetchedSpotlights = await api.spotlight.getAll();
+        setSpotlights(fetchedSpotlights.slice(0, 1)); // Limit to 1 for the homepage spotlight
       } catch (err) {
         console.error("Failed to fetch homepage data:", err);
         setError("Failed to load content. Please try again later.");
@@ -114,10 +114,13 @@ const Index = () => {
             {/* Left Sidebar */}
             <div className="lg:col-span-1 space-y-8">
               <QuickLinks />
-              {/* Student Spotlight */}
+              {/* Spotlight */}
               <Card className="shadow-lg rounded-2xl p-6">
-                <CardHeader className="pb-4">
-                  <CardTitle className="text-2xl font-semibold text-brand-700">Student Spotlight</CardTitle>
+                <CardHeader className="pb-4 flex flex-row items-center justify-between">
+                  <CardTitle className="text-2xl font-semibold text-brand-700">Spotlight</CardTitle>
+                  <Button asChild variant="link" size="sm" className="text-brand-500 hover:text-brand-600 focus-visible:ring-brand-gold">
+                    <Link to="/spotlight">View All</Link>
+                  </Button>
                 </CardHeader>
                 <CardContent>
                   {loading ? (
@@ -128,10 +131,10 @@ const Index = () => {
                     </div>
                   ) : error ? (
                     <div className="text-destructive text-sm text-center">{error}</div>
-                  ) : studentSpotlights.length > 0 ? (
-                    <StudentSpotlightCard spotlight={studentSpotlights[0]!} />
+                  ) : spotlights.length > 0 ? (
+                    <SpotlightCard spotlight={spotlights[0]!} />
                   ) : (
-                    <p className="text-center text-muted-foreground text-sm">No student spotlight yet.</p>
+                    <p className="text-center text-muted-foreground text-sm">No spotlight yet.</p>
                   )}
                 </CardContent>
               </Card>

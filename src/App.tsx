@@ -20,7 +20,8 @@ import DownloadsPage from "./pages/DownloadsPage";
 import OpportunitiesPage from "./pages/OpportunitiesPage";
 import ContactPage from "./pages/ContactPage";
 import SearchResultsPage from "./pages/SearchResultsPage";
-import SubmitComplaintPage from "./pages/SubmitComplaintPage"; // New import
+import SubmitComplaintPage from "./pages/SubmitComplaintPage";
+import SpotlightPage from "./pages/SpotlightPage"; // New Public Spotlight Page
 
 // Admin Imports
 import AdminLayout from "./app/AdminLayout";
@@ -37,14 +38,14 @@ import ExecutivesManagement from "./pages/admin/ExecutivesManagement";
 import AddExecutive from "./pages/admin/AddExecutive";
 import EditExecutive from "./pages/admin/EditExecutive";
 import ComplaintsManagement from "./pages/admin/ComplaintsManagement";
-import ComplaintDetailPage from "./pages/admin/ComplaintDetailPage"; // New import
+import ComplaintDetailPage from "./pages/admin/ComplaintDetailPage";
 import DocumentsManagement from "./pages/admin/DocumentsManagement";
 import AddDocument from "./pages/admin/AddDocument";
 import EditDocument from "./pages/admin/EditDocument";
 import OpportunitiesManagement from "./pages/admin/OpportunitiesManagement";
-import StudentSpotlightManagement from "./pages/admin/StudentSpotlightManagement";
-import AddStudentSpotlight from "./pages/admin/AddStudentSpotlight";
-import EditStudentSpotlight from "./pages/admin/EditStudentSpotlight";
+import SpotlightManagement from "./pages/admin/SpotlightManagement"; // Renamed
+import AddSpotlight from "./pages/admin/AddSpotlight"; // Renamed
+import EditSpotlight from "./pages/admin/EditSpotlight"; // Renamed
 
 
 const queryClient = new QueryClient();
@@ -71,7 +72,8 @@ const App = () => (
               <Route path="/services" element={<ServicesPage />} />
               <Route path="/services/downloads" element={<DownloadsPage />} />
               <Route path="/services/opportunities" element={<OpportunitiesPage />} />
-              <Route path="/services/complaints" element={<SubmitComplaintPage />} /> {/* New Public Complaint Submission Route */}
+              <Route path="/services/complaints" element={<SubmitComplaintPage />} />
+              <Route path="/spotlight" element={<SpotlightPage />} /> {/* New Public Spotlight Page */}
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/search" element={<SearchResultsPage />} />
               {/* ADD ALL CUSTOM PUBLIC ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
@@ -94,14 +96,14 @@ const App = () => (
               <Route path="executives/add" element={<AddExecutive />} />
               <Route path="executives/edit/:slug" element={<EditExecutive />} />
               <Route path="complaints" element={<ComplaintsManagement />} />
-              <Route path="complaints/:id" element={<ComplaintDetailPage />} /> {/* New Admin Complaint Detail Route */}
+              <Route path="complaints/:id" element={<ComplaintDetailPage />} />
               <Route path="documents" element={<DocumentsManagement />} />
               <Route path="documents/add" element={<AddDocument />} />
               <Route path="documents/edit/:id" element={<EditDocument />} />
               <Route path="opportunities" element={<OpportunitiesManagement />} />
-              <Route path="spotlight" element={<StudentSpotlightManagement />} />
-              <Route path="spotlight/add" element={<AddStudentSpotlight />} />
-              <Route path="spotlight/edit/:id" element={<EditStudentSpotlight />} />
+              <Route path="spotlight" element={<SpotlightManagement />} />
+              <Route path="spotlight/add" element={<AddSpotlight />} />
+              <Route path="spotlight/edit/:id" element={<EditSpotlight />} />
             </Route>
 
             {/* Catch-all for 404 Not Found */}

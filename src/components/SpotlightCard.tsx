@@ -1,17 +1,16 @@
 "use client";
 
 import React from "react";
-import { Link } from "react-router-dom";
-import { StudentSpotlight } from "@/types";
+import { Spotlight } from "@/types";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
-interface StudentSpotlightCardProps {
-  spotlight: StudentSpotlight;
+interface SpotlightCardProps {
+  spotlight: Spotlight;
   className?: string;
 }
 
-const StudentSpotlightCard: React.FC<StudentSpotlightCardProps> = ({ spotlight, className }) => {
+const SpotlightCard: React.FC<SpotlightCardProps> = ({ spotlight, className }) => {
   return (
     <Card className={cn("flex flex-col overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300", className)}>
       {spotlight.photoUrl && (
@@ -26,9 +25,9 @@ const StudentSpotlightCard: React.FC<StudentSpotlightCardProps> = ({ spotlight, 
       <CardHeader className="pb-2">
         <CardTitle className="text-xl font-semibold leading-tight">
           {spotlight.link ? (
-            <Link to={spotlight.link} className="hover:text-brand-500 focus-visible:ring-brand-gold focus-visible:ring-2 focus-visible:ring-offset-2 rounded-md outline-none">
+            <a href={spotlight.link} target="_blank" rel="noopener noreferrer" className="hover:text-brand-500 focus-visible:ring-brand-gold focus-visible:ring-2 focus-visible:ring-offset-2 rounded-md outline-none">
               {spotlight.name}
-            </Link>
+            </a>
           ) : (
             spotlight.name
           )}
@@ -46,4 +45,4 @@ const StudentSpotlightCard: React.FC<StudentSpotlightCardProps> = ({ spotlight, 
   );
 };
 
-export default StudentSpotlightCard;
+export default SpotlightCard;

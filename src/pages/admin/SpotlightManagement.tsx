@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { PlusCircle, Edit, Trash2, Loader2, Star, ExternalLink } from "lucide-react";
 import { api } from "@/lib/api";
-import { StudentSpotlight } from "@/types";
+import { Spotlight } from "@/types";
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -23,8 +23,8 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
 
-const StudentSpotlightManagement: React.FC = () => {
-  const [spotlights, setSpotlights] = useState<StudentSpotlight[]>([]);
+const SpotlightManagement: React.FC = () => {
+  const [spotlights, setSpotlights] = useState<Spotlight[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
@@ -33,11 +33,11 @@ const StudentSpotlightManagement: React.FC = () => {
     setLoading(true);
     setError(null);
     try {
-      const data = await api.studentSpotlight.getAll();
+      const data = await api.spotlight.getAll();
       setSpotlights(data);
     } catch (err) {
-      console.error("Failed to fetch student spotlights:", err);
-      setError("Failed to load student spotlights. Please try again.");
+      console.error("Failed to fetch spotlights:", err);
+      setError("Failed to load spotlight entries. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -66,7 +66,7 @@ const StudentSpotlightManagement: React.FC = () => {
     return true;
   };
 
-  const handleDelete = async (spotlight: StudentSpotlight) => {
+  const handleDelete = async (spotlight: Spotlight) => {
     setDeletingId(spotlight.id);
     try {
       // First, delete the image from Supabase Storage if it exists
@@ -78,12 +78,12 @@ const StudentSpotlightManagement: React.FC = () => {
       }
 
       // Then, delete the spotlight record from the database
-      await api.studentSpotlight.delete(spotlight.id);
-      toast.success("Student spotlight deleted successfully!");
+      await api.spotlight.delete(spotlight.id);
+      toast.success("Spotlight entry deleted successfully!");
       setSpotlights((prev) => prev.filter((item) => item.id !== spotlight.id));
     } catch (error) {
-      console.error("Failed to delete student spotlight:", error);
-      toast.error("Failed to delete student spotlight. Please try again.");
+      console.error("Failed to delete spotlight entry:", error);
+      toast.error("Failed to delete spotlight entry. Please try again.");
     } finally {
       setDeletingId(null);
     }
@@ -92,7 +92,7 @@ const StudentSpotlightManagement: React.FC = () => {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl sm:text-3xl font-bold text-brand-700">Student Spotlight Management</h2>
+        <h2 className="text-2xl sm:text-3xl font-bold text-brand-700">Spotlight Management</h2>
         <Button asChild className="bg-brand-500 hover:bg-brand-600 text-white focus-visible:ring-brand-gold">
           <Link to="/admin/spotlight/add">
             <PlusCircle className="mr-2 h-4 w-4" /> Add New Spotlight
@@ -101,7 +101,7 @@ const StudentSpotlightManagement: React.FC = () => {
       </div>
       <Card className="shadow-lg rounded-xl p-4 sm:p-6">
         <CardHeader className="pb-4">
-          <CardTitle className="text-xl font-semibold text-brand-700">Manage Student Spotlight Entries</CardTitle>
+          <CardTitle className="text-xl font-semibold text-brand-700">Manage Spotlight Entries</CardTitle>
         </CardHeader>
         <CardContent>
           {loading ? (
@@ -121,7 +121,7 @@ const StudentSpotlightManagement: React.FC = () => {
           ) : error ? (
             <div className="text-destructive text-center text-lg">{error}</div>
           ) : spotlights.length === 0 ? (
-            <p className="text-center text-muted-foreground">No student spotlight entries found. Start by adding a new one!</p>
+            <p className="text-center text-muted-foreground">No spotlight entries found. Start by adding a new one!</p>
           ) : (
             <div className="space-y-4">
               {spotlights.map((spotlight) => (
@@ -168,7 +168,7 @@ const StudentSpotlightManagement: React.FC = () => {
                         <AlertDialogHeader>
                           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                           <AlertDialogDescription>
-                            This action cannot be undone. This will permanently delete the student spotlight entry for
+                            This action cannot be undone. This will permanently delete the spotlight entry for
                             "{spotlight.name}" and its associated image from storage.
                           </AlertDialogDescription>
                         </AlertDialogHeader>
@@ -191,4 +191,4 @@ const StudentSpotlightManagement: React.FC = () => {
   );
 };
 
-export default StudentSpotlightManagement;
+export default SpotlightManagement;
