@@ -131,10 +131,11 @@ async function deleteFromCloudinary(publicId: string) {
 
 
 serve(async (req: Request) => {
+  // --- CORS PREFLIGHT CHECK ---
   if (req.method === 'OPTIONS') {
-    // Handle CORS preflight request
     return new Response(null, { status: 200, headers: corsHeaders });
   }
+  // ----------------------------
 
   // 1. Authentication Check (Admin only)
   const authHeader = req.headers.get('Authorization');
@@ -208,7 +209,6 @@ serve(async (req: Request) => {
 
   } catch (error) {
     console.error("Edge Function Error:", error);
-    // Return a 500 response with the error message
     return new Response(JSON.stringify({ error: (error as Error).message }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
