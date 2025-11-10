@@ -133,6 +133,7 @@ async function deleteFromCloudinary(publicId: string) {
 serve(async (req: Request) => {
   // --- CORS PREFLIGHT CHECK ---
   if (req.method === 'OPTIONS') {
+    // Ensure we return 200 OK with CORS headers for preflight
     return new Response(null, { status: 200, headers: corsHeaders });
   }
   // ----------------------------
@@ -193,8 +194,9 @@ serve(async (req: Request) => {
       
       const result = await deleteFromCloudinary(publicId);
       
-      if (result.result !== 'ok') {
-        throw new Error(result.error?.message || "Cloudinary deletion failed.");
+      // Cloudinary returns { result: 'ok' } on success, or { result: 'not found' } if resource doesn't exist, which is fine.
+      if (result.error) {
+        throw new Error(result.error.message || "Cloudinary deletion failed.");
       }
 
       return new Response(JSON.stringify({ success: true }), {
