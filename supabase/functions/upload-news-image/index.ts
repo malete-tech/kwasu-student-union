@@ -51,7 +51,7 @@ async function generateSignature(params: Record<string, string | number>): Promi
 
   const sortedKeys = Object.keys(filteredParams).sort();
   const stringToSign = sortedKeys
-    .map(key => `${key}=${filteredParams[key]}`)
+    .map(key => `${key}=${String(filteredParams[key])}`) // Explicitly convert value to string
     .join('&');
 
   // 2. Generate HMAC-SHA1 signature and convert to Hex
@@ -188,7 +188,9 @@ serve(async (req: Request) => {
       
       const result = await uploadToCloudinary(base64Data, folder);
       
+      // Check for Cloudinary specific error message in the result body
       if (result.error) {
+        // If Cloudinary returns an error object, throw it to be caught below
         throw new Error(result.error.message || "Cloudinary upload failed.");
       }
 
@@ -228,8 +230,11 @@ serve(async (req: Request) => {
 
   } catch (error) {
     console.error("Edge Function Error:", error);
+    // Return 401 if the error message indicates an authentication failure with Cloudinary
+    const status = (error as Error).message.includes("Unauthorized") ? 401 : 500;
+    
     return new Response(JSON.stringify({ error: (error as Error).message }), {
-      status: 500,
+      status: status,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   }
