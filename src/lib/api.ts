@@ -6,6 +6,7 @@ import { opportunities } from "./api/opportunities";
 import { spotlight } from "./api/spotlight";
 import { complaints } from "./api/complaints";
 import { search } from "./api/search";
+import { announcements } from "./api/announcements"; // New Import
 
 export const api = {
   news,
@@ -16,4 +17,5 @@ export const api = {
   spotlight,
   complaints,
   search,
+  announcements, // New Module
 };

@@ -50,6 +50,7 @@ import EditOpportunity from "./pages/admin/EditOpportunity";
 import SpotlightManagement from "./pages/admin/SpotlightManagement"; // Renamed
 import AddSpotlight from "./pages/admin/AddSpotlight"; // Renamed
 import EditSpotlight from "./pages/admin/EditSpotlight"; // Renamed
+import GlobalAnnouncementManagement from "./pages/admin/GlobalAnnouncementManagement"; // New Admin Page
 
 
 const queryClient = new QueryClient();
@@ -114,6 +115,7 @@ const App = () => (
               <Route path="spotlight" element={<SpotlightManagement />} />
               <Route path="spotlight/add" element={<AddSpotlight />} />
               <Route path="spotlight/edit/:id" element={<EditSpotlight />} />
+              <Route path="announcements" element={<GlobalAnnouncementManagement />} /> {/* New Route */}
             </Route>
 
             {/* Catch-all for 404 Not Found */}

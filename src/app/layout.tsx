@@ -3,6 +3,7 @@
 import { Outlet, useLocation } from "react-router-dom";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
+import GlobalAnnouncementModal from "@/components/GlobalAnnouncementModal"; // New Import
 
 const Layout = () => {
   const location = useLocation();
@@ -17,6 +18,7 @@ const Layout = () => {
         <Outlet />
       </main>
       {!shouldHideFooter && <Footer />}
+      <GlobalAnnouncementModal /> {/* Display the modal on all public pages */}
     </div>
   );
 };
