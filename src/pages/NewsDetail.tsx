@@ -113,7 +113,7 @@ const NewsDetail: React.FC = () => {
 
         <Card className="shadow-lg rounded-2xl p-6">
           {news.coverUrl && (
-            <div className="relative h-64 w-full mb-6 rounded-lg overflow-hidden">
+            <div className="relative w-full mb-6 rounded-lg overflow-hidden aspect-video">
               <img
                 src={news.coverUrl}
                 alt={news.title}
