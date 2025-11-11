@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Link, NavLink } from "react-router-dom";
-import { Menu, Home, Users, Newspaper, CalendarDays, Briefcase, Mail, ChevronDown } from "lucide-react";
+import { Menu, Home, Users, Newspaper, CalendarDays, Briefcase, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle, SheetFooter } from "@/components/ui/sheet";
 import { useIsMobile } from "@/hooks/use-mobile";
