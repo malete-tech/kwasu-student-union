@@ -4,12 +4,12 @@ import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { api } from "@/lib/api";
 import { News } from "@/types";
-import NewsCard from "@/components/news-card";
+import NewsFeedItem from "@/components/NewsFeedItem"; // Updated import
 import { Input } from "@/components/ui/input";
-// import { Button } from "@/components/ui/button"; // Removed unused import
 import { Search } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
+import { Card } from "@/components/ui/card"; // Added Card for skeleton/error
 
 const NewsPage: React.FC = () => {
   const [allNews, setAllNews] = useState<News[]>([]);
@@ -53,6 +53,8 @@ const NewsPage: React.FC = () => {
   }, [searchTerm, activeTag, allNews]);
 
   const uniqueTags = Array.from(new Set(allNews.flatMap(news => news.tags)));
+  const featuredArticle = filteredNews.length > 0 ? filteredNews[0] : null;
+  const gridArticles = filteredNews.slice(1);
 
   return (
     <>
@@ -95,30 +97,53 @@ const NewsPage: React.FC = () => {
         </div>
 
         {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[...Array(6)].map((_, i) => (
-              <div key={i} className="flex flex-col overflow-hidden shadow-lg rounded-xl">
-                <Skeleton className="h-48 w-full" />
-                <div className="p-4 space-y-2">
-                  <Skeleton className="h-6 w-3/4" />
-                  <Skeleton className="h-4 w-1/2" />
-                  <Skeleton className="h-4 w-full" />
-                  <Skeleton className="h-4 w-5/6" />
-                  <div className="flex gap-2 mt-2">
-                    <Skeleton className="h-6 w-16" />
-                    <Skeleton className="h-6 w-20" />
-                  </div>
+          <div className="space-y-6">
+            {/* Featured Skeleton */}
+            <Card className="flex flex-col md:flex-row h-96 shadow-lg rounded-2xl">
+              <Skeleton className="h-1/2 md:h-full w-full md:w-2/5 flex-shrink-0" />
+              <div className="p-6 w-full md:w-3/5 space-y-4">
+                <Skeleton className="h-8 w-full" />
+                <Skeleton className="h-4 w-1/3" />
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-5/6" />
+                <div className="flex gap-2 pt-4">
+                  <Skeleton className="h-6 w-16" />
+                  <Skeleton className="h-6 w-20" />
                 </div>
               </div>
-            ))}
+            </Card>
+            {/* Grid Skeleton */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pt-6">
+              {[...Array(3)].map((_, i) => (
+                <div key={i} className="flex flex-col overflow-hidden shadow-lg rounded-xl">
+                  <Skeleton className="h-48 w-full" />
+                  <div className="p-4 space-y-2">
+                    <Skeleton className="h-6 w-3/4" />
+                    <Skeleton className="h-4 w-1/2" />
+                    <Skeleton className="h-4 w-full" />
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         ) : error ? (
           <div className="text-center text-destructive text-lg">{error}</div>
         ) : filteredNews.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredNews.map((newsItem) => (
-              <NewsCard key={newsItem.id} news={newsItem} />
-            ))}
+          <div className="space-y-10">
+            {/* Featured Article */}
+            {featuredArticle && (
+              <NewsFeedItem news={featuredArticle} variant="featured" />
+            )}
+
+            {/* Grid Articles */}
+            {gridArticles.length > 0 && (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {gridArticles.map((newsItem) => (
+                  <NewsFeedItem key={newsItem.id} news={newsItem} variant="default" />
+                ))}
+              </div>
+            )}
           </div>
         ) : (
           <p className="text-center text-muted-foreground text-lg">No news found matching your criteria.</p>

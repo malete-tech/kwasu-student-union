@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { api } from "@/lib/api";
 import { News } from "@/types";
-import NewsCard from "@/components/news-card";
+import NewsFeedItem from "@/components/NewsFeedItem"; // Updated import
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -58,7 +58,7 @@ const NewsFeedSection: React.FC = () => {
   return (
     <Card className="shadow-lg rounded-2xl p-6">
       <CardHeader className="pb-4">
-        <CardTitle className="text-2xl font-semibold text-brand-700">News Feed</CardTitle>
+        <CardTitle className="text-2xl font-semibold text-brand-700">Latest News</CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="flex flex-col sm:flex-row gap-3">
@@ -93,15 +93,14 @@ const NewsFeedSection: React.FC = () => {
         </div>
 
         {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"> {/* Updated grid for skeleton */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[...Array(3)].map((_, i) => (
               <Card key={i} className="flex flex-col overflow-hidden shadow-sm">
-                <Skeleton className="h-32 w-full flex-shrink-0" /> {/* Adjusted skeleton for card layout */}
+                <Skeleton className="h-32 w-full flex-shrink-0" />
                 <div className="p-4 flex-grow space-y-2">
                   <Skeleton className="h-5 w-3/4" />
                   <Skeleton className="h-3 w-1/2" />
                   <Skeleton className="h-3 w-full" />
-                  <Skeleton className="h-3 w-5/6" />
                 </div>
               </Card>
             ))}
@@ -109,9 +108,9 @@ const NewsFeedSection: React.FC = () => {
         ) : error ? (
           <div className="text-destructive text-sm text-center">{error}</div>
         ) : filteredNews.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"> {/* Changed to a responsive grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredNews.slice(0, 3).map((newsItem) => ( // Limit to 3 for homepage
-              <NewsCard key={newsItem.id} news={newsItem} className="flex-col" />
+              <NewsFeedItem key={newsItem.id} news={newsItem} variant="default" />
             ))}
           </div>
         ) : (
