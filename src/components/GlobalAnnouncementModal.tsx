@@ -24,19 +24,14 @@ const GlobalAnnouncementModal: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  const LOCAL_STORAGE_KEY = "kwasu_su_announcement_dismissed_id";
+  // Removed LOCAL_STORAGE_KEY
 
   const fetchAnnouncement = useCallback(async () => {
     try {
       const activeAnnouncement = await api.announcements.getActive();
       if (activeAnnouncement) {
-        const dismissedId = localStorage.getItem(LOCAL_STORAGE_KEY);
-        
-        // Only show if the announcement ID is new or hasn't been dismissed
-        if (activeAnnouncement.id !== dismissedId) {
-          setAnnouncement(activeAnnouncement);
-          setIsOpen(true);
-        }
+        setAnnouncement(activeAnnouncement);
+        setIsOpen(true); // Always open if an active announcement exists
       }
     } catch (error) {
       console.error("Failed to fetch global announcement:", error);
@@ -50,9 +45,7 @@ const GlobalAnnouncementModal: React.FC = () => {
   }, [fetchAnnouncement]);
 
   const handleDismiss = () => {
-    if (announcement) {
-      localStorage.setItem(LOCAL_STORAGE_KEY, announcement.id);
-    }
+    // Removed localStorage setting
     setIsOpen(false);
   };
 
