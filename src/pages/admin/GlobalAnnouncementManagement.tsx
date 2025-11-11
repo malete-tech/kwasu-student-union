@@ -28,6 +28,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import MarkdownEditor from "@/components/MarkdownEditor";
 import { Helmet } from "react-helmet-async";
+import { Badge } from "@/components/ui/badge";
 
 interface GlobalAnnouncement {
   id: string;
