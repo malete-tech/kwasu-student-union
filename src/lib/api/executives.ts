@@ -2,11 +2,18 @@ import { Executive } from "@/types";
 import { supabase } from "@/integrations/supabase/client";
 
 export const executives = {
-  getAll: async (): Promise<Executive[]> => {
-    const { data, error } = await supabase.from('executives')
+  getAll: async (councilType?: Executive['councilType']): Promise<Executive[]> => {
+    let query = supabase.from('executives')
       .select('*')
       .order('display_order', { ascending: true }) // Primary sort by manual order
       .order('tenure_start', { ascending: false }); // Secondary sort by tenure start
+    
+    if (councilType) {
+      query = query.eq('council_type', councilType);
+    }
+
+    const { data, error } = await query;
+    
     if (error) {
       console.error("Supabase error fetching executives:", error);
       throw new Error(error.message);
@@ -19,6 +26,7 @@ export const executives = {
       photoUrl: item.photo_url,
       projectsMd: item.projects_md,
       displayOrder: item.display_order,
+      councilType: item.council_type, // Include new field
     })) as Executive[];
   },
   getBySlug: async (slug: string): Promise<Executive | undefined> => {
@@ -36,6 +44,7 @@ export const executives = {
       photoUrl: data.photo_url,
       projectsMd: data.projects_md,
       displayOrder: data.display_order,
+      councilType: data.council_type, // Include new field
     } as Executive;
   },
   create: async (executive: Omit<Executive, 'id' | 'created_at' | 'displayOrder'> & { displayOrder?: number }): Promise<Executive> => {
@@ -61,6 +70,7 @@ export const executives = {
       projects_md: executive.projectsMd,
       contacts: executive.contacts,
       display_order: newDisplayOrder,
+      council_type: executive.councilType, // Include new field
     }).select().single();
     if (error) {
       console.error("Supabase error creating executive:", error);
@@ -75,6 +85,7 @@ export const executives = {
       photoUrl: data.photo_url,
       projectsMd: data.projects_md,
       displayOrder: data.display_order,
+      councilType: data.council_type, // Include new field
     } as Executive;
   },
   update: async (id: string, executive: Partial<Omit<Executive, 'id' | 'created_at'>>): Promise<Executive> => {
@@ -88,6 +99,7 @@ export const executives = {
     if (executive.photoUrl !== undefined) updatePayload['photo_url'] = executive.photoUrl;
     if (executive.projectsMd !== undefined) updatePayload['projects_md'] = executive.projectsMd;
     if (executive.contacts !== undefined) updatePayload['contacts'] = executive.contacts;
+    if (executive.councilType !== undefined) updatePayload['council_type'] = executive.councilType; // Include new field
 
     const { data, error } = await supabase.from('executives').update(updatePayload).eq('id', id).select().single();
     if (error) {
@@ -103,6 +115,7 @@ export const executives = {
       photoUrl: data.photo_url,
       projectsMd: data.projects_md,
       displayOrder: data.display_order,
+      councilType: data.council_type, // Include new field
     } as Executive;
   },
   reorder: async (id: string, newOrder: number): Promise<void> => {

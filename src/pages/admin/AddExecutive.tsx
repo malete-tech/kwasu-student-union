@@ -19,17 +19,20 @@ import { api } from "@/lib/api";
 import { toast } from "sonner";
 import ImageUpload from "@/components/ImageUpload";
 import { Link, useNavigate } from "react-router-dom";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Executive } from "@/types";
+
+const councilTypes: Executive['councilType'][] = ['Central', 'Senate', 'Judiciary'];
 
 const formSchema = z.object({
   name: z.string().min(1, { message: "Name is required." }),
   slug: z.string().min(1, { message: "Slug is required." }).regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, { message: "Slug must be lowercase, alphanumeric, and use hyphens for spaces." }),
   role: z.string().min(1, { message: "Role is required." }),
+  councilType: z.enum(['Central', 'Senate', 'Judiciary'], { required_error: "Council type is required." }),
   faculty: z.string().optional(),
   tenureStart: z.date({ required_error: "Tenure start date is required." }),
   tenureEnd: z.date({ required_error: "Tenure end date is required." }),
   photoUrl: z.string().optional(),
-  // bioMd: z.string().min(1, { message: "Biography is required." }), // Removed
-  // manifestoMd: z.string().min(1, { message: "Manifesto is required." }), // Removed
   projectsMd: z.string().optional(),
   contactEmail: z.string().email({ message: "Invalid email address." }).optional().or(z.literal('')),
   contactTwitter: z.string().optional().or(z.literal('')),
@@ -47,12 +50,11 @@ const AddExecutive: React.FC = () => {
       name: "",
       slug: "",
       role: "",
+      councilType: 'Central', // Default to Central
       faculty: "",
       tenureStart: new Date(),
       tenureEnd: new Date(),
       photoUrl: undefined,
-      // bioMd: "", // Removed
-      // manifestoMd: "", // Removed
       projectsMd: "",
       contactEmail: "",
       contactTwitter: "",
@@ -81,12 +83,11 @@ const AddExecutive: React.FC = () => {
         name: values.name,
         slug: values.slug,
         role: values.role,
+        councilType: values.councilType, // Include new field
         faculty: values.faculty || undefined,
         tenureStart: values.tenureStart.toISOString().split('T')[0]!,
         tenureEnd: values.tenureEnd.toISOString().split('T')[0]!,
         photoUrl: values.photoUrl || undefined,
-        // bioMd: values.bioMd, // Removed
-        // manifestoMd: values.manifestoMd, // Removed
         projectsMd: values.projectsMd || undefined,
         contacts: {
           email: values.contactEmail || undefined,
@@ -124,6 +125,28 @@ const AddExecutive: React.FC = () => {
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <FormField
+                control={form.control}
+                name="councilType"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Council Type</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger className="focus-visible:ring-brand-gold">
+                          <SelectValue placeholder="Select the council" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {councilTypes.map(type => (
+                          <SelectItem key={type} value={type}>{type}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
               <FormField
                 control={form.control}
                 name="name"
@@ -274,8 +297,6 @@ const AddExecutive: React.FC = () => {
                   </FormItem>
                 )}
               />
-              {/* Removed Biography Field */}
-              {/* Removed Manifesto Field */}
               <FormField
                 control={form.control}
                 name="projectsMd"

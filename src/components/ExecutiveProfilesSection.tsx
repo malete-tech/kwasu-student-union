@@ -16,7 +16,8 @@ const ExecutiveProfilesSection: React.FC = () => {
   useEffect(() => {
     const fetchExecutives = async () => {
       try {
-        const data = await api.executives.getAll();
+        // Fetch only Central Executive members for the homepage preview
+        const data = await api.executives.getAll('Central');
         setExecutives(data.slice(0, 4)); // Limit to 4 for the homepage section
       } catch (err) {
         console.error("Failed to fetch executives:", err);
@@ -31,7 +32,7 @@ const ExecutiveProfilesSection: React.FC = () => {
   return (
     <Card className="shadow-lg rounded-2xl p-6">
       <CardHeader className="pb-4">
-        <CardTitle className="text-2xl font-semibold text-brand-700">Executive Profiles</CardTitle>
+        <CardTitle className="text-2xl font-semibold text-brand-700">Central Executive Council</CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="relative p-4 bg-brand-50 rounded-lg border-l-4 border-brand-500 text-brand-800 italic">

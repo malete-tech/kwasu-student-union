@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { PlusCircle, Edit, Trash2, Loader2, User, ArrowUp, ArrowDown } from "lucide-react";
+import { PlusCircle, Edit, Trash2, Loader2, User, ArrowUp, ArrowDown, Filter } from "lucide-react";
 import { api } from "@/lib/api";
 import { Executive } from "@/types";
 import { toast } from "sonner";
@@ -21,20 +21,25 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
+
+const councilTypes: Executive['councilType'][] = ['Central', 'Senate', 'Judiciary'];
 
 const ExecutivesManagement: React.FC = () => {
-  const [executives, setExecutives] = useState<Executive[]>([]);
+  const [allExecutives, setAllExecutives] = useState<Executive[]>([]);
+  const [filteredExecutives, setFilteredExecutives] = useState<Executive[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [councilFilter, setCouncilFilter] = useState<Executive['councilType'] | 'All'>('All');
 
   const fetchExecutives = async () => {
     setLoading(true);
     setError(null);
     try {
-      // API now sorts by display_order ascending
       const data = await api.executives.getAll();
-      setExecutives(data);
+      setAllExecutives(data);
     } catch (err) {
       console.error("Failed to fetch executives:", err);
       setError("Failed to load executive profiles. Please try again.");
@@ -47,18 +52,31 @@ const ExecutivesManagement: React.FC = () => {
     fetchExecutives();
   }, []);
 
+  useEffect(() => {
+    let currentExecutives = allExecutives;
+
+    if (councilFilter !== 'All') {
+      currentExecutives = currentExecutives.filter(e => e.councilType === councilFilter);
+    }
+
+    // Sort by display order (already handled by API, but re-sort locally for safety)
+    currentExecutives.sort((a, b) => a.displayOrder - b.displayOrder);
+
+    setFilteredExecutives(currentExecutives);
+  }, [councilFilter, allExecutives]);
+
   const handleReorder = async (executive: Executive, direction: 'up' | 'down') => {
-    const currentIndex = executives.findIndex(e => e.id === executive.id);
+    const currentIndex = filteredExecutives.findIndex(e => e.id === executive.id);
     if (currentIndex === -1) return;
 
     const targetIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1;
 
-    if (targetIndex < 0 || targetIndex >= executives.length) {
+    if (targetIndex < 0 || targetIndex >= filteredExecutives.length) {
       return; // Cannot move further
     }
 
-    const currentExecutive = executives[currentIndex]!;
-    const targetExecutive = executives[targetIndex]!;
+    const currentExecutive = filteredExecutives[currentIndex]!;
+    const targetExecutive = filteredExecutives[targetIndex]!;
 
     // Swap display orders in the database
     setDeletingId(executive.id); // Use deletingId temporarily to show loading state on the moving item
@@ -85,7 +103,9 @@ const ExecutivesManagement: React.FC = () => {
     try {
       await api.executives.delete(id);
       toast.success("Executive profile deleted successfully!");
-      setExecutives((prev) => prev.filter((executive) => executive.id !== id));
+      // Update both lists
+      setAllExecutives((prev) => prev.filter((executive) => executive.id !== id));
+      setFilteredExecutives((prev) => prev.filter((executive) => executive.id !== id));
     } catch (error) {
       console.error("Failed to delete executive profile:", error);
       toast.error("Failed to delete executive profile. Please try again.");
@@ -109,6 +129,21 @@ const ExecutivesManagement: React.FC = () => {
           <CardTitle className="text-xl font-semibold text-brand-700">Manage Executive Profiles</CardTitle>
         </CardHeader>
         <CardContent>
+          <div className="mb-6 flex justify-end">
+            <Select value={councilFilter} onValueChange={(value: Executive['councilType'] | 'All') => setCouncilFilter(value)}>
+              <SelectTrigger className="w-[200px] focus-visible:ring-brand-gold">
+                <Filter className="h-4 w-4 mr-2 text-muted-foreground" />
+                <SelectValue placeholder="Filter by Council" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="All">All Councils</SelectItem>
+                {councilTypes.map(type => (
+                  <SelectItem key={type} value={type}>{type}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
           {loading ? (
             <div className="space-y-4">
               {[...Array(5)].map((_, i) => (
@@ -125,11 +160,11 @@ const ExecutivesManagement: React.FC = () => {
             </div>
           ) : error ? (
             <div className="text-destructive text-center text-lg">{error}</div>
-          ) : executives.length === 0 ? (
-            <p className="text-center text-muted-foreground">No executive profiles found. Start by adding a new one!</p>
+          ) : filteredExecutives.length === 0 ? (
+            <p className="text-center text-muted-foreground">No executive profiles found matching the filter.</p>
           ) : (
             <div className="space-y-4">
-              {executives.map((executive, index) => (
+              {filteredExecutives.map((executive, index) => (
                 <div key={executive.id} className="flex items-center justify-between p-4 border rounded-lg shadow-sm">
                   <div className="flex items-center space-x-4">
                     <Avatar className="h-12 w-12">
@@ -141,6 +176,9 @@ const ExecutivesManagement: React.FC = () => {
                     <div>
                       <h3 className="font-semibold text-brand-800">{executive.name}</h3>
                       <p className="text-sm text-muted-foreground">{executive.role}</p>
+                      <Badge variant="secondary" className="mt-1 bg-brand-100 text-brand-700">
+                        {executive.councilType}
+                      </Badge>
                     </div>
                   </div>
                   <div className="flex space-x-2">
@@ -159,7 +197,7 @@ const ExecutivesManagement: React.FC = () => {
                       variant="outline" 
                       size="icon" 
                       onClick={() => handleReorder(executive, 'down')}
-                      disabled={index === executives.length - 1 || deletingId !== null}
+                      disabled={index === filteredExecutives.length - 1 || deletingId !== null}
                       className="text-brand-500 hover:bg-brand-50 focus-visible:ring-brand-gold"
                     >
                       <ArrowDown className="h-4 w-4" />

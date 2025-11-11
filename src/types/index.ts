@@ -18,6 +18,7 @@ export interface Executive {
     phone?: string;
   };
   displayOrder: number; // New: Manual display order
+  councilType: 'Central' | 'Senate' | 'Judiciary'; // New: Council type
 }
 
 // News

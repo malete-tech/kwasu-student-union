@@ -8,7 +8,7 @@ import ExecutiveCard from "@/components/ExecutiveCard";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card } from "@/components/ui/card";
 
-const Executives = () => {
+const JudiciaryCouncil = () => {
   const [executives, setExecutives] = useState<Executive[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -16,11 +16,12 @@ const Executives = () => {
   useEffect(() => {
     const fetchExecutives = async () => {
       try {
-        const data = await api.executives.getAll();
+        // Fetch only Judiciary Council members
+        const data = await api.executives.getAll('Judiciary');
         setExecutives(data);
       } catch (err) {
         console.error("Failed to fetch executives:", err);
-        setError("Failed to load executive profiles. Please try again later.");
+        setError("Failed to load Judiciary Council profiles. Please try again later.");
       } finally {
         setLoading(false);
       }
@@ -31,15 +32,18 @@ const Executives = () => {
   return (
     <>
       <Helmet>
-        <title>Our Executives | KWASU Students' Union</title>
-        <meta name="description" content="Meet the current executives of KWASU Students' Union, their roles, and tenure." />
+        <title>Judiciary Council | KWASU Students' Union</title>
+        <meta name="description" content="Meet the members of the KWASU Students' Union Judiciary Council." />
       </Helmet>
       <div className="container py-12">
-        <h1 className="text-4xl font-bold text-center mb-10 text-brand-700">Meet Our Executives</h1>
+        <h1 className="text-4xl font-bold text-center mb-10 text-brand-700">Judiciary Council</h1>
+        <p className="text-center text-lg text-muted-foreground mb-10 max-w-2xl mx-auto">
+          The Judiciary Council is the judicial arm of the Students' Union, responsible for interpreting the constitution and resolving disputes.
+        </p>
 
         {loading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {[...Array(8)].map((_, i) => (
+            {[...Array(4)].map((_, i) => (
               <Card key={i} className="flex flex-col items-center text-center p-6 shadow-lg rounded-xl">
                 <Skeleton className="h-24 w-24 rounded-full mb-4" />
                 <Skeleton className="h-6 w-3/4 mb-2" />
@@ -57,11 +61,11 @@ const Executives = () => {
             ))}
           </div>
         ) : (
-          <p className="text-center text-muted-foreground">No executive profiles available yet.</p>
+          <p className="text-center text-muted-foreground">No Judiciary Council profiles available yet.</p>
         )}
       </div>
     </>
   );
 };
 
-export default Executives;
+export default JudiciaryCouncil;

@@ -9,7 +9,9 @@ import Layout from "./app/layout";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import About from "./pages/About";
-import Executives from "./pages/Executives";
+import CentralExecutive from "./pages/CentralExecutive"; // Renamed
+import SenateCouncil from "./pages/SenateCouncil"; // New
+import JudiciaryCouncil from "./pages/JudiciaryCouncil"; // New
 import ExecutiveDetail from "./pages/ExecutiveDetail";
 import NewsPage from "./pages/NewsPage";
 import NewsDetail from "./pages/NewsDetail";
@@ -65,8 +67,12 @@ const App = () => (
             <Route path="/" element={<Layout />}>
               <Route index element={<Index />} />
               <Route path="/about" element={<About />} />
-              <Route path="/executives" element={<Executives />} />
+              {/* New Executive Council Routes */}
+              <Route path="/executives/central" element={<CentralExecutive />} />
+              <Route path="/executives/senate" element={<SenateCouncil />} />
+              <Route path="/executives/judiciary" element={<JudiciaryCouncil />} />
               <Route path="/executives/:slug" element={<ExecutiveDetail />} />
+              {/* End New Executive Council Routes */}
               <Route path="/news" element={<NewsPage />} />
               <Route path="/news/:slug" element={<NewsDetail />} />
               <Route path="/events" element={<EventsPage />} />

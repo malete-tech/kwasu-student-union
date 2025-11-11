@@ -2,21 +2,65 @@
 
 import React from "react";
 import { Link, NavLink } from "react-router-dom";
-import { Menu, Home, Users, Newspaper, CalendarDays, Briefcase, Mail } from "lucide-react";
+import { Menu, Home, Users, Newspaper, CalendarDays, Briefcase, Mail, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle, SheetFooter } from "@/components/ui/sheet";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  navigationMenuTriggerStyle,
+} from "@/components/ui/navigation-menu";
 
 const navLinks = [
   { name: "Home", href: "/", icon: Home },
   { name: "About SU", href: "/about", icon: Users },
-  { name: "Executives", href: "/executives", icon: Users },
   { name: "News", href: "/news", icon: Newspaper },
   { name: "Events", href: "/events", icon: CalendarDays },
   { name: "Services", href: "/services", icon: Briefcase },
 ];
+
+const executiveLinks = [
+  { name: "Central Executive", href: "/executives/central", description: "The main administrative body." },
+  { name: "Senate Council", href: "/executives/senate", description: "The legislative arm." },
+  { name: "Judiciary Council", href: "/executives/judiciary", description: "The judicial arm." },
+];
+
+interface ListItemProps extends React.ComponentPropsWithoutRef<"a"> {
+  title: string;
+}
+
+const ListItem = React.forwardRef<React.ElementRef<"a">, ListItemProps>(
+  ({ className, title, children, ...props }, ref) => {
+    return (
+      <li>
+        <NavigationMenuLink asChild>
+          <a
+            ref={ref}
+            className={cn(
+              "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
+              className
+            )}
+            {...props}
+          >
+            <div className="text-sm font-medium leading-none">{title}</div>
+            <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+              {children}
+            </p>
+          </a>
+        </NavigationMenuLink>
+      </li>
+    );
+  }
+);
+ListItem.displayName = "ListItem";
+
 
 const Header: React.FC = () => {
   const isMobile = useIsMobile();
@@ -73,6 +117,27 @@ const Header: React.FC = () => {
                       )}
                     </NavLink>
                   ))}
+                  {/* Mobile Executive Links */}
+                  <Separator className="my-2" />
+                  <h4 className="text-sm font-semibold text-brand-700 px-3">Executive Councils</h4>
+                  {executiveLinks.map((link) => (
+                    <NavLink
+                      key={link.name}
+                      to={link.href}
+                      onClick={closeSheet}
+                      className={({ isActive }) =>
+                        cn(
+                          "flex items-center gap-4 p-3 pl-6 rounded-lg transition-colors focus-visible:ring-brand-gold focus-visible:ring-2 focus-visible:ring-offset-2 outline-none",
+                          isActive
+                            ? "bg-brand-100 text-brand-700 shadow-sm"
+                            : "text-gray-700 hover:bg-brand-50 hover:text-brand-700"
+                        )
+                      }
+                    >
+                      <Users className="h-5 w-5 text-brand-500" />
+                      <span className="text-base font-medium">{link.name}</span>
+                    </NavLink>
+                  ))}
                 </nav>
 
                 <SheetFooter className="mt-6 pt-4 border-t">
@@ -86,24 +151,53 @@ const Header: React.FC = () => {
             </Sheet>
           </div>
         ) : (
-          <nav className="flex items-center gap-6">
-            {navLinks.map((link) => (
-              <NavLink
-                key={link.name}
-                to={link.href}
-                className={({ isActive }) =>
-                  `text-sm font-medium transition-colors hover:text-brand-500 focus-visible:ring-brand-500 rounded-md outline-none ${
-                    isActive ? "text-brand-700" : "text-muted-foreground"
-                  }`
-                }
-              >
-                {link.name}
-              </NavLink>
-            ))}
-            <Button asChild className="bg-brand-gold hover:bg-brand-gold/90 text-brand-900 focus-visible:ring-brand-gold">
-              <Link to="/contact">Contact Us</Link>
-            </Button>
-          </nav>
+          <NavigationMenu>
+            <NavigationMenuList>
+              {navLinks.map((link) => (
+                <NavigationMenuItem key={link.name}>
+                  <NavLink
+                    to={link.href}
+                    className={({ isActive }) =>
+                      cn(
+                        navigationMenuTriggerStyle(),
+                        "text-sm font-medium transition-colors hover:text-brand-500 focus-visible:ring-brand-500 rounded-md outline-none",
+                        isActive ? "text-brand-700" : "text-muted-foreground"
+                      )
+                    }
+                  >
+                    {link.name}
+                  </NavLink>
+                </NavigationMenuItem>
+              ))}
+              
+              {/* Executive Dropdown */}
+              <NavigationMenuItem>
+                <NavigationMenuTrigger className="text-muted-foreground data-[active]:text-brand-700 data-[state=open]:text-brand-700">
+                  Executives
+                  <ChevronDown className="relative top-[1px] ml-1 h-3 w-3 transition duration-200 group-data-[state=open]:rotate-180" />
+                </NavigationMenuTrigger>
+                <NavigationMenuContent>
+                  <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
+                    {executiveLinks.map((link) => (
+                      <ListItem
+                        key={link.name}
+                        title={link.name}
+                        href={link.href}
+                      >
+                        {link.description}
+                      </ListItem>
+                    ))}
+                  </ul>
+                </NavigationMenuContent>
+              </NavigationMenuItem>
+
+              <NavigationMenuItem>
+                <Button asChild className="bg-brand-gold hover:bg-brand-gold/90 text-brand-900 focus-visible:ring-brand-gold">
+                  <Link to="/contact">Contact Us</Link>
+                </Button>
+              </NavigationMenuItem>
+            </NavigationMenuList>
+          </NavigationMenu>
         )}
       </div>
     </header>
