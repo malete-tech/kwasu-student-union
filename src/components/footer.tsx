@@ -11,9 +11,8 @@ const Footer: React.FC = () => {
       <div className="container grid grid-cols-1 md:grid-cols-4 gap-8">
         {/* About SU */}
         <div className="col-span-1">
-          <Link to="/" className="flex items-center text-lg font-bold text-primary-foreground hover:text-brand-gold focus-visible:ring-brand-gold rounded-md outline-none mb-4">
-            <img src="/imageu-removebg-preview.png" alt="KWASU SU Logo" className="h-10 w-10 mr-2" />
-            <span>KWASU SU</span>
+          <Link to="/" className="flex items-center focus-visible:ring-brand-gold rounded-md outline-none mb-4">
+            <img src="/kwasu-su-logo-new.png" alt="KWASU SU Logo" className="h-12 w-12" />
           </Link>
           <p className="text-sm opacity-80">
             Your voice, our mission. Empowering students for a better university experience.

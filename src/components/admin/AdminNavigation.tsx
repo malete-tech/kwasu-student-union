@@ -42,9 +42,8 @@ const AdminNavigation: React.FC<AdminNavigationProps> = ({ onLinkClick, onLogout
   return (
     <div className="flex flex-col h-full">
       <div className="flex items-center justify-center h-16 mb-6">
-        <Link to="/admin" className="flex items-center text-2xl font-bold text-brand-gold hover:text-brand-gold/90 focus-visible:ring-brand-gold rounded-md outline-none" onClick={onLinkClick}>
-          <img src="/imageu-removebg-preview.png" alt="KWASU SU Logo" className="h-8 w-8 mr-2" />
-          Admin Panel
+        <Link to="/admin" className="flex items-center focus-visible:ring-brand-gold rounded-md outline-none" onClick={onLinkClick}>
+          <img src="/kwasu-su-logo-new.png" alt="KWASU SU Logo" className="h-10 w-10" />
         </Link>
       </div>
       <nav className="flex-1 space-y-2 overflow-y-auto pb-4"> {/* Added overflow-y-auto and pb-4 */}

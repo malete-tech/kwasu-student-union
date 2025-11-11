@@ -79,9 +79,8 @@ const AdminUpdatePasswordPage: React.FC = () => {
       <div className="min-h-screen flex items-center justify-center bg-brand-50 py-12 px-4 sm:px-6 lg:px-8">
         <Card className="max-w-md w-full p-8 space-y-6 shadow-lg rounded-2xl">
           <CardHeader className="text-center pb-4">
-            <Link to="/" className="flex items-center justify-center text-lg font-bold text-brand-700 hover:text-brand-600 focus-visible:ring-brand-500 rounded-md outline-none mb-4">
-              <img src="/imageu-removebg-preview.png" alt="KWASU SU Logo" className="h-10 w-10 mr-2" />
-              <span className="text-2xl">Admin Panel</span>
+            <Link to="/" className="flex items-center justify-center focus-visible:ring-brand-500 rounded-md outline-none mb-4">
+              <img src="/kwasu-su-logo-new.png" alt="KWASU SU Logo" className="h-12 w-12" />
             </Link>
             <CardTitle className="text-3xl font-bold text-brand-700">Update Password</CardTitle>
             <CardDescription className="text-muted-foreground">
