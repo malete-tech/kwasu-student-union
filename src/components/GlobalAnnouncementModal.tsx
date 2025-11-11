@@ -4,7 +4,7 @@ import React, { useEffect, useState, useCallback } from "react";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { api } from "@/lib/api";
-import { Megaphone, X, AlertTriangle, PartyPopper } from "lucide-react";
+import { Megaphone, AlertTriangle, PartyPopper } from "lucide-react"; // Removed X
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { cn } from "@/lib/utils";
@@ -23,8 +23,6 @@ const GlobalAnnouncementModal: React.FC = () => {
   const [announcement, setAnnouncement] = useState<GlobalAnnouncement | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(true);
-
-  // Removed LOCAL_STORAGE_KEY
 
   const fetchAnnouncement = useCallback(async () => {
     try {
@@ -45,7 +43,6 @@ const GlobalAnnouncementModal: React.FC = () => {
   }, [fetchAnnouncement]);
 
   const handleDismiss = () => {
-    // Removed localStorage setting
     setIsOpen(false);
   };
 
@@ -98,9 +95,7 @@ const GlobalAnnouncementModal: React.FC = () => {
           <DialogTitle className="ml-3 text-xl font-bold flex-1">
             {announcement.title}
           </DialogTitle>
-          <Button variant="ghost" size="icon" onClick={handleDismiss} className="text-current hover:bg-transparent">
-            <X className="h-5 w-5" />
-          </Button>
+          {/* Removed the redundant X close button */}
         </div>
         
         {/* Content Section */}
