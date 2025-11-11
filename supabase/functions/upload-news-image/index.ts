@@ -40,14 +40,12 @@ async function generateSignature(params: Record<string, string | number>): Promi
   }
   
   // 1. Filter and sort parameters strictly
-  // Use all keys provided in params, as they are already filtered by the caller (uploadToCloudinary/deleteFromCloudinary)
-  const filteredParams = params;
-
-  const sortedKeys = Object.keys(filteredParams).sort();
+  const sortedKeys = Object.keys(params).sort();
   
   // Crucial step: Ensure values are converted to strings and concatenated correctly
   const stringToSign = sortedKeys
-    .map(key => `${key}=${String(filteredParams[key])}`)
+    .filter((key) => params[key]) // Exclude null/undefined/empty string parameters
+    .map(key => `${key}=${String(params[key])}`)
     .join('&');
 
   // 2. Generate HMAC-SHA1 signature and convert to Hex
@@ -62,6 +60,7 @@ async function generateSignature(params: Record<string, string | number>): Promi
     data
   );
   
+  // CRITICAL FIX: Convert ArrayBuffer to Hexadecimal string
   const signatureArray = Array.from(new Uint8Array(signatureBuffer));
   const signatureHex = signatureArray.map(b => b.toString(16).padStart(2, "0")).join("");
   
@@ -85,7 +84,33 @@ async function uploadToCloudinary(base64Data: string, folder: string) {
 
   // @ts-ignore
   const formData = new FormData();
-  formData.append('file', base64Data);
+  // Cloudinary expects the file data to be prefixed with 'data:image/auto;base64,' or similar
+  // We rely on the client (NewsImageUpload.tsx) to provide the clean base64 data, 
+  // but we must ensure the prefix is added here if the client doesn't handle it, 
+  // or ensure the client sends the full data URI. Since the client uses fileToBase64, 
+  // it likely includes the prefix. Let's assume the client sends the full data URI 
+  // or we need to clean it up if it's just the raw base64 string.
+  // Based on the client code, it sends the raw base64 string (which includes the prefix).
+  
+  // We need to clean the base64 data if it contains the prefix, as Cloudinary expects 
+  // the prefix to be added when using the 'file' parameter with base64 data.
+  // However, since the client uses fileToBase64, it returns the full data URI string.
+  // Let's assume the client sends the raw base64 string without the prefix for simplicity 
+  // and add the prefix here, which is safer for the API call.
+  
+  // Reverting to the safer assumption: the client sends the full data URI (data:image/...)
+  // If the client sends the full data URI, we don't need to modify it here.
+  // Let's stick to the original implementation which relies on the client providing the correct format.
+  
+  // If the client sends the raw base64 string (without prefix), we must add it:
+  // const cleanBase64 = base64Data.replace(/^data:image\/\w+;base64,/, "");
+  // formData.append('file', `data:image/auto;base64,${cleanBase64}`);
+  
+  // Since the client uses fileToBase64, it returns the full data URI. Let's check if we need to clean it.
+  // The client code: reader.onload = () => resolve(reader.result as string); which is the full data URI.
+  // Cloudinary's API usually handles the full data URI when passed as the 'file' parameter.
+  
+  formData.append('file', base64Data); // Assuming base64Data is the full data URI string
   formData.append('api_key', CLOUDINARY_API_KEY);
   formData.append('timestamp', timestamp.toString());
   formData.append('signature', signature);
