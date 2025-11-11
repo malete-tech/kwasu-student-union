@@ -77,16 +77,29 @@ const GlobalAnnouncementModal: React.FC = () => {
       case 'urgent':
         return 'bg-red-100 border-b border-destructive/50 text-destructive';
       case 'celebration':
-        return 'bg-yellow-100 border-b border-brand-gold/50 text-brand-700';
+        return 'bg-brand-gold/20 border-b border-brand-gold text-brand-900';
       case 'info':
       default:
         return 'bg-blue-100 border-b border-blue-500/50 text-blue-700';
     }
   };
 
+  const getButtonClasses = (type: string) => {
+    switch (type) {
+      case 'urgent':
+        return 'bg-destructive hover:bg-destructive/90 text-white';
+      case 'celebration':
+        return 'bg-brand-gold hover:bg-brand-gold/90 text-brand-900';
+      case 'info':
+      default:
+        return 'bg-brand-500 hover:bg-brand-600 text-white';
+    }
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent className="sm:max-w-[425px] p-0 overflow-hidden">
+        {/* Header Section */}
         <div className={cn("flex items-center p-4", getHeaderClasses(announcement.type))}>
           {getIcon(announcement.type)}
           <DialogTitle className="ml-3 text-xl font-bold flex-1">
@@ -96,6 +109,8 @@ const GlobalAnnouncementModal: React.FC = () => {
             <X className="h-5 w-5" />
           </Button>
         </div>
+        
+        {/* Content Section */}
         <div className="p-6 max-h-[70vh] overflow-y-auto">
           <DialogDescription className="prose max-w-none text-gray-700">
             <ReactMarkdown remarkPlugins={[remarkGfm]}>
@@ -103,8 +118,10 @@ const GlobalAnnouncementModal: React.FC = () => {
             </ReactMarkdown>
           </DialogDescription>
         </div>
+        
+        {/* Footer Section */}
         <div className="p-4 border-t flex justify-end">
-          <Button onClick={handleDismiss} className="bg-brand-500 hover:bg-brand-600 text-white">
+          <Button onClick={handleDismiss} className={getButtonClasses(announcement.type)}>
             Got It
           </Button>
         </div>
