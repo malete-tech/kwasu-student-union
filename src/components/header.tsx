@@ -182,7 +182,6 @@ const Header: React.FC = () => {
                   "bg-transparent hover:bg-transparent data-[state=open]:bg-transparent data-[active]:bg-transparent"
                 )}>
                   Executives
-                  <ChevronDown className="relative top-[1px] ml-1 h-3 w-3 transition duration-200 group-data-[state=open]:rotate-180" />
                 </NavigationMenuTrigger>
                 <NavigationMenuContent>
                   <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
