@@ -68,6 +68,16 @@ const Header: React.FC = () => {
 
   const closeSheet = () => setIsSheetOpen(false);
 
+  // Custom style for standalone navigation links
+  const customNavLinkStyle = (isActive: boolean) =>
+    cn(
+      navigationMenuTriggerStyle(),
+      "text-sm font-medium transition-colors hover:text-brand-500 focus-visible:ring-brand-500 rounded-md outline-none",
+      // Override default shadcn background/hover styles to make it standalone
+      "bg-transparent hover:bg-transparent data-[state=open]:bg-transparent data-[active]:bg-transparent",
+      isActive ? "text-brand-700" : "text-muted-foreground"
+    );
+
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between">
@@ -156,13 +166,7 @@ const Header: React.FC = () => {
                 <NavigationMenuItem key={link.name}>
                   <NavLink
                     to={link.href}
-                    className={({ isActive }) =>
-                      cn(
-                        navigationMenuTriggerStyle(),
-                        "text-sm font-medium transition-colors hover:text-brand-500 focus-visible:ring-brand-500 rounded-md outline-none",
-                        isActive ? "text-brand-700" : "text-muted-foreground"
-                      )
-                    }
+                    className={({ isActive }) => customNavLinkStyle(isActive)}
                   >
                     {link.name}
                   </NavLink>
@@ -171,7 +175,12 @@ const Header: React.FC = () => {
               
               {/* Executive Dropdown */}
               <NavigationMenuItem>
-                <NavigationMenuTrigger className="text-muted-foreground data-[active]:text-brand-700 data-[state=open]:text-brand-700">
+                <NavigationMenuTrigger className={cn(
+                  navigationMenuTriggerStyle(),
+                  "text-muted-foreground data-[active]:text-brand-700 data-[state=open]:text-brand-700",
+                  // Override default shadcn background/hover styles
+                  "bg-transparent hover:bg-transparent data-[state=open]:bg-transparent data-[active]:bg-transparent"
+                )}>
                   Executives
                   <ChevronDown className="relative top-[1px] ml-1 h-3 w-3 transition duration-200 group-data-[state=open]:rotate-180" />
                 </NavigationMenuTrigger>
