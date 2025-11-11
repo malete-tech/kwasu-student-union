@@ -9,7 +9,7 @@ import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Search, Newspaper, CalendarDays, Briefcase, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import NewsCard from "@/components/news-card";
+import NewsFeedItem from "@/components/NewsFeedItem"; // Updated import
 import EventCard from "@/components/event-card";
 import { format, isPast } from "date-fns";
 import { Badge } from "@/components/ui/badge";
@@ -127,7 +127,7 @@ const SearchResultsPage: React.FC = () => {
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {results.news.map((item) => (
-                    <NewsCard key={item.id} news={item} />
+                    <NewsFeedItem key={item.id} news={item} variant="default" />
                   ))}
                 </div>
                 <div className="mt-6 text-right">
