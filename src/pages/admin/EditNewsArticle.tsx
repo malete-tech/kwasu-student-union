@@ -20,7 +20,8 @@ import { toast } from "sonner";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { Skeleton } from "@/components/ui/skeleton";
-import NewsImageUpload from "@/components/NewsImageUpload"; // New Import
+import NewsImageUpload from "@/components/NewsImageUpload";
+import MarkdownEditor from "@/components/MarkdownEditor"; // New Import
 
 const formSchema = z.object({
   title: z.string().min(1, { message: "Title is required." }),
@@ -29,7 +30,7 @@ const formSchema = z.object({
   bodyMd: z.string().min(1, { message: "Body content is required." }),
   tags: z.string().min(1, { message: "At least one tag is required." }),
   publishedAt: z.date({ required_error: "Published date is required." }),
-  coverUrl: z.string().optional(), // Added coverUrl
+  coverUrl: z.string().optional(),
 });
 
 const EditNewsArticle: React.FC = () => {
@@ -49,7 +50,7 @@ const EditNewsArticle: React.FC = () => {
       bodyMd: "",
       tags: "",
       publishedAt: new Date(),
-      coverUrl: undefined, // Added default value
+      coverUrl: undefined,
     },
   });
 
@@ -71,7 +72,7 @@ const EditNewsArticle: React.FC = () => {
             bodyMd: fetchedArticle.bodyMd,
             tags: fetchedArticle.tags.join(', '),
             publishedAt: new Date(fetchedArticle.publishedAt),
-            coverUrl: fetchedArticle.coverUrl, // Populated coverUrl
+            coverUrl: fetchedArticle.coverUrl,
           });
         } else {
           setError("News article not found.");
@@ -119,7 +120,7 @@ const EditNewsArticle: React.FC = () => {
         bodyMd: values.bodyMd,
         tags: values.tags.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0),
         publishedAt: values.publishedAt.toISOString(),
-        coverUrl: values.coverUrl, // Included coverUrl
+        coverUrl: values.coverUrl,
       };
       await api.news.update(articleId, updatedNews);
       toast.success("News article updated successfully!");
@@ -259,7 +260,13 @@ const EditNewsArticle: React.FC = () => {
                     <FormItem>
                       <FormLabel>Body (Markdown)</FormLabel>
                       <FormControl>
-                        <Textarea placeholder="Write your news article content here using Markdown..." rows={10} {...field} className="focus-visible:ring-brand-gold" />
+                        <MarkdownEditor 
+                          placeholder="Write your news article content here using Markdown..." 
+                          rows={10} 
+                          value={field.value} 
+                          onChange={field.onChange} 
+                          disabled={isSubmitting}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
