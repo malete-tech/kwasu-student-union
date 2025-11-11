@@ -3,13 +3,16 @@
 import { Outlet, useLocation } from "react-router-dom";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
-import GlobalAnnouncementModal from "@/components/GlobalAnnouncementModal"; // New Import
+import GlobalAnnouncementModal from "@/components/GlobalAnnouncementModal";
 
 const Layout = () => {
   const location = useLocation();
   
   // Hide the footer if the path starts with /news (covers /news and /news/:slug)
   const shouldHideFooter = location.pathname.startsWith('/news');
+  
+  // Show announcement only on the homepage (path === '/')
+  const shouldShowAnnouncement = location.pathname === '/';
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -18,7 +21,7 @@ const Layout = () => {
         <Outlet />
       </main>
       {!shouldHideFooter && <Footer />}
-      <GlobalAnnouncementModal /> {/* Display the modal on all public pages */}
+      {shouldShowAnnouncement && <GlobalAnnouncementModal />}
     </div>
   );
 };
