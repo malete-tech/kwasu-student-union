@@ -114,7 +114,7 @@ const Index = () => {
             <div className="lg:col-span-1 space-y-8">
               <QuickLinks />
               {/* Spotlight */}
-              <div className="shadow-lg rounded-2xl p-6 bg-card">
+              <div className="space-y-6">
                 <div className="pb-4 flex flex-row items-center justify-between">
                   <h2 className="text-2xl font-semibold text-brand-700">Spotlight</h2>
                   <Button asChild variant="link" size="sm" className="text-brand-500 hover:text-brand-600 focus-visible:ring-brand-gold">

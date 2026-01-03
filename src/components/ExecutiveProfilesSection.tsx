@@ -31,7 +31,7 @@ const ExecutiveProfilesSection: React.FC = () => {
   }, []);
 
   return (
-    <div className="shadow-lg rounded-2xl p-6 bg-card">
+    <div className="space-y-6">
       <div className="pb-4 flex justify-between items-center">
         <h2 className="text-2xl font-semibold text-brand-700">Central Executive Council</h2>
         <Button asChild variant="link" size="sm" className="text-brand-500 hover:text-brand-600 focus-visible:ring-brand-gold">
