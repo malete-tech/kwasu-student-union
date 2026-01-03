@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { api } from "@/lib/api";
 import { Event } from "@/types";
 import EventCard from "@/components/event-card";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Calendar } from "@/components/ui/calendar";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
@@ -72,11 +72,14 @@ const EventsCalendarSection: React.FC = () => {
   };
 
   return (
-    <Card className="shadow-lg rounded-2xl p-6">
-      <CardHeader className="pb-4">
-        <CardTitle className="text-2xl font-semibold text-brand-700">Events Calendar</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-6">
+    <div className="shadow-lg rounded-2xl p-6 bg-card">
+      <div className="pb-4 flex justify-between items-center">
+        <h2 className="text-2xl font-semibold text-brand-700">Events Calendar</h2>
+        <Button asChild variant="link" size="sm" className="text-brand-500 hover:text-brand-600 focus-visible:ring-brand-gold">
+          <Link to="/events">View All</Link>
+        </Button>
+      </div>
+      <div className="space-y-6">
         <div className="flex justify-center">
           <Calendar
             mode="single"
@@ -128,8 +131,8 @@ const EventsCalendarSection: React.FC = () => {
             <Link to="/events">View All Events</Link>
           </Button>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 };
 

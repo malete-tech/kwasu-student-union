@@ -5,7 +5,6 @@ import { api } from "@/lib/api";
 import { Spotlight } from "@/types";
 import SpotlightCard from "@/components/SpotlightCard";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import QuickLinks from "@/components/QuickLinks";
 import ExecutiveProfilesSection from "@/components/ExecutiveProfilesSection";
 import NewsFeedSection from "@/components/NewsFeedSection";
@@ -115,14 +114,14 @@ const Index = () => {
             <div className="lg:col-span-1 space-y-8">
               <QuickLinks />
               {/* Spotlight */}
-              <Card className="shadow-lg rounded-2xl p-6">
-                <CardHeader className="pb-4 flex flex-row items-center justify-between">
-                  <CardTitle className="text-2xl font-semibold text-brand-700">Spotlight</CardTitle>
+              <div className="shadow-lg rounded-2xl p-6 bg-card">
+                <div className="pb-4 flex flex-row items-center justify-between">
+                  <h2 className="text-2xl font-semibold text-brand-700">Spotlight</h2>
                   <Button asChild variant="link" size="sm" className="text-brand-500 hover:text-brand-600 focus-visible:ring-brand-gold">
                     <Link to="/spotlight">View All</Link>
                   </Button>
-                </CardHeader>
-                <CardContent>
+                </div>
+                <div className="space-y-6">
                   {loading ? (
                     <div className="space-y-3">
                       <Skeleton className="h-48 w-full mb-4" />
@@ -136,8 +135,8 @@ const Index = () => {
                   ) : (
                     <p className="text-center text-muted-foreground text-sm">No spotlight yet.</p>
                   )}
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             </div>
 
             {/* Right Main Content */}

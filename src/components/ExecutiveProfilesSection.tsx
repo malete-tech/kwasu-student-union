@@ -4,9 +4,10 @@ import React, { useEffect, useState } from "react";
 import { api } from "@/lib/api";
 import { Executive } from "@/types";
 import ExecutiveCard from "@/components/ExecutiveCard";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Quote } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 
 const ExecutiveProfilesSection: React.FC = () => {
   const [executives, setExecutives] = useState<Executive[]>([]);
@@ -30,11 +31,14 @@ const ExecutiveProfilesSection: React.FC = () => {
   }, []);
 
   return (
-    <Card className="shadow-lg rounded-2xl p-6">
-      <CardHeader className="pb-4">
-        <CardTitle className="text-2xl font-semibold text-brand-700">Central Executive Council</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-6">
+    <div className="shadow-lg rounded-2xl p-6 bg-card">
+      <div className="pb-4 flex justify-between items-center">
+        <h2 className="text-2xl font-semibold text-brand-700">Central Executive Council</h2>
+        <Button asChild variant="link" size="sm" className="text-brand-500 hover:text-brand-600 focus-visible:ring-brand-gold">
+          <Link to="/executives/central">View All</Link>
+        </Button>
+      </div>
+      <div className="space-y-6">
         <div className="relative p-4 bg-brand-50 rounded-lg border-l-4 border-brand-500 text-brand-800 italic">
           <Quote className="absolute top-2 left-2 h-6 w-6 text-brand-300 opacity-50" />
           <p className="ml-8 text-sm">
@@ -63,8 +67,8 @@ const ExecutiveProfilesSection: React.FC = () => {
         ) : (
           <p className="text-muted-foreground text-sm text-center">No executives to display.</p>
         )}
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 };
 
