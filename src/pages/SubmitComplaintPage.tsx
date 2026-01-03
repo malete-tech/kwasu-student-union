@@ -107,7 +107,7 @@ const SubmitComplaintPage: React.FC = () => {
           Your feedback is important. Please fill out the form below to report an issue. All submissions are treated confidentially.
         </p>
 
-        <div className="max-w-3xl mx-auto p-6">
+        <div className="max-w-5xl mx-auto bg-white p-8 md:p-10 rounded-xl shadow-lg border border-gray-100">
           <div className="pb-4">
             <h2 className="text-2xl font-semibold text-brand-700 flex items-center">
               <MessageSquare className="h-6 w-6 mr-2" /> Complaint Details
