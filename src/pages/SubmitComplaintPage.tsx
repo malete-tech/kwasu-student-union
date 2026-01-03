@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { Helmet } from "react-helmet-async";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -107,16 +107,16 @@ const SubmitComplaintPage: React.FC = () => {
           Your feedback is important. Please fill out the form below to report an issue. All submissions are treated confidentially.
         </p>
 
-        <Card className="max-w-3xl mx-auto shadow-lg rounded-2xl p-6">
-          <CardHeader className="pb-4">
-            <CardTitle className="text-2xl font-semibold text-brand-700 flex items-center">
+        <div className="max-w-3xl mx-auto p-6">
+          <div className="pb-4">
+            <h2 className="text-2xl font-semibold text-brand-700 flex items-center">
               <MessageSquare className="h-6 w-6 mr-2" /> Complaint Details
-            </CardTitle>
-            <CardDescription>
+            </h2>
+            <p className="text-sm text-muted-foreground">
               Fields marked with * are required.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
+            </p>
+          </div>
+          <div>
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                 <FormField
@@ -240,8 +240,8 @@ const SubmitComplaintPage: React.FC = () => {
                 </Button>
               </form>
             </Form>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
     </>
   );
