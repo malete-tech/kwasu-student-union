@@ -2,13 +2,12 @@
 
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Loader2, ArrowLeft, CalendarDays, MapPin, ListChecks, Layout } from "lucide-react";
+import { Loader2, ArrowLeft, MapPin, ListChecks, Layout } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
@@ -231,9 +230,9 @@ const AddEvent: React.FC = () => {
                               selected={field.value}
                               onSelect={(date) => {
                                 if (date) {
-                                  const existingTime = field.value ? { hours: field.value.getHours(), minutes: field.value.getMinutes() } : { hours: 0, minutes: 0 };
-                                  date.setHours(existingTime.hours, existingTime.minutes);
-                                  field.onChange(date);
+                                  // Preserve existing time if available
+                                  const newDate = field.value ? new Date(date.setHours(field.value.getHours(), field.value.getMinutes())) : date;
+                                  field.onChange(newDate);
                                 }
                               }}
                               initialFocus
@@ -295,9 +294,9 @@ const AddEvent: React.FC = () => {
                               selected={field.value}
                               onSelect={(date) => {
                                 if (date) {
-                                  const existingTime = field.value ? { hours: field.value.getHours(), minutes: field.value.getMinutes() } : { hours: 0, minutes: 0 };
-                                  date.setHours(existingTime.hours, existingTime.minutes);
-                                  field.onChange(date);
+                                  // Preserve existing time if available
+                                  const newDate = field.value ? new Date(date.setHours(field.value.getHours(), field.value.getMinutes())) : date;
+                                  field.onChange(newDate);
                                 }
                               }}
                               initialFocus
@@ -386,7 +385,7 @@ const AddEvent: React.FC = () => {
                         <MarkdownEditor 
                           placeholder="Detailed agenda for the event using Markdown..." 
                           rows={5} 
-                          value={field.value} 
+                          value={field.value || ""} 
                           onChange={field.onChange} 
                           disabled={isSubmitting}
                         />

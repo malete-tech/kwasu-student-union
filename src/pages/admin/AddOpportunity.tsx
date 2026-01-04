@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Loader2, ArrowLeft, Briefcase, CalendarDays, Tag, Link as LinkIcon } from "lucide-react";
+import { Loader2, ArrowLeft, Briefcase, CalendarDays, Tag } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
