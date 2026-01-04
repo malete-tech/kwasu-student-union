@@ -55,4 +55,41 @@
   body {
     @apply bg-background text-foreground font-dm-sans antialiased;
   }
+
+  /* Custom Typography Hierarchy */
+  h1 {
+    @apply text-4xl font-extrabold tracking-tight lg:text-5xl text-brand-900;
+  }
+
+  h2 {
+    @apply text-3xl font-bold tracking-tight text-brand-800;
+  }
+
+  h3 {
+    @apply text-2xl font-semibold tracking-tight text-brand-700;
+  }
+
+  h4 {
+    @apply text-xl font-semibold tracking-tight text-brand-700;
+  }
+
+  p {
+    @apply leading-relaxed text-gray-700;
+  }
+
+  /* Adjust prose styles to match new hierarchy */
+  .prose {
+    h1 {
+      @apply text-3xl font-extrabold text-brand-900;
+    }
+    h2 {
+      @apply text-2xl font-bold text-brand-800;
+    }
+    h3 {
+      @apply text-xl font-semibold text-brand-700;
+    }
+    h4 {
+      @apply text-lg font-semibold text-brand-700;
+    }
+  }
 }

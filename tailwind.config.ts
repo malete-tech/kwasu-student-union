@@ -18,7 +18,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        "dm-sans": ["DM Sans", "sans-serif"], // Added DM Sans
+        "dm-sans": ["DM Sans", "sans-serif"], // Existing DM Sans
+        "google-sans-flex": ["Google Sans Flex", "sans-serif"], // Added new font
       },
       colors: {
         border: "hsl(var(--border))",
