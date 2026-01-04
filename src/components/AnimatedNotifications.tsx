@@ -83,11 +83,7 @@ const AnimatedNotifications: React.FC<AnimatedNotificationsProps> = ({ className
 
   return (
     <div className={cn("relative w-full h-full bg-brand-50/30 flex flex-col items-center justify-center p-6 overflow-hidden", className)}>
-      <div className="absolute top-12 left-6 text-2xl font-black text-brand-900/10 uppercase tracking-tighter">
-        SU Updates
-      </div>
-      
-      <div className="relative w-full h-full flex flex-col items-center justify-center mt-8">
+      <div className="relative w-full h-full flex flex-col items-center justify-center">
         {totalAnnouncements > 1 && (
           <AnnouncementCard
             key={announcements[prevIndex]!.id + "-prev"}
