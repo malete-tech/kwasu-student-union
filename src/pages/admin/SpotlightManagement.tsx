@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { PlusCircle, Edit, Trash2, Loader2, Star, ExternalLink } from "lucide-react";
+import { PlusCircle, Edit, Trash2, Loader2, Star, ExternalLink, AlertCircle } from "lucide-react";
 import { api } from "@/lib/api";
 import { Spotlight } from "@/types";
 import { toast } from "sonner";
@@ -21,6 +21,8 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
+import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 
 const SpotlightManagement: React.FC = () => {
   const [spotlights, setSpotlights] = useState<Spotlight[]>([]);
@@ -95,68 +97,105 @@ const SpotlightManagement: React.FC = () => {
           <h2 className="text-3xl font-bold tracking-tight text-brand-700">Spotlight Management</h2>
           <p className="text-muted-foreground mt-1">Manage student achievements and success stories.</p>
         </div>
-        <Button asChild className="bg-brand-500 hover:bg-brand-600 text-white focus-visible:ring-brand-gold rounded-xl shadow-md">
-          <Link to="/admin/spotlight/add">
-            <PlusCircle className="mr-2 h-4 w-4" /> Add New Spotlight
-          </Link>
-        </Button>
+        <div className="flex items-center gap-3">
+          <Badge variant="outline" className="h-10 px-4 rounded-xl border-brand-100 bg-brand-50/30 text-brand-700 text-sm font-semibold">
+            {spotlights.length} Total
+          </Badge>
+          <Button asChild className="bg-brand-500 hover:bg-brand-600 text-white focus-visible:ring-brand-gold rounded-xl shadow-md">
+            <Link to="/admin/spotlight/add">
+              <PlusCircle className="mr-2 h-4 w-4" /> Add New Spotlight
+            </Link>
+          </Button>
+        </div>
       </div>
       
-      <div className="bg-white p-6 shadow-lg rounded-xl space-y-4">
-        <h3 className="text-xl font-semibold text-brand-700 pb-4 border-b">Manage Spotlight Entries</h3>
-        
+      <div className="mt-6">
         {loading ? (
-          <div className="space-y-4">
-            {[...Array(3)].map((_, i) => (
-              <div key={i} className="flex items-center space-x-4 p-2 border-b last:border-b-0">
-                <Skeleton className="h-12 w-12 rounded-full" />
+          <div className="grid gap-4">
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="flex items-center space-x-4 p-6 border rounded-2xl bg-white/50">
+                <Skeleton className="h-14 w-14 rounded-full" />
                 <div className="flex-1 space-y-2">
-                  <Skeleton className="h-4 w-3/4" />
-                  <Skeleton className="h-3 w-1/2" />
+                  <Skeleton className="h-6 w-1/3" />
+                  <Skeleton className="h-4 w-1/4" />
                 </div>
-                <Skeleton className="h-8 w-20" />
-                <Skeleton className="h-8 w-8 rounded-full" />
+                <div className="flex gap-2">
+                  <Skeleton className="h-10 w-10 rounded-xl" />
+                  <Skeleton className="h-10 w-10 rounded-xl" />
+                </div>
               </div>
             ))}
           </div>
         ) : error ? (
-          <div className="text-destructive text-center text-lg">{error}</div>
+          <div className="py-20 text-center">
+            <div className="mx-auto w-12 h-12 rounded-full bg-red-50 flex items-center justify-center mb-4">
+              <AlertCircle className="h-6 w-6 text-red-500" />
+            </div>
+            <p className="text-destructive text-lg font-medium">{error}</p>
+            <Button variant="outline" onClick={fetchSpotlights} className="mt-4 rounded-xl border-brand-100">Try Again</Button>
+          </div>
         ) : spotlights.length === 0 ? (
-          <p className="text-center text-muted-foreground">No spotlight entries found. Start by adding a new one!</p>
+          <div className="py-24 text-center border-2 border-dashed rounded-3xl bg-white/30 border-brand-100">
+            <div className="mx-auto w-14 h-14 rounded-full bg-brand-50 flex items-center justify-center mb-4">
+              <Star className="h-7 w-7 text-brand-300" />
+            </div>
+            <h3 className="text-lg font-bold text-slate-900">No spotlight entries listed yet</h3>
+            <p className="text-muted-foreground">Highlight outstanding student achievements here.</p>
+            <Button asChild className="mt-6 bg-brand-500 hover:bg-brand-600 text-white rounded-xl">
+              <Link to="/admin/spotlight/add">
+                <PlusCircle className="mr-2 h-4 w-4" /> Add New Spotlight
+              </Link>
+            </Button>
+          </div>
         ) : (
-          <div className="space-y-4">
+          <div className="grid gap-4">
             {spotlights.map((spotlight) => (
-              <div key={spotlight.id} className="flex flex-col sm:flex-row sm:items-center justify-between p-4 border rounded-lg shadow-sm">
-                <div className="flex items-start space-x-4 flex-1 min-w-0 mb-2 sm:mb-0">
-                  <Avatar className="h-12 w-12 flex-shrink-0">
-                    <AvatarImage src={spotlight.photoUrl || "/placeholder.svg"} alt={spotlight.name} />
+              <div 
+                key={spotlight.id} 
+                className={cn(
+                  "group relative flex flex-col md:flex-row md:items-center justify-between p-5 rounded-2xl border transition-all duration-300",
+                  "bg-white/50 hover:bg-white border-transparent hover:border-brand-100 hover:shadow-lg shadow-sm"
+                )}
+              >
+                <div className="flex items-start space-x-5 flex-1 min-w-0">
+                  <Avatar className="h-14 w-14 flex-shrink-0 ring-2 ring-brand-50 group-hover:ring-brand-100 transition-all">
+                    <AvatarImage src={spotlight.photoUrl || "/placeholder.svg"} alt={spotlight.name} className="object-cover" />
                     <AvatarFallback className="bg-brand-100 text-brand-700">
                       <Star className="h-6 w-6" />
                     </AvatarFallback>
                   </Avatar>
-                  <div className="flex-1 min-w-0 overflow-hidden">
-                    <h3 className="font-semibold text-brand-800 truncate">{spotlight.name}</h3>
-                    <p className="text-sm text-muted-foreground truncate">{spotlight.achievement}</p>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-lg font-bold text-slate-900 group-hover:text-brand-700 transition-colors truncate">
+                      {spotlight.name}
+                    </h3>
+                    <p className="text-sm font-medium text-brand-500 truncate">{spotlight.achievement}</p>
+                    <p className="text-xs text-muted-foreground truncate mt-1">
+                      {spotlight.descriptionMd.split('\n')[0]}
+                    </p>
                   </div>
                 </div>
-                <div className="flex space-x-2 flex-shrink-0 mt-2 sm:mt-0">
+                <div className="flex items-center gap-2 mt-4 md:mt-0 flex-shrink-0">
                   {spotlight.link && (
-                    <Button asChild variant="outline" size="icon" className="text-brand-500 hover:bg-brand-50 focus-visible:ring-brand-gold">
+                    <Button asChild variant="ghost" size="icon" className="h-10 w-10 text-brand-500 hover:bg-brand-50 hover:text-brand-600 rounded-xl">
                       <a href={spotlight.link} target="_blank" rel="noopener noreferrer" aria-label="View Link">
                         <ExternalLink className="h-4 w-4" />
-                        <span className="sr-only">View Link</span>
                       </a>
                     </Button>
                   )}
-                  <Button asChild variant="outline" size="icon" className="text-brand-500 hover:bg-brand-50 focus-visible:ring-brand-gold">
+                  <Button asChild variant="outline" className="h-10 px-4 bg-white border-brand-100 text-brand-700 hover:bg-brand-50 rounded-xl shadow-sm">
                     <Link to={`/admin/spotlight/edit/${spotlight.id}`}>
-                      <Edit className="h-4 w-4" />
-                      <span className="sr-only">Edit</span>
+                      <Edit className="h-4 w-4 mr-2" />
+                      Edit
                     </Link>
                   </Button>
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
-                      <Button variant="destructive" size="icon" disabled={deletingId === spotlight.id}>
+                      <Button 
+                        variant="ghost" 
+                        size="icon" 
+                        disabled={deletingId === spotlight.id}
+                        className="h-10 w-10 text-muted-foreground hover:text-destructive hover:bg-destructive/5 rounded-xl"
+                      >
                         {deletingId === spotlight.id ? (
                           <Loader2 className="h-4 w-4 animate-spin" />
                         ) : (
@@ -165,17 +204,20 @@ const SpotlightManagement: React.FC = () => {
                         <span className="sr-only">Delete</span>
                       </Button>
                     </AlertDialogTrigger>
-                    <AlertDialogContent>
+                    <AlertDialogContent className="rounded-2xl border-none shadow-2xl">
                       <AlertDialogHeader>
-                        <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                        <AlertDialogDescription>
-                          This action cannot be undone. This will permanently delete the spotlight entry for
-                          "{spotlight.name}" and its associated image from storage.
+                        <AlertDialogTitle className="text-2xl font-bold text-brand-800">Delete spotlight entry?</AlertDialogTitle>
+                        <AlertDialogDescription className="text-base">
+                          This will permanently delete the spotlight entry for
+                          <span className="font-semibold text-brand-700"> "{spotlight.name}"</span> and its associated image from storage.
                         </AlertDialogDescription>
                       </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction onClick={() => handleDelete(spotlight)} className="bg-destructive hover:bg-destructive/90">
+                      <AlertDialogFooter className="mt-6">
+                        <AlertDialogCancel className="rounded-xl border-brand-100">Cancel</AlertDialogCancel>
+                        <AlertDialogAction 
+                          onClick={() => handleDelete(spotlight)} 
+                          className="bg-destructive hover:bg-destructive/90 text-white rounded-xl"
+                        >
                           Delete
                         </AlertDialogAction>
                       </AlertDialogFooter>
