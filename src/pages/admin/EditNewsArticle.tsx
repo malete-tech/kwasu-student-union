@@ -21,7 +21,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { Skeleton } from "@/components/ui/skeleton";
 import NewsImageUpload from "@/components/NewsImageUpload";
-import MarkdownEditor from "@/components/MarkdownEditor"; // New Import
+import MarkdownEditor from "@/components/MarkdownEditor";
 
 const formSchema = z.object({
   title: z.string().min(1, { message: "Title is required." }),
@@ -34,11 +34,10 @@ const formSchema = z.object({
 });
 
 const EditNewsArticle: React.FC = () => {
-  const { slug } = useParams<{ slug: string }>();
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [loadingArticle, setLoadingArticle] = useState(true);
-  const [articleId, setArticleId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -56,15 +55,14 @@ const EditNewsArticle: React.FC = () => {
 
   useEffect(() => {
     const fetchArticle = async () => {
-      if (!slug) {
-        setError("News article slug is missing.");
+      if (!id) {
+        setError("News article ID is missing.");
         setLoadingArticle(false);
         return;
       }
       try {
-        const fetchedArticle = await api.news.getBySlug(slug);
+        const fetchedArticle = await api.news.getById(id);
         if (fetchedArticle) {
-          setArticleId(fetchedArticle.id);
           form.reset({
             title: fetchedArticle.title,
             slug: fetchedArticle.slug,
@@ -85,29 +83,28 @@ const EditNewsArticle: React.FC = () => {
       }
     };
     fetchArticle();
-  }, [slug, form]);
+  }, [id, form]);
 
-  // Auto-generate slug from title if it's a new article or slug hasn't been manually edited
   const title = form.watch("title");
   const currentSlug = form.watch("slug");
   const isSlugDirty = form.formState.dirtyFields.slug;
 
   React.useEffect(() => {
-    if (title && !isSlugDirty) { // Only auto-generate if slug hasn't been manually touched
+    if (title && !isSlugDirty) {
       const generatedSlug = title
         .toLowerCase()
-        .replace(/[^a-z0-9\s-]/g, "") // Remove non-alphanumeric characters except spaces and hyphens
+        .replace(/[^a-z0-9\s-]/g, "")
         .trim()
-        .replace(/\s+/g, "-"); // Replace spaces with hyphens
+        .replace(/\s+/g, "-");
       if (generatedSlug !== currentSlug) {
-        form.setValue("slug", generatedSlug, { shouldDirty: false }); // Don't mark as dirty if auto-generated
+        form.setValue("slug", generatedSlug, { shouldDirty: false });
       }
     }
   }, [title, form, isSlugDirty, currentSlug]);
 
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    if (!articleId) {
+    if (!id) {
       toast.error("Cannot update: Article ID is missing.");
       return;
     }
@@ -122,9 +119,9 @@ const EditNewsArticle: React.FC = () => {
         publishedAt: values.publishedAt.toISOString(),
         coverUrl: values.coverUrl,
       };
-      await api.news.update(articleId, updatedNews);
+      await api.news.update(id, updatedNews);
       toast.success("News article updated successfully!");
-      navigate("/admin/news"); // Navigate back to news management list
+      navigate("/admin/news");
     } catch (error) {
       console.error("Failed to update news article:", error);
       toast.error("Failed to update news article. Please try again.");

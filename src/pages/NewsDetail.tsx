@@ -16,20 +16,20 @@ import { Separator } from "@/components/ui/separator";
 import { Card, CardContent } from "@/components/ui/card";
 
 const NewsDetail: React.FC = () => {
-  const { slug } = useParams<{ slug: string }>();
+  const { id } = useParams<{ id: string }>();
   const [news, setNews] = useState<News | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchNews = async () => {
-      if (!slug) {
-        setError("News slug is missing.");
+      if (!id) {
+        setError("News ID is missing.");
         setLoading(false);
         return;
       }
       try {
-        const data = await api.news.getBySlug(slug);
+        const data = await api.news.getById(id);
         if (data) {
           setNews(data);
         } else {
@@ -43,7 +43,7 @@ const NewsDetail: React.FC = () => {
       }
     };
     fetchNews();
-  }, [slug]);
+  }, [id]);
 
   if (loading) {
     return (
@@ -100,7 +100,6 @@ const NewsDetail: React.FC = () => {
           </Button>
 
           <article>
-            {/* Header and Metadata */}
             <header className="mb-10">
               <h1 className="text-3xl md:text-5xl font-extrabold text-brand-900 mb-6 leading-tight">
                 {news.title}
@@ -124,7 +123,6 @@ const NewsDetail: React.FC = () => {
               </div>
             </header>
 
-            {/* Image as an "Attachment" */}
             {news.coverUrl && (
               <div className="mb-12 group">
                 <div className="flex items-center gap-2 mb-4 text-xs font-bold text-brand-600 uppercase tracking-widest">
@@ -141,7 +139,6 @@ const NewsDetail: React.FC = () => {
               </div>
             )}
 
-            {/* Body Content */}
             <div className="prose max-w-none lg:prose-xl text-gray-800 prose-headings:text-brand-900 prose-a:text-brand-600 hover:prose-a:text-brand-700 prose-strong:text-gray-900">
               <ReactMarkdown remarkPlugins={[remarkGfm]}>
                 {news.bodyMd}

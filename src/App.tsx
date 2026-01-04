@@ -9,9 +9,9 @@ import Layout from "./app/layout";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import About from "./pages/About";
-import CentralExecutive from "./pages/CentralExecutive"; // Renamed
-import SenateCouncil from "./pages/SenateCouncil"; // New
-import JudiciaryCouncil from "./pages/JudiciaryCouncil"; // New
+import CentralExecutive from "./pages/CentralExecutive";
+import SenateCouncil from "./pages/SenateCouncil";
+import JudiciaryCouncil from "./pages/JudiciaryCouncil";
 import ExecutiveDetail from "./pages/ExecutiveDetail";
 import NewsPage from "./pages/NewsPage";
 import NewsDetail from "./pages/NewsDetail";
@@ -23,7 +23,7 @@ import OpportunitiesPage from "./pages/OpportunitiesPage";
 import ContactPage from "./pages/ContactPage";
 import SearchResultsPage from "./pages/SearchResultsPage";
 import SubmitComplaintPage from "./pages/SubmitComplaintPage";
-import SpotlightPage from "./pages/SpotlightPage"; // New Public Spotlight Page
+import SpotlightPage from "./pages/SpotlightPage";
 
 // Admin Imports
 import AdminLayout from "./app/AdminLayout";
@@ -47,14 +47,14 @@ import EditDocument from "./pages/admin/EditDocument";
 import OpportunitiesManagement from "./pages/admin/OpportunitiesManagement";
 import AddOpportunity from "./pages/admin/AddOpportunity";
 import EditOpportunity from "./pages/admin/EditOpportunity";
-import SpotlightManagement from "./pages/admin/SpotlightManagement"; // Renamed
-import AddSpotlight from "./pages/admin/AddSpotlight"; // Renamed
-import EditSpotlight from "./pages/admin/EditSpotlight"; // Renamed
-import GlobalAnnouncementManagement from "./pages/admin/GlobalAnnouncementManagement"; // New Admin Page
+import SpotlightManagement from "./pages/admin/SpotlightManagement";
+import AddSpotlight from "./pages/admin/AddSpotlight";
+import EditSpotlight from "./pages/admin/EditSpotlight";
+import GlobalAnnouncementManagement from "./pages/admin/GlobalAnnouncementManagement";
 
 
 const queryClient = new QueryClient();
-const helmetContext = {}; // Required for react-helmet-async
+const helmetContext = {};
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -68,36 +68,31 @@ const App = () => (
             <Route path="/" element={<Layout />}>
               <Route index element={<Index />} />
               <Route path="/about" element={<About />} />
-              {/* New Executive Council Routes */}
               <Route path="/executives/central" element={<CentralExecutive />} />
               <Route path="/executives/senate" element={<SenateCouncil />} />
               <Route path="/executives/judiciary" element={<JudiciaryCouncil />} />
               <Route path="/executives/:slug" element={<ExecutiveDetail />} />
-              {/* End New Executive Council Routes */}
               <Route path="/news" element={<NewsPage />} />
-              <Route path="/news/:slug" element={<NewsDetail />} />
+              <Route path="/news/:id" element={<NewsDetail />} />
               <Route path="/events" element={<EventsPage />} />
               <Route path="/events/:slug" element={<EventDetail />} />
               <Route path="/services" element={<ServicesPage />} />
               <Route path="/services/downloads" element={<DownloadsPage />} />
               <Route path="/services/opportunities" element={<OpportunitiesPage />} />
               <Route path="/services/complaints" element={<SubmitComplaintPage />} />
-              <Route path="/spotlight" element={<SpotlightPage />} /> {/* New Public Spotlight Page */}
+              <Route path="/spotlight" element={<SpotlightPage />} />
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/search" element={<SearchResultsPage />} />
-              {/* ADD ALL CUSTOM PUBLIC ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             </Route>
 
-            {/* Admin Login Route (Publicly accessible) */}
             <Route path="/admin/login" element={<AdminLoginPage />} />
             <Route path="/admin/update-password" element={<AdminUpdatePasswordPage />} />
 
-            {/* Admin Protected Routes (Will be protected by auth later) */}
             <Route path="/admin" element={<AdminLayout />}>
               <Route index element={<DashboardOverview />} />
               <Route path="news" element={<NewsManagement />} />
               <Route path="news/add" element={<AddNewsArticle />} />
-              <Route path="news/edit/:slug" element={<EditNewsArticle />} />
+              <Route path="news/edit/:id" element={<EditNewsArticle />} />
               <Route path="events" element={<EventsManagement />} />
               <Route path="events/add" element={<AddEvent />} />
               <Route path="events/edit/:slug" element={<EditEvent />} />
@@ -115,10 +110,9 @@ const App = () => (
               <Route path="spotlight" element={<SpotlightManagement />} />
               <Route path="spotlight/add" element={<AddSpotlight />} />
               <Route path="spotlight/edit/:id" element={<EditSpotlight />} />
-              <Route path="announcements" element={<GlobalAnnouncementManagement />} /> {/* New Route */}
+              <Route path="announcements" element={<GlobalAnnouncementManagement />} />
             </Route>
 
-            {/* Catch-all for 404 Not Found */}
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

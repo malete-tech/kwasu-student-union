@@ -21,8 +21,8 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { format } from "date-fns";
-import { deleteImageFromCloudinary, getCloudinaryPublicId } from "@/utils/cloudinary-upload"; // New Import
-import { useSession } from "@/components/SessionContextProvider"; // New Import
+import { deleteImageFromCloudinary, getCloudinaryPublicId } from "@/utils/cloudinary-upload";
+import { useSession } from "@/components/SessionContextProvider";
 
 const NewsManagement: React.FC = () => {
   const { session } = useSession();
@@ -57,19 +57,16 @@ const NewsManagement: React.FC = () => {
 
     setDeletingId(article.id);
     try {
-      // 1. Delete image from Cloudinary if URL exists
       if (article.coverUrl) {
         const publicId = getCloudinaryPublicId(article.coverUrl);
         if (publicId) {
           const imageDeleted = await deleteImageFromCloudinary(publicId, session.access_token);
           if (!imageDeleted) {
-            // Log error but proceed to delete DB record if image deletion fails
             console.warn(`Failed to delete Cloudinary image for article ${article.id}. Proceeding with DB deletion.`);
           }
         }
       }
 
-      // 2. Delete DB record
       await api.news.delete(article.id);
       toast.success("News article deleted successfully!");
       setNewsArticles((prev) => prev.filter((a) => a.id !== article.id));
@@ -138,7 +135,7 @@ const NewsManagement: React.FC = () => {
                   </div>
                   <div className="flex space-x-2">
                     <Button asChild variant="outline" size="icon" className="text-brand-500 hover:bg-brand-50 focus-visible:ring-brand-gold">
-                      <Link to={`/admin/news/edit/${article.slug}`}> {/* Link to the edit page */}
+                      <Link to={`/admin/news/edit/${article.id}`}>
                         <Edit className="h-4 w-4" />
                         <span className="sr-only">Edit</span>
                       </Link>

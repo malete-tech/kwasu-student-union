@@ -32,7 +32,7 @@ const NewsFeedItem: React.FC<NewsFeedItemProps> = ({ news, variant = "default", 
         <div className="flex flex-col p-6 md:w-1/2 lg:w-3/5">
           <div className="pb-3">
             <h3 className="text-2xl md:text-3xl font-bold leading-snug">
-              <Link to={`/news/${news.slug}`} className={linkClasses}>
+              <Link to={`/news/${news.id}`} className={linkClasses}>
                 {news.title}
               </Link>
             </h3>
@@ -76,7 +76,7 @@ const NewsFeedItem: React.FC<NewsFeedItemProps> = ({ news, variant = "default", 
         </div>
         <div className="flex-1 min-w-0">
           <h3 className="text-base sm:text-lg font-bold leading-tight line-clamp-2 mb-1">
-            <Link to={`/news/${news.slug}`} className={linkClasses}>
+            <Link to={`/news/${news.id}`} className={linkClasses}>
               {news.title}
             </Link>
           </h3>
@@ -98,11 +98,10 @@ const NewsFeedItem: React.FC<NewsFeedItemProps> = ({ news, variant = "default", 
     );
   }
 
-  // Default (Grid) Variant
   return (
     <div className={cn("flex flex-col overflow-hidden border shadow-sm hover:shadow-md transition-all duration-300 rounded-xl bg-white", className)}>
       {news.coverUrl && (
-        <Link to={`/news/${news.slug}`} className="relative h-48 w-full overflow-hidden block group">
+        <Link to={`/news/${news.id}`} className="relative h-48 w-full overflow-hidden block group">
           <img
             src={news.coverUrl}
             alt={news.title}
@@ -113,7 +112,7 @@ const NewsFeedItem: React.FC<NewsFeedItemProps> = ({ news, variant = "default", 
       <div className="p-4 flex flex-col flex-grow">
         <div className="pb-2">
           <h3 className="text-xl font-semibold leading-tight line-clamp-2">
-            <Link to={`/news/${news.slug}`} className={linkClasses}>
+            <Link to={`/news/${news.id}`} className={linkClasses}>
               {news.title}
             </Link>
           </h3>

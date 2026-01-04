@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Users, Newspaper, CalendarDays, MessageSquare } from "lucide-react";
 import { api } from "@/lib/api";
-// Removed unused imports: import { News, Event, Executive } from "@/types";
 import { Skeleton } from "@/components/ui/skeleton";
 import { format } from "date-fns";
 import { Link } from "react-router-dom";
@@ -22,17 +21,15 @@ const DashboardOverview: React.FC = () => {
       setLoading(true);
       setError(null);
       try {
-        // Fetch counts
         const newsData = await api.news.getAll();
         setTotalNews(newsData.length);
 
-        const eventsData = await api.events.getUpcoming(100); // Fetch more to get an accurate count of upcoming
+        const eventsData = await api.events.getUpcoming(100);
         setUpcomingEventsCount(eventsData.length);
 
         const executivesData = await api.executives.getAll();
         setActiveExecutivesCount(executivesData.length);
 
-        // Fetch recent activities (latest 3 news, next 2 events)
         const latestNews = await api.news.getLatest(3);
         const nextEvents = await api.events.getUpcoming(2);
 
@@ -41,20 +38,19 @@ const DashboardOverview: React.FC = () => {
             type: 'news' as const,
             title: n.title,
             date: n.publishedAt,
-            link: `/admin/news/edit/${n.slug}`
+            link: `/admin/news/edit/${n.id}`
           })),
           ...nextEvents.map(e => ({
             type: 'event' as const,
             title: e.title,
             date: e.startsAt,
-            link: `/admin/events/edit/${e.slug}` // Assuming an edit event route exists
+            link: `/admin/events/edit/${e.slug}`
           }))
         ];
 
-        // Sort activities by date, most recent first for news, soonest first for events
         combinedActivities.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
-        setRecentActivities(combinedActivities.slice(0, 5)); // Limit to 5 recent activities
+        setRecentActivities(combinedActivities.slice(0, 5));
 
       } catch (err) {
         console.error("Failed to fetch dashboard data:", err);
@@ -91,7 +87,7 @@ const DashboardOverview: React.FC = () => {
             ) : (
               <div className="text-2xl font-bold">{totalNews !== null ? totalNews : "N/A"}</div>
             )}
-            <p className="text-xs text-muted-foreground">+20% from last month</p> {/* Placeholder for trend */}
+            <p className="text-xs text-muted-foreground">+20% from last month</p>
           </CardContent>
         </Card>
         <Card className="shadow-lg rounded-xl">
@@ -105,7 +101,7 @@ const DashboardOverview: React.FC = () => {
             ) : (
               <div className="text-2xl font-bold">{upcomingEventsCount !== null ? upcomingEventsCount : "N/A"}</div>
             )}
-            <p className="text-xs text-muted-foreground">+3 new this week</p> {/* Placeholder for trend */}
+            <p className="text-xs text-muted-foreground">+3 new this week</p>
           </CardContent>
         </Card>
         <Card className="shadow-lg rounded-xl">
@@ -128,7 +124,7 @@ const DashboardOverview: React.FC = () => {
             <MessageSquare className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">7</div> {/* Static for now, as complaints are not in Supabase */}
+            <div className="text-2xl font-bold">7</div>
             <p className="text-xs text-muted-foreground">Needs attention</p>
           </CardContent>
         </Card>
