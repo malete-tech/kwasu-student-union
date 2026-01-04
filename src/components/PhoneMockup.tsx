@@ -10,23 +10,46 @@ interface PhoneMockupProps {
 
 const PhoneMockup: React.FC<PhoneMockupProps> = ({ children, className }) => {
   return (
-    <div className={cn(
-      "relative w-[340px] h-[500px] md:w-[380px] md:h-[560px] lg:w-[420px] lg:h-[620px] rounded-[3rem] shadow-2xl overflow-hidden",
-      "bg-gradient-to-br from-brand-100 to-brand-400", // Gradient background for the border
-      className
-    )}>
-      {/* Inner phone body, creating the border effect with an inset */}
-      <div className="absolute inset-[10px] bg-gray-900/80 rounded-[2.5rem] overflow-hidden flex items-center justify-center">
-        {/* Phone Notch */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-2/5 h-6 bg-gray-900/80 rounded-b-xl z-30"></div>
-        
-        {/* Phone Screen (where children will be rendered) */}
-        <div className="relative w-[calc(100%-20px)] h-[calc(100%-20px)] rounded-[2.5rem] bg-white overflow-hidden z-10">
-          {children}
-        </div>
+    <div className={cn("relative group", className)}>
+      {/* Hardware Buttons - Left Side (Volume & Mute) */}
+      <div className="absolute -left-[2px] top-24 w-[3px] h-8 bg-gray-800 rounded-l-sm z-0"></div>
+      <div className="absolute -left-[2px] top-40 w-[3px] h-14 bg-gray-800 rounded-l-sm z-0 shadow-sm"></div>
+      <div className="absolute -left-[2px] top-56 w-[3px] h-14 bg-gray-800 rounded-l-sm z-0 shadow-sm"></div>
 
-        {/* Speaker/Camera cutout (for visual detail) */}
-        <div className="absolute top-1 left-1/2 -translate-x-1/2 w-16 h-2 bg-gray-700 rounded-full z-40"></div>
+      {/* Hardware Button - Right Side (Power) */}
+      <div className="absolute -right-[2px] top-44 w-[3px] h-20 bg-gray-800 rounded-r-sm z-0 shadow-sm"></div>
+
+      {/* Outer Frame (The 'Steel' look) */}
+      <div className={cn(
+        "relative w-[320px] h-[640px] md:w-[360px] md:h-[720px] rounded-[3.5rem] p-[10px] shadow-2xl",
+        "bg-gradient-to-b from-[#2e2e2e] via-[#1a1a1a] to-[#000000] border-[1px] border-white/10",
+        "after:absolute after:inset-0 after:rounded-[3.5rem] after:border-[0.5px] after:border-white/20 after:pointer-events-none"
+      )}>
+        {/* Inner Black Bezel */}
+        <div className="relative w-full h-full bg-black rounded-[2.8rem] overflow-hidden shadow-inner ring-1 ring-white/5">
+          
+          {/* Dynamic Island */}
+          <div className="absolute top-4 left-1/2 -translate-x-1/2 w-[100px] h-[30px] bg-black rounded-[20px] z-50 flex items-center justify-center">
+            {/* Camera/Sensor Details within Island */}
+            <div className="flex gap-4 items-center">
+              <div className="w-2 h-2 rounded-full bg-[#1a1a1a] border-[0.5px] border-white/5"></div>
+              <div className="w-4 h-4 rounded-full bg-[#0a0a0a] ring-[0.5px] ring-white/10 relative overflow-hidden">
+                <div className="absolute inset-1 rounded-full bg-blue-900/20 blur-[1px]"></div>
+              </div>
+            </div>
+          </div>
+
+          {/* Phone Screen Content */}
+          <div className="relative w-full h-full bg-white overflow-hidden z-10">
+            {children}
+            
+            {/* Screen Glare/Reflectance Overlay */}
+            <div className="absolute inset-0 pointer-events-none bg-gradient-to-tr from-transparent via-white/5 to-white/10 mix-blend-overlay z-20"></div>
+          </div>
+
+          {/* Bottom Home Indicator Bar */}
+          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-1/3 h-1 bg-black/20 rounded-full z-40 backdrop-blur-sm"></div>
+        </div>
       </div>
     </div>
   );
