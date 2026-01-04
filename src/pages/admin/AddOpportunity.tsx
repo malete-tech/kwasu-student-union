@@ -1,15 +1,13 @@
 "use client";
 
 import React, { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Loader2, ArrowLeft } from "lucide-react";
+import { Loader2, ArrowLeft, Briefcase, CalendarDays, Tag } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
@@ -19,6 +17,7 @@ import { api } from "@/lib/api";
 import { toast } from "sonner";
 import { Link, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
+import MarkdownEditor from "@/components/MarkdownEditor";
 
 const formSchema = z.object({
   title: z.string().min(1, { message: "Title is required." }),
@@ -74,43 +73,39 @@ const AddOpportunity: React.FC = () => {
         <title>Add Opportunity | KWASU SU Admin</title>
         <meta name="description" content="Add a new student opportunity (scholarship, internship, job) to the website." />
       </Helmet>
-      <div className="space-y-6">
-        <div className="flex justify-between items-center">
-          <h2 className="text-3xl font-bold text-brand-700">Add New Opportunity</h2>
-          <Button asChild variant="outline" className="border-brand-500 text-brand-500 hover:bg-brand-50 hover:text-brand-600 focus-visible:ring-brand-gold">
+      <div className="max-w-5xl mx-auto space-y-10">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div>
+            <h2 className="text-3xl font-bold tracking-tight text-brand-700">Add New Opportunity</h2>
+            <p className="text-muted-foreground mt-1">Create a new listing for scholarships, internships, or jobs.</p>
+          </div>
+          <Button asChild variant="ghost" className="text-brand-500 hover:text-brand-600 hover:bg-brand-50 rounded-xl transition-all">
             <Link to="/admin/opportunities">
               <ArrowLeft className="mr-2 h-4 w-4" /> Back to Opportunities Management
             </Link>
           </Button>
         </div>
-        <Card className="shadow-lg rounded-xl p-6">
-          <CardHeader className="pb-4">
-            <CardTitle className="text-xl font-semibold text-brand-700">New Opportunity Details</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-12">
+            {/* Basic Details Section */}
+            <div className="grid gap-8 md:grid-cols-3">
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 text-brand-600 font-bold uppercase tracking-wider text-xs">
+                  <Briefcase className="h-4 w-4" />
+                  Opportunity Details
+                </div>
+                <p className="text-sm text-muted-foreground">Provide the core information about the opportunity.</p>
+              </div>
+              <div className="md:col-span-2 space-y-4">
                 <FormField
                   control={form.control}
                   name="title"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Title</FormLabel>
+                      <FormLabel className="text-slate-700 font-semibold">Title</FormLabel>
                       <FormControl>
-                        <Input placeholder="Shell Undergraduate Scholarship" {...field} className="focus-visible:ring-brand-gold" />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="link"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Application Link</FormLabel>
-                      <FormControl>
-                        <Input type="url" placeholder="https://apply.example.com" {...field} className="focus-visible:ring-brand-gold" />
+                        <Input placeholder="Shell Undergraduate Scholarship" {...field} className="h-12 rounded-xl border-brand-100 bg-white/50 focus-visible:ring-brand-gold focus-visible:bg-white transition-all shadow-sm" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -121,9 +116,37 @@ const AddOpportunity: React.FC = () => {
                   name="sponsor"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Sponsor/Organization (Optional)</FormLabel>
+                      <FormLabel className="text-slate-700 font-semibold">Sponsor/Organization (Optional)</FormLabel>
                       <FormControl>
-                        <Input placeholder="Shell Nigeria" {...field} className="focus-visible:ring-brand-gold" />
+                        <Input placeholder="Shell Nigeria" {...field} className="h-10 rounded-xl border-brand-100 bg-white/50 focus-visible:ring-brand-gold focus-visible:bg-white transition-all shadow-sm" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+
+            <hr className="border-slate-100" />
+
+            {/* Application & Deadline Section */}
+            <div className="grid gap-8 md:grid-cols-3">
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 text-brand-600 font-bold uppercase tracking-wider text-xs">
+                  <CalendarDays className="h-4 w-4" />
+                  Timeline & Link
+                </div>
+                <p className="text-sm text-muted-foreground">Set the application deadline and provide the direct link.</p>
+              </div>
+              <div className="md:col-span-2 space-y-4">
+                <FormField
+                  control={form.control}
+                  name="link"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-slate-700 font-semibold">Application Link</FormLabel>
+                      <FormControl>
+                        <Input type="url" placeholder="https://apply.example.com" {...field} className="h-10 rounded-xl border-brand-100 bg-white/50 focus-visible:ring-brand-gold focus-visible:bg-white transition-all shadow-sm" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -134,14 +157,14 @@ const AddOpportunity: React.FC = () => {
                   name="deadline"
                   render={({ field }) => (
                     <FormItem className="flex flex-col">
-                      <FormLabel>Deadline Date</FormLabel>
+                      <FormLabel className="text-slate-700 font-semibold">Deadline Date</FormLabel>
                       <Popover>
                         <PopoverTrigger asChild>
                           <FormControl>
                             <Button
                               variant={"outline"}
                               className={cn(
-                                "w-full pl-3 text-left font-normal focus-visible:ring-brand-gold",
+                                "h-12 pl-3 text-left font-normal rounded-xl border-brand-100 bg-white/50 focus-visible:ring-brand-gold shadow-sm",
                                 !field.value && "text-muted-foreground"
                               )}
                             >
@@ -154,12 +177,13 @@ const AddOpportunity: React.FC = () => {
                             </Button>
                           </FormControl>
                         </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
+                        <PopoverContent className="w-auto p-0 rounded-2xl border-brand-100 shadow-2xl" align="start">
                           <Calendar
                             mode="single"
                             selected={field.value}
                             onSelect={field.onChange}
                             initialFocus
+                            className="p-3"
                           />
                         </PopoverContent>
                       </Popover>
@@ -167,14 +191,29 @@ const AddOpportunity: React.FC = () => {
                     </FormItem>
                   )}
                 />
+              </div>
+            </div>
+
+            <hr className="border-slate-100" />
+
+            {/* Description & Tags Section */}
+            <div className="grid gap-8 md:grid-cols-3">
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 text-brand-600 font-bold uppercase tracking-wider text-xs">
+                  <Tag className="h-4 w-4" />
+                  Content & Categorization
+                </div>
+                <p className="text-sm text-muted-foreground">Write a detailed description and add relevant tags (e.g., scholarship, internship).</p>
+              </div>
+              <div className="md:col-span-2 space-y-6">
                 <FormField
                   control={form.control}
                   name="tags"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Tags (comma-separated)</FormLabel>
+                      <FormLabel className="text-slate-700 font-semibold">Tags (comma-separated)</FormLabel>
                       <FormControl>
-                        <Input placeholder="scholarship, academic, engineering" {...field} className="focus-visible:ring-brand-gold" />
+                        <Input placeholder="scholarship, academic, engineering" {...field} className="h-10 rounded-xl border-brand-100 bg-white/50 focus-visible:ring-brand-gold focus-visible:bg-white transition-all shadow-sm" />
                       </FormControl>
                       <FormDescription>
                         Use tags like 'scholarship', 'internship', 'job', 'grant'.
@@ -188,28 +227,41 @@ const AddOpportunity: React.FC = () => {
                   name="descriptionMd"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Description (Markdown)</FormLabel>
+                      <FormLabel className="text-slate-700 font-semibold">Description (Markdown)</FormLabel>
                       <FormControl>
-                        <Textarea placeholder="Detailed description of the opportunity using Markdown..." rows={8} {...field} className="focus-visible:ring-brand-gold" />
+                        <MarkdownEditor 
+                          placeholder="Detailed description of the opportunity using Markdown..." 
+                          rows={10} 
+                          value={field.value} 
+                          onChange={field.onChange} 
+                          disabled={isSubmitting}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-                <Button type="submit" className="w-full bg-brand-700 hover:bg-brand-800 text-white focus-visible:ring-brand-gold" disabled={isSubmitting}>
-                  {isSubmitting ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Adding Opportunity...
-                    </>
-                  ) : (
-                    "Add Opportunity"
-                  )}
-                </Button>
-              </form>
-            </Form>
-          </CardContent>
-        </Card>
+              </div>
+            </div>
+
+            <div className="flex pt-6">
+              <Button 
+                type="submit" 
+                className="w-full sm:w-auto px-10 h-14 bg-brand-700 hover:bg-brand-800 text-white rounded-2xl shadow-xl hover:shadow-2xl transition-all text-lg font-bold" 
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="mr-3 h-5 w-5 animate-spin" />
+                    Adding Opportunity...
+                  </>
+                ) : (
+                  "Add Opportunity"
+                )}
+              </Button>
+            </div>
+          </form>
+        </Form>
       </div>
     </>
   );
