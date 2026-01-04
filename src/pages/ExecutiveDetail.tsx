@@ -92,7 +92,7 @@ const ExecutiveDetail = () => {
         {error}
         <div className="mt-6">
           <Button asChild variant="outline" className="border-brand-500 text-brand-500 hover:bg-brand-50 hover:text-brand-600 focus-visible:ring-brand-gold">
-            <Link to="/executives">
+            <Link to="/executives/central">
               <ArrowLeft className="mr-2 h-4 w-4" /> Back to Executives
             </Link>
           </Button>
@@ -107,7 +107,7 @@ const ExecutiveDetail = () => {
         Executive data is not available.
         <div className="mt-6">
           <Button asChild variant="outline" className="border-brand-500 text-brand-500 hover:bg-brand-50 hover:text-brand-600 focus-visible:ring-brand-gold">
-            <Link to="/executives">
+            <Link to="/executives/central">
               <ArrowLeft className="mr-2 h-4 w-4" /> Back to Executives
             </Link>
           </Button>
@@ -124,7 +124,7 @@ const ExecutiveDetail = () => {
       </Helmet>
       <div className="container py-12">
         <Button asChild variant="outline" className="mb-8 border-brand-500 text-brand-500 hover:bg-brand-50 hover:text-brand-600 focus-visible:ring-brand-gold">
-          <Link to="/executives">
+          <Link to="/executives/central">
             <ArrowLeft className="mr-2 h-4 w-4" /> Back to Executives
           </Link>
         </Button>

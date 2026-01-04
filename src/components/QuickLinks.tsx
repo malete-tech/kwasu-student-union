@@ -3,7 +3,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { User, CalendarDays, Newspaper, Users } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"; // Added missing imports
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 // import { cn } from "@/lib/utils"; // Removed unused import
 
 interface QuickLinkItemProps {
@@ -29,7 +29,7 @@ const QuickLinks: React.FC = () => {
         <QuickLinkItem icon={User} text="Submit Complaint" href="/services/complaints" />
         <QuickLinkItem icon={CalendarDays} text="Check Events" href="/events" />
         <QuickLinkItem icon={Newspaper} text="View News" href="/news" />
-        <QuickLinkItem icon={Users} text="View Executives" href="/executives" />
+        <QuickLinkItem icon={Users} text="View Executives" href="/executives/central" />
       </CardContent>
     </Card>
   );
