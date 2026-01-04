@@ -19,9 +19,9 @@ const PhoneMockup: React.FC<PhoneMockupProps> = ({ children, className }) => {
       {/* Hardware Button - Right Side (Power) */}
       <div className="absolute -right-[2px] top-44 w-[3px] h-20 bg-gray-800 rounded-r-sm z-0 shadow-sm"></div>
 
-      {/* Outer Frame (The 'Steel' look) */}
+      {/* Outer Frame (The 'Steel' look) - Height reduced by 25% (640->480, 720->540) */}
       <div className={cn(
-        "relative w-[320px] h-[640px] md:w-[360px] md:h-[720px] rounded-[3.5rem] p-[10px] shadow-2xl",
+        "relative w-[320px] h-[480px] md:w-[360px] md:h-[540px] rounded-[3.5rem] p-[10px] shadow-2xl",
         "bg-gradient-to-b from-[#2e2e2e] via-[#1a1a1a] to-[#000000] border-[1px] border-white/10",
         "after:absolute after:inset-0 after:rounded-[3.5rem] after:border-[0.5px] after:border-white/20 after:pointer-events-none"
       )}>
