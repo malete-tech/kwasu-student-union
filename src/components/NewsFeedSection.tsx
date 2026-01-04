@@ -56,8 +56,8 @@ const NewsFeedSection: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <div className="border-b pb-2 flex justify-between items-end border-gray-900 uppercase">
-        <h2 className="text-xl font-extrabold flex items-center gap-2 text-gray-900 tracking-tighter">
+      <div className="border-b pb-2 flex justify-between items-end border-brand-700 uppercase">
+        <h2 className="text-xl font-extrabold flex items-center gap-2 text-brand-700 tracking-tighter">
           <Newspaper className="h-5 w-5" /> Latest News
         </h2>
         <Button asChild variant="link" size="sm" className="text-brand-500 hover:text-brand-600 focus-visible:ring-brand-gold h-auto p-0 mb-0.5">
