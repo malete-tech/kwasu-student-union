@@ -61,41 +61,43 @@ const NewsFeedItem: React.FC<NewsFeedItemProps> = ({ news, variant = "default", 
     );
   }
 
-  // Default (Grid) Variant
+  // Default (Grid) Variant - NEW DESIGN
   return (
-    <Card className={cn("flex flex-col overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-xl", className)}>
+    <Card className={cn("flex flex-col overflow-hidden border shadow-md hover:shadow-xl transition-all duration-300 rounded-xl", className)}>
       {news.coverUrl && (
-        <div className="relative h-48 w-full overflow-hidden">
+        <Link to={`/news/${news.slug}`} className="relative h-48 w-full overflow-hidden block group">
           <img
             src={news.coverUrl}
             alt={news.title}
-            className="absolute inset-0 h-full w-full object-cover"
+            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
           />
-        </div>
+        </Link>
       )}
-      <CardHeader className="pb-2">
-        <CardTitle className="text-xl font-semibold leading-tight truncate">
-          <Link to={`/news/${news.slug}`} className={linkClasses}>
-            {news.title}
-          </Link>
-        </CardTitle>
-        <CardDescription className="text-sm text-muted-foreground flex items-center">
-          <CalendarDays className="mr-1 h-3 w-3" />
-          {format(new Date(news.publishedAt), "MMM dd, yyyy")}
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="flex-grow">
-        <p className="text-sm text-gray-700 line-clamp-2">
-          {news.excerpt}
-        </p>
-      </CardContent>
-      <CardFooter className="flex flex-wrap gap-2 pt-4">
-        {news.tags.slice(0, 2).map((tag) => (
-          <Badge key={tag} variant="secondary" className="bg-brand-100 text-brand-700">
-            {tag}
-          </Badge>
-        ))}
-      </CardFooter>
+      <div className="p-4 flex flex-col flex-grow">
+        <CardHeader className="pb-2 px-0 pt-0">
+          <CardTitle className="text-xl font-semibold leading-tight line-clamp-2">
+            <Link to={`/news/${news.slug}`} className={linkClasses}>
+              {news.title}
+            </Link>
+          </CardTitle>
+          <CardDescription className="text-sm text-muted-foreground flex items-center mt-1">
+            <CalendarDays className="mr-1 h-3 w-3 text-brand-500" />
+            {format(new Date(news.publishedAt), "MMM dd, yyyy")}
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="flex-grow px-0 py-2">
+          <p className="text-sm text-gray-700 line-clamp-3">
+            {news.excerpt}
+          </p>
+        </CardContent>
+        <CardFooter className="flex flex-wrap gap-2 pt-4 px-0 mt-auto">
+          {news.tags.slice(0, 2).map((tag) => (
+            <Badge key={tag} variant="secondary" className="bg-brand-100 text-brand-700">
+              {tag}
+            </Badge>
+          ))}
+        </CardFooter>
+      </div>
     </Card>
   );
 };
