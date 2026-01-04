@@ -56,40 +56,40 @@
     @apply bg-background text-foreground font-dm-sans antialiased;
   }
 
-  /* Custom Typography Hierarchy */
+  /* Custom Typography Hierarchy with Global Uppercase */
   h1 {
-    @apply text-4xl font-extrabold tracking-tight lg:text-5xl text-brand-900;
+    @apply text-4xl font-extrabold tracking-tight lg:text-5xl text-brand-900 uppercase;
   }
 
   h2 {
-    @apply text-3xl font-bold tracking-tight text-brand-800;
+    @apply text-3xl font-bold tracking-tight text-brand-800 uppercase;
   }
 
   h3 {
-    @apply text-2xl font-semibold tracking-tight text-brand-700;
+    @apply text-2xl font-semibold tracking-tight text-brand-700 uppercase;
   }
 
   h4 {
-    @apply text-xl font-semibold tracking-tight text-brand-700;
+    @apply text-xl font-semibold tracking-tight text-brand-700 uppercase;
   }
 
   p {
     @apply leading-relaxed text-gray-700;
   }
 
-  /* Adjust prose styles to match new hierarchy */
+  /* Adjust prose styles to match new hierarchy and uppercase */
   .prose {
     h1 {
-      @apply text-3xl font-extrabold text-brand-900;
+      @apply text-3xl font-extrabold text-brand-900 uppercase;
     }
     h2 {
-      @apply text-2xl font-bold text-brand-800;
+      @apply text-2xl font-bold text-brand-800 uppercase;
     }
     h3 {
-      @apply text-xl font-semibold text-brand-700;
+      @apply text-xl font-semibold text-brand-700 uppercase;
     }
     h4 {
-      @apply text-lg font-semibold text-brand-700;
+      @apply text-lg font-semibold text-brand-700 uppercase;
     }
   }
 }
