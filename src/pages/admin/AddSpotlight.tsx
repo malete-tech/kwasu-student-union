@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Loader2, ArrowLeft } from "lucide-react";
 import { useForm } from "react-hook-form";
@@ -76,11 +75,9 @@ const AddSpotlight: React.FC = () => {
             </Link>
           </Button>
         </div>
-        <Card className="shadow-lg rounded-xl p-6">
-          <CardHeader className="pb-4">
-            <CardTitle className="text-xl font-semibold text-brand-700">New Spotlight Details</CardTitle>
-          </CardHeader>
-          <CardContent>
+        <div className="shadow-lg rounded-xl p-6 bg-white">
+          <h3 className="text-xl font-semibold text-brand-700 pb-4 border-b mb-6">New Spotlight Details</h3>
+          <div>
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                 <FormField
@@ -173,8 +170,8 @@ const AddSpotlight: React.FC = () => {
                 </Button>
               </form>
             </Form>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
     </>
   );
