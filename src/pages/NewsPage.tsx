@@ -63,7 +63,7 @@ const NewsPage: React.FC = () => {
         <meta name="description" content="Stay updated with the latest news and announcements from KWASU Students' Union." />
       </Helmet>
       <div className="container py-12">
-        <h1 className="text-4xl font-bold text-center mb-10 text-brand-700">News & Announcements</h1>
+        <h1 className="text-3xl sm:text-4xl font-bold text-center mb-10 text-brand-700">News & Announcements</h1>
 
         <div className="flex flex-col sm:flex-row gap-3 mb-8">
           <div className="relative flex-grow">

@@ -102,7 +102,7 @@ const SubmitComplaintPage: React.FC = () => {
         <meta name="description" content="Submit a formal complaint to the KWASU Students' Union regarding welfare, academics, or other issues." />
       </Helmet>
       <div className="container py-12">
-        <h1 className="text-4xl font-bold text-center mb-4 text-brand-700">Submit a Complaint</h1>
+        <h1 className="text-3xl sm:text-4xl font-bold text-center mb-4 text-brand-700">Submit a Complaint</h1>
         <p className="text-center text-lg text-muted-foreground mb-10 max-w-2xl mx-auto">
           Your feedback is important. Please fill out the form below to report an issue. All submissions are treated confidentially.
         </p>

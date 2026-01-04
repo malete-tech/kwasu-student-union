@@ -36,7 +36,7 @@ const SpotlightPage: React.FC = () => {
         <meta name="description" content="View all past and present student spotlight features highlighting achievements and success stories." />
       </Helmet>
       <div className="container py-12">
-        <h1 className="text-4xl font-bold text-center mb-10 text-brand-700 flex items-center justify-center">
+        <h1 className="text-3xl sm:text-4xl font-bold text-center mb-10 text-brand-700 flex items-center justify-center">
           <Star className="h-8 w-8 mr-3 text-brand-gold" /> Spotlight Archive
         </h1>
 

@@ -77,7 +77,7 @@ const EventsPage: React.FC = () => {
         <meta name="description" content="Explore upcoming events, workshops, and social gatherings organized by KWASU Students' Union." />
       </Helmet>
       <div className="container py-12">
-        <h1 className="text-4xl font-bold text-center mb-10 text-brand-700">Events & Calendar</h1>
+        <h1 className="text-3xl sm:text-4xl font-bold text-center mb-10 text-brand-700">Events & Calendar</h1>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
           <div className="lg:col-span-1 flex flex-col items-center">

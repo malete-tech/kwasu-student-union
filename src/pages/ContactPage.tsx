@@ -17,7 +17,7 @@ const ContactPage: React.FC = () => {
         <meta name="description" content="Get in touch with KWASU Students' Union. Find our contact details and send us a message." />
       </Helmet>
       <div className="container py-12">
-        <h1 className="text-4xl font-bold text-center mb-10 text-brand-700">Contact Us</h1>
+        <h1 className="text-3xl sm:text-4xl font-bold text-center mb-10 text-brand-700">Contact Us</h1>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Contact Information */}

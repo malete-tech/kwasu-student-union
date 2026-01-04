@@ -107,7 +107,7 @@ const OpportunitiesPage: React.FC = () => {
         <meta name="description" content="Discover scholarships, internships, jobs, and other valuable opportunities for KWASU students." />
       </Helmet>
       <div className="container py-12">
-        <h1 className="text-4xl font-bold text-center mb-10 text-brand-700">Student Opportunities</h1>
+        <h1 className="text-3xl sm:text-4xl font-bold text-center mb-10 text-brand-700">Student Opportunities</h1>
 
         <div className="flex flex-col sm:flex-row gap-3 mb-8">
           <div className="relative flex-grow">
