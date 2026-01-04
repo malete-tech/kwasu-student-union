@@ -3,11 +3,10 @@
 import React, { useEffect, useState } from "react";
 import { api } from "@/lib/api";
 import { News } from "@/types";
-import NewsFeedItem from "@/components/NewsFeedItem"; // Updated import
-import { Card } from "@/components/ui/card";
+import NewsFeedItem from "@/components/NewsFeedItem";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search } from "lucide-react";
+import { Search, Newspaper } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
@@ -57,12 +56,15 @@ const NewsFeedSection: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <div className="pb-4 flex justify-between items-center">
-        <h2 className="text-2xl font-semibold text-brand-700">Latest News</h2>
-        <Button asChild variant="link" size="sm" className="text-brand-500 hover:text-brand-600 focus-visible:ring-brand-gold">
+      <div className="border-b pb-2 flex justify-between items-end border-gray-900 uppercase">
+        <h2 className="text-xl font-extrabold flex items-center gap-2 text-gray-900 tracking-tighter">
+          <Newspaper className="h-5 w-5" /> Latest News
+        </h2>
+        <Button asChild variant="link" size="sm" className="text-brand-500 hover:text-brand-600 focus-visible:ring-brand-gold h-auto p-0 mb-0.5">
           <Link to="/news">View All</Link>
         </Button>
       </div>
+
       <div className="space-y-6">
         <div className="flex flex-col sm:flex-row gap-3">
           <div className="relative flex-grow">
@@ -96,34 +98,29 @@ const NewsFeedSection: React.FC = () => {
         </div>
 
         {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[...Array(3)].map((_, i) => (
-              <Card key={i} className="flex flex-col overflow-hidden shadow-sm">
-                <Skeleton className="h-32 w-full flex-shrink-0" />
-                <div className="p-4 flex-grow space-y-2">
-                  <Skeleton className="h-5 w-3/4" />
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-6">
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className="flex gap-4">
+                <Skeleton className="w-32 h-24 rounded-md" />
+                <div className="flex-1 space-y-2">
+                  <Skeleton className="h-5 w-full" />
+                  <Skeleton className="h-4 w-3/4" />
                   <Skeleton className="h-3 w-1/2" />
-                  <Skeleton className="h-3 w-full" />
                 </div>
-              </Card>
+              </div>
             ))}
           </div>
         ) : error ? (
           <div className="text-destructive text-sm text-center">{error}</div>
         ) : filteredNews.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredNews.slice(0, 3).map((newsItem) => ( // Limit to 3 for homepage
-              <NewsFeedItem key={newsItem.id} news={newsItem} variant="default" />
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-8">
+            {filteredNews.slice(0, 6).map((newsItem) => (
+              <NewsFeedItem key={newsItem.id} news={newsItem} variant="list" />
             ))}
           </div>
         ) : (
           <p className="text-center text-muted-foreground text-sm">No news found matching your criteria.</p>
         )}
-        <div className="text-center mt-4">
-          <Button asChild variant="outline" className="border-brand-500 text-brand-500 hover:bg-brand-50 hover:text-brand-600 px-6 py-3 focus-visible:ring-brand-gold">
-            <Link to="/news">View All News</Link>
-          </Button>
-        </div>
       </div>
     </div>
   );

@@ -4,12 +4,11 @@ import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { api } from "@/lib/api";
 import { News } from "@/types";
-import NewsFeedItem from "@/components/NewsFeedItem"; // Updated import
+import NewsFeedItem from "@/components/NewsFeedItem";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
-import { Card } from "@/components/ui/card"; // Added Card for skeleton/error
 
 const NewsPage: React.FC = () => {
   const [allNews, setAllNews] = useState<News[]>([]);
@@ -53,8 +52,6 @@ const NewsPage: React.FC = () => {
   }, [searchTerm, activeTag, allNews]);
 
   const uniqueTags = Array.from(new Set(allNews.flatMap(news => news.tags)));
-  const featuredArticle = filteredNews.length > 0 ? filteredNews[0] : null;
-  const gridArticles = filteredNews.slice(1);
 
   return (
     <>
@@ -65,7 +62,7 @@ const NewsPage: React.FC = () => {
       <div className="container py-12">
         <h1 className="text-3xl sm:text-4xl font-bold text-center mb-10 text-brand-700">News & Announcements</h1>
 
-        <div className="flex flex-col sm:flex-row gap-3 mb-8">
+        <div className="flex flex-col sm:flex-row gap-3 mb-10">
           <div className="relative flex-grow">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
@@ -97,53 +94,25 @@ const NewsPage: React.FC = () => {
         </div>
 
         {loading ? (
-          <div className="space-y-6">
-            {/* Featured Skeleton */}
-            <Card className="flex flex-col md:flex-row h-96 shadow-lg rounded-2xl">
-              <Skeleton className="h-1/2 md:h-full w-full md:w-2/5 flex-shrink-0" />
-              <div className="p-6 w-full md:w-3/5 space-y-4">
-                <Skeleton className="h-8 w-full" />
-                <Skeleton className="h-4 w-1/3" />
-                <Skeleton className="h-4 w-full" />
-                <Skeleton className="h-4 w-full" />
-                <Skeleton className="h-4 w-5/6" />
-                <div className="flex gap-2 pt-4">
-                  <Skeleton className="h-6 w-16" />
-                  <Skeleton className="h-6 w-20" />
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-12 gap-y-8">
+            {[...Array(8)].map((_, i) => (
+              <div key={i} className="flex gap-4">
+                <Skeleton className="w-32 h-24 rounded-md" />
+                <div className="flex-1 space-y-2">
+                  <Skeleton className="h-5 w-full" />
+                  <Skeleton className="h-4 w-3/4" />
+                  <Skeleton className="h-3 w-1/2" />
                 </div>
               </div>
-            </Card>
-            {/* Grid Skeleton */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pt-6">
-              {[...Array(3)].map((_, i) => (
-                <div key={i} className="flex flex-col overflow-hidden shadow-lg rounded-xl">
-                  <Skeleton className="h-48 w-full" />
-                  <div className="p-4 space-y-2">
-                    <Skeleton className="h-6 w-3/4" />
-                    <Skeleton className="h-4 w-1/2" />
-                    <Skeleton className="h-4 w-full" />
-                  </div>
-                </div>
-              ))}
-            </div>
+            ))}
           </div>
         ) : error ? (
           <div className="text-center text-destructive text-lg">{error}</div>
         ) : filteredNews.length > 0 ? (
-          <div className="space-y-10">
-            {/* Featured Article */}
-            {featuredArticle && (
-              <NewsFeedItem news={featuredArticle} variant="featured" />
-            )}
-
-            {/* Grid Articles */}
-            {gridArticles.length > 0 && (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {gridArticles.map((newsItem) => (
-                  <NewsFeedItem key={newsItem.id} news={newsItem} variant="default" />
-                ))}
-              </div>
-            )}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-12 gap-y-10">
+            {filteredNews.map((newsItem) => (
+              <NewsFeedItem key={newsItem.id} news={newsItem} variant="list" />
+            ))}
           </div>
         ) : (
           <p className="text-center text-muted-foreground text-lg">No news found matching your criteria.</p>
