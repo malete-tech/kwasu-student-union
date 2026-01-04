@@ -56,7 +56,7 @@
 
   /* Custom Typography Hierarchy with Global Uppercase */
   h1 {
-    @apply text-4xl font-extrabold tracking-tight lg:text-5xl text-brand-900 uppercase;
+    @apply text-4xl font-bold tracking-tight lg:text-5xl text-brand-900 uppercase;
   }
 
   h2 {
@@ -78,7 +78,7 @@
   /* Adjust prose styles to match new hierarchy and uppercase */
   .prose {
     h1 {
-      @apply text-3xl font-extrabold text-brand-900 uppercase;
+      @apply text-3xl font-bold text-brand-900 uppercase;
     }
     h2 {
       @apply text-2xl font-bold text-brand-800 uppercase;
