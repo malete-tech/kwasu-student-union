@@ -1,9 +1,8 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Loader2, ArrowLeft } from "lucide-react";
+import { Loader2, ArrowLeft, FileText, Image as ImageIcon, Calendar as CalendarIcon, Tag, Layout } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -14,7 +13,6 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
-import { CalendarIcon } from "@radix-ui/react-icons";
 import { api } from "@/lib/api";
 import { toast } from "sonner";
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -85,29 +83,8 @@ const EditNewsArticle: React.FC = () => {
     fetchArticle();
   }, [id, form]);
 
-  const title = form.watch("title");
-  const currentSlug = form.watch("slug");
-  const isSlugDirty = form.formState.dirtyFields.slug;
-
-  React.useEffect(() => {
-    if (title && !isSlugDirty) {
-      const generatedSlug = title
-        .toLowerCase()
-        .replace(/[^a-z0-9\s-]/g, "")
-        .trim()
-        .replace(/\s+/g, "-");
-      if (generatedSlug !== currentSlug) {
-        form.setValue("slug", generatedSlug, { shouldDirty: false });
-      }
-    }
-  }, [title, form, isSlugDirty, currentSlug]);
-
-
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    if (!id) {
-      toast.error("Cannot update: Article ID is missing.");
-      return;
-    }
+    if (!id) return;
     setIsSubmitting(true);
     try {
       const updatedNews = {
@@ -132,41 +109,22 @@ const EditNewsArticle: React.FC = () => {
 
   if (loadingArticle) {
     return (
-      <div className="space-y-6">
-        <Skeleton className="h-10 w-64 mb-6" />
-        <Card className="shadow-lg rounded-xl p-6">
-          <Skeleton className="h-8 w-1/3 mb-4" />
-          <div className="space-y-6">
-            <Skeleton className="h-10 w-full" />
-            <Skeleton className="h-10 w-full" />
-            <Skeleton className="h-24 w-full" />
-            <Skeleton className="h-48 w-full" />
-            <Skeleton className="h-10 w-full" />
-            <Skeleton className="h-10 w-60" />
-            <Skeleton className="h-32 w-full" />
-            <Skeleton className="h-12 w-full" />
-          </div>
-        </Card>
+      <div className="max-w-5xl mx-auto space-y-8">
+        <Skeleton className="h-10 w-48" />
+        <Skeleton className="h-[600px] w-full rounded-2xl" />
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="space-y-6">
-        <h2 className="text-3xl font-bold text-brand-700">Edit News Article</h2>
-        <Card className="shadow-lg rounded-xl p-6">
-          <CardContent className="text-destructive text-center text-lg">
-            {error}
-            <div className="mt-6">
-              <Button asChild variant="outline" className="border-brand-500 text-brand-500 hover:bg-brand-50 hover:text-brand-600 focus-visible:ring-brand-gold">
-                <Link to="/admin/news">
-                  <ArrowLeft className="mr-2 h-4 w-4" /> Back to News Management
-                </Link>
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+      <div className="max-w-5xl mx-auto py-12 text-center">
+        <p className="text-destructive text-lg font-medium">{error}</p>
+        <Button asChild variant="outline" className="mt-4 border-brand-500 text-brand-500 hover:bg-brand-50">
+          <Link to="/admin/news">
+            <ArrowLeft className="mr-2 h-4 w-4" /> Back to News Feed
+          </Link>
+        </Button>
       </div>
     );
   }
@@ -174,33 +132,42 @@ const EditNewsArticle: React.FC = () => {
   return (
     <>
       <Helmet>
-        <title>Edit News Article | KWASU SU Admin</title>
-        <meta name="description" content="Edit an existing news article on the KWASU Students' Union website." />
+        <title>Edit News Article | Admin</title>
       </Helmet>
-      <div className="space-y-6">
-        <div className="flex justify-between items-center">
-          <h2 className="text-3xl font-bold text-brand-700">Edit News Article</h2>
-          <Button asChild variant="outline" className="border-brand-500 text-brand-500 hover:bg-brand-50 hover:text-brand-600 focus-visible:ring-brand-gold">
+      
+      <div className="max-w-5xl mx-auto space-y-10">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div>
+            <h2 className="text-3xl font-bold tracking-tight text-brand-700">Modify Article</h2>
+            <p className="text-muted-foreground mt-1">Refine and update existing news for the student community.</p>
+          </div>
+          <Button asChild variant="ghost" className="text-brand-500 hover:text-brand-600 hover:bg-brand-50 rounded-xl transition-all">
             <Link to="/admin/news">
-              <ArrowLeft className="mr-2 h-4 w-4" /> Back to News Management
+              <ArrowLeft className="mr-2 h-4 w-4" /> Back to Feed
             </Link>
           </Button>
         </div>
-        <Card className="shadow-lg rounded-xl p-6">
-          <CardHeader className="pb-4">
-            <CardTitle className="text-xl font-semibold text-brand-700">Edit News Article Details</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-12">
+            {/* 1. Identity Section */}
+            <div className="grid gap-8 md:grid-cols-3">
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 text-brand-600 font-bold uppercase tracking-wider text-xs">
+                  <Layout className="h-4 w-4" />
+                  General Information
+                </div>
+                <p className="text-sm text-muted-foreground">The title and slug define how the article appears in the feed and URL.</p>
+              </div>
+              <div className="md:col-span-2 space-y-4">
                 <FormField
                   control={form.control}
                   name="title"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Title</FormLabel>
+                      <FormLabel className="text-slate-700 font-semibold">Article Title</FormLabel>
                       <FormControl>
-                        <Input placeholder="KWASU SU Elections 2024" {...field} className="focus-visible:ring-brand-gold" />
+                        <Input placeholder="Enter a catchy headline..." {...field} className="h-12 rounded-xl border-brand-100 bg-white/50 focus-visible:ring-brand-gold focus-visible:bg-white transition-all shadow-sm" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -211,23 +178,37 @@ const EditNewsArticle: React.FC = () => {
                   name="slug"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Slug</FormLabel>
+                      <FormLabel className="text-slate-700 font-semibold">URL Slug</FormLabel>
                       <FormControl>
-                        <Input placeholder="kwasu-su-elections-2024" {...field} className="focus-visible:ring-brand-gold" />
+                        <Input placeholder="generated-slug-path" {...field} className="h-10 rounded-xl border-brand-100 bg-slate-50/50 text-slate-500 font-mono text-sm focus-visible:ring-brand-gold" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
+              </div>
+            </div>
+
+            <hr className="border-slate-100" />
+
+            {/* 2. Visuals Section */}
+            <div className="grid gap-8 md:grid-cols-3">
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 text-brand-600 font-bold uppercase tracking-wider text-xs">
+                  <ImageIcon className="h-4 w-4" />
+                  Media & Visuals
+                </div>
+                <p className="text-sm text-muted-foreground">Upload or replace the cover image captured in the news feed.</p>
+              </div>
+              <div className="md:col-span-2">
                 <FormField
                   control={form.control}
                   name="coverUrl"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Cover Image (Optional)</FormLabel>
                       <FormControl>
                         <NewsImageUpload
-                          label="Upload Cover Image"
+                          label="Replace Cover Image"
                           value={field.value}
                           onChange={field.onChange}
                           disabled={isSubmitting}
@@ -237,14 +218,29 @@ const EditNewsArticle: React.FC = () => {
                     </FormItem>
                   )}
                 />
+              </div>
+            </div>
+
+            <hr className="border-slate-100" />
+
+            {/* 3. Content Section */}
+            <div className="grid gap-8 md:grid-cols-3">
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 text-brand-600 font-bold uppercase tracking-wider text-xs">
+                  <FileText className="h-4 w-4" />
+                  Article Content
+                </div>
+                <p className="text-sm text-muted-foreground">Update the brief hook and the full body story using Markdown.</p>
+              </div>
+              <div className="md:col-span-2 space-y-6">
                 <FormField
                   control={form.control}
                   name="excerpt"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Excerpt</FormLabel>
+                      <FormLabel className="text-slate-700 font-semibold">Summary Excerpt</FormLabel>
                       <FormControl>
-                        <Textarea placeholder="A short summary of the news article..." rows={3} {...field} className="focus-visible:ring-brand-gold" />
+                        <Textarea placeholder="A brief hook to engage readers..." rows={3} {...field} className="rounded-xl border-brand-100 bg-white/50 focus-visible:ring-brand-gold focus-visible:bg-white transition-all shadow-sm" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -255,11 +251,11 @@ const EditNewsArticle: React.FC = () => {
                   name="bodyMd"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Body (Markdown)</FormLabel>
+                      <FormLabel className="text-slate-700 font-semibold">Body (Markdown)</FormLabel>
                       <FormControl>
                         <MarkdownEditor 
-                          placeholder="Write your news article content here using Markdown..." 
-                          rows={10} 
+                          placeholder="Tell your story here..." 
+                          rows={15} 
                           value={field.value} 
                           onChange={field.onChange} 
                           disabled={isSubmitting}
@@ -269,32 +265,34 @@ const EditNewsArticle: React.FC = () => {
                     </FormItem>
                   )}
                 />
-                <FormField
-                  control={form.control}
-                  name="tags"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Tags (comma-separated)</FormLabel>
-                      <FormControl>
-                        <Input placeholder="elections, academic, announcement" {...field} className="focus-visible:ring-brand-gold" />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+              </div>
+            </div>
+
+            <hr className="border-slate-100" />
+
+            {/* 4. Metadata Section */}
+            <div className="grid gap-8 md:grid-cols-3">
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 text-brand-600 font-bold uppercase tracking-wider text-xs">
+                  <Tag className="h-4 w-4" />
+                  Publishing Details
+                </div>
+                <p className="text-sm text-muted-foreground">Adjust the publication date and relevant organization tags.</p>
+              </div>
+              <div className="md:col-span-2 flex flex-col sm:flex-row gap-6">
                 <FormField
                   control={form.control}
                   name="publishedAt"
                   render={({ field }) => (
-                    <FormItem className="flex flex-col">
-                      <FormLabel>Published Date</FormLabel>
+                    <FormItem className="flex flex-col flex-1">
+                      <FormLabel className="text-slate-700 font-semibold">Release Date</FormLabel>
                       <Popover>
                         <PopoverTrigger asChild>
                           <FormControl>
                             <Button
                               variant={"outline"}
                               className={cn(
-                                "w-[240px] pl-3 text-left font-normal focus-visible:ring-brand-gold",
+                                "h-12 pl-3 text-left font-normal rounded-xl border-brand-100 bg-white/50 focus-visible:ring-brand-gold shadow-sm",
                                 !field.value && "text-muted-foreground"
                               )}
                             >
@@ -307,12 +305,13 @@ const EditNewsArticle: React.FC = () => {
                             </Button>
                           </FormControl>
                         </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
+                        <PopoverContent className="w-auto p-0 rounded-2xl border-brand-100 shadow-2xl" align="start">
                           <Calendar
                             mode="single"
                             selected={field.value}
                             onSelect={field.onChange}
                             initialFocus
+                            className="p-3"
                           />
                         </PopoverContent>
                       </Popover>
@@ -320,20 +319,40 @@ const EditNewsArticle: React.FC = () => {
                     </FormItem>
                   )}
                 />
-                <Button type="submit" className="w-full bg-brand-700 hover:bg-brand-800 text-white focus-visible:ring-brand-gold" disabled={isSubmitting}>
-                  {isSubmitting ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Updating Article...
-                    </>
-                  ) : (
-                    "Update News Article"
+                <FormField
+                  control={form.control}
+                  name="tags"
+                  render={({ field }) => (
+                    <FormItem className="flex-1">
+                      <FormLabel className="text-slate-700 font-semibold">Tags</FormLabel>
+                      <FormControl>
+                        <Input placeholder="e.g. academic, events, notice" {...field} className="h-12 rounded-xl border-brand-100 bg-white/50 focus-visible:ring-brand-gold focus-visible:bg-white transition-all shadow-sm" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
                   )}
-                </Button>
-              </form>
-            </Form>
-          </CardContent>
-        </Card>
+                />
+              </div>
+            </div>
+
+            <div className="flex pt-6">
+              <Button 
+                type="submit" 
+                className="w-full sm:w-auto px-10 h-14 bg-brand-700 hover:bg-brand-800 text-white rounded-2xl shadow-xl hover:shadow-2xl transition-all text-lg font-bold" 
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="mr-3 h-5 w-5 animate-spin" />
+                    Saving...
+                  </>
+                ) : (
+                  "Save Changes"
+                )}
+              </Button>
+            </div>
+          </form>
+        </Form>
       </div>
     </>
   );
