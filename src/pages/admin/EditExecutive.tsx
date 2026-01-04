@@ -1,9 +1,8 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Loader2, ArrowLeft } from "lucide-react";
+import { Loader2, ArrowLeft, CalendarDays, Mail, Layout } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -20,9 +19,9 @@ import { toast } from "sonner";
 import ImageUpload from "@/components/ImageUpload";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Executive } from "@/types";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const councilTypes: Executive['councilType'][] = ['Central', 'Senate', 'Judiciary'];
 
@@ -31,11 +30,11 @@ const formSchema = z.object({
   slug: z.string().min(1, { message: "Slug is required." }).regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, { message: "Slug must be lowercase, alphanumeric, and use hyphens for spaces." }),
   role: z.string().min(1, { message: "Role is required." }),
   councilType: z.enum(['Central', 'Senate', 'Judiciary'], { required_error: "Council type is required." }),
-  faculty: z.string().optional(),
+  faculty: z.string().optional().or(z.literal('')),
   tenureStart: z.date({ required_error: "Tenure start date is required." }),
   tenureEnd: z.date({ required_error: "Tenure end date is required." }),
   photoUrl: z.string().optional(),
-  projectsMd: z.string().optional(),
+  projectsMd: z.string().optional().or(z.literal('')),
   contactEmail: z.string().email({ message: "Invalid email address." }).optional().or(z.literal('')),
   contactTwitter: z.string().optional().or(z.literal('')),
   contactInstagram: z.string().optional().or(z.literal('')),
@@ -48,7 +47,6 @@ const EditExecutive: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [loadingExecutive, setLoadingExecutive] = useState(true);
   const [executiveId, setExecutiveId] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -71,11 +69,7 @@ const EditExecutive: React.FC = () => {
 
   useEffect(() => {
     const fetchExecutive = async () => {
-      if (!slug) {
-        setError("Executive slug is missing.");
-        setLoadingExecutive(false);
-        return;
-      }
+      if (!slug) return;
       try {
         const fetchedExecutive = await api.executives.getBySlug(slug);
         if (fetchedExecutive) {
@@ -84,23 +78,20 @@ const EditExecutive: React.FC = () => {
             name: fetchedExecutive.name,
             slug: fetchedExecutive.slug,
             role: fetchedExecutive.role,
-            councilType: fetchedExecutive.councilType, // Populate new field
+            councilType: fetchedExecutive.councilType,
             faculty: fetchedExecutive.faculty || "",
             tenureStart: new Date(fetchedExecutive.tenureStart),
             tenureEnd: new Date(fetchedExecutive.tenureEnd),
             photoUrl: fetchedExecutive.photoUrl || undefined,
-            projectsMd: fetchedExecutive.projectsMd || undefined,
+            projectsMd: fetchedExecutive.projectsMd || "",
             contactEmail: fetchedExecutive.contacts?.email || "",
             contactTwitter: fetchedExecutive.contacts?.twitter || "",
             contactInstagram: fetchedExecutive.contacts?.instagram || "",
             contactPhone: fetchedExecutive.contacts?.phone || "",
           });
-        } else {
-          setError("Executive not found.");
         }
       } catch (err) {
-        console.error("Failed to fetch executive for editing:", err);
-        setError("Failed to load executive. Please try again later.");
+        toast.error("Failed to load executive data.");
       } finally {
         setLoadingExecutive(false);
       }
@@ -108,36 +99,15 @@ const EditExecutive: React.FC = () => {
     fetchExecutive();
   }, [slug, form]);
 
-  // Auto-generate slug from name if it's a new executive or slug hasn't been manually edited
-  const name = form.watch("name");
-  const currentSlug = form.watch("slug");
-  const isSlugDirty = form.formState.dirtyFields.slug;
-
-  React.useEffect(() => {
-    if (name && !isSlugDirty) {
-      const generatedSlug = name
-        .toLowerCase()
-        .replace(/[^a-z0-9\s-]/g, "")
-        .trim()
-        .replace(/\s+/g, "-");
-      if (generatedSlug !== currentSlug) {
-        form.setValue("slug", generatedSlug, { shouldDirty: false });
-      }
-    }
-  }, [name, form, isSlugDirty, currentSlug]);
-
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    if (!executiveId) {
-      toast.error("Cannot update: Executive ID is missing.");
-      return;
-    }
+    if (!executiveId) return;
     setIsSubmitting(true);
     try {
       const updatedExecutive = {
         name: values.name,
         slug: values.slug,
         role: values.role,
-        councilType: values.councilType, // Include new field
+        councilType: values.councilType,
         faculty: values.faculty || undefined,
         tenureStart: values.tenureStart.toISOString().split('T')[0]!,
         tenureEnd: values.tenureEnd.toISOString().split('T')[0]!,
@@ -151,11 +121,10 @@ const EditExecutive: React.FC = () => {
         },
       };
       await api.executives.update(executiveId, updatedExecutive);
-      toast.success("Executive profile updated successfully!");
+      toast.success("Profile updated successfully!");
       navigate("/admin/executives");
     } catch (error) {
-      console.error("Failed to update executive profile:", error);
-      toast.error("Failed to update executive profile. Please try again.");
+      toast.error("Failed to update profile.");
     } finally {
       setIsSubmitting(false);
     }
@@ -163,41 +132,9 @@ const EditExecutive: React.FC = () => {
 
   if (loadingExecutive) {
     return (
-      <div className="space-y-6">
-        <Skeleton className="h-10 w-64 mb-6" />
-        <Card className="shadow-lg rounded-xl p-6">
-          <Skeleton className="h-8 w-1/3 mb-4" />
-          <div className="space-y-6">
-            <Skeleton className="h-10 w-full" />
-            <Skeleton className="h-10 w-full" />
-            <Skeleton className="h-24 w-full" />
-            <Skeleton className="h-48 w-full" />
-            <Skeleton className="h-10 w-full" />
-            <Skeleton className="h-10 w-60" />
-            <Skeleton className="h-32 w-full" />
-            <Skeleton className="h-12 w-full" />
-          </div>
-        </Card>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="space-y-6">
-        <h2 className="text-3xl font-bold text-brand-700">Edit Executive Profile</h2>
-        <Card className="shadow-lg rounded-xl p-6">
-          <CardContent className="text-destructive text-center text-lg">
-            {error}
-            <div className="mt-6">
-              <Button asChild variant="outline" className="border-brand-500 text-brand-500 hover:bg-brand-50 hover:text-brand-600 focus-visible:ring-brand-gold">
-                <Link to="/admin/executives">
-                  <ArrowLeft className="mr-2 h-4 w-4" /> Back to Executives Management
-                </Link>
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+      <div className="max-w-5xl mx-auto space-y-8">
+        <Skeleton className="h-10 w-48" />
+        <Skeleton className="h-96 w-full rounded-2xl" />
       </div>
     );
   }
@@ -205,41 +142,46 @@ const EditExecutive: React.FC = () => {
   return (
     <>
       <Helmet>
-        <title>Edit Executive Profile | KWASU SU Admin</title>
-        <meta name="description" content="Edit an existing executive profile on the KWASU Students' Union website." />
+        <title>Edit Executive | KWASU SU Admin</title>
       </Helmet>
-      <div className="space-y-6">
-        <div className="flex justify-between items-center">
-          <h2 className="text-3xl font-bold text-brand-700">Edit Executive Profile</h2>
-          <Button asChild variant="outline" className="border-brand-500 text-brand-500 hover:bg-brand-50 hover:text-brand-600 focus-visible:ring-brand-gold">
+      <div className="max-w-5xl mx-auto space-y-10">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div>
+            <h2 className="text-3xl font-bold tracking-tight text-brand-700">Edit Profile</h2>
+            <p className="text-muted-foreground mt-1">Update the official information for this executive member.</p>
+          </div>
+          <Button asChild variant="ghost" className="text-brand-500 hover:text-brand-600 hover:bg-brand-50 rounded-xl transition-all">
             <Link to="/admin/executives">
-              <ArrowLeft className="mr-2 h-4 w-4" /> Back to Executives Management
+              <ArrowLeft className="mr-2 h-4 w-4" /> Back to Directory
             </Link>
           </Button>
         </div>
-        <Card className="shadow-lg rounded-xl p-6">
-          <CardHeader className="pb-4">
-            <CardTitle className="text-xl font-semibold text-brand-700">Edit Executive Details</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-12">
+            <div className="grid gap-8 md:grid-cols-3">
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 text-brand-600 font-bold uppercase tracking-wider text-xs">
+                  <Layout className="h-4 w-4" />
+                  Core Identity
+                </div>
+                <p className="text-sm text-muted-foreground">Basic information and council placement.</p>
+              </div>
+              <div className="md:col-span-2 space-y-4">
                 <FormField
                   control={form.control}
                   name="councilType"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Council Type</FormLabel>
+                      <FormLabel className="text-slate-700 font-semibold">Council Type</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
-                          <SelectTrigger className="focus-visible:ring-brand-gold">
-                            <SelectValue placeholder="Select the council" />
+                          <SelectTrigger className="h-12 rounded-xl border-brand-100 bg-white/50 focus-visible:ring-brand-gold shadow-sm">
+                            <SelectValue placeholder="Select council" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          {councilTypes.map(type => (
-                            <SelectItem key={type} value={type}>{type}</SelectItem>
-                          ))}
+                          {councilTypes.map(type => <SelectItem key={type} value={type}>{type}</SelectItem>)}
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -251,231 +193,166 @@ const EditExecutive: React.FC = () => {
                   name="name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Name</FormLabel>
+                      <FormLabel className="text-slate-700 font-semibold">Full Name</FormLabel>
                       <FormControl>
-                        <Input placeholder="John Doe" {...field} className="focus-visible:ring-brand-gold" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="slug"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Slug</FormLabel>
-                    <FormControl>
-                      <Input placeholder="john-doe-president" {...field} className="focus-visible:ring-brand-gold" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="role"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Role</FormLabel>
-                    <FormControl>
-                      <Input placeholder="President" {...field} className="focus-visible:ring-brand-gold" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="faculty"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Faculty (Optional)</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Social Sciences" {...field} className="focus-visible:ring-brand-gold" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormField
-                  control={form.control}
-                  name="tenureStart"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-col">
-                      <FormLabel>Tenure Start Date</FormLabel>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <FormControl>
-                            <Button
-                              variant={"outline"}
-                              className={cn(
-                                "w-full pl-3 text-left font-normal focus-visible:ring-brand-gold",
-                                !field.value && "text-muted-foreground"
-                              )}
-                            >
-                              {field.value ? (
-                                format(field.value, "PPP")
-                              ) : (
-                                <span>Pick a date</span>
-                              )}
-                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                            </Button>
-                          </FormControl>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
-                          <Calendar
-                            mode="single"
-                            selected={field.value}
-                            onSelect={field.onChange}
-                            initialFocus
-                          />
-                        </PopoverContent>
-                      </Popover>
+                        <Input placeholder="e.g. John Doe" {...field} className="h-12 rounded-xl border-brand-100 bg-white/50 focus-visible:ring-brand-gold shadow-sm" />
+                      </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
                 <FormField
                   control={form.control}
-                  name="tenureEnd"
+                  name="role"
                   render={({ field }) => (
-                    <FormItem className="flex flex-col">
-                      <FormLabel>Tenure End Date</FormLabel>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <FormControl>
-                            <Button
-                              variant={"outline"}
-                              className={cn(
-                                "w-full pl-3 text-left font-normal focus-visible:ring-brand-gold",
-                                !field.value && "text-muted-foreground"
-                              )}
-                            >
-                              {field.value ? (
-                                format(field.value, "PPP")
-                              ) : (
-                                <span>Pick a date</span>
-                              )}
-                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                            </Button>
-                          </FormControl>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
-                          <Calendar
-                            mode="single"
-                            selected={field.value}
-                            onSelect={field.onChange}
-                            initialFocus
-                          />
-                        </PopoverContent>
-                      </Popover>
+                    <FormItem>
+                      <FormLabel className="text-slate-700 font-semibold">Designated Role</FormLabel>
+                      <FormControl>
+                        <Input placeholder="e.g. President" {...field} className="h-12 rounded-xl border-brand-100 bg-white/50 focus-visible:ring-brand-gold shadow-sm" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="faculty"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-slate-700 font-semibold">Faculty / Department</FormLabel>
+                      <FormControl>
+                        <Input placeholder="e.g. Engineering" {...field} className="h-10 rounded-xl border-brand-100 bg-white/50 focus-visible:ring-brand-gold shadow-sm" />
+                      </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
               </div>
-              <FormField
-                control={form.control}
-                name="photoUrl"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Photo</FormLabel>
-                    <FormControl>
-                      <ImageUpload
-                        label="Upload Executive Photo"
-                        bucketName="executive-photos"
-                        folderPath="public"
-                        value={field.value}
-                        onChange={field.onChange}
-                        disabled={isSubmitting}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="projectsMd"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Key Projects (Markdown, Optional)</FormLabel>
-                    <FormControl>
-                      <Textarea placeholder="List key projects using Markdown..." rows={5} {...field} className="focus-visible:ring-brand-gold" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <h3 className="text-lg font-semibold text-brand-700 mt-8 mb-4">Contact Information (Optional)</h3>
-              <FormField
-                control={form.control}
-                name="contactEmail"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email</FormLabel>
-                    <FormControl>
-                      <Input type="email" placeholder="executive@kwasusu.edu" {...field} className="focus-visible:ring-brand-gold" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="contactTwitter"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Twitter Handle</FormLabel>
-                    <FormControl>
-                      <Input placeholder="johndoe_kwasu" {...field} className="focus-visible:ring-brand-gold" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="contactInstagram"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Instagram Handle</FormLabel>
-                    <FormControl>
-                      <Input placeholder="johndoe_kwasu" {...field} className="focus-visible:ring-brand-gold" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="contactPhone"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Phone Number</FormLabel>
-                    <FormControl>
-                      <Input type="tel" placeholder="+2348012345678" {...field} className="focus-visible:ring-brand-gold" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <Button type="submit" className="w-full bg-brand-700 hover:bg-brand-800 text-white focus-visible:ring-brand-gold" disabled={isSubmitting}>
-                {isSubmitting ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Updating Executive...
-                  </>
-                ) : (
-                  "Update Executive Profile"
-                )}
+            </div>
+
+            <hr className="border-slate-100" />
+
+            <div className="grid gap-8 md:grid-cols-3">
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 text-brand-600 font-bold uppercase tracking-wider text-xs">
+                  <CalendarDays className="h-4 w-4" />
+                  Tenure & Visuals
+                </div>
+                <p className="text-sm text-muted-foreground">Manage the official portrait and term dates.</p>
+              </div>
+              <div className="md:col-span-2 space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="tenureStart"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-col">
+                        <FormLabel className="text-slate-700 font-semibold">Start Date</FormLabel>
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <FormControl>
+                              <Button variant={"outline"} className={cn("h-12 pl-3 text-left font-normal rounded-xl border-brand-100 bg-white/50 focus-visible:ring-brand-gold shadow-sm", !field.value && "text-muted-foreground")}>
+                                {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
+                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                              </Button>
+                            </FormControl>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0 rounded-2xl border-brand-100 shadow-2xl" align="start">
+                            <Calendar mode="single" selected={field.value} onSelect={field.onChange} initialFocus className="p-3" />
+                          </PopoverContent>
+                        </Popover>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="tenureEnd"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-col">
+                        <FormLabel className="text-slate-700 font-semibold">End Date</FormLabel>
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <FormControl>
+                              <Button variant={"outline"} className={cn("h-12 pl-3 text-left font-normal rounded-xl border-brand-100 bg-white/50 focus-visible:ring-brand-gold shadow-sm", !field.value && "text-muted-foreground")}>
+                                {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
+                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                              </Button>
+                            </FormControl>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0 rounded-2xl border-brand-100 shadow-2xl" align="start">
+                            <Calendar mode="single" selected={field.value} onSelect={field.onChange} initialFocus className="p-3" />
+                          </PopoverContent>
+                        </Popover>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <FormField
+                  control={form.control}
+                  name="photoUrl"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-slate-700 font-semibold">Official Photo</FormLabel>
+                      <FormControl>
+                        <ImageUpload label="Choose Portrait" bucketName="executive-photos" folderPath="public" value={field.value} onChange={field.onChange} disabled={isSubmitting} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+
+            <hr className="border-slate-100" />
+
+            <div className="grid gap-8 md:grid-cols-3">
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 text-brand-600 font-bold uppercase tracking-wider text-xs">
+                  <Mail className="h-4 w-4" />
+                  Transparency
+                </div>
+                <p className="text-sm text-muted-foreground">Add key projects and public contact details.</p>
+              </div>
+              <div className="md:col-span-2 space-y-6">
+                <FormField
+                  control={form.control}
+                  name="projectsMd"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-slate-700 font-semibold">Key Projects (Markdown)</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="What has this member achieved?" rows={5} {...field} className="rounded-xl border-brand-100 bg-white/50 focus-visible:ring-brand-gold shadow-sm" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <FormField control={form.control} name="contactEmail" render={({ field }) => (
+                    <FormItem><FormLabel>Email</FormLabel><FormControl><Input {...field} className="rounded-xl border-brand-100" /></FormControl><FormMessage /></FormItem>
+                  )} />
+                  <FormField control={form.control} name="contactPhone" render={({ field }) => (
+                    <FormItem><FormLabel>Phone</FormLabel><FormControl><Input {...field} className="rounded-xl border-brand-100" /></FormControl><FormMessage /></FormItem>
+                  )} />
+                  <FormField control={form.control} name="contactTwitter" render={({ field }) => (
+                    <FormItem><FormLabel>Twitter</FormLabel><FormControl><Input {...field} className="rounded-xl border-brand-100" /></FormControl><FormMessage /></FormItem>
+                  )} />
+                  <FormField control={form.control} name="contactInstagram" render={({ field }) => (
+                    <FormItem><FormLabel>Instagram</FormLabel><FormControl><Input {...field} className="rounded-xl border-brand-100" /></FormControl><FormMessage /></FormItem>
+                  )} />
+                </div>
+              </div>
+            </div>
+
+            <div className="flex pt-6">
+              <Button type="submit" className="w-full sm:w-auto px-10 h-14 bg-brand-700 hover:bg-brand-800 text-white rounded-2xl shadow-xl hover:shadow-2xl transition-all text-lg font-bold" disabled={isSubmitting}>
+                {isSubmitting ? <><Loader2 className="mr-3 h-5 w-5 animate-spin" /> Updating...</> : "Update Profile"}
               </Button>
-            </form>
-          </Form>
-        </CardContent>
-        </Card>
+            </div>
+          </form>
+        </Form>
       </div>
     </>
   );

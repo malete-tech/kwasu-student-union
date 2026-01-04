@@ -1,15 +1,13 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Loader2, ArrowLeft } from "lucide-react";
+import { Loader2, ArrowLeft, MapPin, ListChecks, Layout } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
@@ -22,6 +20,7 @@ import { Helmet } from "react-helmet-async";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
+import MarkdownEditor from "@/components/MarkdownEditor";
 
 const formSchema = z.object({
   title: z.string().min(1, { message: "Title is required." }),
@@ -32,8 +31,8 @@ const formSchema = z.object({
   descriptionMd: z.string().min(1, { message: "Description is required." }),
   category: z.string().min(1, { message: "Category is required." }),
   rsvpOpen: z.boolean().default(false),
-  rsvpLink: z.string().url({ message: "Invalid URL." }).optional().or(z.literal('')), // New: RSVP Link
-  agendaMd: z.string().optional(),
+  rsvpLink: z.string().url({ message: "Invalid URL." }).optional().or(z.literal('')),
+  agendaMd: z.string().optional().or(z.literal('')),
 }).refine((data) => {
   if (data.endsAt && data.endsAt < data.startsAt) {
     return false;
@@ -50,7 +49,6 @@ const EditEvent: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [loadingEvent, setLoadingEvent] = useState(true);
   const [eventId, setEventId] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -63,18 +61,14 @@ const EditEvent: React.FC = () => {
       descriptionMd: "",
       category: "",
       rsvpOpen: false,
-      rsvpLink: "", // New: Default value
+      rsvpLink: "",
       agendaMd: "",
     },
   });
 
   useEffect(() => {
     const fetchEvent = async () => {
-      if (!slug) {
-        setError("Event slug is missing.");
-        setLoadingEvent(false);
-        return;
-      }
+      if (!slug) return;
       try {
         const fetchedEvent = await api.events.getBySlug(slug);
         if (fetchedEvent) {
@@ -88,15 +82,12 @@ const EditEvent: React.FC = () => {
             descriptionMd: fetchedEvent.descriptionMd,
             category: fetchedEvent.category,
             rsvpOpen: fetchedEvent.rsvpOpen,
-            rsvpLink: fetchedEvent.rsvpLink || "", // New: Populate rsvpLink
+            rsvpLink: fetchedEvent.rsvpLink || "",
             agendaMd: fetchedEvent.agendaMd || "",
           });
-        } else {
-          setError("Event not found.");
         }
       } catch (err) {
-        console.error("Failed to fetch event for editing:", err);
-        setError("Failed to load event. Please try again later.");
+        toast.error("Failed to load event data.");
       } finally {
         setLoadingEvent(false);
       }
@@ -104,29 +95,8 @@ const EditEvent: React.FC = () => {
     fetchEvent();
   }, [slug, form]);
 
-  // Auto-generate slug from title if it's a new event or slug hasn't been manually edited
-  const title = form.watch("title");
-  const currentSlug = form.watch("slug");
-  const isSlugDirty = form.formState.dirtyFields.slug;
-
-  React.useEffect(() => {
-    if (title && !isSlugDirty) {
-      const generatedSlug = title
-        .toLowerCase()
-        .replace(/[^a-z0-9\s-]/g, "")
-        .trim()
-        .replace(/\s+/g, "-");
-      if (generatedSlug !== currentSlug) {
-        form.setValue("slug", generatedSlug, { shouldDirty: false });
-      }
-    }
-  }, [title, form, isSlugDirty, currentSlug]);
-
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    if (!eventId) {
-      toast.error("Cannot update: Event ID is missing.");
-      return;
-    }
+    if (!eventId) return;
     setIsSubmitting(true);
     try {
       const updatedEvent = {
@@ -138,15 +108,14 @@ const EditEvent: React.FC = () => {
         descriptionMd: values.descriptionMd,
         category: values.category,
         rsvpOpen: values.rsvpOpen,
-        rsvpLink: values.rsvpLink || undefined, // New: Include rsvpLink
+        rsvpLink: values.rsvpLink || undefined,
         agendaMd: values.agendaMd || undefined,
       };
       await api.events.update(eventId, updatedEvent);
       toast.success("Event updated successfully!");
       navigate("/admin/events");
     } catch (error) {
-      console.error("Failed to update event:", error);
-      toast.error("Failed to update event. Please try again.");
+      toast.error("Failed to update event.");
     } finally {
       setIsSubmitting(false);
     }
@@ -154,41 +123,9 @@ const EditEvent: React.FC = () => {
 
   if (loadingEvent) {
     return (
-      <div className="space-y-6">
-        <Skeleton className="h-10 w-64 mb-6" />
-        <Card className="shadow-lg rounded-xl p-6">
-          <Skeleton className="h-8 w-1/3 mb-4" />
-          <div className="space-y-6">
-            <Skeleton className="h-10 w-full" />
-            <Skeleton className="h-10 w-full" />
-            <Skeleton className="h-24 w-full" />
-            <Skeleton className="h-48 w-full" />
-            <Skeleton className="h-10 w-full" />
-            <Skeleton className="h-10 w-60" />
-            <Skeleton className="h-32 w-full" />
-            <Skeleton className="h-12 w-full" />
-          </div>
-        </Card>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="space-y-6">
-        <h2 className="text-3xl font-bold text-brand-700">Edit Event</h2>
-        <Card className="shadow-lg rounded-xl p-6">
-          <CardContent className="text-destructive text-center text-lg">
-            {error}
-            <div className="mt-6">
-              <Button asChild variant="outline" className="border-brand-500 text-brand-500 hover:bg-brand-50 hover:text-brand-600 focus-visible:ring-brand-gold">
-                <Link to="/admin/events">
-                  <ArrowLeft className="mr-2 h-4 w-4" /> Back to Events Management
-                </Link>
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+      <div className="max-w-5xl mx-auto space-y-8">
+        <Skeleton className="h-10 w-48" />
+        <Skeleton className="h-96 w-full rounded-2xl" />
       </div>
     );
   }
@@ -197,32 +134,40 @@ const EditEvent: React.FC = () => {
     <>
       <Helmet>
         <title>Edit Event | KWASU SU Admin</title>
-        <meta name="description" content="Edit an existing event on the KWASU Students' Union website." />
       </Helmet>
-      <div className="space-y-6">
-        <div className="flex justify-between items-center">
-          <h2 className="text-3xl font-bold text-brand-700">Edit Event</h2>
-          <Button asChild variant="outline" className="border-brand-500 text-brand-500 hover:bg-brand-50 hover:text-brand-600 focus-visible:ring-brand-gold">
+      <div className="max-w-5xl mx-auto space-y-10">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div>
+            <h2 className="text-3xl font-bold tracking-tight text-brand-700">Edit Event</h2>
+            <p className="text-muted-foreground mt-1">Modify the details of your scheduled campus event.</p>
+          </div>
+          <Button asChild variant="ghost" className="text-brand-500 hover:text-brand-600 hover:bg-brand-50 rounded-xl transition-all">
             <Link to="/admin/events">
-              <ArrowLeft className="mr-2 h-4 w-4" /> Back to Events Management
+              <ArrowLeft className="mr-2 h-4 w-4" /> Back to Calendar
             </Link>
           </Button>
         </div>
-        <Card className="shadow-lg rounded-xl p-6">
-          <CardHeader className="pb-4">
-            <CardTitle className="text-xl font-semibold text-brand-700">Edit Event Details</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-12">
+            {/* 1. Identity Section */}
+            <div className="grid gap-8 md:grid-cols-3">
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 text-brand-600 font-bold uppercase tracking-wider text-xs">
+                  <Layout className="h-4 w-4" />
+                  General Information
+                </div>
+                <p className="text-sm text-muted-foreground">The primary identifier for the event across the platform.</p>
+              </div>
+              <div className="md:col-span-2 space-y-4">
                 <FormField
                   control={form.control}
                   name="title"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Title</FormLabel>
+                      <FormLabel className="text-slate-700 font-semibold">Event Title</FormLabel>
                       <FormControl>
-                        <Input placeholder="Freshers' Orientation Day" {...field} className="focus-visible:ring-brand-gold" />
+                        <Input placeholder="e.g. Annual Student Summit" {...field} className="h-12 rounded-xl border-brand-100 bg-white/50 focus-visible:ring-brand-gold focus-visible:bg-white transition-all shadow-sm" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -233,52 +178,87 @@ const EditEvent: React.FC = () => {
                   name="slug"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Slug</FormLabel>
+                      <FormLabel className="text-slate-700 font-semibold">URL Slug</FormLabel>
                       <FormControl>
-                        <Input placeholder="freshers-orientation-day" {...field} className="focus-visible:ring-brand-gold" />
+                        <Input placeholder="auto-generated-slug" {...field} className="h-10 rounded-xl border-brand-100 bg-slate-50/50 text-slate-500 font-mono text-sm focus-visible:ring-brand-gold" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
+                <FormField
+                  control={form.control}
+                  name="category"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-slate-700 font-semibold">Category</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger className="h-12 rounded-xl border-brand-100 bg-white/50 focus-visible:ring-brand-gold shadow-sm">
+                            <SelectValue placeholder="Select event type" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="Academic">Academic</SelectItem>
+                          <SelectItem value="Social">Social</SelectItem>
+                          <SelectItem value="Sports">Sports</SelectItem>
+                          <SelectItem value="Welfare">Welfare</SelectItem>
+                          <SelectItem value="Other">Other</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+
+            <hr className="border-slate-100" />
+
+            {/* 2. Logistics Section */}
+            <div className="grid gap-8 md:grid-cols-3">
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 text-brand-600 font-bold uppercase tracking-wider text-xs">
+                  <MapPin className="h-4 w-4" />
+                  Time & Location
+                </div>
+                <p className="text-sm text-muted-foreground">Define when and where the event will take place.</p>
+              </div>
+              <div className="md:col-span-2 space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <FormField
                     control={form.control}
                     name="startsAt"
                     render={({ field }) => (
                       <FormItem className="flex flex-col">
-                        <FormLabel>Starts At</FormLabel>
+                        <FormLabel className="text-slate-700 font-semibold">Starts At</FormLabel>
                         <Popover>
                           <PopoverTrigger asChild>
                             <FormControl>
                               <Button
                                 variant={"outline"}
                                 className={cn(
-                                  "w-full pl-3 text-left font-normal focus-visible:ring-brand-gold",
+                                  "h-12 pl-3 text-left font-normal rounded-xl border-brand-100 bg-white/50 focus-visible:ring-brand-gold shadow-sm",
                                   !field.value && "text-muted-foreground"
                                 )}
                               >
-                                {field.value ? (
-                                  format(field.value, "PPP HH:mm")
-                                ) : (
-                                  <span>Pick date and time</span>
-                                )}
+                                {field.value ? format(field.value, "PPP HH:mm") : <span>Pick date and time</span>}
                                 <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                               </Button>
                             </FormControl>
                           </PopoverTrigger>
-                          <PopoverContent className="w-auto p-0" align="start">
+                          <PopoverContent className="w-auto p-0 rounded-2xl border-brand-100 shadow-2xl" align="start">
                             <Calendar
                               mode="single"
                               selected={field.value}
                               onSelect={(date) => {
                                 if (date) {
-                                  const existingTime = field.value ? { hours: field.value.getHours(), minutes: field.value.getMinutes() } : { hours: 0, minutes: 0 };
-                                  date.setHours(existingTime.hours, existingTime.minutes);
-                                  field.onChange(date);
+                                  const newDate = field.value ? new Date(date.setHours(field.value.getHours(), field.value.getMinutes())) : date;
+                                  field.onChange(newDate);
                                 }
                               }}
                               initialFocus
+                              className="p-3"
                             />
                             <div className="p-3 border-t">
                               <Input
@@ -286,15 +266,9 @@ const EditEvent: React.FC = () => {
                                 value={field.value ? format(field.value, "HH:mm") : "00:00"}
                                 onChange={(e) => {
                                   const [hours, minutes] = e.target.value.split(':').map(Number);
-                                  if (field.value) {
-                                    const newDate = new Date(field.value);
-                                    newDate.setHours(hours!, minutes!);
-                                    field.onChange(newDate);
-                                  } else {
-                                    const newDate = new Date();
-                                    newDate.setHours(hours!, minutes!);
-                                    field.onChange(newDate);
-                                  }
+                                  const newDate = new Date(field.value || new Date());
+                                  newDate.setHours(hours!, minutes!);
+                                  field.onChange(newDate);
                                 }}
                                 className="focus-visible:ring-brand-gold"
                               />
@@ -310,38 +284,34 @@ const EditEvent: React.FC = () => {
                     name="endsAt"
                     render={({ field }) => (
                       <FormItem className="flex flex-col">
-                        <FormLabel>Ends At (Optional)</FormLabel>
+                        <FormLabel className="text-slate-700 font-semibold">Ends At (Optional)</FormLabel>
                         <Popover>
                           <PopoverTrigger asChild>
                             <FormControl>
                               <Button
                                 variant={"outline"}
                                 className={cn(
-                                  "w-full pl-3 text-left font-normal focus-visible:ring-brand-gold",
+                                  "h-12 pl-3 text-left font-normal rounded-xl border-brand-100 bg-white/50 focus-visible:ring-brand-gold shadow-sm",
                                   !field.value && "text-muted-foreground"
                                 )}
                               >
-                                {field.value ? (
-                                  format(field.value, "PPP HH:mm")
-                                ) : (
-                                  <span>Pick date and time</span>
-                                )}
+                                {field.value ? format(field.value, "PPP HH:mm") : <span>Pick date and time</span>}
                                 <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                               </Button>
                             </FormControl>
                           </PopoverTrigger>
-                          <PopoverContent className="w-auto p-0" align="start">
+                          <PopoverContent className="w-auto p-0 rounded-2xl border-brand-100 shadow-2xl" align="start">
                             <Calendar
                               mode="single"
                               selected={field.value}
                               onSelect={(date) => {
                                 if (date) {
-                                  const existingTime = field.value ? { hours: field.value.getHours(), minutes: field.value.getMinutes() } : { hours: 0, minutes: 0 };
-                                  date.setHours(existingTime.hours, existingTime.minutes);
-                                  field.onChange(date);
+                                  const newDate = field.value ? new Date(date.setHours(field.value.getHours(), field.value.getMinutes())) : date;
+                                  field.onChange(newDate);
                                 }
                               }}
                               initialFocus
+                              className="p-3"
                             />
                             <div className="p-3 border-t">
                               <Input
@@ -349,15 +319,9 @@ const EditEvent: React.FC = () => {
                                 value={field.value ? format(field.value, "HH:mm") : "00:00"}
                                 onChange={(e) => {
                                   const [hours, minutes] = e.target.value.split(':').map(Number);
-                                  if (field.value) {
-                                    const newDate = new Date(field.value);
-                                    newDate.setHours(hours!, minutes!);
-                                    field.onChange(newDate);
-                                  } else {
-                                    const newDate = new Date();
-                                    newDate.setHours(hours!, minutes!);
-                                    field.onChange(newDate);
-                                  }
+                                  const newDate = new Date(field.value || new Date());
+                                  newDate.setHours(hours!, minutes!);
+                                  field.onChange(newDate);
                                 }}
                                 className="focus-visible:ring-brand-gold"
                               />
@@ -374,85 +338,38 @@ const EditEvent: React.FC = () => {
                   name="venue"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Venue</FormLabel>
+                      <FormLabel className="text-slate-700 font-semibold">Venue / Hall</FormLabel>
                       <FormControl>
-                        <Input placeholder="University Multipurpose Hall" {...field} className="focus-visible:ring-brand-gold" />
+                        <Input placeholder="e.g. University Multipurpose Hall" {...field} className="h-12 rounded-xl border-brand-100 bg-white/50 focus-visible:ring-brand-gold shadow-sm" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
+              </div>
+            </div>
+
+            <hr className="border-slate-100" />
+
+            {/* 3. Details Section */}
+            <div className="grid gap-8 md:grid-cols-3">
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 text-brand-600 font-bold uppercase tracking-wider text-xs">
+                  <ListChecks className="h-4 w-4" />
+                  Event Description
+                </div>
+                <p className="text-sm text-muted-foreground">Provide full details, agenda, and registration info.</p>
+              </div>
+              <div className="md:col-span-2 space-y-6">
                 <FormField
                   control={form.control}
                   name="descriptionMd"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Description (Markdown)</FormLabel>
+                      <FormLabel className="text-slate-700 font-semibold">Description (Markdown)</FormLabel>
                       <FormControl>
-                        <Textarea placeholder="Detailed description of the event using Markdown..." rows={8} {...field} className="focus-visible:ring-brand-gold" />
+                        <MarkdownEditor placeholder="Tell students what to expect..." rows={8} value={field.value} onChange={field.onChange} disabled={isSubmitting} />
                       </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="category"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Category</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <FormControl>
-                          <SelectTrigger className="focus-visible:ring-brand-gold">
-                            <SelectValue placeholder="Select a category" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value="Academic">Academic</SelectItem>
-                          <SelectItem value="Social">Social</SelectItem>
-                          <SelectItem value="Sports">Sports</SelectItem>
-                          <SelectItem value="Welfare">Welfare</SelectItem>
-                          <SelectItem value="Other">Other</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="rsvpOpen"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-                      <FormControl>
-                        <Checkbox
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
-                      </FormControl>
-                      <div className="space-y-1 leading-none">
-                        <FormLabel>
-                          RSVP Open
-                        </FormLabel>
-                        <FormDescription>
-                          Check this if students can RSVP for this event.
-                        </FormDescription>
-                      </div>
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="rsvpLink"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>RSVP Link (Optional)</FormLabel>
-                      <FormControl>
-                        <Input placeholder="https://example.com/rsvp" {...field} className="focus-visible:ring-brand-gold" />
-                      </FormControl>
-                      <FormDescription>
-                        Provide a direct link for students to RSVP or register for the event.
-                      </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -462,28 +379,61 @@ const EditEvent: React.FC = () => {
                   name="agendaMd"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Agenda (Markdown, Optional)</FormLabel>
+                      <FormLabel className="text-slate-700 font-semibold">Agenda (Optional)</FormLabel>
                       <FormControl>
-                        <Textarea placeholder="Detailed agenda for the event using Markdown..." rows={5} {...field} className="focus-visible:ring-brand-gold" />
+                        <MarkdownEditor placeholder="List the sequence of events..." rows={5} value={field.value || ""} onChange={field.onChange} disabled={isSubmitting} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-                <Button type="submit" className="w-full bg-brand-700 hover:bg-brand-800 text-white focus-visible:ring-brand-gold" disabled={isSubmitting}>
-                  {isSubmitting ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Updating Event...
-                    </>
-                  ) : (
-                    "Update Event"
+                
+                <div className="pt-4 space-y-4">
+                  <FormField
+                    control={form.control}
+                    name="rsvpOpen"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-xl border p-4 bg-brand-50/30">
+                        <FormControl>
+                          <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                        </FormControl>
+                        <div className="space-y-1 leading-none">
+                          <FormLabel className="text-slate-700 font-semibold">Enable RSVP / Registration</FormLabel>
+                          <FormDescription>Let students sign up for this event.</FormDescription>
+                        </div>
+                      </FormItem>
+                    )}
+                  />
+                  {form.watch("rsvpOpen") && (
+                    <FormField
+                      control={form.control}
+                      name="rsvpLink"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-slate-700 font-semibold">Registration Link</FormLabel>
+                          <FormControl>
+                            <Input placeholder="https://forms.gle/..." {...field} className="h-12 rounded-xl border-brand-100 bg-white shadow-sm focus-visible:ring-brand-gold" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
                   )}
-                </Button>
-              </form>
-            </Form>
-          </CardContent>
-        </Card>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex pt-6">
+              <Button type="submit" className="w-full sm:w-auto px-10 h-14 bg-brand-700 hover:bg-brand-800 text-white rounded-2xl shadow-xl hover:shadow-2xl transition-all text-lg font-bold" disabled={isSubmitting}>
+                {isSubmitting ? (
+                  <><Loader2 className="mr-3 h-5 w-5 animate-spin" /> Updating...</>
+                ) : (
+                  "Update Event"
+                )}
+              </Button>
+            </div>
+          </form>
+        </Form>
       </div>
     </>
   );

@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Loader2, Megaphone, Edit, Trash2, PlusCircle, CheckCircle, XCircle, AlertCircle } from "lucide-react";
+import { Loader2, Megaphone, Edit, Trash2, PlusCircle } from "lucide-react";
 import { api } from "@/lib/api";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -132,24 +132,22 @@ const GlobalAnnouncementManagement: React.FC = () => {
       }
       
       handleCloseDialog();
-      await fetchAnnouncements(); // Refresh list
+      await fetchAnnouncements();
     } catch (error) {
-      console.error("Failed to save announcement:", error);
-      toast.error("Failed to save announcement. Please try again.");
+      toast.error("Failed to save announcement.");
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const handleDelete = async (id: string, title: string) => {
+  const handleDelete = async (id: string) => {
     setDeletingId(id);
     try {
       await api.announcements.delete(id);
-      toast.success(`Announcement "${title}" deleted successfully!`);
+      toast.success(`Announcement deleted successfully!`);
       setAnnouncements((prev) => prev.filter((a) => a.id !== id));
     } catch (error) {
-      console.error("Failed to delete announcement:", error);
-      toast.error("Failed to delete announcement. Please try again.");
+      toast.error("Failed to delete announcement.");
     } finally {
       setDeletingId(null);
     }
@@ -163,8 +161,7 @@ const GlobalAnnouncementManagement: React.FC = () => {
       toast.success(`Announcement ${newStatus ? 'activated' : 'deactivated'} successfully!`);
       await fetchAnnouncements();
     } catch (error) {
-      console.error("Failed to toggle status:", error);
-      toast.error("Failed to toggle announcement status.");
+      toast.error("Failed to toggle status.");
     } finally {
       setIsSubmitting(false);
     }
@@ -173,74 +170,54 @@ const GlobalAnnouncementManagement: React.FC = () => {
   const getIconClasses = (type: string) => {
     switch (type) {
       case 'urgent':
-        return 'bg-red-100 text-destructive group-hover:bg-destructive group-hover:text-white';
+        return 'bg-red-50 text-red-600 group-hover:bg-red-600 group-hover:text-white';
       case 'celebration':
-        return 'bg-brand-gold/20 text-brand-gold group-hover:bg-brand-gold group-hover:text-brand-900';
+        return 'bg-brand-gold/10 text-brand-gold group-hover:bg-brand-gold group-hover:text-brand-900';
       case 'info':
       default:
-        return 'bg-blue-100 text-blue-600 group-hover:bg-blue-600 group-hover:text-white';
+        return 'bg-brand-50 text-brand-600 group-hover:bg-brand-600 group-hover:text-white';
     }
   };
 
   return (
     <>
       <Helmet>
-        <title>Global Announcements | KWASU SU Admin</title>
-        <meta name="description" content="Manage site-wide popups and banners for urgent or celebratory messages." />
+        <title>Global Announcements | Admin</title>
       </Helmet>
       <div className="space-y-8">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
-            <h2 className="text-3xl font-bold tracking-tight text-brand-700">Global Announcements</h2>
-            <p className="text-muted-foreground mt-1">
-              Manage site-wide banners and modal messages for urgent or important notices.
-            </p>
+            <h2 className="text-3xl font-bold tracking-tight text-brand-700">Site-wide Notices</h2>
+            <p className="text-muted-foreground mt-1">Manage urgent banners or celebratory modals that appear to all users.</p>
           </div>
-          <div className="flex items-center gap-3">
-            <Badge variant="outline" className="h-10 px-4 rounded-xl border-brand-100 bg-brand-50/30 text-brand-700 text-sm font-semibold">
-              {announcements.filter(a => a.isActive).length} Active
-            </Badge>
-            <Button onClick={() => handleOpenDialog()} className="bg-brand-500 hover:bg-brand-600 text-white rounded-xl shadow-md">
-              <PlusCircle className="mr-2 h-4 w-4" /> Create New
-            </Button>
-          </div>
+          <Button onClick={() => handleOpenDialog()} className="bg-brand-500 hover:bg-brand-600 text-white rounded-xl shadow-md">
+            <PlusCircle className="mr-2 h-4 w-4" /> Create Notice
+          </Button>
         </div>
         
         <div className="mt-6">
           {loading ? (
             <div className="grid gap-4">
-              {[...Array(4)].map((_, i) => (
+              {[...Array(3)].map((_, i) => (
                 <div key={i} className="flex items-center space-x-4 p-6 border rounded-2xl bg-white/50">
                   <Skeleton className="h-14 w-14 rounded-2xl" />
                   <div className="flex-1 space-y-2">
                     <Skeleton className="h-6 w-1/3" />
                     <Skeleton className="h-4 w-1/4" />
                   </div>
-                  <div className="flex gap-2">
-                    <Skeleton className="h-10 w-10 rounded-xl" />
-                    <Skeleton className="h-10 w-10 rounded-xl" />
-                  </div>
                 </div>
               ))}
             </div>
           ) : error ? (
             <div className="py-20 text-center">
-              <div className="mx-auto w-12 h-12 rounded-full bg-red-50 flex items-center justify-center mb-4">
-                <AlertCircle className="h-6 w-6 text-red-500" />
-              </div>
-              <p className="text-destructive text-lg font-medium">{error}</p>
-              <Button variant="outline" onClick={fetchAnnouncements} className="mt-4 rounded-xl border-brand-100">Try Again</Button>
+              <p className="text-destructive font-medium">{error}</p>
+              <Button variant="outline" onClick={fetchAnnouncements} className="mt-4 rounded-xl">Try Again</Button>
             </div>
           ) : announcements.length === 0 ? (
             <div className="py-24 text-center border-2 border-dashed rounded-3xl bg-white/30 border-brand-100">
-              <div className="mx-auto w-14 h-14 rounded-full bg-brand-50 flex items-center justify-center mb-4">
-                <Megaphone className="h-7 w-7 text-brand-300" />
-              </div>
-              <h3 className="text-lg font-bold text-slate-900">No announcements created yet</h3>
-              <p className="text-muted-foreground">Create a new global message to display on the homepage.</p>
-              <Button onClick={() => handleOpenDialog()} className="mt-6 bg-brand-500 hover:bg-brand-600 text-white rounded-xl">
-                <PlusCircle className="mr-2 h-4 w-4" /> Create New Announcement
-              </Button>
+              <Megaphone className="mx-auto h-12 w-12 text-brand-200 mb-4" />
+              <h3 className="text-lg font-bold">No global notices</h3>
+              <p className="text-muted-foreground">Announcements created here will appear as modals on the homepage.</p>
             </div>
           ) : (
             <div className="grid gap-4">
@@ -251,7 +228,7 @@ const GlobalAnnouncementManagement: React.FC = () => {
                     "group relative flex flex-col md:flex-row md:items-center justify-between p-5 rounded-2xl border transition-all duration-300",
                     announcement.isActive 
                       ? "bg-white border-brand-200 shadow-lg" 
-                      : "bg-white/50 hover:bg-white border-transparent hover:border-brand-100 hover:shadow-md shadow-sm opacity-80"
+                      : "bg-white/50 hover:bg-white border-transparent hover:border-brand-100 hover:shadow-md shadow-sm"
                   )}
                 >
                   <div className="flex items-start space-x-5 flex-1 min-w-0">
@@ -262,16 +239,21 @@ const GlobalAnnouncementManagement: React.FC = () => {
                       <Megaphone className="h-6 w-6" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="text-lg font-bold text-slate-900 group-hover:text-brand-700 transition-colors truncate">
-                        {announcement.title}
-                      </h3>
-                      <div className="flex flex-wrap items-center gap-y-1 gap-x-4 text-sm text-slate-500">
-                        <span className="font-medium text-brand-700 capitalize">{announcement.type}</span>
-                        <span className="text-xs text-muted-foreground italic">• Updated: {format(new Date(announcement.updatedAt), "MMM dd, yyyy")}</span>
+                      <div className="flex items-center gap-2">
+                        <h3 className="text-lg font-bold text-slate-900 truncate">
+                          {announcement.title}
+                        </h3>
+                        {announcement.isActive && (
+                          <Badge className="bg-brand-500 text-white text-[10px] uppercase font-bold py-0 h-4">Active</Badge>
+                        )}
                       </div>
-                      <p className="text-xs text-muted-foreground truncate mt-1">
-                        {announcement.messageMd.split('\n')[0]}
+                      <p className="text-sm text-slate-500 line-clamp-1 mt-0.5">
+                        {announcement.messageMd.substring(0, 100)}...
                       </p>
+                      <div className="flex items-center gap-3 mt-1 text-xs text-muted-foreground">
+                        <span className="capitalize font-semibold text-brand-600">{announcement.type}</span>
+                        <span>• Updated: {format(new Date(announcement.updatedAt), "MMM dd, yyyy")}</span>
+                      </div>
                     </div>
                   </div>
 
@@ -282,51 +264,31 @@ const GlobalAnnouncementManagement: React.FC = () => {
                       onClick={() => handleToggleActive(announcement)}
                       disabled={isSubmitting}
                       className={cn(
-                        "h-10 px-4 rounded-xl shadow-sm",
-                        announcement.isActive ? "bg-red-500 hover:bg-red-600" : "bg-brand-700 hover:bg-brand-800"
+                        "h-9 px-4 rounded-xl font-bold shadow-sm",
+                        announcement.isActive ? "bg-red-50 text-red-600 hover:bg-red-100 border-none" : "bg-brand-700 hover:bg-brand-800"
                       )}
                     >
-                      {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : announcement.isActive ? <XCircle className="h-4 w-4 mr-2" /> : <CheckCircle className="h-4 w-4 mr-2" />}
-                      {announcement.isActive ? "Deactivate" : "Activate"}
+                      {announcement.isActive ? "Disable" : "Activate"}
                     </Button>
                     
-                    <Button variant="outline" size="icon" onClick={() => handleOpenDialog(announcement)} disabled={isSubmitting} className="h-10 w-10 bg-white border-brand-100 text-brand-700 hover:bg-brand-50 rounded-xl shadow-sm">
+                    <Button variant="outline" size="icon" onClick={() => handleOpenDialog(announcement)} disabled={isSubmitting} className="h-9 w-9 bg-white border-brand-100 text-brand-700 hover:bg-brand-50 rounded-xl">
                       <Edit className="h-4 w-4" />
-                      <span className="sr-only">Edit</span>
                     </Button>
                     
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
-                        <Button 
-                          variant="ghost" 
-                          size="icon" 
-                          disabled={deletingId === announcement.id || isSubmitting}
-                          className="h-10 w-10 text-muted-foreground hover:text-destructive hover:bg-destructive/5 rounded-xl"
-                        >
-                          {deletingId === announcement.id ? (
-                            <Loader2 className="h-4 w-4 animate-spin" />
-                          ) : (
-                            <Trash2 className="h-4 w-4" />
-                          )}
-                          <span className="sr-only">Delete</span>
+                        <Button variant="ghost" size="icon" disabled={deletingId === announcement.id} className="h-9 w-9 text-muted-foreground hover:text-destructive hover:bg-destructive/5 rounded-xl">
+                          {deletingId === announcement.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
                         </Button>
                       </AlertDialogTrigger>
-                      <AlertDialogContent className="rounded-2xl border-none shadow-2xl">
+                      <AlertDialogContent className="rounded-2xl">
                         <AlertDialogHeader>
-                          <AlertDialogTitle className="text-2xl font-bold text-brand-800">Delete announcement?</AlertDialogTitle>
-                          <AlertDialogDescription className="text-base">
-                            This will permanently delete the announcement
-                            <span className="font-semibold text-brand-700"> "{announcement.title}"</span>. This action cannot be undone.
-                          </AlertDialogDescription>
+                          <AlertDialogTitle>Delete announcement?</AlertDialogTitle>
+                          <AlertDialogDescription>This will permanently remove the notice from the system.</AlertDialogDescription>
                         </AlertDialogHeader>
-                        <AlertDialogFooter className="mt-6">
-                          <AlertDialogCancel className="rounded-xl border-brand-100">Cancel</AlertDialogCancel>
-                          <AlertDialogAction 
-                            onClick={() => handleDelete(announcement.id, announcement.title)} 
-                            className="bg-destructive hover:bg-destructive/90 text-white rounded-xl"
-                          >
-                            Delete
-                          </AlertDialogAction>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogAction onClick={() => handleDelete(announcement.id)} className="bg-destructive">Delete</AlertDialogAction>
                         </AlertDialogFooter>
                       </AlertDialogContent>
                     </AlertDialog>
@@ -338,7 +300,6 @@ const GlobalAnnouncementManagement: React.FC = () => {
         </div>
       </div>
 
-      {/* Dialog for Add/Edit Announcement */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="sm:max-w-[600px] rounded-2xl p-6">
           <DialogHeader>
@@ -355,7 +316,7 @@ const GlobalAnnouncementManagement: React.FC = () => {
                   <FormItem>
                     <FormLabel>Title</FormLabel>
                     <FormControl>
-                      <Input placeholder="Important Notice: Hostel Closure" {...field} className="focus-visible:ring-brand-gold" />
+                      <Input placeholder="Important Notice: Hostel Closure" {...field} className="focus-visible:ring-brand-gold h-12 rounded-xl" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -369,7 +330,7 @@ const GlobalAnnouncementManagement: React.FC = () => {
                     <FormLabel>Type</FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
-                        <SelectTrigger className="focus-visible:ring-brand-gold">
+                        <SelectTrigger className="focus-visible:ring-brand-gold h-12 rounded-xl">
                           <SelectValue placeholder="Select announcement type" />
                         </SelectTrigger>
                       </FormControl>
@@ -406,7 +367,7 @@ const GlobalAnnouncementManagement: React.FC = () => {
                 control={form.control}
                 name="isActive"
                 render={({ field }) => (
-                  <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                  <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-xl border p-4 bg-brand-50/20">
                     <FormControl>
                       <Checkbox
                         checked={field.value}
@@ -414,29 +375,18 @@ const GlobalAnnouncementManagement: React.FC = () => {
                       />
                     </FormControl>
                     <div className="space-y-1 leading-none">
-                      <FormLabel>
-                        Activate Announcement
-                      </FormLabel>
-                      <FormDescription>
-                        If checked, this announcement will immediately appear on the public homepage. (Only one announcement can be active at a time.)
-                      </FormDescription>
+                      <FormLabel className="font-bold">Activate immediately</FormLabel>
+                      <FormDescription>If checked, this will be the active announcement shown on the homepage.</FormDescription>
                     </div>
                   </FormItem>
                 )}
               />
-              <DialogFooter>
-                <Button type="button" variant="outline" onClick={handleCloseDialog} disabled={isSubmitting}>
+              <DialogFooter className="gap-2">
+                <Button type="button" variant="outline" onClick={handleCloseDialog} className="rounded-xl h-11 px-6">
                   Cancel
                 </Button>
-                <Button type="submit" className="bg-brand-700 hover:bg-brand-800 text-white focus-visible:ring-brand-gold" disabled={isSubmitting}>
-                  {isSubmitting ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Saving...
-                    </>
-                  ) : (
-                    "Save Announcement"
-                  )}
+                <Button type="submit" className="bg-brand-700 hover:bg-brand-800 text-white rounded-xl h-11 px-8 font-bold" disabled={isSubmitting}>
+                  {isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : "Save Announcement"}
                 </Button>
               </DialogFooter>
             </form>

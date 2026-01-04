@@ -1,9 +1,8 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Loader2, ArrowLeft } from "lucide-react";
+import { Loader2, ArrowLeft, FileText, Upload } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -19,7 +18,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 const formSchema = z.object({
   title: z.string().min(1, { message: "Title is required." }),
   tags: z.string().min(1, { message: "At least one tag is required." }),
-  url: z.string().url({ message: "Document URL is required and must be a valid URL." }),
+  url: z.string().url({ message: "Document URL is required." }),
   fileType: z.string().min(1, { message: "File type is required." }),
   fileSize: z.string().min(1, { message: "File size is required." }),
 });
@@ -29,26 +28,15 @@ const EditDocument: React.FC = () => {
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [loadingDocument, setLoadingDocument] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      title: "",
-      tags: "",
-      url: "",
-      fileType: "",
-      fileSize: "",
-    },
+    defaultValues: { title: "", tags: "", url: "", fileType: "", fileSize: "" },
   });
 
   useEffect(() => {
     const fetchDocument = async () => {
-      if (!id) {
-        setError("Document ID is missing.");
-        setLoadingDocument(false);
-        return;
-      }
+      if (!id) return;
       try {
         const fetchedDocument = await api.documents.getById(id);
         if (fetchedDocument) {
@@ -59,12 +47,9 @@ const EditDocument: React.FC = () => {
             fileType: fetchedDocument.fileType,
             fileSize: fetchedDocument.fileSize,
           });
-        } else {
-          setError("Document not found.");
         }
       } catch (err) {
-        console.error("Failed to fetch document for editing:", err);
-        setError("Failed to load document. Please try again later.");
+        toast.error("Failed to load document.");
       } finally {
         setLoadingDocument(false);
       }
@@ -73,10 +58,7 @@ const EditDocument: React.FC = () => {
   }, [id, form]);
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    if (!id) {
-      toast.error("Cannot update: Document ID is missing.");
-      return;
-    }
+    if (!id) return;
     setIsSubmitting(true);
     try {
       const updatedDocument = {
@@ -90,8 +72,7 @@ const EditDocument: React.FC = () => {
       toast.success("Document updated successfully!");
       navigate("/admin/documents");
     } catch (error) {
-      console.error("Failed to update document:", error);
-      toast.error("Failed to update document. Please try again.");
+      toast.error("Failed to update document.");
     } finally {
       setIsSubmitting(false);
     }
@@ -99,37 +80,9 @@ const EditDocument: React.FC = () => {
 
   if (loadingDocument) {
     return (
-      <div className="space-y-6">
-        <Skeleton className="h-10 w-64 mb-6" />
-        <Card className="shadow-lg rounded-xl p-6">
-          <Skeleton className="h-8 w-1/3 mb-4" />
-          <div className="space-y-6">
-            <Skeleton className="h-10 w-full" />
-            <Skeleton className="h-10 w-full" />
-            <Skeleton className="h-48 w-full" />
-            <Skeleton className="h-12 w-full" />
-          </div>
-        </Card>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="space-y-6">
-        <h2 className="text-3xl font-bold text-brand-700">Edit Document</h2>
-        <Card className="shadow-lg rounded-xl p-6">
-          <CardContent className="text-destructive text-center text-lg">
-            {error}
-            <div className="mt-6">
-              <Button asChild variant="outline" className="border-brand-500 text-brand-500 hover:bg-brand-50 hover:text-brand-600 focus-visible:ring-brand-gold">
-                <Link to="/admin/documents">
-                  <ArrowLeft className="mr-2 h-4 w-4" /> Back to Documents Management
-                </Link>
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+      <div className="max-w-5xl mx-auto space-y-8">
+        <Skeleton className="h-10 w-48" />
+        <Skeleton className="h-64 w-full rounded-2xl" />
       </div>
     );
   }
@@ -138,32 +91,81 @@ const EditDocument: React.FC = () => {
     <>
       <Helmet>
         <title>Edit Document | KWASU SU Admin</title>
-        <meta name="description" content="Edit an existing downloadable document on the KWASU Students' Union website." />
       </Helmet>
-      <div className="space-y-6">
+      <div className="max-w-5xl mx-auto space-y-10">
         <div className="flex justify-between items-center">
-          <h2 className="text-3xl font-bold text-brand-700">Edit Document</h2>
-          <Button asChild variant="outline" className="border-brand-500 text-brand-500 hover:bg-brand-50 hover:text-brand-600 focus-visible:ring-brand-gold">
+          <div>
+            <h2 className="text-3xl font-bold tracking-tight text-brand-700">Edit Vault Resource</h2>
+            <p className="text-muted-foreground mt-1">Update the file or details for this student resource.</p>
+          </div>
+          <Button asChild variant="ghost" className="text-brand-500 hover:text-brand-600 hover:bg-brand-50 rounded-xl transition-all">
             <Link to="/admin/documents">
-              <ArrowLeft className="mr-2 h-4 w-4" /> Back to Documents Management
+              <ArrowLeft className="mr-2 h-4 w-4" /> Back to Vault
             </Link>
           </Button>
         </div>
-        <Card className="shadow-lg rounded-xl p-6">
-          <CardHeader className="pb-4">
-            <CardTitle className="text-xl font-semibold text-brand-700">Edit Document Details</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-12">
+            <div className="grid gap-8 md:grid-cols-3">
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 text-brand-600 font-bold uppercase tracking-wider text-xs">
+                  <Upload className="h-4 w-4" />
+                  File Source
+                </div>
+                <p className="text-sm text-muted-foreground">Change the file associated with this entry.</p>
+              </div>
+              <div className="md:col-span-2">
+                <FormField
+                  control={form.control}
+                  name="url"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-slate-700 font-semibold">Replace File</FormLabel>
+                      <FormControl>
+                        <DocumentUpload
+                          label="Choose Document"
+                          bucketName="documents"
+                          folderPath="public"
+                          value={field.value}
+                          fileType={form.getValues("fileType")}
+                          fileSize={form.getValues("fileSize")}
+                          onChange={(url, fileType, fileSize) => {
+                            field.onChange(url);
+                            form.setValue("fileType", fileType || "", { shouldValidate: true });
+                            form.setValue("fileSize", fileSize || "", { shouldValidate: true });
+                          }}
+                          disabled={isSubmitting}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Input type="hidden" {...form.register("fileType")} />
+                <Input type="hidden" {...form.register("fileSize")} />
+              </div>
+            </div>
+
+            <hr className="border-slate-100" />
+
+            <div className="grid gap-8 md:grid-cols-3">
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 text-brand-600 font-bold uppercase tracking-wider text-xs">
+                  <FileText className="h-4 w-4" />
+                  Metadata
+                </div>
+                <p className="text-sm text-muted-foreground">Identify and categorize this resource.</p>
+              </div>
+              <div className="md:col-span-2 space-y-4">
                 <FormField
                   control={form.control}
                   name="title"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Title</FormLabel>
+                      <FormLabel className="text-slate-700 font-semibold">Document Title</FormLabel>
                       <FormControl>
-                        <Input placeholder="KWASU SU Constitution" {...field} className="focus-visible:ring-brand-gold" />
+                        <Input placeholder="e.g. 2024 Welfare Guide" {...field} className="h-12 rounded-xl border-brand-100 bg-white/50 focus-visible:ring-brand-gold shadow-sm" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -174,58 +176,24 @@ const EditDocument: React.FC = () => {
                   name="tags"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Tags (comma-separated)</FormLabel>
+                      <FormLabel className="text-slate-700 font-semibold">Filter Tags</FormLabel>
                       <FormControl>
-                        <Input placeholder="policy, constitution, academic" {...field} className="focus-visible:ring-brand-gold" />
+                        <Input placeholder="e.g. guide, welfare, policy" {...field} className="h-10 rounded-xl border-brand-100 bg-white/50 focus-visible:ring-brand-gold shadow-sm" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-                <FormField
-                  control={form.control}
-                  name="url"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Document File</FormLabel>
-                      <FormControl>
-                        <DocumentUpload
-                          label="Upload Document"
-                          bucketName="documents"
-                          folderPath="public"
-                          value={field.value}
-                          fileType={form.getValues("fileType")}
-                          fileSize={form.getValues("fileSize")}
-                          onChange={(url, fileType, fileSize) => {
-                            field.onChange(url);
-                            form.setValue("fileType", fileType || "");
-                            form.setValue("fileSize", fileSize || "");
-                          }}
-                          disabled={isSubmitting}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                {/* Hidden fields for fileType and fileSize, managed by DocumentUpload */}
-                <Input type="hidden" {...form.register("fileType")} />
-                <Input type="hidden" {...form.register("fileSize")} />
+              </div>
+            </div>
 
-                <Button type="submit" className="w-full bg-brand-700 hover:bg-brand-800 text-white focus-visible:ring-brand-gold" disabled={isSubmitting || !form.formState.isValid}>
-                  {isSubmitting ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Updating Document...
-                    </>
-                  ) : (
-                    "Update Document"
-                  )}
-                </Button>
-              </form>
-            </Form>
-          </CardContent>
-        </Card>
+            <div className="flex pt-6">
+              <Button type="submit" className="w-full sm:w-auto px-10 h-14 bg-brand-700 hover:bg-brand-800 text-white rounded-2xl shadow-xl hover:shadow-2xl transition-all text-lg font-bold" disabled={isSubmitting}>
+                {isSubmitting ? <><Loader2 className="mr-3 h-5 w-5 animate-spin" /> Updating...</> : "Save Changes"}
+              </Button>
+            </div>
+          </form>
+        </Form>
       </div>
     </>
   );

@@ -1,13 +1,12 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Loader2, ArrowLeft } from "lucide-react";
+import { Loader2, ArrowLeft, Star, Image as ImageIcon, Layout } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { api } from "@/lib/api";
@@ -30,26 +29,15 @@ const EditSpotlight: React.FC = () => {
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [loadingSpotlight, setLoadingSpotlight] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: "",
-      achievement: "",
-      descriptionMd: "",
-      photoUrl: undefined,
-      link: "",
-    },
+    defaultValues: { name: "", achievement: "", descriptionMd: "", photoUrl: undefined, link: "" },
   });
 
   useEffect(() => {
     const fetchSpotlight = async () => {
-      if (!id) {
-        setError("Spotlight ID is missing.");
-        setLoadingSpotlight(false);
-        return;
-      }
+      if (!id) return;
       try {
         const fetchedSpotlight = await api.spotlight.getById(id);
         if (fetchedSpotlight) {
@@ -60,12 +48,9 @@ const EditSpotlight: React.FC = () => {
             photoUrl: fetchedSpotlight.photoUrl || undefined,
             link: fetchedSpotlight.link || "",
           });
-        } else {
-          setError("Spotlight entry not found.");
         }
       } catch (err) {
-        console.error("Failed to fetch spotlight for editing:", err);
-        setError("Failed to load spotlight. Please try again later.");
+        toast.error("Failed to load spotlight entry.");
       } finally {
         setLoadingSpotlight(false);
       }
@@ -74,10 +59,7 @@ const EditSpotlight: React.FC = () => {
   }, [id, form]);
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    if (!id) {
-      toast.error("Cannot update: Spotlight ID is missing.");
-      return;
-    }
+    if (!id) return;
     setIsSubmitting(true);
     try {
       const updatedSpotlight = {
@@ -88,11 +70,10 @@ const EditSpotlight: React.FC = () => {
         link: values.link || undefined,
       };
       await api.spotlight.update(id, updatedSpotlight);
-      toast.success("Spotlight entry updated successfully!");
+      toast.success("Spotlight updated successfully!");
       navigate("/admin/spotlight");
     } catch (error) {
-      console.error("Failed to update spotlight entry:", error);
-      toast.error("Failed to update spotlight entry. Please try again.");
+      toast.error("Failed to update spotlight.");
     } finally {
       setIsSubmitting(false);
     }
@@ -100,37 +81,9 @@ const EditSpotlight: React.FC = () => {
 
   if (loadingSpotlight) {
     return (
-      <div className="space-y-6">
-        <Skeleton className="h-10 w-64 mb-6" />
-        <Card className="shadow-lg rounded-xl p-6">
-          <Skeleton className="h-8 w-1/3 mb-4" />
-          <div className="space-y-6">
-            <Skeleton className="h-10 w-full" />
-            <Skeleton className="h-10 w-full" />
-            <Skeleton className="h-48 w-full" />
-            <Skeleton className="h-12 w-full" />
-          </div>
-        </Card>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="space-y-6">
-        <h2 className="text-3xl font-bold text-brand-700">Edit Spotlight</h2>
-        <Card className="shadow-lg rounded-xl p-6">
-          <CardContent className="text-destructive text-center text-lg">
-            {error}
-            <div className="mt-6">
-              <Button asChild variant="outline" className="border-brand-500 text-brand-500 hover:bg-brand-50 hover:text-brand-600 focus-visible:ring-brand-gold">
-                <Link to="/admin/spotlight">
-                  <ArrowLeft className="mr-2 h-4 w-4" /> Back to Spotlight Management
-                </Link>
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+      <div className="max-w-5xl mx-auto space-y-8">
+        <Skeleton className="h-10 w-48" />
+        <Skeleton className="h-64 w-full rounded-2xl" />
       </div>
     );
   }
@@ -139,32 +92,40 @@ const EditSpotlight: React.FC = () => {
     <>
       <Helmet>
         <title>Edit Spotlight | KWASU SU Admin</title>
-        <meta name="description" content="Edit an existing spotlight entry on the KWASU Students' Union website." />
       </Helmet>
-      <div className="space-y-6">
+      <div className="max-w-5xl mx-auto space-y-10">
         <div className="flex justify-between items-center">
-          <h2 className="text-3xl font-bold text-brand-700">Edit Spotlight</h2>
-          <Button asChild variant="outline" className="border-brand-500 text-brand-500 hover:bg-brand-50 hover:text-brand-600 focus-visible:ring-brand-gold">
+          <div>
+            <h2 className="text-3xl font-bold tracking-tight text-brand-700">Edit Spotlight</h2>
+            <p className="text-muted-foreground mt-1">Refine the success story or update the student's portrait.</p>
+          </div>
+          <Button asChild variant="ghost" className="text-brand-500 hover:text-brand-600 hover:bg-brand-50 rounded-xl transition-all">
             <Link to="/admin/spotlight">
-              <ArrowLeft className="mr-2 h-4 w-4" /> Back to Spotlight Management
+              <ArrowLeft className="mr-2 h-4 w-4" /> Back to List
             </Link>
           </Button>
         </div>
-        <Card className="shadow-lg rounded-xl p-6">
-          <CardHeader className="pb-4">
-            <CardTitle className="text-xl font-semibold text-brand-700">Edit Spotlight Details</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-12">
+            {/* 1. Profile Section */}
+            <div className="grid gap-8 md:grid-cols-3">
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 text-brand-600 font-bold uppercase tracking-wider text-xs">
+                  <Star className="h-4 w-4" />
+                  Student Info
+                </div>
+                <p className="text-sm text-muted-foreground">Who are we celebrating and what have they done?</p>
+              </div>
+              <div className="md:col-span-2 space-y-4">
                 <FormField
                   control={form.control}
                   name="name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Student Name</FormLabel>
+                      <FormLabel className="text-slate-700 font-semibold">Full Name</FormLabel>
                       <FormControl>
-                        <Input placeholder="Aisha Bello" {...field} className="focus-visible:ring-brand-gold" />
+                        <Input placeholder="e.g. Aisha Bello" {...field} className="h-12 rounded-xl border-brand-100 bg-white/50 focus-visible:ring-brand-gold shadow-sm" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -175,46 +136,38 @@ const EditSpotlight: React.FC = () => {
                   name="achievement"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Achievement</FormLabel>
+                      <FormLabel className="text-slate-700 font-semibold">Core Achievement</FormLabel>
                       <FormControl>
-                        <Input placeholder="Developed an award-winning campus navigation app." {...field} className="focus-visible:ring-brand-gold" />
+                        <Input placeholder="e.g. Developed a campus app" {...field} className="h-12 rounded-xl border-brand-100 bg-white/50 focus-visible:ring-brand-gold shadow-sm" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-                <FormField
-                  control={form.control}
-                  name="descriptionMd"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Description (Markdown)</FormLabel>
-                      <FormControl>
-                        <Textarea placeholder="Detailed description of the student's achievement using Markdown..." rows={5} {...field} className="focus-visible:ring-brand-gold" />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+              </div>
+            </div>
+
+            <hr className="border-slate-100" />
+
+            {/* 2. Visuals & Link Section */}
+            <div className="grid gap-8 md:grid-cols-3">
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 text-brand-600 font-bold uppercase tracking-wider text-xs">
+                  <ImageIcon className="h-4 w-4" />
+                  Media & Link
+                </div>
+                <p className="text-sm text-muted-foreground">Provide a visual and optionally link to a full feature.</p>
+              </div>
+              <div className="md:col-span-2 space-y-4">
                 <FormField
                   control={form.control}
                   name="photoUrl"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Photo</FormLabel>
+                      <FormLabel className="text-slate-700 font-semibold">Student Portrait</FormLabel>
                       <FormControl>
-                        <ImageUpload
-                          label="Upload Student Photo"
-                          bucketName="student-spotlight-photos"
-                          folderPath="public"
-                          value={field.value}
-                          onChange={field.onChange}
-                          disabled={isSubmitting}
-                        />
+                        <ImageUpload label="Upload Photo" bucketName="student-spotlight-photos" folderPath="public" value={field.value} onChange={field.onChange} disabled={isSubmitting} />
                       </FormControl>
-                      <FormDescription>
-                        Upload a photo of the student for the spotlight.
-                      </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -224,31 +177,52 @@ const EditSpotlight: React.FC = () => {
                   name="link"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>External Link (Optional)</FormLabel>
+                      <FormLabel className="text-slate-700 font-semibold">External Story Link (Optional)</FormLabel>
                       <FormControl>
-                        <Input type="url" placeholder="https://example.com/story" {...field} className="focus-visible:ring-brand-gold" />
+                        <Input type="url" placeholder="https://..." {...field} className="h-10 rounded-xl border-brand-100 bg-white/50 focus-visible:ring-brand-gold shadow-sm" />
                       </FormControl>
-                      <FormDescription>
-                        Provide a link to a full story or profile related to this spotlight.
-                      </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-                <Button type="submit" className="w-full bg-brand-700 hover:bg-brand-800 text-white focus-visible:ring-brand-gold" disabled={isSubmitting || !form.formState.isValid}>
-                  {isSubmitting ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Updating Spotlight...
-                    </>
-                  ) : (
-                    "Update Spotlight"
+              </div>
+            </div>
+
+            <hr className="border-slate-100" />
+
+            {/* 3. Narrative Section */}
+            <div className="grid gap-8 md:grid-cols-3">
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 text-brand-600 font-bold uppercase tracking-wider text-xs">
+                  <Layout className="h-4 w-4" />
+                  Achievement Narrative
+                </div>
+                <p className="text-sm text-muted-foreground">The full story of the student's success.</p>
+              </div>
+              <div className="md:col-span-2 space-y-4">
+                <FormField
+                  control={form.control}
+                  name="descriptionMd"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-slate-700 font-semibold">The Story (Markdown)</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Share the detailed success story..." rows={8} {...field} className="rounded-xl border-brand-100 bg-white/50 focus-visible:ring-brand-gold shadow-sm" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
                   )}
-                </Button>
-              </form>
-            </Form>
-          </CardContent>
-        </Card>
+                />
+              </div>
+            </div>
+
+            <div className="flex pt-6">
+              <Button type="submit" className="w-full sm:w-auto px-10 h-14 bg-brand-700 hover:bg-brand-800 text-white rounded-2xl shadow-xl hover:shadow-2xl transition-all text-lg font-bold" disabled={isSubmitting}>
+                {isSubmitting ? <><Loader2 className="mr-3 h-5 w-5 animate-spin" /> Updating...</> : "Save Changes"}
+              </Button>
+            </div>
+          </form>
+        </Form>
       </div>
     </>
   );
