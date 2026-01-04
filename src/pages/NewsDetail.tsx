@@ -91,65 +91,63 @@ const NewsDetail: React.FC = () => {
         <title>{news.title} | KWASU Students' Union News</title>
         <meta name="description" content={news.excerpt} />
       </Helmet>
-      <div className="min-h-screen py-12 bg-gray-50/50">
+      <div className="min-h-screen py-12 bg-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
-          <Button asChild variant="outline" className="mb-8 border-brand-500 text-brand-500 hover:bg-brand-50 hover:text-brand-600 focus-visible:ring-brand-gold">
+          <Button asChild variant="ghost" className="mb-10 text-brand-600 hover:text-brand-700 hover:bg-brand-50 -ml-4">
             <Link to="/news">
               <ArrowLeft className="mr-2 h-4 w-4" /> Back to News
             </Link>
           </Button>
 
-          <Card className="shadow-xl rounded-2xl overflow-hidden border-none bg-white">
-            <CardContent className="p-6 md:p-10">
-              {/* Header and Metadata */}
-              <header className="mb-10">
-                <h1 className="text-3xl md:text-4xl font-extrabold text-brand-900 mb-4 leading-tight">
-                  {news.title}
-                </h1>
-                <div className="flex flex-wrap items-center gap-4 text-muted-foreground text-sm">
-                  <div className="flex items-center">
-                    <CalendarDays className="mr-2 h-4 w-4 text-brand-500" />
-                    <span>Published {format(new Date(news.publishedAt), "PPP")}</span>
-                  </div>
-                  <Separator orientation="vertical" className="h-4 hidden sm:block" />
-                  <div className="flex flex-wrap gap-2">
-                    <span className="flex items-center text-sm font-medium text-brand-700">
-                      <Tag className="mr-1 h-4 w-4" /> Tags:
-                    </span>
-                    {news.tags.map((tag) => (
-                      <Badge key={tag} variant="secondary" className="bg-brand-100 text-brand-700">
-                        {tag}
-                      </Badge>
-                    ))}
-                  </div>
+          <article>
+            {/* Header and Metadata */}
+            <header className="mb-10">
+              <h1 className="text-3xl md:text-5xl font-extrabold text-brand-900 mb-6 leading-tight">
+                {news.title}
+              </h1>
+              <div className="flex flex-wrap items-center gap-4 text-muted-foreground text-sm">
+                <div className="flex items-center">
+                  <CalendarDays className="mr-2 h-4 w-4 text-brand-500" />
+                  <span>Published {format(new Date(news.publishedAt), "PPP")}</span>
                 </div>
-              </header>
-
-              {/* Image as an "Attachment" */}
-              {news.coverUrl && (
-                <div className="mb-10 group">
-                  <div className="flex items-center gap-2 mb-3 text-sm font-bold text-brand-600 uppercase tracking-wider">
-                    <Paperclip className="h-4 w-4" />
-                    Attachment
-                  </div>
-                  <div className="relative inline-block w-full overflow-hidden bg-white p-2 border-2 border-gray-100 shadow-md rounded-sm">
-                    <img
-                      src={news.coverUrl}
-                      alt={news.title}
-                      className="w-full h-auto object-contain max-h-[600px] rounded-sm"
-                    />
-                  </div>
+                <Separator orientation="vertical" className="h-4 hidden sm:block" />
+                <div className="flex flex-wrap gap-2">
+                  <span className="flex items-center text-sm font-medium text-brand-700">
+                    <Tag className="mr-1 h-4 w-4" /> Tags:
+                  </span>
+                  {news.tags.map((tag) => (
+                    <Badge key={tag} variant="secondary" className="bg-brand-100 text-brand-700 hover:bg-brand-200 border-none">
+                      {tag}
+                    </Badge>
+                  ))}
                 </div>
-              )}
-
-              {/* Body Content */}
-              <div className="prose max-w-none lg:prose-lg text-gray-800">
-                <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                  {news.bodyMd}
-                </ReactMarkdown>
               </div>
-            </CardContent>
-          </Card>
+            </header>
+
+            {/* Image as an "Attachment" */}
+            {news.coverUrl && (
+              <div className="mb-12 group">
+                <div className="flex items-center gap-2 mb-4 text-xs font-bold text-brand-600 uppercase tracking-widest">
+                  <Paperclip className="h-4 w-4" />
+                  Attachment / Bulletin
+                </div>
+                <div className="relative inline-block w-full overflow-hidden bg-white p-3 border border-gray-200 shadow-sm rounded-lg">
+                  <img
+                    src={news.coverUrl}
+                    alt={news.title}
+                    className="w-full h-auto object-contain max-h-[700px] rounded-sm"
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* Body Content */}
+            <div className="prose max-w-none lg:prose-xl text-gray-800 prose-headings:text-brand-900 prose-a:text-brand-600 hover:prose-a:text-brand-700 prose-strong:text-gray-900">
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                {news.bodyMd}
+              </ReactMarkdown>
+            </div>
+          </article>
         </div>
       </div>
     </>
