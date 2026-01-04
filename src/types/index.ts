@@ -4,19 +4,21 @@ export interface Executive {
   slug: string;
   name: string;
   role: string;
-  faculty?: string;
-  tenureStart: string;
-  tenureEnd: string;
+  faculty?: string; // Made optional
+  tenureStart: string; // YYYY-MM-DD
+  tenureEnd: string; // YYYY-MM-DD
   photoUrl?: string;
-  projectsMd?: string;
+  // bioMd: string; // Removed
+  // manifestoMd: string; // Removed
+  projectsMd?: string; // Optional projects section
   contacts: {
     email?: string;
     twitter?: string;
     instagram?: string;
     phone?: string;
   };
-  displayOrder: number;
-  councilType: 'Central' | 'Senate' | 'Judiciary';
+  displayOrder: number; // New: Manual display order
+  councilType: 'Central' | 'Senate' | 'Judiciary'; // New: Council type
 }
 
 // News
@@ -26,9 +28,9 @@ export interface News {
   title: string;
   excerpt: string;
   bodyMd: string;
-  tags: string[];
-  publishedAt: string;
-  coverUrl?: string;
+  tags: string[]; // e.g., 'academic', 'welfare', 'events', 'opportunities'
+  publishedAt: string; // ISO 8601 string
+  coverUrl?: string; // Added back for Cloudinary
 }
 
 // Event
@@ -36,72 +38,72 @@ export interface Event {
   id: string;
   slug: string;
   title: string;
-  startsAt: string;
-  endsAt?: string;
+  startsAt: string; // ISO 8601 string
+  endsAt?: string; // ISO 8601 string
   venue: string;
   descriptionMd: string;
-  category: string;
+  category: string; // e.g., 'Academic', 'Social', 'Sports'
   rsvpOpen: boolean;
-  rsvpLink?: string;
-  agendaMd?: string;
+  rsvpLink?: string; // New: Optional RSVP link
+  agendaMd?: string; // Optional agenda section
 }
 
 // Complaint
 export type ComplaintCategory = 'Welfare' | 'Academics' | 'Fees' | 'Security' | 'Other';
-export type ComplaintStatus = 'Queued' | 'In Review' | 'Resolved' | 'Closed';
+export type ComplaintStatus = 'Queued' | 'In Review' | 'Resolved' | 'Closed'; // Added 'Closed'
 
 export interface ComplaintTimelineEntry {
   id: string;
   complaintId: string;
   status: ComplaintStatus;
   note?: string;
-  timestamp: string;
+  timestamp: string; // ISO 8601 string
 }
 
 export interface Complaint {
   id: string;
-  userId?: string;
+  userId?: string; // New: Optional user ID (null for anonymous)
   category: ComplaintCategory;
   title: string;
   description: string;
   contactEmail?: string;
   contactPhone?: string;
-  isAnonymous: boolean;
-  createdAt: string;
+  isAnonymous: boolean; // New: Flag for anonymous submission
+  createdAt: string; // ISO 8601 string
   status: ComplaintStatus;
-  timeline: ComplaintTimelineEntry[];
+  timeline: ComplaintTimelineEntry[]; // Updated to use ComplaintTimelineEntry[]
 }
 
-// Document
+// Document (Downloads)
 export interface Document {
   id: string;
   title: string;
-  url: string;
-  tags: string[];
-  updatedAt: string;
-  fileType: string;
-  fileSize: string;
+  url: string; // Link to the document
+  tags: string[]; // e.g., 'policy', 'form', 'handbook'
+  updatedAt: string; // ISO 8601 string
+  fileType: string; // e.g., 'PDF', 'DOCX'
+  fileSize: string; // e.g., '2.5 MB'
 }
 
 // Opportunity
 export interface Opportunity {
   id: string;
   title: string;
-  deadline: string;
-  link: string;
+  deadline: string; // ISO 8601 string
+  link: string; // External link to the opportunity
   sponsor?: string;
-  tags: string[];
+  tags: string[]; // e.g., 'scholarship', 'internship', 'job'
   descriptionMd: string;
 }
 
-// Spotlight
+// Student Spotlight (for homepage)
 export interface Spotlight {
   id: string;
   name: string;
   achievement: string;
   descriptionMd: string;
   photoUrl?: string;
-  link?: string;
+  link?: string; // Optional link to a full story or profile
 }
 
 // Profile
@@ -110,6 +112,5 @@ export interface Profile {
   first_name?: string;
   last_name?: string;
   avatar_url?: string;
-  role: 'admin' | 'student'; // Added role
   updated_at?: string;
 }

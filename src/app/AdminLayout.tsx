@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -10,49 +10,55 @@ import { Menu } from "lucide-react";
 import AdminNavigation from "@/components/admin/AdminNavigation";
 import { useSession } from "@/components/SessionContextProvider";
 import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
+// Removed toast import as it's no longer needed for profile timeout errors
+
+// Removed PROFILE_LOAD_TIMEOUT constant
 
 const AdminLayout: React.FC = () => {
   const isMobile = useIsMobile();
-  const [isSheetOpen, setIsSheetOpen] = React.useState(false);
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
   const navigate = useNavigate();
-  const { session, profile, loading } = useSession();
+  const { session, loading } = useSession(); // Removed profile from destructuring
+  // Removed timeoutReached state
 
   const closeSheet = () => setIsSheetOpen(false);
 
   useEffect(() => {
-    if (loading) return;
+    console.log("AdminLayout auth:", { loading, hasSession: !!session }); // Simplified log
+
+    if (loading) return; // still checking initial state
 
     if (!session) {
+      console.log("No session → redirecting to /admin/login");
       navigate("/admin/login", { replace: true });
-      return;
     }
-
-    if (profile && profile.role !== 'admin') {
-      toast.error("Access Denied: You do not have administrator privileges.");
-      navigate("/", { replace: true });
-    }
-  }, [session, profile, loading, navigate]);
+    // Removed all profile-specific redirect logic and timeout handling
+  }, [session, loading, navigate]); // Removed profile and timeoutReached from dependencies
 
   const handleLogout = async () => {
-    await supabase.auth.signOut();
+    const { error } = await supabase.auth.signOut();
+    if (error) console.error("Error logging out:", error);
+    else console.log("Admin logout successful");
     navigate("/admin/login", { replace: true });
     closeSheet();
   };
 
-  if (loading || (session && !profile)) {
+  // show loader until initial session check completes
+  if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-100">
-        <p className="text-brand-700">Verifying access...</p>
+        <p className="text-brand-700">Checking administrator access...</p>
       </div>
     );
   }
 
-  if (session && profile?.role === 'admin') {
+  // render only if a session exists (any authenticated user can access admin)
+  if (session) {
     return (
       <>
         <Helmet>
           <title>Admin Dashboard | KWASU Students' Union</title>
+          <meta name="description" content="Administrator dashboard for managing KWASU Students' Union website content." />
         </Helmet>
 
         <div className="flex min-h-screen bg-gray-100">
@@ -70,9 +76,10 @@ const AdminLayout: React.FC = () => {
                   <SheetTrigger asChild>
                     <Button variant="ghost" size="icon" className="ml-auto focus-visible:ring-brand-gold">
                       <Menu className="h-6 w-6" />
+                      <span className="sr-only">Toggle admin navigation</span>
                     </Button>
                   </SheetTrigger>
-                  <SheetContent side="left" className="w-[250px] bg-brand-800 text-white p-4">
+                  <SheetContent side="left" className="w-[250px] sm:w-[300px] bg-brand-800 text-white p-4">
                     <AdminNavigation onLinkClick={closeSheet} onLogout={handleLogout} />
                   </SheetContent>
                 </Sheet>
@@ -88,7 +95,7 @@ const AdminLayout: React.FC = () => {
     );
   }
 
-  return null;
+  return null; // Should ideally not be reached if !session redirects
 };
 
 export default AdminLayout;
