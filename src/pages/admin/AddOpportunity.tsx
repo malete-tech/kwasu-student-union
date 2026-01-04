@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Loader2, ArrowLeft, Briefcase, CalendarDays, Tag } from "lucide-react";
+import { Loader2, ArrowLeft, Briefcase, CalendarDays, Tag, Link as LinkIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -87,8 +87,8 @@ const AddOpportunity: React.FC = () => {
         </div>
         
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-12">
-            {/* Basic Details Section */}
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-12 bg-white p-8 rounded-2xl shadow-lg">
+            {/* 1. Basic Details Section */}
             <div className="grid gap-8 md:grid-cols-3">
               <div className="space-y-2">
                 <div className="flex items-center gap-2 text-brand-600 font-bold uppercase tracking-wider text-xs">
@@ -129,7 +129,7 @@ const AddOpportunity: React.FC = () => {
 
             <hr className="border-slate-100" />
 
-            {/* Application & Deadline Section */}
+            {/* 2. Application & Deadline Section */}
             <div className="grid gap-8 md:grid-cols-3">
               <div className="space-y-2">
                 <div className="flex items-center gap-2 text-brand-600 font-bold uppercase tracking-wider text-xs">
@@ -196,7 +196,7 @@ const AddOpportunity: React.FC = () => {
 
             <hr className="border-slate-100" />
 
-            {/* Description & Tags Section */}
+            {/* 3. Description & Tags Section */}
             <div className="grid gap-8 md:grid-cols-3">
               <div className="space-y-2">
                 <div className="flex items-center gap-2 text-brand-600 font-bold uppercase tracking-wider text-xs">
