@@ -6,7 +6,7 @@ import { Loader2, ArrowLeft, Star, Image as ImageIcon, FileText } from "lucide-r
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { api } from "@/lib/api";
@@ -29,13 +29,7 @@ const AddSpotlight: React.FC = () => {
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: "",
-      achievement: "",
-      descriptionMd: "",
-      photoUrl: undefined,
-      link: "",
-    },
+    defaultValues: { name: "", achievement: "", descriptionMd: "", photoUrl: undefined, link: "" },
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
@@ -49,12 +43,11 @@ const AddSpotlight: React.FC = () => {
         link: values.link || undefined,
       };
       await api.spotlight.create(newSpotlight);
-      toast.success("Spotlight entry added successfully!");
-      form.reset();
+      toast.success("Spotlight created successfully!");
       navigate("/admin/spotlight");
     } catch (error) {
-      console.error("Failed to add spotlight entry:", error);
-      toast.error("Failed to add spotlight entry. Please try again.");
+      console.error("Failed to add spotlight:", error);
+      toast.error("Failed to create spotlight.");
     } finally {
       setIsSubmitting(false);
     }
@@ -64,28 +57,30 @@ const AddSpotlight: React.FC = () => {
     <>
       <Helmet>
         <title>Add Spotlight | KWASU SU Admin</title>
-        <meta name="description" content="Add a new spotlight entry to the KWASU Students' Union website." />
       </Helmet>
       <div className="max-w-5xl mx-auto space-y-10">
         <div className="flex justify-between items-center">
-          <h2 className="text-3xl font-bold text-brand-700">Add New Spotlight</h2>
+          <div>
+            <h2 className="text-3xl font-bold tracking-tight text-brand-700">Create Spotlight</h2>
+            <p className="text-muted-foreground mt-1">Highlight outstanding student success stories.</p>
+          </div>
           <Button asChild variant="ghost" className="text-brand-500 hover:text-brand-600 hover:bg-brand-50 rounded-xl transition-all">
             <Link to="/admin/spotlight">
-              <ArrowLeft className="mr-2 h-4 w-4" /> Back to Spotlight Management
+              <ArrowLeft className="mr-2 h-4 w-4" /> Back to List
             </Link>
           </Button>
         </div>
         
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-12 bg-white p-8 rounded-2xl shadow-lg">
-            {/* 1. Student Details Section */}
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-12">
+            {/* 1. Profile Section */}
             <div className="grid gap-8 md:grid-cols-3">
               <div className="space-y-2">
                 <div className="flex items-center gap-2 text-brand-600 font-bold uppercase tracking-wider text-xs">
                   <Star className="h-4 w-4" />
-                  Student Information
+                  Student Info
                 </div>
-                <p className="text-sm text-muted-foreground">Enter the student's name and their key achievement.</p>
+                <p className="text-sm text-muted-foreground">Who are we celebrating and what have they done?</p>
               </div>
               <div className="md:col-span-2 space-y-4">
                 <FormField
@@ -93,9 +88,9 @@ const AddSpotlight: React.FC = () => {
                   name="name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-slate-700 font-semibold">Student Name</FormLabel>
+                      <FormLabel className="text-slate-700 font-semibold">Full Name</FormLabel>
                       <FormControl>
-                        <Input placeholder="Aisha Bello" {...field} className="h-12 rounded-xl border-brand-100 bg-white/50 focus-visible:ring-brand-gold shadow-sm" />
+                        <Input placeholder="e.g. Aisha Bello" {...field} className="h-12 rounded-xl border-brand-100 bg-white/50 focus-visible:ring-brand-gold shadow-sm" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -106,9 +101,9 @@ const AddSpotlight: React.FC = () => {
                   name="achievement"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-slate-700 font-semibold">Achievement</FormLabel>
+                      <FormLabel className="text-slate-700 font-semibold">Core Achievement</FormLabel>
                       <FormControl>
-                        <Input placeholder="Developed an award-winning campus navigation app." {...field} className="h-12 rounded-xl border-brand-100 bg-white/50 focus-visible:ring-brand-gold shadow-sm" />
+                        <Input placeholder="e.g. Developed a campus app" {...field} className="h-12 rounded-xl border-brand-100 bg-white/50 focus-visible:ring-brand-gold shadow-sm" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -119,42 +114,14 @@ const AddSpotlight: React.FC = () => {
 
             <hr className="border-slate-100" />
 
-            {/* 2. Content Section */}
-            <div className="grid gap-8 md:grid-cols-3">
-              <div className="space-y-2">
-                <div className="flex items-center gap-2 text-brand-600 font-bold uppercase tracking-wider text-xs">
-                  <FileText className="h-4 w-4" />
-                  Story Content
-                </div>
-                <p className="text-sm text-muted-foreground">Write the detailed description of the achievement.</p>
-              </div>
-              <div className="md:col-span-2 space-y-4">
-                <FormField
-                  control={form.control}
-                  name="descriptionMd"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-slate-700 font-semibold">Description (Markdown)</FormLabel>
-                      <FormControl>
-                        <Textarea placeholder="Detailed description of the student's achievement using Markdown..." rows={8} {...field} className="rounded-xl border-brand-100 bg-white/50 focus-visible:ring-brand-gold shadow-sm" />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-            </div>
-
-            <hr className="border-slate-100" />
-
-            {/* 3. Media & Link Section */}
+            {/* 2. Visuals & Link Section */}
             <div className="grid gap-8 md:grid-cols-3">
               <div className="space-y-2">
                 <div className="flex items-center gap-2 text-brand-600 font-bold uppercase tracking-wider text-xs">
                   <ImageIcon className="h-4 w-4" />
                   Media & Link
                 </div>
-                <p className="text-sm text-muted-foreground">Upload a photo and optionally link to a full story.</p>
+                <p className="text-sm text-muted-foreground">Provide a visual and optionally link to a full feature.</p>
               </div>
               <div className="md:col-span-2 space-y-4">
                 <FormField
@@ -162,20 +129,10 @@ const AddSpotlight: React.FC = () => {
                   name="photoUrl"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-slate-700 font-semibold">Photo</FormLabel>
+                      <FormLabel className="text-slate-700 font-semibold">Student Portrait</FormLabel>
                       <FormControl>
-                        <ImageUpload
-                          label="Upload Student Photo"
-                          bucketName="student-spotlight-photos"
-                          folderPath="public"
-                          value={field.value}
-                          onChange={field.onChange}
-                          disabled={isSubmitting}
-                        />
+                        <ImageUpload label="Upload Photo" bucketName="student-spotlight-photos" folderPath="public" value={field.value} onChange={field.onChange} disabled={isSubmitting} />
                       </FormControl>
-                      <FormDescription>
-                        Upload a photo of the student for the spotlight.
-                      </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -185,13 +142,38 @@ const AddSpotlight: React.FC = () => {
                   name="link"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-slate-700 font-semibold">External Link (Optional)</FormLabel>
+                      <FormLabel className="text-slate-700 font-semibold">External Story Link (Optional)</FormLabel>
                       <FormControl>
-                        <Input type="url" placeholder="https://example.com/story" {...field} className="h-10 rounded-xl border-brand-100 bg-white/50 focus-visible:ring-brand-gold shadow-sm" />
+                        <Input type="url" placeholder="https://..." {...field} className="h-10 rounded-xl border-brand-100 bg-white/50 focus-visible:ring-brand-gold shadow-sm" />
                       </FormControl>
-                      <FormDescription>
-                        Provide a link to a full story or profile related to this spotlight.
-                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+
+            <hr className="border-slate-100" />
+
+            {/* 3. Narrative Section */}
+            <div className="grid gap-8 md:grid-cols-3">
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 text-brand-600 font-bold uppercase tracking-wider text-xs">
+                  <FileText className="h-4 w-4" />
+                  Achievement Narrative
+                </div>
+                <p className="text-sm text-muted-foreground">The full story of the student's success.</p>
+              </div>
+              <div className="md:col-span-2 space-y-4">
+                <FormField
+                  control={form.control}
+                  name="descriptionMd"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-slate-700 font-semibold">The Story (Markdown)</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Share the detailed success story..." rows={8} {...field} className="rounded-xl border-brand-100 bg-white/50 focus-visible:ring-brand-gold shadow-sm" />
+                      </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -200,19 +182,8 @@ const AddSpotlight: React.FC = () => {
             </div>
 
             <div className="flex pt-6">
-              <Button 
-                type="submit" 
-                className="w-full sm:w-auto px-10 h-14 bg-brand-700 hover:bg-brand-800 text-white rounded-2xl shadow-xl hover:shadow-2xl transition-all text-lg font-bold" 
-                disabled={isSubmitting || !form.formState.isValid}
-              >
-                {isSubmitting ? (
-                  <>
-                    <Loader2 className="mr-3 h-5 w-5 animate-spin" />
-                    Adding Spotlight...
-                  </>
-                ) : (
-                  "Add Spotlight"
-                )}
+              <Button type="submit" className="w-full sm:w-auto px-10 h-14 bg-brand-700 hover:bg-brand-800 text-white rounded-2xl shadow-xl hover:shadow-2xl transition-all text-lg font-bold" disabled={isSubmitting || !form.formState.isValid}>
+                {isSubmitting ? <><Loader2 className="mr-3 h-5 w-5 animate-spin" /> Creating...</> : "Add Spotlight"}
               </Button>
             </div>
           </form>

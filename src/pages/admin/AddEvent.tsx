@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Loader2, ArrowLeft, MapPin, ListChecks, Layout } from "lucide-react";
+import { Loader2, ArrowLeft, MapPin, ListChecks, Layout, Calendar as CalendarIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -12,7 +12,6 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
-import { CalendarIcon } from "@radix-ui/react-icons";
 import { api } from "@/lib/api";
 import { toast } from "sonner";
 import { Link, useNavigate } from "react-router-dom";
@@ -62,7 +61,6 @@ const AddEvent: React.FC = () => {
     },
   });
 
-  // Auto-generate slug from title
   const title = form.watch("title");
   React.useEffect(() => {
     if (title) {
@@ -111,26 +109,26 @@ const AddEvent: React.FC = () => {
       <div className="max-w-5xl mx-auto space-y-10">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
-            <h2 className="text-3xl font-bold tracking-tight text-brand-700">Schedule New Event</h2>
-            <p className="text-muted-foreground mt-1">Create a new event listing for the public calendar.</p>
+            <h2 className="text-3xl font-bold tracking-tight text-brand-700">Schedule Event</h2>
+            <p className="text-muted-foreground mt-1">Create a new entry for the campus calendar.</p>
           </div>
           <Button asChild variant="ghost" className="text-brand-500 hover:text-brand-600 hover:bg-brand-50 rounded-xl transition-all">
             <Link to="/admin/events">
-              <ArrowLeft className="mr-2 h-4 w-4" /> Back to Events Management
+              <ArrowLeft className="mr-2 h-4 w-4" /> Back to Calendar
             </Link>
           </Button>
         </div>
         
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-12 bg-white p-8 rounded-2xl shadow-lg">
-            {/* 1. Event Identity Section */}
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-12">
+            {/* 1. Identity Section */}
             <div className="grid gap-8 md:grid-cols-3">
               <div className="space-y-2">
                 <div className="flex items-center gap-2 text-brand-600 font-bold uppercase tracking-wider text-xs">
                   <Layout className="h-4 w-4" />
-                  Basic Details
+                  General Information
                 </div>
-                <p className="text-sm text-muted-foreground">The title, category, and unique slug for the event.</p>
+                <p className="text-sm text-muted-foreground">The primary identifier for the event across the platform.</p>
               </div>
               <div className="md:col-span-2 space-y-4">
                 <FormField
@@ -138,9 +136,9 @@ const AddEvent: React.FC = () => {
                   name="title"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-slate-700 font-semibold">Title</FormLabel>
+                      <FormLabel className="text-slate-700 font-semibold">Event Title</FormLabel>
                       <FormControl>
-                        <Input placeholder="Freshers' Orientation Day" {...field} className="h-12 rounded-xl border-brand-100 bg-white/50 focus-visible:ring-brand-gold shadow-sm" />
+                        <Input placeholder="e.g. Annual Student Summit" {...field} className="h-12 rounded-xl border-brand-100 bg-white/50 focus-visible:ring-brand-gold focus-visible:bg-white transition-all shadow-sm" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -153,7 +151,7 @@ const AddEvent: React.FC = () => {
                     <FormItem>
                       <FormLabel className="text-slate-700 font-semibold">URL Slug</FormLabel>
                       <FormControl>
-                        <Input placeholder="freshers-orientation-day" {...field} className="h-10 rounded-xl border-brand-100 bg-slate-50/50 text-slate-500 font-mono text-sm focus-visible:ring-brand-gold" />
+                        <Input placeholder="auto-generated-slug" {...field} className="h-10 rounded-xl border-brand-100 bg-slate-50/50 text-slate-500 font-mono text-sm focus-visible:ring-brand-gold" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -168,7 +166,7 @@ const AddEvent: React.FC = () => {
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
                           <SelectTrigger className="h-12 rounded-xl border-brand-100 bg-white/50 focus-visible:ring-brand-gold shadow-sm">
-                            <SelectValue placeholder="Select a category" />
+                            <SelectValue placeholder="Select event type" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
@@ -188,16 +186,16 @@ const AddEvent: React.FC = () => {
 
             <hr className="border-slate-100" />
 
-            {/* 2. Time & Location Section */}
+            {/* 2. Logistics Section */}
             <div className="grid gap-8 md:grid-cols-3">
               <div className="space-y-2">
                 <div className="flex items-center gap-2 text-brand-600 font-bold uppercase tracking-wider text-xs">
                   <MapPin className="h-4 w-4" />
-                  Time & Venue
+                  Time & Location
                 </div>
-                <p className="text-sm text-muted-foreground">Specify the exact start/end time and the physical location.</p>
+                <p className="text-sm text-muted-foreground">Define when and where the event will take place.</p>
               </div>
-              <div className="md:col-span-2 space-y-4">
+              <div className="md:col-span-2 space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <FormField
                     control={form.control}
@@ -215,11 +213,7 @@ const AddEvent: React.FC = () => {
                                   !field.value && "text-muted-foreground"
                                 )}
                               >
-                                {field.value ? (
-                                  format(field.value, "PPP HH:mm")
-                                ) : (
-                                  <span>Pick date and time</span>
-                                )}
+                                {field.value ? format(field.value, "PPP HH:mm") : <span>Pick date and time</span>}
                                 <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                               </Button>
                             </FormControl>
@@ -230,7 +224,6 @@ const AddEvent: React.FC = () => {
                               selected={field.value}
                               onSelect={(date) => {
                                 if (date) {
-                                  // Preserve existing time if available
                                   const newDate = field.value ? new Date(date.setHours(field.value.getHours(), field.value.getMinutes())) : date;
                                   field.onChange(newDate);
                                 }
@@ -244,15 +237,9 @@ const AddEvent: React.FC = () => {
                                 value={field.value ? format(field.value, "HH:mm") : "00:00"}
                                 onChange={(e) => {
                                   const [hours, minutes] = e.target.value.split(':').map(Number);
-                                  if (field.value) {
-                                    const newDate = new Date(field.value);
-                                    newDate.setHours(hours!, minutes!);
-                                    field.onChange(newDate);
-                                  } else {
-                                    const newDate = new Date();
-                                    newDate.setHours(hours!, minutes!);
-                                    field.onChange(newDate);
-                                  }
+                                  const newDate = new Date(field.value || new Date());
+                                  newDate.setHours(hours!, minutes!);
+                                  field.onChange(newDate);
                                 }}
                                 className="focus-visible:ring-brand-gold"
                               />
@@ -279,11 +266,7 @@ const AddEvent: React.FC = () => {
                                   !field.value && "text-muted-foreground"
                                 )}
                               >
-                                {field.value ? (
-                                  format(field.value, "PPP HH:mm")
-                                ) : (
-                                  <span>Pick date and time</span>
-                                )}
+                                {field.value ? format(field.value, "PPP HH:mm") : <span>Pick date and time</span>}
                                 <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                               </Button>
                             </FormControl>
@@ -294,7 +277,6 @@ const AddEvent: React.FC = () => {
                               selected={field.value}
                               onSelect={(date) => {
                                 if (date) {
-                                  // Preserve existing time if available
                                   const newDate = field.value ? new Date(date.setHours(field.value.getHours(), field.value.getMinutes())) : date;
                                   field.onChange(newDate);
                                 }
@@ -308,15 +290,9 @@ const AddEvent: React.FC = () => {
                                 value={field.value ? format(field.value, "HH:mm") : "00:00"}
                                 onChange={(e) => {
                                   const [hours, minutes] = e.target.value.split(':').map(Number);
-                                  if (field.value) {
-                                    const newDate = new Date(field.value);
-                                    newDate.setHours(hours!, minutes!);
-                                    field.onChange(newDate);
-                                  } else {
-                                    const newDate = new Date();
-                                    newDate.setHours(hours!, minutes!);
-                                    field.onChange(newDate);
-                                  }
+                                  const newDate = new Date(field.value || new Date());
+                                  newDate.setHours(hours!, minutes!);
+                                  field.onChange(newDate);
                                 }}
                                 className="focus-visible:ring-brand-gold"
                               />
@@ -333,9 +309,9 @@ const AddEvent: React.FC = () => {
                   name="venue"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-slate-700 font-semibold">Venue</FormLabel>
+                      <FormLabel className="text-slate-700 font-semibold">Venue / Hall</FormLabel>
                       <FormControl>
-                        <Input placeholder="University Multipurpose Hall" {...field} className="h-12 rounded-xl border-brand-100 bg-white/50 focus-visible:ring-brand-gold shadow-sm" />
+                        <Input placeholder="e.g. University Multipurpose Hall" {...field} className="h-12 rounded-xl border-brand-100 bg-white/50 focus-visible:ring-brand-gold shadow-sm" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -346,14 +322,14 @@ const AddEvent: React.FC = () => {
 
             <hr className="border-slate-100" />
 
-            {/* 3. Content & RSVP Section */}
+            {/* 3. Details Section */}
             <div className="grid gap-8 md:grid-cols-3">
               <div className="space-y-2">
                 <div className="flex items-center gap-2 text-brand-600 font-bold uppercase tracking-wider text-xs">
                   <ListChecks className="h-4 w-4" />
-                  Description & RSVP
+                  Event Description
                 </div>
-                <p className="text-sm text-muted-foreground">Provide the full event description and manage registration options.</p>
+                <p className="text-sm text-muted-foreground">Provide full details, agenda, and registration info.</p>
               </div>
               <div className="md:col-span-2 space-y-6">
                 <FormField
@@ -363,13 +339,7 @@ const AddEvent: React.FC = () => {
                     <FormItem>
                       <FormLabel className="text-slate-700 font-semibold">Description (Markdown)</FormLabel>
                       <FormControl>
-                        <MarkdownEditor 
-                          placeholder="Detailed description of the event using Markdown..." 
-                          rows={8} 
-                          value={field.value} 
-                          onChange={field.onChange} 
-                          disabled={isSubmitting}
-                        />
+                        <MarkdownEditor placeholder="Tell students what to expect..." rows={8} value={field.value} onChange={field.onChange} disabled={isSubmitting} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -380,76 +350,56 @@ const AddEvent: React.FC = () => {
                   name="agendaMd"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-slate-700 font-semibold">Agenda (Markdown, Optional)</FormLabel>
+                      <FormLabel className="text-slate-700 font-semibold">Agenda (Optional)</FormLabel>
                       <FormControl>
-                        <MarkdownEditor 
-                          placeholder="Detailed agenda for the event using Markdown..." 
-                          rows={5} 
-                          value={field.value || ""} 
-                          onChange={field.onChange} 
-                          disabled={isSubmitting}
-                        />
+                        <MarkdownEditor placeholder="List the sequence of events..." rows={5} value={field.value || ""} onChange={field.onChange} disabled={isSubmitting} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-                <FormField
-                  control={form.control}
-                  name="rsvpOpen"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-xl border p-4 bg-brand-50/50 shadow-sm">
-                      <FormControl>
-                        <Checkbox
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
-                      </FormControl>
-                      <div className="space-y-1 leading-none">
-                        <FormLabel className="text-slate-700 font-semibold">
-                          RSVP Open
-                        </FormLabel>
-                        <FormDescription>
-                          Check this if students can RSVP for this event.
-                        </FormDescription>
-                      </div>
-                    </FormItem>
-                  )}
-                />
-                {form.watch("rsvpOpen") && (
+                
+                <div className="pt-4 space-y-4">
                   <FormField
                     control={form.control}
-                    name="rsvpLink"
+                    name="rsvpOpen"
                     render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-slate-700 font-semibold">RSVP Link (Optional)</FormLabel>
+                      <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-xl border p-4 bg-brand-50/30">
                         <FormControl>
-                          <Input placeholder="https://example.com/rsvp" {...field} className="h-10 rounded-xl border-brand-100 bg-white/50 focus-visible:ring-brand-gold shadow-sm" />
+                          <Checkbox checked={field.value} onCheckedChange={field.onChange} />
                         </FormControl>
-                        <FormDescription>
-                          Provide a direct link for students to RSVP or register for the event.
-                        </FormDescription>
-                        <FormMessage />
+                        <div className="space-y-1 leading-none">
+                          <FormLabel className="text-slate-700 font-semibold">Enable RSVP / Registration</FormLabel>
+                          <FormDescription>Let students sign up for this event.</FormDescription>
+                        </div>
                       </FormItem>
                     )}
                   />
-                )}
+                  {form.watch("rsvpOpen") && (
+                    <FormField
+                      control={form.control}
+                      name="rsvpLink"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-slate-700 font-semibold">Registration Link</FormLabel>
+                          <FormControl>
+                            <Input placeholder="https://forms.gle/..." {...field} className="h-12 rounded-xl border-brand-100 bg-white shadow-sm focus-visible:ring-brand-gold" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  )}
+                </div>
               </div>
             </div>
 
             <div className="flex pt-6">
-              <Button 
-                type="submit" 
-                className="w-full sm:w-auto px-10 h-14 bg-brand-700 hover:bg-brand-800 text-white rounded-2xl shadow-xl hover:shadow-2xl transition-all text-lg font-bold" 
-                disabled={isSubmitting}
-              >
+              <Button type="submit" className="w-full sm:w-auto px-10 h-14 bg-brand-700 hover:bg-brand-800 text-white rounded-2xl shadow-xl hover:shadow-2xl transition-all text-lg font-bold" disabled={isSubmitting}>
                 {isSubmitting ? (
-                  <>
-                    <Loader2 className="mr-3 h-5 w-5 animate-spin" />
-                    Scheduling Event...
-                  </>
+                  <><Loader2 className="mr-3 h-5 w-5 animate-spin" /> Scheduling...</>
                 ) : (
-                  "Add Event"
+                  "Schedule Event"
                 )}
               </Button>
             </div>

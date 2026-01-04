@@ -6,7 +6,7 @@ import { Loader2, ArrowLeft, Briefcase, CalendarDays, Tag } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
@@ -34,14 +34,7 @@ const AddOpportunity: React.FC = () => {
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      title: "",
-      deadline: new Date(),
-      link: "",
-      sponsor: "",
-      tags: "",
-      descriptionMd: "",
-    },
+    defaultValues: { title: "", deadline: new Date(), link: "", sponsor: "", tags: "", descriptionMd: "" },
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
@@ -56,12 +49,11 @@ const AddOpportunity: React.FC = () => {
         descriptionMd: values.descriptionMd,
       };
       await api.opportunities.create(newOpportunity);
-      toast.success("Opportunity added successfully!");
-      form.reset();
+      toast.success("Opportunity posted successfully!");
       navigate("/admin/opportunities");
     } catch (error) {
       console.error("Failed to add opportunity:", error);
-      toast.error("Failed to add opportunity. Please try again.");
+      toast.error("Failed to post opportunity.");
     } finally {
       setIsSubmitting(false);
     }
@@ -71,31 +63,30 @@ const AddOpportunity: React.FC = () => {
     <>
       <Helmet>
         <title>Add Opportunity | KWASU SU Admin</title>
-        <meta name="description" content="Add a new student opportunity (scholarship, internship, job) to the website." />
       </Helmet>
       <div className="max-w-5xl mx-auto space-y-10">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
-            <h2 className="text-3xl font-bold tracking-tight text-brand-700">Add New Opportunity</h2>
-            <p className="text-muted-foreground mt-1">Create a new listing for scholarships, internships, or jobs.</p>
+            <h2 className="text-3xl font-bold tracking-tight text-brand-700">Post Opportunity</h2>
+            <p className="text-muted-foreground mt-1">Curate scholarships, jobs, or internships for students.</p>
           </div>
           <Button asChild variant="ghost" className="text-brand-500 hover:text-brand-600 hover:bg-brand-50 rounded-xl transition-all">
             <Link to="/admin/opportunities">
-              <ArrowLeft className="mr-2 h-4 w-4" /> Back to Opportunities Management
+              <ArrowLeft className="mr-2 h-4 w-4" /> Back to Feed
             </Link>
           </Button>
         </div>
         
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-12 bg-white p-8 rounded-2xl shadow-lg">
-            {/* 1. Basic Details Section */}
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-12">
+            {/* 1. Core Details Section */}
             <div className="grid gap-8 md:grid-cols-3">
               <div className="space-y-2">
                 <div className="flex items-center gap-2 text-brand-600 font-bold uppercase tracking-wider text-xs">
                   <Briefcase className="h-4 w-4" />
-                  Opportunity Details
+                  Core Details
                 </div>
-                <p className="text-sm text-muted-foreground">Provide the core information about the opportunity.</p>
+                <p className="text-sm text-muted-foreground">Primary information about who is offering what.</p>
               </div>
               <div className="md:col-span-2 space-y-4">
                 <FormField
@@ -103,9 +94,9 @@ const AddOpportunity: React.FC = () => {
                   name="title"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-slate-700 font-semibold">Title</FormLabel>
+                      <FormLabel className="text-slate-700 font-semibold">Opportunity Title</FormLabel>
                       <FormControl>
-                        <Input placeholder="Shell Undergraduate Scholarship" {...field} className="h-12 rounded-xl border-brand-100 bg-white/50 focus-visible:ring-brand-gold focus-visible:bg-white transition-all shadow-sm" />
+                        <Input placeholder="e.g. Google Summer of Code" {...field} className="h-12 rounded-xl border-brand-100 bg-white/50 focus-visible:ring-brand-gold shadow-sm" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -116,9 +107,9 @@ const AddOpportunity: React.FC = () => {
                   name="sponsor"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-slate-700 font-semibold">Sponsor/Organization (Optional)</FormLabel>
+                      <FormLabel className="text-slate-700 font-semibold">Offering Organization</FormLabel>
                       <FormControl>
-                        <Input placeholder="Shell Nigeria" {...field} className="h-10 rounded-xl border-brand-100 bg-white/50 focus-visible:ring-brand-gold focus-visible:bg-white transition-all shadow-sm" />
+                        <Input placeholder="e.g. Google Nigeria" {...field} className="h-10 rounded-xl border-brand-100 bg-white/50 focus-visible:ring-brand-gold shadow-sm" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -129,14 +120,14 @@ const AddOpportunity: React.FC = () => {
 
             <hr className="border-slate-100" />
 
-            {/* 2. Application & Deadline Section */}
+            {/* 2. Access Section */}
             <div className="grid gap-8 md:grid-cols-3">
               <div className="space-y-2">
                 <div className="flex items-center gap-2 text-brand-600 font-bold uppercase tracking-wider text-xs">
                   <CalendarDays className="h-4 w-4" />
-                  Timeline & Link
+                  Timeline & Access
                 </div>
-                <p className="text-sm text-muted-foreground">Set the application deadline and provide the direct link.</p>
+                <p className="text-sm text-muted-foreground">Where to apply and when the window closes.</p>
               </div>
               <div className="md:col-span-2 space-y-4">
                 <FormField
@@ -146,7 +137,7 @@ const AddOpportunity: React.FC = () => {
                     <FormItem>
                       <FormLabel className="text-slate-700 font-semibold">Application Link</FormLabel>
                       <FormControl>
-                        <Input type="url" placeholder="https://apply.example.com" {...field} className="h-10 rounded-xl border-brand-100 bg-white/50 focus-visible:ring-brand-gold focus-visible:bg-white transition-all shadow-sm" />
+                        <Input type="url" placeholder="https://apply.here.com" {...field} className="h-10 rounded-xl border-brand-100 bg-white/50 focus-visible:ring-brand-gold shadow-sm" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -157,34 +148,18 @@ const AddOpportunity: React.FC = () => {
                   name="deadline"
                   render={({ field }) => (
                     <FormItem className="flex flex-col">
-                      <FormLabel className="text-slate-700 font-semibold">Deadline Date</FormLabel>
+                      <FormLabel className="text-slate-700 font-semibold">Application Deadline</FormLabel>
                       <Popover>
                         <PopoverTrigger asChild>
                           <FormControl>
-                            <Button
-                              variant={"outline"}
-                              className={cn(
-                                "h-12 pl-3 text-left font-normal rounded-xl border-brand-100 bg-white/50 focus-visible:ring-brand-gold shadow-sm",
-                                !field.value && "text-muted-foreground"
-                              )}
-                            >
-                              {field.value ? (
-                                format(field.value, "PPP")
-                              ) : (
-                                <span>Pick a date</span>
-                              )}
+                            <Button variant={"outline"} className={cn("h-12 pl-3 text-left font-normal rounded-xl border-brand-100 bg-white/50 focus-visible:ring-brand-gold shadow-sm", !field.value && "text-muted-foreground")}>
+                              {field.value ? format(field.value, "PPP") : <span>Select deadline</span>}
                               <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                             </Button>
                           </FormControl>
                         </PopoverTrigger>
                         <PopoverContent className="w-auto p-0 rounded-2xl border-brand-100 shadow-2xl" align="start">
-                          <Calendar
-                            mode="single"
-                            selected={field.value}
-                            onSelect={field.onChange}
-                            initialFocus
-                            className="p-3"
-                          />
+                          <Calendar mode="single" selected={field.value} onSelect={field.onChange} initialFocus className="p-3" />
                         </PopoverContent>
                       </Popover>
                       <FormMessage />
@@ -196,14 +171,14 @@ const AddOpportunity: React.FC = () => {
 
             <hr className="border-slate-100" />
 
-            {/* 3. Description & Tags Section */}
+            {/* 3. Description Section */}
             <div className="grid gap-8 md:grid-cols-3">
               <div className="space-y-2">
                 <div className="flex items-center gap-2 text-brand-600 font-bold uppercase tracking-wider text-xs">
                   <Tag className="h-4 w-4" />
-                  Content & Categorization
+                  Content & Tags
                 </div>
-                <p className="text-sm text-muted-foreground">Write a detailed description and add relevant tags (e.g., scholarship, internship).</p>
+                <p className="text-sm text-muted-foreground">Elaborate on the requirements and categorize the listing.</p>
               </div>
               <div className="md:col-span-2 space-y-6">
                 <FormField
@@ -211,13 +186,10 @@ const AddOpportunity: React.FC = () => {
                   name="tags"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-slate-700 font-semibold">Tags (comma-separated)</FormLabel>
+                      <FormLabel className="text-slate-700 font-semibold">Tags</FormLabel>
                       <FormControl>
-                        <Input placeholder="scholarship, academic, engineering" {...field} className="h-10 rounded-xl border-brand-100 bg-white/50 focus-visible:ring-brand-gold focus-visible:bg-white transition-all shadow-sm" />
+                        <Input placeholder="e.g. scholarship, tech, abroad" {...field} className="h-10 rounded-xl border-brand-100 bg-white/50 focus-visible:ring-brand-gold shadow-sm" />
                       </FormControl>
-                      <FormDescription>
-                        Use tags like 'scholarship', 'internship', 'job', 'grant'.
-                      </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -227,15 +199,9 @@ const AddOpportunity: React.FC = () => {
                   name="descriptionMd"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-slate-700 font-semibold">Description (Markdown)</FormLabel>
+                      <FormLabel className="text-slate-700 font-semibold">Full Description (Markdown)</FormLabel>
                       <FormControl>
-                        <MarkdownEditor 
-                          placeholder="Detailed description of the opportunity using Markdown..." 
-                          rows={10} 
-                          value={field.value} 
-                          onChange={field.onChange} 
-                          disabled={isSubmitting}
-                        />
+                        <MarkdownEditor placeholder="Detail the requirements, benefits, and process..." rows={10} value={field.value} onChange={field.onChange} disabled={isSubmitting} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -245,19 +211,8 @@ const AddOpportunity: React.FC = () => {
             </div>
 
             <div className="flex pt-6">
-              <Button 
-                type="submit" 
-                className="w-full sm:w-auto px-10 h-14 bg-brand-700 hover:bg-brand-800 text-white rounded-2xl shadow-xl hover:shadow-2xl transition-all text-lg font-bold" 
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? (
-                  <>
-                    <Loader2 className="mr-3 h-5 w-5 animate-spin" />
-                    Adding Opportunity...
-                  </>
-                ) : (
-                  "Add Opportunity"
-                )}
+              <Button type="submit" className="w-full sm:w-auto px-10 h-14 bg-brand-700 hover:bg-brand-800 text-white rounded-2xl shadow-xl hover:shadow-2xl transition-all text-lg font-bold" disabled={isSubmitting}>
+                {isSubmitting ? <><Loader2 className="mr-3 h-5 w-5 animate-spin" /> Posting...</> : "Post Opportunity"}
               </Button>
             </div>
           </form>
