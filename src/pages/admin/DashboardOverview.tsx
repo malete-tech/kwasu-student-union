@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Users, Newspaper, CalendarDays, MessageSquare } from "lucide-react";
 import { api } from "@/lib/api";
+import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
 import { format } from "date-fns";
 import { Link } from "react-router-dom";
@@ -12,6 +13,7 @@ const DashboardOverview: React.FC = () => {
   const [totalNews, setTotalNews] = useState<number | null>(null);
   const [upcomingEventsCount, setUpcomingEventsCount] = useState<number | null>(null);
   const [activeExecutivesCount, setActiveExecutivesCount] = useState<number | null>(null);
+  const [pendingComplaintsCount, setPendingComplaintsCount] = useState<number | null>(null);
   const [recentActivities, setRecentActivities] = useState<Array<{ type: 'news' | 'event'; title: string; date: string; link: string }>>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -29,6 +31,15 @@ const DashboardOverview: React.FC = () => {
 
         const executivesData = await api.executives.getAll();
         setActiveExecutivesCount(executivesData.length);
+
+        // Fetch pending complaints count (status 'Queued')
+        const { count, error: complaintsError } = await supabase
+          .from('complaints')
+          .select('*', { count: 'exact', head: true })
+          .eq('status', 'Queued');
+        
+        if (complaintsError) throw complaintsError;
+        setPendingComplaintsCount(count);
 
         const latestNews = await api.news.getLatest(3);
         const nextEvents = await api.events.getUpcoming(2);
@@ -87,7 +98,7 @@ const DashboardOverview: React.FC = () => {
             ) : (
               <div className="text-2xl font-bold">{totalNews !== null ? totalNews : "N/A"}</div>
             )}
-            <p className="text-xs text-muted-foreground">+20% from last month</p>
+            <p className="text-xs text-muted-foreground">Student updates</p>
           </CardContent>
         </Card>
         <Card className="shadow-lg rounded-xl">
@@ -101,7 +112,7 @@ const DashboardOverview: React.FC = () => {
             ) : (
               <div className="text-2xl font-bold">{upcomingEventsCount !== null ? upcomingEventsCount : "N/A"}</div>
             )}
-            <p className="text-xs text-muted-foreground">+3 new this week</p>
+            <p className="text-xs text-muted-foreground">Live & upcoming</p>
           </CardContent>
         </Card>
         <Card className="shadow-lg rounded-xl">
@@ -124,7 +135,11 @@ const DashboardOverview: React.FC = () => {
             <MessageSquare className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">7</div>
+            {loading ? (
+              <Skeleton className="h-8 w-1/2" />
+            ) : (
+              <div className="text-2xl font-bold">{pendingComplaintsCount !== null ? pendingComplaintsCount : "0"}</div>
+            )}
             <p className="text-xs text-muted-foreground">Needs attention</p>
           </CardContent>
         </Card>
