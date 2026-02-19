@@ -80,7 +80,7 @@ const AdminUpdatePasswordPage: React.FC = () => {
         <Card className="max-w-md w-full p-8 space-y-6 shadow-lg rounded-2xl">
           <CardHeader className="text-center pb-4">
             <Link to="/" className="flex items-center justify-center focus-visible:ring-brand-500 rounded-md outline-none mb-4">
-              <img src="/kwasu-su-logo-new.png" alt="KWASU SU Logo" className="h-12 w-12" />
+              <img src="/logo.png" alt="KWASU SU Logo" className="h-16 w-16 object-contain" />
             </Link>
             <CardTitle className="text-3xl font-bold text-brand-700">Update Password</CardTitle>
             <CardDescription className="text-muted-foreground">

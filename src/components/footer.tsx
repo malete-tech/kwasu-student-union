@@ -12,7 +12,7 @@ const Footer: React.FC = () => {
         {/* About SU */}
         <div className="col-span-1">
           <Link to="/" className="flex items-center focus-visible:ring-brand-gold rounded-md outline-none mb-4">
-            <img src="/kwasu-su-logo-new.png" alt="KWASU SU Logo" className="h-12 w-12" />
+            <img src="/logo.png" alt="KWASU SU Logo" className="h-12 w-12 object-contain" />
           </Link>
           <p className="text-sm opacity-80">
             Your voice, our mission. Empowering students for a better university experience.

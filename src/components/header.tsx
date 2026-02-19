@@ -82,7 +82,7 @@ const Header: React.FC = () => {
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between">
         <Link to="/" className="flex items-center focus-visible:ring-brand-500 rounded-md outline-none">
-          <img src="/kwasu-su-logo-new.png" alt="KWASU SU Logo" className="h-12 w-12" />
+          <img src="/logo.png" alt="KWASU SU Logo" className="h-12 w-12 object-contain" />
         </Link>
 
         {isMobile ? (
@@ -97,7 +97,7 @@ const Header: React.FC = () => {
               <SheetContent side="right" className="w-[300px] sm:w-[400px] flex flex-col">
                 <SheetHeader className="pb-4">
                   <SheetTitle className="flex items-center text-brand-700">
-                    <img src="/kwasu-su-logo-new.png" alt="KWASU SU Logo" className="h-10 w-10 mr-2" />
+                    <img src="/logo.png" alt="KWASU SU Logo" className="h-10 w-10 mr-2 object-contain" />
                     Menu
                   </SheetTitle>
                   <Separator />

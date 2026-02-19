@@ -12,7 +12,7 @@ import {
   Briefcase,
   Star,
   LogOut,
-  Megaphone, // New Import
+  Megaphone,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -32,7 +32,7 @@ const adminNavLinks: AdminLink[] = [
   { name: "Documents", href: "/admin/documents", icon: Download },
   { name: "Opportunities", href: "/admin/opportunities", icon: Briefcase },
   { name: "Spotlight", href: "/admin/spotlight", icon: Star },
-  { name: "Announcements", href: "/admin/announcements", icon: Megaphone }, // New Link
+  { name: "Announcements", href: "/admin/announcements", icon: Megaphone },
 ];
 
 interface AdminNavigationProps {
@@ -45,10 +45,10 @@ const AdminNavigation: React.FC<AdminNavigationProps> = ({ onLinkClick, onLogout
     <div className="flex flex-col h-full">
       <div className="flex items-center justify-center h-16 mb-6">
         <Link to="/admin" className="flex items-center focus-visible:ring-brand-gold rounded-md outline-none" onClick={onLinkClick}>
-          <img src="/kwasu-su-logo-new.png" alt="KWASU SU Logo" className="h-10 w-10" />
+          <img src="/logo.png" alt="KWASU SU Logo" className="h-12 w-12 object-contain" />
         </Link>
       </div>
-      <nav className="flex-1 space-y-2 overflow-y-auto pb-4"> {/* Added overflow-y-auto and pb-4 */}
+      <nav className="flex-1 space-y-2 overflow-y-auto pb-4">
         {adminNavLinks.map((link) => (
           <NavLink
             key={link.name}
@@ -76,7 +76,8 @@ const AdminNavigation: React.FC<AdminNavigationProps> = ({ onLinkClick, onLogout
         >
           <LogOut className="mr-3 h-5 w-5" />
           Logout
-        </Button>      </div>
+        </Button>
+      </div>
     </div>
   );
 };

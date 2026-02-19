@@ -73,7 +73,7 @@ const AdminLoginPage: React.FC = () => {
             <CardHeader className="text-center pb-4">
               {/* Logo */}
               <Link to="/" className="flex items-center justify-center focus-visible:ring-brand-500 rounded-md outline-none mb-4">
-                <img src="/kwasu-su-logo-new.png" alt="KWASU SU Logo" className="h-12 w-12" />
+                <img src="/logo.png" alt="KWASU SU Logo" className="h-16 w-16 object-contain" />
               </Link>
               <CardTitle className="text-3xl font-bold text-brand-700">
                 Admin Login
@@ -105,7 +105,7 @@ const AdminLoginPage: React.FC = () => {
             <DialogDescription>
               Enter your email address and we'll send you a link to reset your password.
             </DialogDescription>
-          </DialogHeader> {/* Corrected: Removed duplicate </DialogDescription> and added closing </DialogHeader> */}
+          </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid gap-2">
               <Label htmlFor="email">Email</Label>
