@@ -6,7 +6,6 @@ import { Settings, ShieldCheck, TrendingUp } from "lucide-react";
 const AdminAuthHero: React.FC = () => {
   return (
     <div className="relative flex flex-col items-center justify-center p-8 bg-gradient-to-br from-brand-700 to-brand-900 text-white text-center lg:text-left lg:items-start">
-      <div className="absolute inset-0 opacity-10 bg-cover bg-center" style={{ backgroundImage: "url(/public/E-learning.jpg)" }}></div>
       <div className="relative z-10 space-y-6">
         <h2 className="text-4xl font-bold leading-tight text-brand-gold">
           Manage Your <br /> KWASU SU Platform
