@@ -2,15 +2,16 @@
 
 import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
+import { Link } from "react-router-dom";
 import { api } from "@/lib/api";
 import { Event } from "@/types";
 import EventCard from "@/components/event-card";
 import { Calendar } from "@/components/ui/calendar";
 import { Input } from "@/components/ui/input";
-import { Search } from "lucide-react";
+import { Search, ArrowLeft } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
-// import { format } from "date-fns"; // Removed unused import
-import { Button } from "@/components/ui/button"; // Added Button import
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 
 const EventsPage: React.FC = () => {
   const [allEvents, setAllEvents] = useState<Event[]>([]);
@@ -51,11 +52,12 @@ const EventsPage: React.FC = () => {
     }
 
     if (searchTerm) {
+      const lowerSearch = searchTerm.toLowerCase();
       currentEvents = currentEvents.filter(event =>
-        event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        event.descriptionMd.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        event.venue.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        event.category.toLowerCase().includes(searchTerm.toLowerCase())
+        event.title.toLowerCase().includes(lowerSearch) ||
+        event.descriptionMd.toLowerCase().includes(lowerSearch) ||
+        event.venue.toLowerCase().includes(lowerSearch) ||
+        event.category.toLowerCase().includes(lowerSearch)
       );
     }
 
@@ -77,32 +79,46 @@ const EventsPage: React.FC = () => {
         <meta name="description" content="Explore upcoming events, workshops, and social gatherings organized by KWASU Students' Union." />
       </Helmet>
       <div className="container py-12">
-        <h1 className="text-3xl sm:text-4xl font-bold text-center mb-10 text-brand-700">Events & Calendar</h1>
+        <Button asChild variant="ghost" className="mb-8 text-brand-600 hover:text-brand-700 -ml-4">
+          <Link to="/">
+            <ArrowLeft className="mr-2 h-4 w-4" /> Back to Home
+          </Link>
+        </Button>
+
+        <h1 className="text-3xl sm:text-4xl font-bold text-center mb-4 text-brand-700">Campus Events</h1>
+        <p className="text-center text-lg text-muted-foreground mb-10 max-w-2xl mx-auto">
+          From academic summits to cultural celebrations, stay updated with everything happening across the campus.
+        </p>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
           <div className="lg:col-span-1 flex flex-col items-center">
-            <Calendar
-              mode="single"
-              selected={selectedDate}
-              onSelect={setSelectedDate}
-              className="rounded-md border shadow-md w-full max-w-sm"
-              modifiers={modifiers}
-              modifiersClassNames={modifiersClassNames}
-            />
-            <Button
-              variant="outline"
-              onClick={() => setSelectedDate(undefined)}
-              className="mt-4 w-full max-w-sm border-brand-500 text-brand-500 hover:bg-brand-50 hover:text-brand-600 focus-visible:ring-brand-gold"
-            >
-              Clear Date Selection
-            </Button>
+            <div className="w-full max-w-sm p-4 bg-white rounded-2xl shadow-xl border border-brand-50">
+              <h3 className="text-xs font-bold uppercase tracking-widest text-brand-500 mb-4 px-2">Filter by Date</h3>
+              <Calendar
+                mode="single"
+                selected={selectedDate}
+                onSelect={setSelectedDate}
+                className="w-full flex justify-center"
+                modifiers={modifiers}
+                modifiersClassNames={modifiersClassNames}
+              />
+              <Button
+                variant="outline"
+                onClick={() => setSelectedDate(undefined)}
+                disabled={!selectedDate}
+                className="mt-4 w-full rounded-xl border-brand-100 text-brand-600 hover:bg-brand-50"
+              >
+                Clear Calendar Selection
+              </Button>
+            </div>
           </div>
-          <div className="lg:col-span-2">
-            <div className="relative mb-6">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          
+          <div className="lg:col-span-2 space-y-6">
+            <div className="relative">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-brand-300" />
               <Input
-                placeholder="Search events..."
-                className="pl-9 pr-3 py-2 rounded-md border focus-visible:ring-brand-gold"
+                placeholder="Search events by title, venue, or category..."
+                className="h-12 pl-12 rounded-xl border-brand-100 focus-visible:ring-brand-gold shadow-sm"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
@@ -111,22 +127,20 @@ const EventsPage: React.FC = () => {
             {loading ? (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {[...Array(4)].map((_, i) => (
-                  <div key={i} className="flex flex-col overflow-hidden shadow-lg rounded-xl h-full">
-                    <div className="p-4 space-y-2">
+                  <Card key={i} className="flex flex-col h-[200px] overflow-hidden shadow-lg rounded-xl">
+                    <div className="p-4 space-y-4">
                       <Skeleton className="h-6 w-3/4" />
                       <Skeleton className="h-4 w-1/2" />
-                      <Skeleton className="h-4 w-2/3" />
-                      <Skeleton className="h-4 w-full" />
-                      <div className="flex gap-2 mt-2">
-                        <Skeleton className="h-6 w-20" />
-                        <Skeleton className="h-6 w-16" />
+                      <div className="space-y-2 pt-2">
+                        <Skeleton className="h-3 w-full" />
+                        <Skeleton className="h-3 w-full" />
                       </div>
                     </div>
-                  </div>
+                  </Card>
                 ))}
               </div>
             ) : error ? (
-              <div className="text-center text-destructive text-lg">{error}</div>
+              <div className="text-center py-12 text-destructive font-medium bg-red-50 rounded-2xl">{error}</div>
             ) : filteredEvents.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {filteredEvents.map((eventItem) => (
@@ -134,7 +148,14 @@ const EventsPage: React.FC = () => {
                 ))}
               </div>
             ) : (
-              <p className="text-center text-muted-foreground text-lg">No events found for this date or search criteria.</p>
+              <div className="text-center py-20 bg-slate-50 rounded-2xl border-2 border-dashed border-slate-200">
+                <p className="text-muted-foreground italic">No events found for the selected criteria.</p>
+                {selectedDate && (
+                   <Button variant="link" onClick={() => setSelectedDate(undefined)} className="mt-2 text-brand-500">
+                     View all upcoming events
+                   </Button>
+                )}
+              </div>
             )}
           </div>
         </div>
