@@ -3,10 +3,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Executive } from "@/types";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { User } from "lucide-react";
+import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import { User } from "lucide-react";
 
 interface ExecutiveCardProps {
   executive: Executive;
@@ -15,29 +14,57 @@ interface ExecutiveCardProps {
 
 const ExecutiveCard: React.FC<ExecutiveCardProps> = ({ executive, className }) => {
   return (
-    <Card className={cn("flex flex-col items-center text-center p-6 shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-xl", className)}>
-      <Avatar className="h-24 w-24 mb-4 border-2 border-brand-500">
-        <AvatarImage src={executive.photoUrl || "/placeholder.svg"} alt={executive.name} />
-        <AvatarFallback className="bg-brand-100 text-brand-700">
-          <User className="h-12 w-12" />
-        </AvatarFallback>
-      </Avatar>
-      <CardHeader className="p-0 pb-2">
-        <CardTitle className="text-xl font-semibold leading-tight truncate">
-          <Link to={`/executives/${executive.slug}`} className="hover:text-brand-500 focus-visible:ring-brand-gold focus-visible:ring-2 focus-visible:ring-offset-2 rounded-md outline-none">
+    <Card className={cn(
+      "relative overflow-hidden group h-[380px] rounded-2xl border-none shadow-xl transition-all duration-500 hover:shadow-2xl", 
+      className
+    )}>
+      {/* Background Image */}
+      {executive.photoUrl ? (
+        <img
+          src={executive.photoUrl}
+          alt={executive.name}
+          className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+        />
+      ) : (
+        <div className="absolute inset-0 h-full w-full bg-brand-100 flex items-center justify-center">
+          <User className="h-24 w-24 text-brand-300" />
+        </div>
+      )}
+
+      {/* Gradient Overlay for Readability */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-500" />
+
+      {/* Content Positioned Bottom Left */}
+      <div className="absolute bottom-0 left-0 p-5 w-full transform transition-transform duration-500 group-hover:-translate-y-1">
+        <Link 
+          to={`/executives/${executive.slug}`} 
+          className="block group/link outline-none focus-visible:ring-2 focus-visible:ring-brand-gold rounded-sm"
+        >
+          <h3 className="text-white text-xl font-bold leading-tight group-hover/link:text-brand-gold transition-colors line-clamp-1">
             {executive.name}
-          </Link>
-        </CardTitle>
-        <CardDescription className="text-sm text-brand-600 font-medium truncate">
+          </h3>
+        </Link>
+        <p className="text-brand-gold text-sm font-bold uppercase tracking-wider mt-1">
           {executive.role}
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="p-0 text-sm text-muted-foreground">
-        <p className="truncate">{executive.faculty}</p>
-        <p className="text-xs mt-1">
-          {executive.tenureStart.substring(0, 4)} - {executive.tenureEnd.substring(0, 4)}
         </p>
-      </CardContent>
+        <div className="flex items-center gap-2 mt-2">
+          {executive.faculty && (
+            <p className="text-white/80 text-xs font-medium border-l-2 border-brand-gold pl-2 line-clamp-1">
+              {executive.faculty}
+            </p>
+          )}
+          <span className="text-white/40 text-[10px] ml-auto">
+            {executive.tenureStart.substring(0, 4)} - {executive.tenureEnd.substring(0, 4)}
+          </span>
+        </div>
+      </div>
+
+      {/* Quick View Button / Interaction State */}
+      <Link 
+        to={`/executives/${executive.slug}`} 
+        className="absolute inset-0 z-10"
+        aria-label={`View profile of ${executive.name}`}
+      />
     </Card>
   );
 };
