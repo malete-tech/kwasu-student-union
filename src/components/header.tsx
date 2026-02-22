@@ -2,21 +2,18 @@
 
 import React from "react";
 import { Link, NavLink } from "react-router-dom";
-import { Menu, Home, Users, Newspaper, CalendarDays, Briefcase, Mail } from "lucide-react";
+import { Menu, Home, Users, Newspaper, CalendarDays, Briefcase, Mail, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle, SheetFooter } from "@/components/ui/sheet";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-  navigationMenuTriggerStyle,
-} from "@/components/ui/navigation-menu";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const navLinks = [
   { name: "Home", href: "/", icon: Home },
@@ -32,51 +29,15 @@ const executiveLinks = [
   { name: "Judiciary Council", href: "/executives/judiciary" },
 ];
 
-interface ListItemProps extends React.ComponentPropsWithoutRef<"a"> {
-  title: string;
-}
-
-const ListItem = React.forwardRef<React.ElementRef<"a">, ListItemProps>(
-  ({ className, title, children, ...props }, ref) => {
-    return (
-      <li>
-        <NavigationMenuLink asChild>
-          <a
-            ref={ref}
-            className={cn(
-              "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
-              className
-            )}
-            {...props}
-          >
-            <div className="text-sm font-medium leading-none">{title}</div>
-            {children && (
-              <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                {children}
-              </p>
-            )}
-          </a>
-        </NavigationMenuLink>
-      </li>
-    );
-  }
-);
-ListItem.displayName = "ListItem";
-
-
 const Header: React.FC = () => {
   const isMobile = useIsMobile();
   const [isSheetOpen, setIsSheetOpen] = React.useState(false);
 
   const closeSheet = () => setIsSheetOpen(false);
 
-  // Custom style for standalone navigation links
-  const customNavLinkStyle = (isActive: boolean) =>
+  const linkClasses = ({ isActive }: { isActive: boolean }) =>
     cn(
-      navigationMenuTriggerStyle(),
-      "text-sm font-medium transition-colors hover:text-brand-500 focus-visible:ring-brand-500 rounded-md outline-none",
-      // Override default shadcn background/hover styles to make it standalone
-      "bg-transparent hover:bg-transparent data-[state=open]:bg-transparent data-[active]:bg-transparent",
+      "text-sm font-medium transition-colors hover:text-brand-500 focus-visible:ring-brand-gold focus-visible:ring-2 focus-visible:ring-offset-2 rounded-md outline-none px-3 py-2",
       isActive ? "text-brand-700" : "text-muted-foreground"
     );
 
@@ -128,7 +89,6 @@ const Header: React.FC = () => {
                       )}
                     </NavLink>
                   ))}
-                  {/* Mobile Executive Links */}
                   <Separator className="my-2" />
                   <h4 className="text-sm font-semibold text-brand-700 px-3">Executive Councils</h4>
                   {executiveLinks.map((link) => (
@@ -162,49 +122,37 @@ const Header: React.FC = () => {
             </Sheet>
           </div>
         ) : (
-          <NavigationMenu>
-            <NavigationMenuList>
-              {navLinks.map((link) => (
-                <NavigationMenuItem key={link.name}>
-                  <NavLink
-                    to={link.href}
-                    className={({ isActive }) => customNavLinkStyle(isActive)}
-                  >
-                    {link.name}
-                  </NavLink>
-                </NavigationMenuItem>
-              ))}
-              
-              {/* Executive Dropdown */}
-              <NavigationMenuItem>
-                <NavigationMenuTrigger className={cn(
-                  navigationMenuTriggerStyle(),
-                  "text-muted-foreground data-[active]:text-brand-700 data-[state=open]:text-brand-700",
-                  // Override default shadcn background/hover styles
-                  "bg-transparent hover:bg-transparent data-[state=open]:bg-transparent data-[active]:bg-transparent"
-                )}>
-                  Executives
-                </NavigationMenuTrigger>
-                <NavigationMenuContent>
-                  <ul className="grid w-[200px] gap-1 p-2">
-                    {executiveLinks.map((link) => (
-                      <ListItem
-                        key={link.name}
-                        title={link.name}
-                        href={link.href}
-                      />
-                    ))}
-                  </ul>
-                </NavigationMenuContent>
-              </NavigationMenuItem>
+          <nav className="flex items-center gap-1">
+            {navLinks.map((link) => (
+              <NavLink key={link.name} to={link.href} className={linkClasses}>
+                {link.name}
+              </NavLink>
+            ))}
+            
+            {/* Executives Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="flex items-center gap-1 text-sm font-medium text-muted-foreground transition-colors hover:text-brand-500 focus-visible:ring-brand-gold focus-visible:ring-2 focus-visible:ring-offset-2 rounded-md outline-none px-3 py-2">
+                  Executives <ChevronDown className="h-4 w-4 opacity-50" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="w-48 p-2 rounded-xl">
+                {executiveLinks.map((link) => (
+                  <DropdownMenuItem key={link.name} asChild className="rounded-lg cursor-pointer">
+                    <Link to={link.href} className="w-full">
+                      {link.name}
+                    </Link>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
 
-              <NavigationMenuItem>
-                <Button asChild className="bg-brand-gold hover:bg-brand-gold/90 text-brand-900 focus-visible:ring-brand-gold">
-                  <Link to="/contact">Contact Us</Link>
-                </Button>
-              </NavigationMenuItem>
-            </NavigationMenuList>
-          </NavigationMenu>
+            <div className="ml-4">
+              <Button asChild className="bg-brand-gold hover:bg-brand-gold/90 text-brand-900 focus-visible:ring-brand-gold font-bold">
+                <Link to="/contact">Contact Us</Link>
+              </Button>
+            </div>
+          </nav>
         )}
       </div>
     </header>
