@@ -2,53 +2,65 @@
 
 import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
+import { Link } from "react-router-dom";
 import { api } from "@/lib/api";
 import { Opportunity } from "@/types";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card"; // Added CardFooter import
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { CalendarDays, LinkIcon, Search } from "lucide-react"; // Removed Briefcase, Tag
+import { CalendarDays, LinkIcon, Search, ArrowLeft, Briefcase } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { format, isPast } from "date-fns";
+import { cn } from "@/lib/utils";
 
 const OpportunityCard: React.FC<{ opportunity: Opportunity }> = ({ opportunity }) => {
   const deadlineDate = new Date(opportunity.deadline);
   const isDeadlinePast = isPast(deadlineDate);
 
   return (
-    <Card className={`flex flex-col shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-2xl ${isDeadlinePast ? "opacity-70 grayscale" : ""}`}>
+    <Card className={cn(
+      "flex flex-col shadow-lg hover:shadow-xl transition-all duration-300 rounded-2xl border-brand-50",
+      isDeadlinePast ? "opacity-70 grayscale bg-slate-50" : "bg-white/50 hover:bg-white"
+    )}>
       <CardHeader className="pb-2">
-        <CardTitle className="text-xl font-semibold leading-tight">
-          <a href={opportunity.link} target="_blank" rel="noopener noreferrer" className="hover:text-brand-500 focus-visible:ring-brand-gold focus-visible:ring-2 focus-visible:ring-offset-2 rounded-md outline-none">
-            {opportunity.title}
-          </a>
+        <div className="flex justify-between items-start gap-4 mb-2">
+          <div className="p-3 rounded-xl bg-brand-50 text-brand-600">
+            <Briefcase className="h-5 w-5" />
+          </div>
+          {isDeadlinePast && (
+            <Badge variant="outline" className="text-[9px] uppercase font-bold tracking-tighter border-red-100 bg-red-50 text-red-600">Closed</Badge>
+          )}
+        </div>
+        <CardTitle className="text-xl font-bold leading-tight text-brand-900 group-hover:text-brand-600 transition-colors">
+          {opportunity.title}
         </CardTitle>
         {opportunity.sponsor && (
-          <CardDescription className="text-sm text-muted-foreground">
+          <p className="text-xs font-semibold text-brand-500 uppercase tracking-wider">
             Sponsor: {opportunity.sponsor}
-          </CardDescription>
+          </p>
         )}
       </CardHeader>
       <CardContent className="flex-grow text-sm text-gray-700">
-        <p className="mb-2 line-clamp-3">{opportunity.descriptionMd}</p>
-        <div className="flex items-center text-sm text-muted-foreground">
-          <CalendarDays className="mr-2 h-4 w-4" />
+        <p className="mb-4 line-clamp-3 leading-relaxed">{opportunity.descriptionMd}</p>
+        <div className="flex items-center text-xs font-medium text-slate-500">
+          <CalendarDays className="mr-2 h-4 w-4 text-brand-400" />
           <span>
             Deadline: {format(deadlineDate, "PPP")}
-            {isDeadlinePast && <span className="ml-2 text-destructive font-medium">(Closed)</span>}
           </span>
         </div>
       </CardContent>
-      <CardFooter className="flex flex-wrap gap-2 pt-4">
-        {opportunity.tags.map((tag) => (
-          <Badge key={tag} variant="secondary" className="bg-brand-100 text-brand-700">
-            {tag}
-          </Badge>
-        ))}
-        <Button asChild size="sm" className="ml-auto bg-brand-500 hover:bg-brand-600 text-white focus-visible:ring-brand-gold" disabled={isDeadlinePast}>
+      <CardFooter className="flex flex-wrap gap-2 pt-4 border-t border-brand-50 mt-auto">
+        <div className="flex flex-wrap gap-1 flex-1">
+          {opportunity.tags.slice(0, 2).map((tag) => (
+            <Badge key={tag} variant="secondary" className="bg-slate-100 text-slate-600 border-none text-[9px] uppercase py-0.5">
+              {tag}
+            </Badge>
+          ))}
+        </div>
+        <Button asChild size="sm" className="bg-brand-700 hover:bg-brand-800 text-white rounded-xl shadow-sm px-6 font-bold" disabled={isDeadlinePast}>
           <a href={opportunity.link} target="_blank" rel="noopener noreferrer">
-            Apply <LinkIcon className="ml-2 h-4 w-4" />
+            Apply <LinkIcon className="ml-2 h-3.5 w-3.5" />
           </a>
         </Button>
       </CardFooter>
@@ -88,11 +100,12 @@ const OpportunitiesPage: React.FC = () => {
     }
 
     if (searchTerm) {
+      const lowerSearch = searchTerm.toLowerCase();
       currentOpportunities = currentOpportunities.filter(opp =>
-        opp.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        opp.descriptionMd.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (opp.sponsor && opp.sponsor.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        opp.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
+        opp.title.toLowerCase().includes(lowerSearch) ||
+        opp.descriptionMd.toLowerCase().includes(lowerSearch) ||
+        (opp.sponsor && opp.sponsor.toLowerCase().includes(lowerSearch)) ||
+        opp.tags.some(tag => tag.toLowerCase().includes(lowerSearch))
       );
     }
     setFilteredOpportunities(currentOpportunities);
@@ -104,34 +117,48 @@ const OpportunitiesPage: React.FC = () => {
     <>
       <Helmet>
         <title>Opportunities | KWASU Students' Union</title>
-        <meta name="description" content="Discover scholarships, internships, jobs, and other valuable opportunities for KWASU students." />
       </Helmet>
       <div className="container py-12">
-        <h1 className="text-3xl sm:text-4xl font-bold text-center mb-10 text-brand-700">Student Opportunities</h1>
+        <Button asChild variant="ghost" className="mb-8 text-brand-600 hover:text-brand-700 -ml-4">
+          <Link to="/services">
+            <ArrowLeft className="mr-2 h-4 w-4" /> Back to Services
+          </Link>
+        </Button>
 
-        <div className="flex flex-col sm:flex-row gap-3 mb-8">
+        <h1 className="text-3xl sm:text-4xl font-bold text-center mb-4 text-brand-700">Student Opportunities</h1>
+        <p className="text-center text-lg text-muted-foreground mb-10 max-w-2xl mx-auto">
+          Explore scholarships, internships, and career development programs curated for your academic and professional growth.
+        </p>
+
+        <div className="flex flex-col md:flex-row gap-4 mb-10 max-w-5xl mx-auto">
           <div className="relative flex-grow">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-brand-300" />
             <Input
-              placeholder="Search opportunities..."
-              className="pl-9 pr-3 py-2 rounded-md border focus-visible:ring-brand-gold"
+              placeholder="Search opportunities by title, sponsor, or keyword..."
+              className="h-12 pl-12 rounded-xl border-brand-100 focus-visible:ring-brand-gold shadow-sm"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          <div className="flex gap-2 overflow-x-auto pb-2">
+          <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
             <Badge
               variant={activeTag === null ? "default" : "secondary"}
-              className={activeTag === null ? "bg-brand-500 text-white hover:bg-brand-600 cursor-pointer" : "bg-brand-100 text-brand-700 hover:bg-brand-200 cursor-pointer"}
+              className={cn(
+                "h-10 px-4 rounded-xl cursor-pointer transition-all uppercase text-[10px] font-bold tracking-wider",
+                activeTag === null ? "bg-brand-700 text-white" : "bg-white border-brand-100 text-brand-600 hover:bg-brand-50"
+              )}
               onClick={() => setActiveTag(null)}
             >
-              All
+              All Types
             </Badge>
             {uniqueTags.map(tag => (
               <Badge
                 key={tag}
                 variant={activeTag === tag ? "default" : "secondary"}
-                className={activeTag === tag ? "bg-brand-500 text-white hover:bg-brand-600 cursor-pointer" : "bg-brand-100 text-brand-700 hover:bg-brand-200 cursor-pointer"}
+                className={cn(
+                  "h-10 px-4 rounded-xl cursor-pointer transition-all uppercase text-[10px] font-bold tracking-wider",
+                  activeTag === tag ? "bg-brand-700 text-white" : "bg-white border-brand-100 text-brand-600 hover:bg-brand-50"
+                )}
                 onClick={() => setActiveTag(tag)}
               >
                 {tag}
@@ -141,32 +168,31 @@ const OpportunitiesPage: React.FC = () => {
         </div>
 
         {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
             {[...Array(6)].map((_, i) => (
-              <div key={i} className="flex flex-col overflow-hidden shadow-lg rounded-xl">
-                <div className="p-4 space-y-2">
-                  <Skeleton className="h-6 w-3/4" />
-                  <Skeleton className="h-4 w-1/2" />
-                  <Skeleton className="h-4 w-full" />
-                  <Skeleton className="h-4 w-5/6" />
-                  <div className="flex gap-2 mt-2">
-                    <Skeleton className="h-6 w-16" />
-                    <Skeleton className="h-6 w-20" />
-                  </div>
+              <Card key={i} className="p-6 rounded-2xl shadow-sm border-brand-50 space-y-4">
+                <Skeleton className="h-10 w-10 rounded-xl" />
+                <Skeleton className="h-6 w-3/4" />
+                <Skeleton className="h-20 w-full" />
+                <div className="flex justify-between items-center pt-4">
+                  <Skeleton className="h-4 w-24" />
+                  <Skeleton className="h-8 w-20 rounded-lg" />
                 </div>
-              </div>
+              </Card>
             ))}
           </div>
         ) : error ? (
-          <div className="text-center text-destructive text-lg">{error}</div>
+          <div className="text-center py-12 text-destructive font-medium">{error}</div>
         ) : filteredOpportunities.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
             {filteredOpportunities.map((opportunity) => (
               <OpportunityCard key={opportunity.id} opportunity={opportunity} />
             ))}
           </div>
         ) : (
-          <p className="text-center text-muted-foreground text-lg">No opportunities found matching your criteria.</p>
+          <div className="text-center py-20 text-muted-foreground italic">
+            No opportunities found matching your search criteria.
+          </div>
         )}
       </div>
     </>
