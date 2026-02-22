@@ -27,9 +27,9 @@ const navLinks = [
 ];
 
 const executiveLinks = [
-  { name: "Central Executive", href: "/executives/central", description: "The main administrative body." },
-  { name: "Senate Council", href: "/executives/senate", description: "The legislative arm." },
-  { name: "Judiciary Council", href: "/executives/judiciary", description: "The judicial arm." },
+  { name: "Central Executive", href: "/executives/central" },
+  { name: "Senate Council", href: "/executives/senate" },
+  { name: "Judiciary Council", href: "/executives/judiciary" },
 ];
 
 interface ListItemProps extends React.ComponentPropsWithoutRef<"a"> {
@@ -50,9 +50,11 @@ const ListItem = React.forwardRef<React.ElementRef<"a">, ListItemProps>(
             {...props}
           >
             <div className="text-sm font-medium leading-none">{title}</div>
-            <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-              {children}
-            </p>
+            {children && (
+              <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                {children}
+              </p>
+            )}
           </a>
         </NavigationMenuLink>
       </li>
@@ -184,15 +186,13 @@ const Header: React.FC = () => {
                   Executives
                 </NavigationMenuTrigger>
                 <NavigationMenuContent>
-                  <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
+                  <ul className="grid w-[200px] gap-1 p-2">
                     {executiveLinks.map((link) => (
                       <ListItem
                         key={link.name}
                         title={link.name}
                         href={link.href}
-                      >
-                        {link.description}
-                      </ListItem>
+                      />
                     ))}
                   </ul>
                 </NavigationMenuContent>
