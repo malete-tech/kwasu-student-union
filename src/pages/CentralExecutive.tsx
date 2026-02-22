@@ -6,7 +6,6 @@ import { api } from "@/lib/api";
 import { Executive } from "@/types";
 import ExecutiveCard from "@/components/ExecutiveCard";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Card } from "@/components/ui/card";
 
 const CentralExecutive = () => {
   const [executives, setExecutives] = useState<Executive[]>([]);
@@ -41,12 +40,7 @@ const CentralExecutive = () => {
         {loading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {[...Array(8)].map((_, i) => (
-              <Card key={i} className="flex flex-col items-center text-center p-6 shadow-lg rounded-xl">
-                <Skeleton className="h-24 w-24 rounded-full mb-4" />
-                <Skeleton className="h-6 w-3/4 mb-2" />
-                <Skeleton className="h-4 w-1/2 mb-1" />
-                <Skeleton className="h-4 w-1/3" />
-              </Card>
+              <Skeleton key={i} className="h-[380px] w-full rounded-2xl" />
             ))}
           </div>
         ) : error ? (

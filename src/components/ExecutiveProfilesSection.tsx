@@ -47,21 +47,17 @@ const ExecutiveProfilesSection: React.FC = () => {
           <Quote className="absolute bottom-2 right-2 h-6 w-6 text-brand-300 opacity-50 rotate-180" />
         </div>
         {loading ? (
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             {[...Array(4)].map((_, i) => (
-              <div key={i} className="flex flex-col items-center text-center p-4">
-                <Skeleton className="h-16 w-16 rounded-full mb-2" />
-                <Skeleton className="h-4 w-3/4 mb-1" />
-                <Skeleton className="h-3 w-1/2" />
-              </div>
+              <Skeleton key={i} className="h-[380px] w-full rounded-2xl" />
             ))}
           </div>
         ) : error ? (
           <div className="text-destructive text-sm text-center">{error}</div>
         ) : executives.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             {executives.map((executive) => (
-              <ExecutiveCard key={executive.id} executive={executive} className="p-4 shadow-none border-none" />
+              <ExecutiveCard key={executive.id} executive={executive} />
             ))}
           </div>
         ) : (
