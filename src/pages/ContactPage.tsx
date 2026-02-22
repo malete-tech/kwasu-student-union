@@ -31,10 +31,7 @@ const ContactPage: React.FC = () => {
                 <div>
                   <h3 className="font-semibold text-lg text-brand-800">Email Us</h3>
                   <p className="text-muted-foreground">
-                    For general inquiries: <a href="mailto:info@kwasusu.edu" className="text-brand-500 hover:underline">info@kwasusu.edu</a>
-                  </p>
-                  <p className="text-muted-foreground">
-                    For support: <a href="mailto:support@kwasusu.edu" className="text-brand-500 hover:underline">support@kwasusu.edu</a>
+                    Official Email: <a href="mailto:student.union@kwasu.edu.ng" className="text-brand-500 hover:underline">student.union@kwasu.edu.ng</a>
                   </p>
                 </div>
               </div>

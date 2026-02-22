@@ -1,7 +1,7 @@
 "use client";
 
 import { Link } from "react-router-dom";
-import { Twitter, Instagram, Facebook } from "lucide-react";
+import { Twitter, Facebook, Linkedin, Music } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
@@ -18,14 +18,17 @@ const Footer: React.FC = () => {
             Your voice, our mission. Empowering students for a better university experience.
           </p>
           <div className="flex space-x-4 mt-4">
-            <a href="#" aria-label="Twitter" className="hover:text-brand-gold transition-colors">
+            <a href="https://x.com/thekwasusu" target="_blank" rel="noopener noreferrer" aria-label="X (Twitter)" className="hover:text-brand-gold transition-colors">
               <Twitter className="h-5 w-5" />
             </a>
-            <a href="#" aria-label="Instagram" className="hover:text-brand-gold transition-colors">
-              <Instagram className="h-5 w-5" />
-            </a>
-            <a href="#" aria-label="Facebook" className="hover:text-brand-gold transition-colors">
+            <a href="https://facebook.com/thekwasusu" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="hover:text-brand-gold transition-colors">
               <Facebook className="h-5 w-5" />
+            </a>
+            <a href="https://linkedin.com/company/thekwasusu" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="hover:text-brand-gold transition-colors">
+              <Linkedin className="h-5 w-5" />
+            </a>
+            <a href="https://tiktok.com/@thekwasusu" target="_blank" rel="noopener noreferrer" aria-label="TikTok" className="hover:text-brand-gold transition-colors">
+              <Music className="h-5 w-5" />
             </a>
           </div>
         </div>
@@ -77,7 +80,7 @@ const Footer: React.FC = () => {
               </Link>
             </li>
             <li>
-              <Link to="/executives" className="text-sm opacity-80 hover:opacity-100 hover:text-brand-gold transition-opacity">
+              <Link to="/executives/central" className="text-sm opacity-80 hover:opacity-100 hover:text-brand-gold transition-opacity">
                 Meet the Executives
               </Link>
             </li>
