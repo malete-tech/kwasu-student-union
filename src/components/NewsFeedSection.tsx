@@ -98,14 +98,13 @@ const NewsFeedSection: React.FC = () => {
         </div>
 
         {loading ? (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-6">
             {[...Array(6)].map((_, i) => (
               <div key={i} className="flex gap-4">
-                <Skeleton className="w-32 h-24 rounded-md" />
+                <Skeleton className="w-24 h-20 rounded-md" />
                 <div className="flex-1 space-y-2">
                   <Skeleton className="h-5 w-full" />
                   <Skeleton className="h-4 w-3/4" />
-                  <Skeleton className="h-3 w-1/2" />
                 </div>
               </div>
             ))}
@@ -113,7 +112,7 @@ const NewsFeedSection: React.FC = () => {
         ) : error ? (
           <div className="text-destructive text-sm text-center">{error}</div>
         ) : filteredNews.length > 0 ? (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-8">
             {filteredNews.slice(0, 6).map((newsItem) => (
               <NewsFeedItem key={newsItem.id} news={newsItem} variant="list" />
             ))}

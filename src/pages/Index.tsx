@@ -13,20 +13,20 @@ import { CheckCircle, Search, ArrowRight } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import AnimatedNotifications from "@/components/AnimatedNotifications";
 import PhoneMockup from "@/components/PhoneMockup";
-import { useNavigate, Link } from "react-router-dom"; // Import Link
+import { useNavigate, Link } from "react-router-dom";
 
 const Index = () => {
   const [spotlights, setSpotlights] = useState<Spotlight[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [localSearchTerm, setLocalSearchTerm] = useState(""); // State for the input value
-  const navigate = useNavigate(); // Hook for navigation
+  const [localSearchTerm, setLocalSearchTerm] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const fetchedSpotlights = await api.spotlight.getAll();
-        setSpotlights(fetchedSpotlights.slice(0, 1)); // Limit to 1 for the homepage spotlight
+        setSpotlights(fetchedSpotlights.slice(0, 1));
       } catch (err) {
         console.error("Failed to fetch homepage data:", err);
         setError("Failed to load content. Please try again later.");
@@ -109,8 +109,13 @@ const Index = () => {
 
         {/* Main Content Grid */}
         <section className="container py-12">
+          {/* Latest News Feed - Prominent at the top */}
+          <div className="mb-16">
+            <NewsFeedSection />
+          </div>
+
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Left Sidebar */}
+            {/* Left Sidebar (Desktop) */}
             <div className="lg:col-span-1 space-y-8">
               <QuickLinks />
               {/* Spotlight */}
@@ -139,10 +144,9 @@ const Index = () => {
               </div>
             </div>
 
-            {/* Right Main Content */}
+            {/* Right Main Content (Desktop) */}
             <div className="lg:col-span-2 space-y-8">
               <ExecutiveProfilesSection />
-              <NewsFeedSection />
               <EventsCalendarSection />
             </div>
           </div>
