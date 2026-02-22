@@ -49,7 +49,7 @@ export interface Event {
 }
 
 // Complaint
-export type ComplaintCategory = 'Welfare' | 'Academics' | 'Fees' | 'Security' | 'Other';
+export type ComplaintCategory = 'Welfare' | 'Academics' | 'Fees' | 'Security' | 'Suggestion' | 'Other';
 export type ComplaintStatus = 'Queued' | 'In Review' | 'Resolved' | 'Closed'; // Added 'Closed'
 
 export interface ComplaintTimelineEntry {

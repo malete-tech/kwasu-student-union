@@ -24,6 +24,7 @@ import ContactPage from "./pages/ContactPage";
 import SearchResultsPage from "./pages/SearchResultsPage";
 import SubmitComplaintPage from "./pages/SubmitComplaintPage";
 import SpotlightPage from "./pages/SpotlightPage";
+import SuggestionBoxPage from "./pages/SuggestionBoxPage"; // Added
 
 // Admin Imports
 import AdminLayout from "./app/AdminLayout";
@@ -80,6 +81,7 @@ const App = () => (
               <Route path="/services/downloads" element={<DownloadsPage />} />
               <Route path="/services/opportunities" element={<OpportunitiesPage />} />
               <Route path="/services/complaints" element={<SubmitComplaintPage />} />
+              <Route path="/services/suggestion-box" element={<SuggestionBoxPage />} />
               <Route path="/spotlight" element={<SpotlightPage />} />
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/search" element={<SearchResultsPage />} />
