@@ -36,9 +36,6 @@ const JudiciaryCouncil = () => {
       </Helmet>
       <div className="container py-12">
         <h1 className="text-4xl font-bold text-center mb-10 text-brand-700">Judiciary Council</h1>
-        <p className="text-center text-lg text-muted-foreground mb-10 max-w-2xl mx-auto">
-          The Judiciary Council is the judicial arm of the Students' Union, responsible for interpreting the constitution and resolving disputes.
-        </p>
 
         {loading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">

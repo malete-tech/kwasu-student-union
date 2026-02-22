@@ -36,9 +36,6 @@ const SenateCouncil = () => {
       </Helmet>
       <div className="container py-12">
         <h1 className="text-4xl font-bold text-center mb-10 text-brand-700">Senate Council Principal Officers</h1>
-        <p className="text-center text-lg text-muted-foreground mb-10 max-w-2xl mx-auto">
-          The Senate Council is the legislative arm of the Students' Union, representing the interests of all faculties and departments.
-        </p>
 
         {loading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
