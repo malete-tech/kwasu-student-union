@@ -24,21 +24,20 @@ const mapAnnouncementFromDb = (item: any): GlobalAnnouncement => ({
 export const announcements = {
   // Public function: gets the single active announcement
   getActive: async (): Promise<GlobalAnnouncement | undefined> => {
-    // We assume there is only one active announcement at a time, or we take the latest one.
-    // RLS ensures only active ones are returned to the public.
+    // Use limit(1) instead of .single() to avoid 406 error when no rows match
     const { data, error } = await supabase.from('global_announcements')
       .select('*')
       .eq('is_active', true)
       .order('updated_at', { ascending: false })
-      .limit(1)
-      .single();
+      .limit(1);
 
-    if (error && error.code !== 'PGRST116') {
+    if (error) {
       console.error("Supabase error fetching active announcement:", error);
       throw new Error(error.message);
     }
-    if (!data) return undefined;
-    return mapAnnouncementFromDb(data);
+    
+    if (!data || data.length === 0) return undefined;
+    return mapAnnouncementFromDb(data[0]);
   },
 
   // Admin function: gets all announcements (for management)
@@ -66,7 +65,6 @@ export const announcements = {
     if (error) {
       console.error("Supabase error creating announcement:", error);
       throw new Error(error.message);
-      // @ts-ignore
     }
     return mapAnnouncementFromDb(data);
   },
@@ -88,7 +86,6 @@ export const announcements = {
     if (error) {
       console.error("Supabase error updating announcement:", error);
       throw new Error(error.message);
-      // @ts-ignore
     }
     return mapAnnouncementFromDb(data);
   },

@@ -12,17 +12,28 @@ export const complaints = {
       contact_email: complaint.contactEmail,
       contact_phone: complaint.contactPhone,
       is_anonymous: complaint.isAnonymous,
-    }).select().single();
+    }).select(); // Removed .single() to handle potential empty returns from RLS
 
     if (error) {
       console.error("Supabase error submitting complaint:", error);
       throw new Error(error.message);
-      // @ts-ignore
     }
-    return mapComplaintFromDb(data);
+
+    // If RLS prevents us from seeing the row we just created, we return a partial object
+    // so the UI doesn't crash, though the ID might be missing.
+    if (!data || data.length === 0) {
+      return {
+        id: 'pending',
+        ...complaint,
+        status: 'Queued',
+        createdAt: new Date().toISOString(),
+        timeline: []
+      } as Complaint;
+    }
+
+    return mapComplaintFromDb(data[0]);
   },
   getAll: async (): Promise<Complaint[]> => {
-    // Admin function: fetch all complaints and their timelines
     const { data, error } = await supabase.from('complaints')
       .select(`
         *,
@@ -42,7 +53,6 @@ export const complaints = {
     return data.map(mapComplaintFromDb);
   },
   getById: async (id: string): Promise<Complaint | undefined> => {
-    // User/Admin function: fetch a single complaint with its timeline
     const { data, error } = await supabase.from('complaints')
       .select(`
         *,
@@ -64,19 +74,15 @@ export const complaints = {
     return mapComplaintFromDb(data);
   },
   updateStatus: async (complaintId: string, newStatus: ComplaintStatus, note?: string): Promise<Complaint> => {
-    // 1. Update the status in the complaints table
-    const { data: _complaintData, error: updateError } = await supabase.from('complaints')
+    const { error: updateError } = await supabase.from('complaints')
       .update({ status: newStatus })
-      .eq('id', complaintId)
-      .select()
-      .single();
+      .eq('id', complaintId);
 
     if (updateError) {
       console.error("Supabase error updating complaint status:", updateError);
       throw new Error(updateError.message);
     }
 
-    // 2. Insert a new entry into the timeline table
     const { error: timelineError } = await supabase.from('complaint_timeline')
       .insert({
         complaint_id: complaintId,
@@ -86,10 +92,8 @@ export const complaints = {
 
     if (timelineError) {
       console.error("Supabase error inserting timeline entry:", timelineError);
-      // Note: We proceed even if timeline fails, as status update succeeded.
     }
 
-    // 3. Fetch the full updated complaint with timeline (optional, but good for consistency)
     const updatedComplaint = await complaints.getById(complaintId);
     if (!updatedComplaint) throw new Error("Failed to retrieve updated complaint.");
 
