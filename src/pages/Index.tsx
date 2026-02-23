@@ -9,7 +9,6 @@ import QuickLinks from "@/components/QuickLinks";
 import ExecutiveProfilesSection from "@/components/ExecutiveProfilesSection";
 import NewsFeedSection from "@/components/NewsFeedSection";
 import EventsCalendarSection from "@/components/EventsCalendarSection";
-import { CheckCircle, Search, ArrowRight } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import AnimatedNotifications from "@/components/AnimatedNotifications";
 import PhoneMockup from "@/components/PhoneMockup";
@@ -57,7 +56,7 @@ const Index = () => {
             {/* Left Content */}
             <div className="flex flex-col items-center text-center lg:items-start lg:text-left">
               <div className="inline-flex items-center rounded-full bg-brand-neon/20 px-3 py-1 text-sm font-medium text-white mb-4">
-                <CheckCircle className="h-4 w-4 mr-2" /> Your Voice, Your Future
+                <i className="fa-solid fa-circle-check mr-2"></i> Your Voice, Your Future
               </div>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white mb-6 leading-tight">
                 Empower Your Future with <span className="text-brand-neon">KWASU SU</span>
@@ -68,7 +67,7 @@ const Index = () => {
 
               {/* Search Input Form */}
               <form onSubmit={handleSearchSubmit} className="relative w-full max-w-md mb-8">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-brand-300" />
+                <i className="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-brand-300"></i>
                 <Input
                   type="text"
                   placeholder="Search news, events, opportunities..."
@@ -77,22 +76,22 @@ const Index = () => {
                   onChange={(e) => setLocalSearchTerm(e.target.value)}
                 />
                 <Button type="submit" className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-brand-neon hover:bg-brand-neon/90 text-white px-6 py-2 focus-visible:ring-brand-gold">
-                  <ArrowRight className="h-5 w-5" />
+                  <i className="fa-solid fa-arrow-right"></i>
                 </Button>
               </form>
 
               {/* Features */}
               <div className="flex flex-wrap justify-center lg:justify-start gap-6 mt-4">
                 <div className="flex items-center gap-2 text-brand-100">
-                  <CheckCircle className="h-5 w-5 text-brand-gold" />
+                  <i className="fa-solid fa-circle-check text-brand-gold"></i>
                   <span className="font-medium">Advocacy</span>
                 </div>
                 <div className="flex items-center gap-2 text-brand-100">
-                  <CheckCircle className="h-5 w-5 text-brand-gold" />
+                  <i className="fa-solid fa-circle-check text-brand-gold"></i>
                   <span className="font-medium">Community</span>
                 </div>
                 <div className="flex items-center gap-2 text-brand-100">
-                  <CheckCircle className="h-5 w-5 text-brand-gold" />
+                  <i className="fa-solid fa-circle-check text-brand-gold"></i>
                   <span className="font-medium">Opportunities</span>
                 </div>
               </div>

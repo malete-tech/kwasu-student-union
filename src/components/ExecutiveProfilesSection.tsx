@@ -5,7 +5,6 @@ import { api } from "@/lib/api";
 import { Executive } from "@/types";
 import ExecutiveCard from "@/components/ExecutiveCard";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Quote } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
@@ -40,11 +39,11 @@ const ExecutiveProfilesSection: React.FC = () => {
       </div>
       <div className="space-y-6">
         <div className="relative p-4 bg-brand-50 rounded-lg border-l-4 border-brand-500 text-brand-800 italic">
-          <Quote className="absolute top-2 left-2 h-6 w-6 text-brand-300 opacity-50" />
+          <i className="fa-solid fa-quote-left absolute top-2 left-2 text-2xl text-brand-300 opacity-50"></i>
           <p className="ml-8 text-sm">
             "The Students' Union is committed to fostering a supportive and dynamic environment where every student can achieve their full potential."
           </p>
-          <Quote className="absolute bottom-2 right-2 h-6 w-6 text-brand-300 opacity-50 rotate-180" />
+          <i className="fa-solid fa-quote-right absolute bottom-2 right-2 text-2xl text-brand-300 opacity-50"></i>
         </div>
         {loading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">

@@ -6,7 +6,6 @@ import { News } from "@/types";
 import NewsFeedItem from "@/components/NewsFeedItem";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search, Newspaper } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
@@ -58,7 +57,7 @@ const NewsFeedSection: React.FC = () => {
     <div className="space-y-6">
       <div className="border-b pb-2 flex justify-between items-end border-brand-700 uppercase">
         <h2 className="text-xl font-extrabold flex items-center gap-2 text-brand-700 tracking-tighter">
-          <Newspaper className="h-5 w-5" /> Latest News
+          <i className="fa-solid fa-newspaper text-lg"></i> Latest News
         </h2>
         <Button asChild variant="link" size="sm" className="text-brand-500 hover:text-brand-600 focus-visible:ring-brand-gold h-auto p-0 mb-0.5">
           <Link to="/news">View All</Link>
@@ -68,7 +67,7 @@ const NewsFeedSection: React.FC = () => {
       <div className="space-y-6">
         <div className="flex flex-col sm:flex-row gap-3">
           <div className="relative flex-grow">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <i className="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"></i>
             <Input
               placeholder="Search news..."
               className="pl-9 pr-3 py-2 rounded-md border focus-visible:ring-brand-gold"
