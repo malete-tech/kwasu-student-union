@@ -1,16 +1,71 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { api } from "@/lib/api";
+import { toast } from "sonner";
+import { useSession } from "@/components/SessionContextProvider";
+
+const formSchema = z.object({
+  name: z.string().min(2, { message: "Name must be at least 2 characters." }),
+  email: z.string().email({ message: "Invalid email address." }),
+  subject: z.string().min(5, { message: "Subject must be at least 5 characters." }),
+  message: z.string().min(10, { message: "Message must be at least 10 characters." }),
+});
 
 const ContactPage: React.FC = () => {
+  const { user } = useSession();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: "",
+      email: user?.email || "",
+      subject: "",
+      message: "",
+    },
+  });
+
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    setIsSubmitting(true);
+    try {
+      // Mapping contact form to the complaints schema as an 'Inquiry'
+      const inquiryPayload = {
+        userId: user?.id || null,
+        category: 'Inquiry' as const,
+        title: values.subject,
+        description: `Name: ${values.name}\n\nMessage: ${values.message}`,
+        contactEmail: values.email,
+        isAnonymous: false,
+      };
+
+      await api.complaints.submit(inquiryPayload);
+      toast.success("Inquiry sent! We will get back to you shortly.");
+      form.reset({
+        name: "",
+        email: user?.email || "",
+        subject: "",
+        message: "",
+      });
+    } catch (error) {
+      console.error("Failed to send inquiry:", error);
+      toast.error("Failed to send inquiry. Please try again later.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <>
       <Helmet>
@@ -98,29 +153,74 @@ const ContactPage: React.FC = () => {
               <CardTitle className="text-2xl font-bold text-brand-900 uppercase">Send Message</CardTitle>
             </CardHeader>
 
-            <form className="space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="name" className="text-xs font-bold uppercase tracking-wider text-brand-700">Your Name</Label>
-                  <Input id="name" placeholder="John Doe" className="h-11 rounded-xl border-brand-100 focus-visible:ring-brand-gold" />
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem className="space-y-2">
+                        <FormLabel className="text-xs font-bold uppercase tracking-wider text-brand-700">Your Name</FormLabel>
+                        <FormControl>
+                          <Input placeholder="John Doe" {...field} className="h-11 rounded-xl border-brand-100 focus-visible:ring-brand-gold" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem className="space-y-2">
+                        <FormLabel className="text-xs font-bold uppercase tracking-wider text-brand-700">Your Email</FormLabel>
+                        <FormControl>
+                          <Input type="email" placeholder="john.doe@example.com" {...field} className="h-11 rounded-xl border-brand-100 focus-visible:ring-brand-gold" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="email" className="text-xs font-bold uppercase tracking-wider text-brand-700">Your Email</Label>
-                  <Input id="email" type="email" placeholder="john.doe@example.com" className="h-11 rounded-xl border-brand-100 focus-visible:ring-brand-gold" />
-                </div>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="subject" className="text-xs font-bold uppercase tracking-wider text-brand-700">Subject</Label>
-                <Input id="subject" placeholder="What is this regarding?" className="h-11 rounded-xl border-brand-100 focus-visible:ring-brand-gold" />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="message" className="text-xs font-bold uppercase tracking-wider text-brand-700">Message</Label>
-                <Textarea id="message" placeholder="Type your message here." rows={5} className="rounded-xl border-brand-100 focus-visible:ring-brand-gold" />
-              </div>
-              <Button type="submit" className="w-full h-12 bg-brand-500 hover:bg-brand-600 text-white rounded-xl shadow-md font-bold transition-all">
-                Send Inquiry
-              </Button>
-            </form>
+                <FormField
+                  control={form.control}
+                  name="subject"
+                  render={({ field }) => (
+                    <FormItem className="space-y-2">
+                      <FormLabel className="text-xs font-bold uppercase tracking-wider text-brand-700">Subject</FormLabel>
+                      <FormControl>
+                        <Input placeholder="What is this regarding?" {...field} className="h-11 rounded-xl border-brand-100 focus-visible:ring-brand-gold" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="message"
+                  render={({ field }) => (
+                    <FormItem className="space-y-2">
+                      <FormLabel className="text-xs font-bold uppercase tracking-wider text-brand-700">Message</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Type your message here." rows={5} {...field} className="rounded-xl border-brand-100 focus-visible:ring-brand-gold" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Button type="submit" className="w-full h-12 bg-brand-500 hover:bg-brand-600 text-white rounded-xl shadow-md font-bold transition-all" disabled={isSubmitting}>
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Sending...
+                    </>
+                  ) : (
+                    "Send Inquiry"
+                  )}
+                </Button>
+              </form>
+            </Form>
           </Card>
         </div>
       </div>
