@@ -4,7 +4,7 @@ import React from "react";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Mail, Phone, MapPin, Clock, ArrowLeft, Send } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -15,7 +15,7 @@ const ContactPage: React.FC = () => {
     <>
       <Helmet>
         <title>Contact Us | KWASU Students' Union</title>
-        <meta name="description" content="Get in touch with KWASU Students' Union. Find our contact details and send us a message." />
+        <meta name="description" content="Get in touch with KWASU Students' Union. Reach out to the PRO or visit our office." />
       </Helmet>
       <div className="container py-12">
         <Button asChild variant="ghost" className="mb-8 text-brand-600 hover:text-brand-700 -ml-4">
@@ -34,15 +34,15 @@ const ContactPage: React.FC = () => {
           <Card className="p-6 shadow-xl border-brand-100 bg-white/50">
             <CardHeader className="flex flex-row items-center gap-3 mb-8 pb-4 border-b border-brand-50 p-0 space-y-0">
               <div className="p-3 bg-brand-50 rounded-2xl text-brand-600">
-                <Mail className="h-6 w-6" />
+                <i className="fa-solid fa-address-book text-xl"></i>
               </div>
-              <CardTitle className="text-2xl font-bold text-brand-900 uppercase">Our Channels</CardTitle>
+              <CardTitle className="text-2xl font-bold text-brand-900 uppercase">Official Channels</CardTitle>
             </CardHeader>
             
             <CardContent className="space-y-8 p-0">
               <div className="flex items-start group">
                 <div className="p-2 rounded-xl bg-brand-50 text-brand-500 mr-4 group-hover:bg-brand-500 group-hover:text-white transition-colors">
-                  <Mail className="h-5 w-5" />
+                  <i className="fa-solid fa-envelope h-5 w-5 flex items-center justify-center"></i>
                 </div>
                 <div>
                   <h3 className="font-bold text-brand-800 uppercase text-xs tracking-wider mb-1">Email Correspondence</h3>
@@ -54,30 +54,31 @@ const ContactPage: React.FC = () => {
 
               <div className="flex items-start group">
                 <div className="p-2 rounded-xl bg-brand-50 text-brand-500 mr-4 group-hover:bg-brand-500 group-hover:text-white transition-colors">
-                  <Phone className="h-5 w-5" />
+                  <i className="fa-solid fa-phone h-5 w-5 flex items-center justify-center"></i>
                 </div>
                 <div>
-                  <h3 className="font-bold text-brand-800 uppercase text-xs tracking-wider mb-1">Direct Lines</h3>
-                  <p className="text-gray-700">President: <a href="tel:+2348012345678" className="hover:text-brand-500 transition-colors">+234 801 234 5678</a></p>
-                  <p className="text-gray-700">Welfare: <a href="tel:+2348098765432" className="hover:text-brand-500 transition-colors">+234 809 876 5432</a></p>
-                </div>
-              </div>
-
-              <div className="flex items-start group">
-                <div className="p-2 rounded-xl bg-brand-50 text-brand-500 mr-4 group-hover:bg-brand-500 group-hover:text-white transition-colors">
-                  <MapPin className="h-5 w-5" />
-                </div>
-                <div>
-                  <h3 className="font-bold text-brand-800 uppercase text-xs tracking-wider mb-1">Physical Location</h3>
-                  <p className="text-gray-700">
-                    Students' Union Building, Main Campus, Kwara State University, Malete.
+                  <h3 className="font-bold text-brand-800 uppercase text-xs tracking-wider mb-1">PRO's Contact</h3>
+                  <p className="text-gray-700 font-semibold tracking-wide">
+                    <a href="tel:+2348113887492" className="hover:text-brand-500 transition-colors">08113887492</a>
                   </p>
                 </div>
               </div>
 
               <div className="flex items-start group">
                 <div className="p-2 rounded-xl bg-brand-50 text-brand-500 mr-4 group-hover:bg-brand-500 group-hover:text-white transition-colors">
-                  <Clock className="h-5 w-5" />
+                  <i className="fa-solid fa-location-dot h-5 w-5 flex items-center justify-center"></i>
+                </div>
+                <div>
+                  <h3 className="font-bold text-brand-800 uppercase text-xs tracking-wider mb-1">Physical Location</h3>
+                  <p className="text-gray-700">
+                    Students' Union Building, Behind Faculty of Information and Technology, Kwara State University, Malete.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-start group">
+                <div className="p-2 rounded-xl bg-brand-50 text-brand-500 mr-4 group-hover:bg-brand-500 group-hover:text-white transition-colors">
+                  <i className="fa-solid fa-clock h-5 w-5 flex items-center justify-center"></i>
                 </div>
                 <div>
                   <h3 className="font-bold text-brand-800 uppercase text-xs tracking-wider mb-1">Service Hours</h3>
@@ -92,7 +93,7 @@ const ContactPage: React.FC = () => {
           <Card className="p-6 shadow-xl border-brand-100">
             <CardHeader className="flex flex-row items-center gap-3 mb-8 pb-4 border-b border-brand-50 p-0 space-y-0">
               <div className="p-3 bg-brand-50 rounded-2xl text-brand-600">
-                <Send className="h-6 w-6" />
+                <i className="fa-solid fa-paper-plane text-xl"></i>
               </div>
               <CardTitle className="text-2xl font-bold text-brand-900 uppercase">Send Message</CardTitle>
             </CardHeader>
