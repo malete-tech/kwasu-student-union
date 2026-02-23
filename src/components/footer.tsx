@@ -20,6 +20,9 @@ const Footer: React.FC = () => {
             <a href="https://x.com/thekwasusu" target="_blank" rel="noopener noreferrer" aria-label="X (Twitter)" className="text-xl hover:text-brand-gold transition-colors">
               <i className="fa-brands fa-x-twitter"></i>
             </a>
+            <a href="https://instagram.com/thekwasusu" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="text-xl hover:text-brand-gold transition-colors">
+              <i className="fa-brands fa-instagram"></i>
+            </a>
             <a href="https://facebook.com/thekwasusu" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="text-xl hover:text-brand-gold transition-colors">
               <i className="fa-brands fa-facebook-f"></i>
             </a>
