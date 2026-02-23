@@ -9,7 +9,7 @@ import { api } from "@/lib/api";
 import { Executive } from "@/types";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Mail, Twitter, Instagram, Phone, ArrowLeft, User, Briefcase } from "lucide-react";
+import { Mail, Phone, ArrowLeft, User, Briefcase } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const ExecutiveDetail = () => {
@@ -144,14 +144,14 @@ const ExecutiveDetail = () => {
                   {executive.contacts.twitter && (
                     <Button asChild variant="secondary" size="icon" className="h-10 w-10 rounded-full bg-white/10 hover:bg-brand-gold text-white hover:text-brand-900 border-none transition-all">
                       <a href={`https://twitter.com/${executive.contacts.twitter}`} target="_blank" rel="noopener noreferrer" aria-label="Twitter">
-                        <Twitter className="h-5 w-5" />
+                        <i className="fa-brands fa-x-twitter text-lg"></i>
                       </a>
                     </Button>
                   )}
                   {executive.contacts.instagram && (
                     <Button asChild variant="secondary" size="icon" className="h-10 w-10 rounded-full bg-white/10 hover:bg-brand-gold text-white hover:text-brand-900 border-none transition-all">
                       <a href={`https://instagram.com/${executive.contacts.instagram}`} target="_blank" rel="noopener noreferrer" aria-label="Instagram">
-                        <Instagram className="h-5 w-5" />
+                        <i className="fa-brands fa-instagram text-lg"></i>
                       </a>
                     </Button>
                   )}

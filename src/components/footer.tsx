@@ -1,7 +1,6 @@
 "use client";
 
 import { Link } from "react-router-dom";
-import { Twitter, Facebook, Linkedin, Music } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
@@ -17,25 +16,25 @@ const Footer: React.FC = () => {
           <p className="text-sm opacity-80">
             Your voice, our mission. Empowering students for a better university experience.
           </p>
-          <div className="flex space-x-4 mt-4">
-            <a href="https://x.com/thekwasusu" target="_blank" rel="noopener noreferrer" aria-label="X (Twitter)" className="hover:text-brand-gold transition-colors">
-              <Twitter className="h-5 w-5" />
+          <div className="flex space-x-4 mt-6">
+            <a href="https://x.com/thekwasusu" target="_blank" rel="noopener noreferrer" aria-label="X (Twitter)" className="text-xl hover:text-brand-gold transition-colors">
+              <i className="fa-brands fa-x-twitter"></i>
             </a>
-            <a href="https://facebook.com/thekwasusu" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="hover:text-brand-gold transition-colors">
-              <Facebook className="h-5 w-5" />
+            <a href="https://facebook.com/thekwasusu" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="text-xl hover:text-brand-gold transition-colors">
+              <i className="fa-brands fa-facebook-f"></i>
             </a>
-            <a href="https://linkedin.com/company/thekwasusu" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="hover:text-brand-gold transition-colors">
-              <Linkedin className="h-5 w-5" />
+            <a href="https://linkedin.com/company/thekwasusu" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="text-xl hover:text-brand-gold transition-colors">
+              <i className="fa-brands fa-linkedin-in"></i>
             </a>
-            <a href="https://tiktok.com/@thekwasusu" target="_blank" rel="noopener noreferrer" aria-label="TikTok" className="hover:text-brand-gold transition-colors">
-              <Music className="h-5 w-5" />
+            <a href="https://tiktok.com/@thekwasusu" target="_blank" rel="noopener noreferrer" aria-label="TikTok" className="text-xl hover:text-brand-gold transition-colors">
+              <i className="fa-brands fa-tiktok"></i>
             </a>
           </div>
         </div>
 
         {/* Quick Links */}
         <div className="col-span-1">
-          <h3 className="text-xl font-semibold mb-4">Quick Links</h3>
+          <h3 className="text-xl font-semibold mb-4 uppercase">Quick Links</h3>
           <ul className="space-y-2">
             <li>
               <Link to="/news" className="text-sm opacity-80 hover:opacity-100 hover:text-brand-gold transition-opacity">
@@ -67,7 +66,7 @@ const Footer: React.FC = () => {
 
         {/* Services */}
         <div className="col-span-1">
-          <h3 className="text-xl font-semibold mb-4">Services</h3>
+          <h3 className="text-xl font-semibold mb-4 uppercase">Services</h3>
           <ul className="space-y-2">
             <li>
               <Link to="/services/complaints" className="text-sm opacity-80 hover:opacity-100 hover:text-brand-gold transition-opacity">
@@ -94,7 +93,7 @@ const Footer: React.FC = () => {
 
         {/* Newsletter */}
         <div className="col-span-1">
-          <h3 className="text-xl font-semibold mb-4">Newsletter</h3>
+          <h3 className="text-xl font-semibold mb-4 uppercase">Newsletter</h3>
           <p className="text-sm opacity-80 mb-4">
             Stay updated with the latest news and events from KWASU SU.
           </p>
