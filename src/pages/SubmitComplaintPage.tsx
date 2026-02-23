@@ -12,7 +12,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from "@/components/ui/form";
-import { Loader2, MessageSquare, ArrowLeft } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { api } from "@/lib/api";
 import { toast } from "sonner";
 import { ComplaintCategory } from "@/types";
@@ -101,7 +101,7 @@ const SubmitComplaintPage: React.FC = () => {
       <div className="container py-12">
         <Button asChild variant="ghost" className="mb-8 text-brand-600 hover:text-brand-700 -ml-4">
           <Link to="/services">
-            <ArrowLeft className="mr-2 h-4 w-4" /> Back to Services
+            <i className="fa-solid fa-arrow-left mr-2"></i> Back to Services
           </Link>
         </Button>
 
@@ -114,7 +114,7 @@ const SubmitComplaintPage: React.FC = () => {
           <Card className="p-6 sm:p-8 shadow-xl border-brand-100">
             <div className="flex items-center gap-3 mb-8 pb-4 border-b border-brand-50">
               <div className="p-3 bg-brand-50 rounded-2xl text-brand-600">
-                <MessageSquare className="h-6 w-6" />
+                <i className="fa-solid fa-comment-dots text-xl"></i>
               </div>
               <CardTitle className="text-2xl font-bold text-brand-900 uppercase">Complaint Details</CardTitle>
             </div>

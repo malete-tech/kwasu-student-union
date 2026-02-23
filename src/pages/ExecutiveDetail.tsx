@@ -9,7 +9,6 @@ import { api } from "@/lib/api";
 import { Executive } from "@/types";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Mail, Phone, ArrowLeft, User, Briefcase } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const ExecutiveDetail = () => {
@@ -64,7 +63,7 @@ const ExecutiveDetail = () => {
         <p className="text-destructive text-lg font-medium mb-6">{error || "Executive not found."}</p>
         <Button asChild variant="outline" className="border-brand-500 text-brand-500 hover:bg-brand-50 rounded-xl px-8">
           <Link to="/executives/central">
-            <ArrowLeft className="mr-2 h-4 w-4" /> Back to Directory
+            <i className="fa-solid fa-arrow-left mr-2"></i> Back to Directory
           </Link>
         </Button>
       </div>
@@ -83,7 +82,7 @@ const ExecutiveDetail = () => {
       <div className="container py-12">
         <Button asChild variant="ghost" className="mb-8 text-brand-600 hover:text-brand-700 -ml-4">
           <Link to={councilPath}>
-            <ArrowLeft className="mr-2 h-4 w-4" /> Back to {executive.councilType} Council
+            <i className="fa-solid fa-arrow-left mr-2"></i> Back to {executive.councilType} Council
           </Link>
         </Button>
 
@@ -99,7 +98,7 @@ const ExecutiveDetail = () => {
                 />
               ) : (
                 <div className="absolute inset-0 h-full w-full bg-brand-800 flex items-center justify-center">
-                  <User className="h-32 w-32 text-brand-700" />
+                  <i className="fa-solid fa-user h-32 w-32 text-brand-700 flex items-center justify-center text-8xl"></i>
                 </div>
               )}
 
@@ -130,14 +129,14 @@ const ExecutiveDetail = () => {
                   {executive.contacts.email && (
                     <Button asChild variant="secondary" size="icon" className="h-10 w-10 rounded-full bg-white/10 hover:bg-brand-gold text-white hover:text-brand-900 border-none transition-all">
                       <a href={`mailto:${executive.contacts.email}`} aria-label="Email">
-                        <Mail className="h-5 w-5" />
+                        <i className="fa-solid fa-envelope text-lg"></i>
                       </a>
                     </Button>
                   )}
                   {executive.contacts.phone && (
                     <Button asChild variant="secondary" size="icon" className="h-10 w-10 rounded-full bg-white/10 hover:bg-brand-gold text-white hover:text-brand-900 border-none transition-all">
                       <a href={`tel:${executive.contacts.phone}`} aria-label="Phone">
-                        <Phone className="h-5 w-5" />
+                        <i className="fa-solid fa-phone text-lg"></i>
                       </a>
                     </Button>
                   )}
@@ -165,7 +164,7 @@ const ExecutiveDetail = () => {
             <Card className="p-8 rounded-[2rem] shadow-xl border-brand-50 bg-white/50 backdrop-blur-sm">
               <div className="flex items-center gap-3 mb-8 pb-4 border-b border-brand-50">
                 <div className="p-3 bg-brand-50 rounded-2xl text-brand-600">
-                  <Briefcase className="h-6 w-6" />
+                  <i className="fa-solid fa-briefcase text-xl"></i>
                 </div>
                 <CardTitle className="text-2xl font-extrabold text-brand-900 uppercase tracking-tight">Key Initiatives & Projects</CardTitle>
               </div>
@@ -179,7 +178,7 @@ const ExecutiveDetail = () => {
                   </div>
                 ) : (
                   <div className="flex flex-col items-center justify-center py-12 text-center border-2 border-dashed border-brand-100 rounded-3xl bg-brand-50/20">
-                    <Briefcase className="h-12 w-12 text-brand-200 mb-4" />
+                    <i className="fa-solid fa-briefcase text-3xl text-brand-200 mb-4"></i>
                     <p className="text-muted-foreground font-medium italic">Project details are being compiled for this tenure.</p>
                   </div>
                 )}

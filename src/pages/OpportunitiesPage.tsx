@@ -7,7 +7,6 @@ import { api } from "@/lib/api";
 import { Opportunity } from "@/types";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { CalendarDays, LinkIcon, Search, ArrowLeft, Briefcase } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -26,7 +25,7 @@ const OpportunityCard: React.FC<{ opportunity: Opportunity }> = ({ opportunity }
       <CardHeader className="pb-2">
         <div className="flex justify-between items-start gap-4 mb-2">
           <div className="p-3 rounded-xl bg-brand-50 text-brand-600">
-            <Briefcase className="h-5 w-5" />
+            <i className="fa-solid fa-briefcase text-xl"></i>
           </div>
           {isDeadlinePast && (
             <Badge variant="outline" className="text-[9px] uppercase font-bold tracking-tighter border-red-100 bg-red-50 text-red-600">Closed</Badge>
@@ -44,7 +43,7 @@ const OpportunityCard: React.FC<{ opportunity: Opportunity }> = ({ opportunity }
       <CardContent className="flex-grow text-sm text-gray-700">
         <p className="mb-4 line-clamp-3 leading-relaxed">{opportunity.descriptionMd}</p>
         <div className="flex items-center text-xs font-medium text-slate-500">
-          <CalendarDays className="mr-2 h-4 w-4 text-brand-400" />
+          <i className="fa-solid fa-calendar-day mr-2 text-brand-400"></i>
           <span>
             Deadline: {format(deadlineDate, "PPP")}
           </span>
@@ -60,7 +59,7 @@ const OpportunityCard: React.FC<{ opportunity: Opportunity }> = ({ opportunity }
         </div>
         <Button asChild size="sm" className="bg-brand-700 hover:bg-brand-800 text-white rounded-xl shadow-sm px-6 font-bold" disabled={isDeadlinePast}>
           <a href={opportunity.link} target="_blank" rel="noopener noreferrer">
-            Apply <LinkIcon className="ml-2 h-3.5 w-3.5" />
+            Apply <i className="fa-solid fa-arrow-up-right-from-square ml-2 text-xs"></i>
           </a>
         </Button>
       </CardFooter>
@@ -121,7 +120,7 @@ const OpportunitiesPage: React.FC = () => {
       <div className="container py-12">
         <Button asChild variant="ghost" className="mb-8 text-brand-600 hover:text-brand-700 -ml-4">
           <Link to="/services">
-            <ArrowLeft className="mr-2 h-4 w-4" /> Back to Services
+            <i className="fa-solid fa-arrow-left mr-2"></i> Back to Services
           </Link>
         </Button>
 
@@ -132,7 +131,7 @@ const OpportunitiesPage: React.FC = () => {
 
         <div className="flex flex-col md:flex-row gap-4 mb-10 max-w-5xl mx-auto">
           <div className="relative flex-grow">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-brand-300" />
+            <i className="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-brand-300"></i>
             <Input
               placeholder="Search opportunities by title, sponsor, or keyword..."
               className="h-12 pl-12 rounded-xl border-brand-100 focus-visible:ring-brand-gold shadow-sm"

@@ -7,7 +7,6 @@ import { api } from "@/lib/api";
 import { Document } from "@/types";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { FileText, Download, Search, ArrowLeft } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -66,7 +65,7 @@ const DownloadsPage: React.FC = () => {
       <div className="container py-12">
         <Button asChild variant="ghost" className="mb-8 text-brand-600 hover:text-brand-700 -ml-4">
           <Link to="/services">
-            <ArrowLeft className="mr-2 h-4 w-4" /> Back to Services
+            <i className="fa-solid fa-arrow-left mr-2"></i> Back to Services
           </Link>
         </Button>
 
@@ -77,7 +76,7 @@ const DownloadsPage: React.FC = () => {
 
         <div className="flex flex-col md:flex-row gap-4 mb-10 max-w-5xl mx-auto">
           <div className="relative flex-grow">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-brand-300" />
+            <i className="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-brand-300"></i>
             <Input
               placeholder="Search documents by title or tag..."
               className="h-12 pl-12 rounded-xl border-brand-100 focus-visible:ring-brand-gold shadow-sm"
@@ -134,7 +133,7 @@ const DownloadsPage: React.FC = () => {
               <Card key={doc.id} className="group p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border-brand-50 bg-white/50 hover:bg-white flex flex-col">
                 <div className="flex items-start gap-4 mb-4">
                   <div className="p-3 rounded-xl bg-brand-50 text-brand-600 group-hover:bg-brand-600 group-hover:text-white transition-colors duration-300">
-                    <FileText className="h-6 w-6" />
+                    <i className="fa-solid fa-file-pdf text-2xl"></i>
                   </div>
                   <div className="flex-1 min-w-0">
                     <h3 className="font-bold text-brand-900 line-clamp-2 leading-tight mb-1">{doc.title}</h3>
@@ -149,7 +148,7 @@ const DownloadsPage: React.FC = () => {
                   </span>
                   <Button asChild size="sm" variant="ghost" className="text-brand-600 hover:text-brand-700 hover:bg-brand-50 rounded-lg">
                     <a href={doc.url} target="_blank" rel="noopener noreferrer">
-                      Download <Download className="ml-2 h-3.5 w-3.5" />
+                      Download <i className="fa-solid fa-download ml-2 text-xs"></i>
                     </a>
                   </Button>
                 </div>
