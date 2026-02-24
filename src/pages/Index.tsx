@@ -48,6 +48,8 @@ const Index = () => {
       <Helmet>
         <title>Home | KWASU Students' Union</title>
         <meta name="description" content="Official website of KWASU Students' Union. Stay updated with news, events, and student services." />
+        <meta property="og:image" content="/logo.png" />
+        <meta property="twitter:image" content="/logo.png" />
       </Helmet>
       <div className="flex flex-col">
         {/* Hero Section */}
