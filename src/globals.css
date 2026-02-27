@@ -56,11 +56,13 @@
 
   /* Standardizing Prose (Markdown content) for News-style reading */
   .prose {
-    @apply max-w-none text-slate-800 leading-relaxed;
+    @apply max-w-none text-slate-800 leading-relaxed break-words;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
   }
 
   .prose p {
-    @apply mb-6 text-lg text-gray-700;
+    @apply mb-6 text-lg text-gray-700 leading-relaxed;
   }
 
   .prose h1, .prose h2, .prose h3, .prose h4 {

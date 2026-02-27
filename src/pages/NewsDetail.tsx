@@ -100,9 +100,9 @@ const NewsDetail: React.FC = () => {
             </Link>
           </Button>
 
-          <article>
+          <article className="overflow-hidden">
             <header className="mb-10">
-              <h1 className="text-3xl md:text-5xl font-extrabold text-brand-900 mb-6 leading-tight">
+              <h1 className="text-3xl md:text-5xl font-extrabold text-brand-900 mb-6 leading-tight break-words">
                 {news.title}
               </h1>
               <div className="flex flex-wrap items-center gap-4 text-muted-foreground text-sm">
@@ -140,7 +140,7 @@ const NewsDetail: React.FC = () => {
               </div>
             )}
 
-            <div className="prose prose-slate max-w-none lg:prose-xl">
+            <div className="prose prose-slate max-w-none lg:prose-xl break-words">
               <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreaks]}>
                 {news.bodyMd}
               </ReactMarkdown>
