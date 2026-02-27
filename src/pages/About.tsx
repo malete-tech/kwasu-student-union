@@ -9,7 +9,7 @@ import { api } from "@/lib/api";
 import { Document } from "@/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { FileText, Download, History, Target, Eye, Heart, Camera } from "lucide-react";
+import { FileText, Download, History, Target, Eye, Heart } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import AboutHero from "@/components/AboutHero";
 import {
@@ -121,13 +121,6 @@ const About = () => {
 
             {/* Photo Carousel Section */}
             <div className="space-y-6">
-              <div className="flex items-center gap-3 px-4">
-                <div className="p-2 bg-brand-50 rounded-lg text-brand-600">
-                  <Camera className="h-5 w-5" />
-                </div>
-                <h3 className="text-xl font-bold uppercase tracking-tight text-brand-800">Moments in Union History</h3>
-              </div>
-              
               <div className="px-10 relative">
                 <Carousel
                   opts={{
