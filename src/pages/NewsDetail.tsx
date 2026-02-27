@@ -5,6 +5,7 @@ import { useParams, Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import remarkBreaks from "remark-breaks";
 import { api } from "@/lib/api";
 import { News } from "@/types";
 import { Button } from "@/components/ui/button";
@@ -139,8 +140,8 @@ const NewsDetail: React.FC = () => {
               </div>
             )}
 
-            <div className="prose max-w-none lg:prose-xl text-gray-800 prose-headings:text-brand-900 prose-a:text-brand-600 hover:prose-a:text-brand-700 prose-strong:text-gray-900">
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>
+            <div className="prose prose-slate max-w-none lg:prose-xl">
+              <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreaks]}>
                 {news.bodyMd}
               </ReactMarkdown>
             </div>

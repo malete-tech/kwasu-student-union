@@ -54,57 +54,36 @@
     @apply bg-background text-foreground font-open-sans antialiased;
   }
 
-  /* Custom Typography Hierarchy with Global Uppercase */
-  h1 {
-    @apply text-4xl font-bold tracking-tight lg:text-5xl text-brand-900 uppercase;
-  }
-
-  h2 {
-    @apply text-3xl font-bold tracking-tight text-brand-800 uppercase;
-  }
-
-  h3 {
-    @apply text-2xl font-semibold tracking-tight text-brand-700 uppercase;
-  }
-
-  h4 {
-    @apply text-xl font-semibold tracking-tight text-brand-700 uppercase;
-  }
-
-  p {
-    @apply leading-relaxed text-gray-700 mb-6;
-  }
-
   /* Standardizing Prose (Markdown content) for News-style reading */
   .prose {
     @apply max-w-none text-slate-800 leading-relaxed;
-    
-    h1, h2, h3, h4 {
-      @apply text-brand-900 uppercase tracking-tight mt-10 mb-6 font-extrabold border-b border-brand-50 pb-2;
-    }
-    
-    p {
-      @apply mb-6 text-lg;
-    }
+  }
 
-    strong {
-      @apply text-brand-800 font-bold;
-    }
+  .prose p {
+    @apply mb-6 text-lg text-gray-700;
+  }
 
-    blockquote {
-      @apply border-l-4 border-brand-gold bg-brand-50/50 py-4 px-6 italic rounded-r-xl text-brand-900 font-medium my-8;
-    }
+  .prose h1, .prose h2, .prose h3, .prose h4 {
+    @apply text-brand-900 uppercase tracking-tight mt-10 mb-6 font-extrabold border-b border-brand-50 pb-2;
+  }
 
-    ul {
-      @apply list-disc list-outside ml-6 space-y-3 mb-8;
-    }
+  .prose strong {
+    @apply text-brand-800 font-bold;
+  }
 
-    li::marker {
-      @apply text-brand-500 font-bold;
-    }
+  .prose blockquote {
+    @apply border-l-4 border-brand-gold bg-brand-50/50 py-4 px-6 italic rounded-r-xl text-brand-900 font-medium my-8;
+  }
 
-    hr {
-      @apply my-12 border-slate-100;
-    }
+  .prose ul {
+    @apply list-disc list-outside ml-6 space-y-3 mb-8;
+  }
+
+  .prose li::marker {
+    @apply text-brand-500 font-bold;
+  }
+
+  .prose hr {
+    @apply my-12 border-slate-100;
   }
 }

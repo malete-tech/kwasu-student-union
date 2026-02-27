@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import remarkBreaks from "remark-breaks";
 import { api } from "@/lib/api";
 import { Document } from "@/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -114,7 +115,7 @@ const About = () => {
           <div className="lg:col-span-2 space-y-8">
             <Card className="p-10 shadow-xl rounded-[2.5rem] border-brand-50 bg-white/50 backdrop-blur-sm">
               <CardContent className="prose">
-                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreaks]}>
                   {aboutContent}
                 </ReactMarkdown>
               </CardContent>
