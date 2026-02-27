@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Helmet } from "react-helmet-async";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import remarkBreaks from "remark-breaks";
+import Autoplay from "embla-carousel-autoplay";
 import { api } from "@/lib/api";
 import { Document } from "@/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -81,6 +82,9 @@ const About = () => {
   const [documents, setDocuments] = useState<Document[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const plugin = useRef(
+    Autoplay({ delay: 3000, stopOnInteraction: true })
+  );
 
   useEffect(() => {
     const fetchDocuments = async () => {
@@ -109,11 +113,11 @@ const About = () => {
       
       <AboutHero />
 
-      <div className="container py-12">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="container py-12 px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
           {/* Main History Content */}
-          <div className="lg:col-span-2 space-y-12">
-            <div className="prose px-4">
+          <div className="lg:col-span-2 space-y-16">
+            <div className="prose">
               <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreaks]}>
                 {aboutContent}
               </ReactMarkdown>
@@ -121,43 +125,49 @@ const About = () => {
 
             {/* Photo Carousel Section */}
             <div className="space-y-6">
-              <div className="px-10 relative">
+              <div className="relative">
                 <Carousel
+                  plugins={[plugin.current]}
+                  onMouseEnter={plugin.current.stop}
+                  onMouseLeave={plugin.current.reset}
                   opts={{
                     align: "start",
                     loop: true,
                   }}
                   className="w-full"
                 >
-                  <CarouselContent className="-ml-4">
+                  <CarouselContent className="-ml-2 md:-ml-4">
                     {galleryImages.map((src, index) => (
-                      <CarouselItem key={index} className="pl-4 md:basis-1/2 lg:basis-1/2">
-                        <div className="overflow-hidden rounded-2xl aspect-[4/3] shadow-md border border-brand-50 bg-white">
+                      <CarouselItem key={index} className="pl-2 md:pl-4 basis-[90%] md:basis-1/2 lg:basis-1/2">
+                        <div className="overflow-hidden rounded-xl md:rounded-2xl aspect-[16/10] md:aspect-[4/3] shadow-lg border border-brand-50 bg-white">
                           <img 
                             src={src} 
                             alt={`Union activity ${index + 1}`} 
-                            className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                            className="w-full h-full object-cover transition-transform duration-700 hover:scale-110"
                           />
                         </div>
                       </CarouselItem>
                     ))}
                   </CarouselContent>
-                  <CarouselPrevious className="-left-4 bg-white hover:bg-brand-50 text-brand-700 border-brand-100" />
-                  <CarouselNext className="-right-4 bg-white hover:bg-brand-50 text-brand-700 border-brand-100" />
+                  <div className="hidden md:block">
+                    <CarouselPrevious className="-left-4 bg-white hover:bg-brand-50 text-brand-700 border-brand-100" />
+                    <CarouselNext className="-right-4 bg-white hover:bg-brand-50 text-brand-700 border-brand-100" />
+                  </div>
                 </Carousel>
               </div>
             </div>
           </div>
 
           {/* Sidebar: Documents & Fast Facts */}
-          <div className="lg:col-span-1 space-y-8">
-            <Card className="p-6 shadow-lg rounded-2xl border-brand-100 bg-brand-900 text-white">
-              <CardHeader className="pb-4 p-0">
+          <div className="lg:col-span-1 space-y-10">
+            <Card className="p-6 shadow-xl rounded-3xl border-none bg-brand-900 text-white overflow-hidden relative">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-brand-gold/10 rounded-full blur-3xl -mr-16 -mt-16" />
+              <CardHeader className="pb-4 p-0 relative z-10">
                 <CardTitle className="text-xl font-bold uppercase text-brand-gold flex items-center gap-2">
                   <FileText className="h-5 w-5" /> Important Vault
                 </CardTitle>
               </CardHeader>
-              <CardContent className="p-0 space-y-4 pt-4">
+              <CardContent className="p-0 space-y-4 pt-4 relative z-10">
                 {loading ? (
                   <div className="space-y-3">
                     <Skeleton className="h-12 w-full bg-white/10" />
@@ -171,56 +181,58 @@ const About = () => {
                       key={doc.id}
                       asChild
                       variant="ghost"
-                      className="w-full justify-start text-left h-auto py-3 px-4 bg-white/10 hover:bg-white/20 text-white border-none rounded-xl transition-all"
+                      className="w-full justify-start text-left h-auto py-4 px-5 bg-white/5 hover:bg-white/15 text-white border-none rounded-2xl transition-all group"
                     >
                       <a href={doc.url} target="_blank" rel="noopener noreferrer" className="flex items-center">
-                        <FileText className="mr-3 h-5 w-5 text-brand-gold" />
+                        <div className="p-2 rounded-lg bg-brand-gold/10 mr-3 text-brand-gold group-hover:scale-110 transition-transform">
+                          <FileText className="h-5 w-5" />
+                        </div>
                         <div className="flex-grow min-w-0">
                           <span className="block font-bold truncate text-sm uppercase tracking-tight">{doc.title}</span>
-                          <span className="block text-[10px] text-white/60 uppercase font-bold">{doc.fileType} • {doc.fileSize}</span>
+                          <span className="block text-[10px] text-white/50 uppercase font-bold">{doc.fileType} • {doc.fileSize}</span>
                         </div>
-                        <Download className="ml-auto h-4 w-4 text-white/40" />
+                        <Download className="ml-auto h-4 w-4 text-white/30 group-hover:text-white" />
                       </a>
                     </Button>
                   ))
                 ) : (
-                  <p className="text-white/60 text-xs italic">Constitution and Handbook coming soon.</p>
+                  <p className="text-white/60 text-xs italic bg-white/5 p-4 rounded-xl border border-white/10">Constitution and Handbook coming soon.</p>
                 )}
               </CardContent>
             </Card>
 
-            <Card className="p-6 shadow-lg rounded-2xl border-brand-100 bg-white">
+            <Card className="p-6 shadow-lg rounded-3xl border-brand-50 bg-white">
               <CardHeader className="pb-4 p-0">
-                <CardTitle className="text-xl font-extrabold uppercase text-brand-700 flex items-center gap-2">
+                <CardTitle className="text-xl font-extrabold uppercase text-brand-900 flex items-center gap-2">
                   <History className="h-5 w-5 text-brand-500" /> Fast Facts
                 </CardTitle>
               </CardHeader>
-              <CardContent className="p-0 pt-4 space-y-6">
-                <div className="flex items-start gap-4">
-                  <div className="p-2 bg-brand-50 rounded-lg text-brand-600">
+              <CardContent className="p-0 pt-6 space-y-8">
+                <div className="flex items-start gap-5">
+                  <div className="p-3 bg-brand-50 rounded-2xl text-brand-600 shadow-sm">
                     <Target className="h-5 w-5" />
                   </div>
                   <div>
-                    <h4 className="text-xs font-bold text-brand-900 uppercase tracking-widest">Founded</h4>
-                    <p className="text-sm text-gray-600">2017/2018 Academic Session</p>
+                    <h4 className="text-[10px] font-bold text-brand-400 uppercase tracking-widest mb-1">Founded</h4>
+                    <p className="text-sm font-bold text-brand-900">2017/2018 Academic Session</p>
                   </div>
                 </div>
-                <div className="flex items-start gap-4">
-                  <div className="p-2 bg-brand-50 rounded-lg text-brand-600">
+                <div className="flex items-start gap-5">
+                  <div className="p-3 bg-brand-50 rounded-2xl text-brand-600 shadow-sm">
                     <Eye className="h-5 w-5" />
                   </div>
                   <div>
-                    <h4 className="text-xs font-bold text-brand-900 uppercase tracking-widest">Leadership</h4>
-                    <p className="text-sm text-gray-600">9th President currently in office</p>
+                    <h4 className="text-[10px] font-bold text-brand-400 uppercase tracking-widest mb-1">Leadership</h4>
+                    <p className="text-sm font-bold text-brand-900">9th President in office</p>
                   </div>
                 </div>
-                <div className="flex items-start gap-4">
-                  <div className="p-2 bg-brand-50 rounded-lg text-brand-600">
+                <div className="flex items-start gap-5">
+                  <div className="p-3 bg-brand-50 rounded-2xl text-brand-600 shadow-sm">
                     <Heart className="h-5 w-5" />
                   </div>
                   <div>
-                    <h4 className="text-xs font-bold text-brand-900 uppercase tracking-widest">Location</h4>
-                    <p className="text-sm text-gray-600">KWASU SU Building, Malete</p>
+                    <h4 className="text-[10px] font-bold text-brand-400 uppercase tracking-widest mb-1">Location</h4>
+                    <p className="text-sm font-bold text-brand-900">KWASU SU Building, Malete</p>
                   </div>
                 </div>
               </CardContent>
