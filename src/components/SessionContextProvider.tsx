@@ -1,106 +1,67 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react"; // Removed useCallback
 import { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
-import { Profile } from "@/types";
+// Removed Profile import as it's no longer used here
 
 interface SessionContextType {
   session: Session | null;
   user: User | null;
-  profile: Profile | null;
+  // Removed profile from context type
   loading: boolean;
-  refreshProfile: () => Promise<void>;
 }
 
 const SessionContext = createContext<SessionContextType>({
   session: null,
   user: null,
-  profile: null,
+  // Removed profile from default context value
   loading: true,
-  refreshProfile: async () => {},
 });
 
 export const SessionContextProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
-  const [profile, setProfile] = useState<Profile | null>(null);
+  // Removed profile state
   const [loading, setLoading] = useState<boolean>(true);
 
-  const fetchProfile = useCallback(async (userId: string) => {
-    try {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', userId)
-        .maybeSingle();
-
-      if (error) {
-        console.error("Error fetching profile:", error);
-      } else {
-        setProfile(data as Profile);
-      }
-    } catch (err) {
-      console.error("Failed to fetch profile:", err);
-    }
-  }, []);
-
-  const refreshProfile = async () => {
-    if (user?.id) {
-      await fetchProfile(user.id);
-    }
-  };
+  // Removed fetchProfile useCallback
 
   useEffect(() => {
-    let isMounted = true;
+    let isMounted = true; // race-safety guard
 
     const init = async () => {
       const { data } = await supabase.auth.getSession();
       const currentSession = data.session;
 
       if (!isMounted) return;
-      
       setSession(currentSession);
-      const currentUser = currentSession?.user ?? null;
-      setUser(currentUser);
+      setUser(currentSession?.user ?? null);
+      setLoading(false); // stop blocking early
 
-      if (currentUser) {
-        await fetchProfile(currentUser.id);
-      }
-      
-      setLoading(false);
+      // Removed profile fetching logic
     };
 
     init();
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event, newSession) => {
+    } = supabase.auth.onAuthStateChange(async (_event, newSession) => {
       if (!isMounted) return;
-      
       setSession(newSession);
-      const newUser = newSession?.user ?? null;
-      setUser(newUser);
+      setUser(newSession?.user ?? null);
 
-      if (newUser) {
-        await fetchProfile(newUser.id);
-      } else {
-        setProfile(null);
-      }
-
-      if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION') {
-        setLoading(false);
-      }
+      // Removed profile fetching logic
     });
 
     return () => {
       isMounted = false;
       subscription.unsubscribe();
     };
-  }, [fetchProfile]);
+  }, []); // Removed fetchProfile from dependencies
 
   return (
-    <SessionContext.Provider value={{ session, user, profile, loading, refreshProfile }}>
+    <SessionContext.Provider value={{ session, user, loading }}>
       {children}
     </SessionContext.Provider>
   );

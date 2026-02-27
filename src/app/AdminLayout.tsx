@@ -6,7 +6,7 @@ import { Helmet } from "react-helmet-async";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { Menu, User, LogOut, Settings, ChevronRight, AlertTriangle } from "lucide-react";
+import { Menu, User, LogOut, Settings, ChevronRight } from "lucide-react";
 import AdminNavigation from "@/components/admin/AdminNavigation";
 import { useSession } from "@/components/SessionContextProvider";
 import { supabase } from "@/integrations/supabase/client";
@@ -19,14 +19,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 const AdminLayout: React.FC = () => {
   const isMobile = useIsMobile();
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  const { session, profile, loading } = useSession();
+  const { session, loading } = useSession();
 
   const closeSheet = () => setIsSheetOpen(false);
 
@@ -65,10 +64,6 @@ const AdminLayout: React.FC = () => {
       </div>
     );
   }
-
-  // Cast profile to any to access role safely if type isn't updated yet in types/index.ts
-  const userRole = (profile as any)?.role;
-  const isNotAdmin = userRole && userRole !== 'admin';
 
   if (session) {
     return (
@@ -131,9 +126,6 @@ const AdminLayout: React.FC = () => {
                         <p className="text-xs text-muted-foreground truncate">
                           {session.user.email}
                         </p>
-                        <p className="text-[10px] font-bold uppercase tracking-tighter text-brand-600 bg-brand-50 inline-block px-1.5 py-0.5 rounded w-fit">
-                          Role: {userRole || 'Unknown'}
-                        </p>
                       </div>
                     </DropdownMenuLabel>
                     <DropdownMenuSeparator className="bg-gray-100" />
@@ -159,15 +151,6 @@ const AdminLayout: React.FC = () => {
             </header>
 
             <main className="flex-1 px-6 md:px-10 py-10 max-w-[1400px] mx-auto w-full">
-              {isNotAdmin && (
-                <Alert variant="destructive" className="mb-8 rounded-2xl border-2 border-destructive/20 bg-destructive/5">
-                  <AlertTriangle className="h-5 w-5" />
-                  <AlertTitle className="font-bold">Insufficient Permissions</AlertTitle>
-                  <AlertDescription className="text-sm">
-                    Your account is currently assigned the <strong>'{userRole}'</strong> role. You can view this dashboard, but you will be unable to save changes, create news, or edit events. Please contact the primary administrator to upgrade your role to <strong>'admin'</strong>.
-                  </AlertDescription>
-                </Alert>
-              )}
               <Outlet />
             </main>
           </div>
