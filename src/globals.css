@@ -72,22 +72,39 @@
   }
 
   p {
-    @apply leading-relaxed text-gray-700;
+    @apply leading-relaxed text-gray-700 mb-6;
   }
 
-  /* Adjust prose styles to match new hierarchy and uppercase */
+  /* Standardizing Prose (Markdown content) for News-style reading */
   .prose {
-    h1 {
-      @apply text-3xl font-bold text-brand-900 uppercase;
+    @apply max-w-none text-slate-800 leading-relaxed;
+    
+    h1, h2, h3, h4 {
+      @apply text-brand-900 uppercase tracking-tight mt-10 mb-6 font-extrabold border-b border-brand-50 pb-2;
     }
-    h2 {
-      @apply text-2xl font-bold text-brand-800 uppercase;
+    
+    p {
+      @apply mb-6 text-lg;
     }
-    h3 {
-      @apply text-xl font-semibold text-brand-700 uppercase;
+
+    strong {
+      @apply text-brand-800 font-bold;
     }
-    h4 {
-      @apply text-lg font-semibold text-brand-700 uppercase;
+
+    blockquote {
+      @apply border-l-4 border-brand-gold bg-brand-50/50 py-4 px-6 italic rounded-r-xl text-brand-900 font-medium my-8;
+    }
+
+    ul {
+      @apply list-disc list-outside ml-6 space-y-3 mb-8;
+    }
+
+    li::marker {
+      @apply text-brand-500 font-bold;
+    }
+
+    hr {
+      @apply my-12 border-slate-100;
     }
   }
 }

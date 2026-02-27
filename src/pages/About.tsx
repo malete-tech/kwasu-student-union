@@ -37,7 +37,9 @@ To be a leading Students' Union, recognized for its transparency, accountability
 
 ## Brief History of KWASU SU
 
-The Kwara State University Students' Union (KWASU SU) emerged as the official representative body of students of Kwara State University (KWASU), Malete, with a clear mandate to serve as the collective voice of the student community. Its establishment marked a defining moment in the democratic and participatory development of the university, creating a structured platform through which students could engage university management, advocate for their welfare, and contribute meaningfully to institutional growth.
+The Kwara State University Students' Union (KWASU SU) emerged as the official representative body of students of Kwara State University (KWASU), Malete, with a clear mandate to serve as the collective voice of the student community. 
+
+Its establishment marked a defining moment in the democratic and participatory development of the university, creating a structured platform through which students could engage university management, advocate for their welfare, and contribute meaningfully to institutional growth.
 
 ### The Foundation (2017/2018)
 The formal installation of the Students’ Union took place during the **2017/2018 academic session** under the leadership of **Comrade Aliyu Uthman Abdulkadir (Phodeo)**, who was then serving as the National Association of Nigerian Students (NANS)- Kwara Chairman. This foundational phase provided the constitutional and administrative framework upon which the Union continues to operate.
@@ -110,8 +112,8 @@ const About = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main History Content */}
           <div className="lg:col-span-2 space-y-8">
-            <Card className="p-8 shadow-xl rounded-[2rem] border-brand-50 bg-white/50 backdrop-blur-sm">
-              <CardContent className="prose prose-brand max-w-none prose-headings:uppercase prose-headings:text-brand-900 prose-strong:text-brand-800">
+            <Card className="p-10 shadow-xl rounded-[2.5rem] border-brand-50 bg-white/50 backdrop-blur-sm">
+              <CardContent className="prose">
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>
                   {aboutContent}
                 </ReactMarkdown>
