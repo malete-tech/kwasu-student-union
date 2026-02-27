@@ -29,8 +29,8 @@ export const news = {
     })) as News[];
   },
   getById: async (id: string): Promise<News | undefined> => {
-    const { data, error } = await supabase.from('news').select('*').eq('id', id).single();
-    if (error && error.code !== 'PGRST116') {
+    const { data, error } = await supabase.from('news').select('*').eq('id', id).maybeSingle();
+    if (error) {
       console.error("Supabase error fetching news by ID:", error);
       throw new Error(error.message);
     }
@@ -43,8 +43,8 @@ export const news = {
     } as News;
   },
   getBySlug: async (slug: string): Promise<News | undefined> => {
-    const { data, error } = await supabase.from('news').select('*').eq('slug', slug).single();
-    if (error && error.code !== 'PGRST116') {
+    const { data, error } = await supabase.from('news').select('*').eq('slug', slug).maybeSingle();
+    if (error) {
       console.error("Supabase error fetching news by slug:", error);
       throw new Error(error.message);
     }
@@ -65,16 +65,23 @@ export const news = {
       tags: news.tags,
       published_at: news.publishedAt,
       cover_url: news.coverUrl,
-    }).select().single();
+    }).select();
+
     if (error) {
       console.error("Supabase error creating news:", error);
       throw new Error(error.message);
     }
+
+    if (!data || data.length === 0) {
+      throw new Error("Failed to create news article. You might not have the required permissions.");
+    }
+
+    const item = data[0];
     return {
-      ...data,
-      bodyMd: data.body_md,
-      publishedAt: data.published_at,
-      coverUrl: data.cover_url,
+      ...item,
+      bodyMd: item.body_md,
+      publishedAt: item.published_at,
+      coverUrl: item.cover_url,
     } as News;
   },
   update: async (id: string, news: Partial<Omit<News, 'id' | 'created_at'>>): Promise<News> => {
@@ -87,16 +94,23 @@ export const news = {
     if (news.publishedAt !== undefined) updatePayload['published_at'] = news.publishedAt;
     if (news.coverUrl !== undefined) updatePayload['cover_url'] = news.coverUrl;
 
-    const { data, error } = await supabase.from('news').update(updatePayload).eq('id', id).select().single();
+    const { data, error } = await supabase.from('news').update(updatePayload).eq('id', id).select();
+    
     if (error) {
       console.error("Supabase error updating news:", error);
       throw new Error(error.message);
     }
+
+    if (!data || data.length === 0) {
+      throw new Error("Failed to update news article. The article might not exist, or you lack the required 'admin' role permissions.");
+    }
+
+    const item = data[0];
     return {
-      ...data,
-      bodyMd: data.body_md,
-      publishedAt: data.published_at,
-      coverUrl: data.cover_url,
+      ...item,
+      bodyMd: item.body_md,
+      publishedAt: item.published_at,
+      coverUrl: item.cover_url,
     } as News;
   },
   delete: async (id: string): Promise<void> => {

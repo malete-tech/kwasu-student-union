@@ -5,20 +5,18 @@ export const executives = {
   getAll: async (councilType?: Executive['councilType']): Promise<Executive[]> => {
     let query = supabase.from('executives')
       .select('*')
-      .order('display_order', { ascending: true }) // Primary sort by manual order
-      .order('tenure_start', { ascending: false }); // Secondary sort by tenure start
+      .order('display_order', { ascending: true })
+      .order('tenure_start', { ascending: false });
     
     if (councilType) {
       query = query.eq('council_type', councilType);
     }
 
     const { data, error } = await query;
-    
     if (error) {
       console.error("Supabase error fetching executives:", error);
       throw new Error(error.message);
     }
-    // Convert snake_case from DB to camelCase for frontend type
     return data.map(item => ({
       ...item,
       tenureStart: item.tenure_start,
@@ -26,17 +24,16 @@ export const executives = {
       photoUrl: item.photo_url,
       projectsMd: item.projects_md,
       displayOrder: item.display_order,
-      councilType: item.council_type, // Include new field
+      councilType: item.council_type,
     })) as Executive[];
   },
   getBySlug: async (slug: string): Promise<Executive | undefined> => {
-    const { data, error } = await supabase.from('executives').select('*').eq('slug', slug).single();
-    if (error && error.code !== 'PGRST116') { // PGRST116 means no rows found
+    const { data, error } = await supabase.from('executives').select('*').eq('slug', slug).maybeSingle();
+    if (error) {
       console.error("Supabase error fetching executive by slug:", error);
       throw new Error(error.message);
     }
     if (!data) return undefined;
-    // Convert snake_case from DB to camelCase for frontend type
     return {
       ...data,
       tenureStart: data.tenure_start,
@@ -44,21 +41,19 @@ export const executives = {
       photoUrl: data.photo_url,
       projectsMd: data.projects_md,
       displayOrder: data.display_order,
-      councilType: data.council_type, // Include new field
+      councilType: data.council_type,
     } as Executive;
   },
   create: async (executive: Omit<Executive, 'id' | 'created_at' | 'displayOrder'> & { displayOrder?: number }): Promise<Executive> => {
-    // Calculate the next highest display order
     const { data: maxOrderData } = await supabase
         .from('executives')
         .select('display_order')
         .order('display_order', { ascending: false })
         .limit(1)
-        .single();
+        .maybeSingle();
 
     const newDisplayOrder = (maxOrderData?.display_order || 0) + 1;
 
-    // Explicitly construct payload with snake_case keys for Supabase insert
     const { data, error } = await supabase.from('executives').insert({
       name: executive.name,
       slug: executive.slug,
@@ -70,22 +65,27 @@ export const executives = {
       projects_md: executive.projectsMd,
       contacts: executive.contacts,
       display_order: newDisplayOrder,
-      council_type: executive.councilType, // Include new field
-    }).select().single();
+      council_type: executive.councilType,
+    }).select();
+
     if (error) {
       console.error("Supabase error creating executive:", error);
       throw new Error(error.message);
-      // @ts-ignore
     }
-    // Convert returned snake_case data back to camelCase for frontend type
+
+    if (!data || data.length === 0) {
+      throw new Error("Failed to create executive profile. You might not have required permissions.");
+    }
+
+    const item = data[0];
     return {
-      ...data,
-      tenureStart: data.tenure_start,
-      tenureEnd: data.tenure_end,
-      photoUrl: data.photo_url,
-      projectsMd: data.projects_md,
-      displayOrder: data.display_order,
-      councilType: data.council_type, // Include new field
+      ...item,
+      tenureStart: item.tenure_start,
+      tenureEnd: item.tenure_end,
+      photoUrl: item.photo_url,
+      projectsMd: item.projects_md,
+      displayOrder: item.display_order,
+      councilType: item.council_type,
     } as Executive;
   },
   update: async (id: string, executive: Partial<Omit<Executive, 'id' | 'created_at'>>): Promise<Executive> => {
@@ -99,23 +99,28 @@ export const executives = {
     if (executive.photoUrl !== undefined) updatePayload['photo_url'] = executive.photoUrl;
     if (executive.projectsMd !== undefined) updatePayload['projects_md'] = executive.projectsMd;
     if (executive.contacts !== undefined) updatePayload['contacts'] = executive.contacts;
-    if (executive.councilType !== undefined) updatePayload['council_type'] = executive.councilType; // Include new field
+    if (executive.councilType !== undefined) updatePayload['council_type'] = executive.councilType;
 
-    const { data, error } = await supabase.from('executives').update(updatePayload).eq('id', id).select().single();
+    const { data, error } = await supabase.from('executives').update(updatePayload).eq('id', id).select();
+
     if (error) {
       console.error("Supabase error updating executive:", error);
       throw new Error(error.message);
-      // @ts-ignore
     }
-    // Convert returned snake_case data back to camelCase for frontend type
+
+    if (!data || data.length === 0) {
+      throw new Error("Failed to update executive profile. You might not have the required permissions or the profile does not exist.");
+    }
+
+    const item = data[0];
     return {
-      ...data,
-      tenureStart: data.tenure_start,
-      tenureEnd: data.tenure_end,
-      photoUrl: data.photo_url,
-      projectsMd: data.projects_md,
-      displayOrder: data.display_order,
-      councilType: data.council_type, // Include new field
+      ...item,
+      tenureStart: item.tenure_start,
+      tenureEnd: item.tenure_end,
+      photoUrl: item.photo_url,
+      projectsMd: item.projects_md,
+      displayOrder: item.display_order,
+      councilType: item.council_type,
     } as Executive;
   },
   reorder: async (id: string, newOrder: number): Promise<void> => {
