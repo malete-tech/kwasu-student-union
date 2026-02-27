@@ -51,7 +51,7 @@
   }
 
   body {
-    @apply bg-background text-foreground font-rubik antialiased;
+    @apply bg-background text-foreground font-open-sans antialiased;
   }
 
   /* Custom Typography Hierarchy with Global Uppercase */

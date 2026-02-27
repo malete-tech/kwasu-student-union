@@ -18,8 +18,7 @@ export default {
     },
     extend: {
       fontFamily: {
-        "rubik": ["Rubik", "sans-serif"],
-        "google-sans-flex": ["Google Sans Flex", "sans-serif"],
+        "open-sans": ["'Open Sans'", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",
