@@ -112,14 +112,12 @@ const About = () => {
       <div className="container py-12">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main History Content */}
-          <div className="lg:col-span-2 space-y-8">
-            <Card className="p-10 shadow-xl rounded-[2.5rem] border-brand-50 bg-white/50 backdrop-blur-sm">
-              <CardContent className="prose">
-                <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreaks]}>
-                  {aboutContent}
-                </ReactMarkdown>
-              </CardContent>
-            </Card>
+          <div className="lg:col-span-2 space-y-12">
+            <div className="prose px-4">
+              <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreaks]}>
+                {aboutContent}
+              </ReactMarkdown>
+            </div>
 
             {/* Photo Carousel Section */}
             <div className="space-y-6">
