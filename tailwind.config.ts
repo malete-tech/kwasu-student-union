@@ -18,7 +18,7 @@ export default {
     },
     extend: {
       fontFamily: {
-        "open-sans": ["'Open Sans'", "sans-serif"],
+        "google-sans": ["'Google Sans'", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",
