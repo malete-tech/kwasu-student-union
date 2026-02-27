@@ -8,9 +8,16 @@ import { api } from "@/lib/api";
 import { Document } from "@/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { FileText, Download, History, Target, Eye, Heart } from "lucide-react";
+import { FileText, Download, History, Target, Eye, Heart, Camera } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import AboutHero from "@/components/AboutHero";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 
 const aboutContent = `
 ## Our Mission
@@ -58,6 +65,15 @@ The Union has evolved through the dedicated leadership of its elected Presidents
     *   Continues to uphold the Union’s enduring mission of progressive leadership and constructive engagement.
 `;
 
+const galleryImages = [
+  "/about-gallery/photo1.jpg",
+  "/about-gallery/photo2.jpg",
+  "/about-gallery/photo3.jpg",
+  "/about-gallery/photo4.jpg",
+  "/about-gallery/photo5.jpg",
+  "/about-gallery/photo6.jpg",
+];
+
 const About = () => {
   const [documents, setDocuments] = useState<Document[]>([]);
   const [loading, setLoading] = useState(true);
@@ -93,7 +109,7 @@ const About = () => {
       <div className="container py-12">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main History Content */}
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-2 space-y-8">
             <Card className="p-8 shadow-xl rounded-[2rem] border-brand-50 bg-white/50 backdrop-blur-sm">
               <CardContent className="prose prose-brand max-w-none prose-headings:uppercase prose-headings:text-brand-900 prose-strong:text-brand-800">
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>
@@ -101,6 +117,42 @@ const About = () => {
                 </ReactMarkdown>
               </CardContent>
             </Card>
+
+            {/* Photo Carousel Section */}
+            <div className="space-y-6">
+              <div className="flex items-center gap-3 px-4">
+                <div className="p-2 bg-brand-50 rounded-lg text-brand-600">
+                  <Camera className="h-5 w-5" />
+                </div>
+                <h3 className="text-xl font-bold uppercase tracking-tight text-brand-800">Moments in Union History</h3>
+              </div>
+              
+              <div className="px-10 relative">
+                <Carousel
+                  opts={{
+                    align: "start",
+                    loop: true,
+                  }}
+                  className="w-full"
+                >
+                  <CarouselContent className="-ml-4">
+                    {galleryImages.map((src, index) => (
+                      <CarouselItem key={index} className="pl-4 md:basis-1/2 lg:basis-1/2">
+                        <div className="overflow-hidden rounded-2xl aspect-[4/3] shadow-md border border-brand-50 bg-white">
+                          <img 
+                            src={src} 
+                            alt={`Union activity ${index + 1}`} 
+                            className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                          />
+                        </div>
+                      </CarouselItem>
+                    ))}
+                  </CarouselContent>
+                  <CarouselPrevious className="-left-4 bg-white hover:bg-brand-50 text-brand-700 border-brand-100" />
+                  <CarouselNext className="-right-4 bg-white hover:bg-brand-50 text-brand-700 border-brand-100" />
+                </Carousel>
+              </div>
+            </div>
           </div>
 
           {/* Sidebar: Documents & Fast Facts */}
