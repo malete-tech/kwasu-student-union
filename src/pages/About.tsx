@@ -8,9 +8,9 @@ import { api } from "@/lib/api";
 import { Document } from "@/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { FileText, Download } from "lucide-react";
+import { FileText, Download, History, Target, Eye, Heart } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
-import AboutHero from "@/components/AboutHero"; // New import
+import AboutHero from "@/components/AboutHero";
 
 const aboutContent = `
 ## Our Mission
@@ -20,14 +20,42 @@ To represent, advocate for, and empower the students of Kwara State University, 
 To be a leading Students' Union, recognized for its transparency, accountability, and unwavering commitment to student welfare, academic excellence, and innovative solutions that enhance the overall university experience.
 
 ## Our Core Values
-*   **Student-Centricity:** Placing the needs and interests of students at the forefront of all our initiatives and decisions.
-*   **Integrity & Transparency:** Upholding the highest standards of honesty, ethics, and openness in all union operations.
-*   **Advocacy & Empowerment:** Actively championing student rights and providing platforms for students to develop their leadership potential.
-*   **Inclusivity & Diversity:** Promoting an environment where all students feel valued, respected, and have equal opportunities.
-*   **Innovation & Progress:** Embracing new ideas and technologies to continuously improve student services and engagement.
+*   **Student-Centricity:** Placing the needs and interests of students at the forefront.
+*   **Integrity & Transparency:** Upholding honesty and openness in all operations.
+*   **Advocacy & Empowerment:** Championing student rights and leadership potential.
+*   **Inclusivity & Diversity:** Valuing every student and promoting equal opportunities.
+*   **Innovation & Progress:** Embracing new ideas to improve student services.
+
+---
 
 ## Brief History of KWASU SU
-The Kwara State University Students' Union (KWASU SU) was established shortly after the university's inception to serve as the official representative body for all students. Over the years, the Union has played a pivotal role in bridging the gap between students and the university management, advocating for improved welfare, academic support, and a conducive learning environment. From its humble beginnings, KWASU SU has grown into a formidable force, organizing numerous events, initiatives, and campaigns that have positively impacted student life. We continue to build on this legacy, striving to create a lasting positive impact on every student's journey at KWASU.
+
+The Kwara State University Students' Union (KWASU SU) emerged as the official representative body of students of Kwara State University (KWASU), Malete, with a clear mandate to serve as the collective voice of the student community. Its establishment marked a defining moment in the democratic and participatory development of the university, creating a structured platform through which students could engage university management, advocate for their welfare, and contribute meaningfully to institutional growth.
+
+### The Foundation (2017/2018)
+The formal installation of the Students’ Union took place during the **2017/2018 academic session** under the leadership of **Comrade Aliyu Uthman Abdulkadir (Phodeo)**, who was then serving as the National Association of Nigerian Students (NANS)- Kwara Chairman. This foundational phase provided the constitutional and administrative framework upon which the Union continues to operate.
+
+### Presidential Legacy & Leadership
+The Union has evolved through the dedicated leadership of its elected Presidents:
+
+*   **1st Pioneer President: Comrade Adio Usman Olawale (Adio)**
+    *   Laid the groundwork for effective student leadership and institutional engagement, setting important precedents in governance.
+*   **2nd President: Comrade Abdulganiyu Dayo Dikko (Dikko)**
+    *   Strengthened advocacy efforts and deepened the Union’s institutional presence within the university.
+*   **3rd President: Comrade Kozeem Olaitan Hanafy (Hanafy)**
+    *   Expanded the Union’s visibility through impactful initiatives and broadened student participation.
+*   **4th President: Lawal Azeez Okikiola (Okiki)**
+    *   Consolidated administrative stability and promoted structured engagement between students and management.
+*   **5th President: Comrade Yusuf Umar Danshitta (Danshitta)**
+    *   Prioritized welfare-centered programs, reinforcing the Union’s commitment to student well-being.
+*   **6th President: Comrade Adewoye Isreal Jesutofunmi (Isreal.ait)**
+    *   Further strengthened student representation and encouraged broader inclusion in Union affairs.
+*   **7th President: Comrade Abdulkadir Soliu Kolapo (Sen. Kolapapaz)**
+    *   Emphasized accountability and continuity in student governance.
+*   **8th President: Comrade Abdulafeez Babatunde Kewulere (Baba)**
+    *   Reinforced the Union’s position as a formidable and organized body within the university.
+*   **9th President (Current): Comrade Abdulsamad Olamilekan Raji (PEOPLE)**
+    *   Continues to uphold the Union’s enduring mission of progressive leadership and constructive engagement.
 `;
 
 const About = () => {
@@ -57,18 +85,17 @@ const About = () => {
     <>
       <Helmet>
         <title>About Us | KWASU Students' Union</title>
-        <meta name="description" content="Learn about the mission, vision, values, and history of KWASU Students' Union. Access our constitution and student handbook." />
+        <meta name="description" content="Official history and mission of the KWASU Students' Union. Meet our presidential legacy and access key documents." />
       </Helmet>
       
-      <AboutHero /> {/* Integrated the new hero section here */}
+      <AboutHero />
 
       <div className="container py-12">
-        {/* Removed the h1 tag as it's now part of the hero section */}
-
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Main History Content */}
           <div className="lg:col-span-2">
-            <Card className="p-6 shadow-lg rounded-2xl">
-              <CardContent className="prose max-w-none">
+            <Card className="p-8 shadow-xl rounded-[2rem] border-brand-50 bg-white/50 backdrop-blur-sm">
+              <CardContent className="prose prose-brand max-w-none prose-headings:uppercase prose-headings:text-brand-900 prose-strong:text-brand-800">
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>
                   {aboutContent}
                 </ReactMarkdown>
@@ -76,40 +103,80 @@ const About = () => {
             </Card>
           </div>
 
-          <div className="lg:col-span-1">
-            <Card className="p-6 shadow-lg rounded-2xl">
-              <CardHeader className="pb-4">
-                <CardTitle className="text-2xl font-semibold text-brand-700">Important Documents</CardTitle>
+          {/* Sidebar: Documents & Fast Facts */}
+          <div className="lg:col-span-1 space-y-8">
+            <Card className="p-6 shadow-lg rounded-2xl border-brand-100 bg-brand-900 text-white">
+              <CardHeader className="pb-4 p-0">
+                <CardTitle className="text-xl font-bold uppercase text-brand-gold flex items-center gap-2">
+                  <FileText className="h-5 w-5" /> Important Vault
+                </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="p-0 space-y-4 pt-4">
                 {loading ? (
                   <div className="space-y-3">
-                    <Skeleton className="h-10 w-full" />
-                    <Skeleton className="h-10 w-full" />
+                    <Skeleton className="h-12 w-full bg-white/10" />
+                    <Skeleton className="h-12 w-full bg-white/10" />
                   </div>
                 ) : error ? (
-                  <div className="text-destructive text-sm">{error}</div>
+                  <div className="text-red-300 text-sm">{error}</div>
                 ) : documents.length > 0 ? (
                   documents.map((doc) => (
                     <Button
                       key={doc.id}
                       asChild
-                      variant="outline"
-                      className="w-full justify-start text-left h-auto py-3 px-4 border-brand-300 hover:bg-brand-50 focus-visible:ring-brand-gold"
+                      variant="ghost"
+                      className="w-full justify-start text-left h-auto py-3 px-4 bg-white/10 hover:bg-white/20 text-white border-none rounded-xl transition-all"
                     >
                       <a href={doc.url} target="_blank" rel="noopener noreferrer" className="flex items-center">
-                        <FileText className="mr-3 h-5 w-5 text-brand-500" />
-                        <div className="flex-grow">
-                          <span className="block font-medium">{doc.title}</span>
-                          <span className="block text-xs text-muted-foreground">{doc.fileType} &bull; {doc.fileSize}</span>
+                        <FileText className="mr-3 h-5 w-5 text-brand-gold" />
+                        <div className="flex-grow min-w-0">
+                          <span className="block font-bold truncate text-sm uppercase tracking-tight">{doc.title}</span>
+                          <span className="block text-[10px] text-white/60 uppercase font-bold">{doc.fileType} • {doc.fileSize}</span>
                         </div>
-                        <Download className="ml-auto h-5 w-5 text-muted-foreground" />
+                        <Download className="ml-auto h-4 w-4 text-white/40" />
                       </a>
                     </Button>
                   ))
                 ) : (
-                  <p className="text-muted-foreground text-sm">No important documents available yet.</p>
+                  <p className="text-white/60 text-xs italic">Constitution and Handbook coming soon.</p>
                 )}
+              </CardContent>
+            </Card>
+
+            <Card className="p-6 shadow-lg rounded-2xl border-brand-100 bg-white">
+              <CardHeader className="pb-4 p-0">
+                <CardTitle className="text-xl font-extrabold uppercase text-brand-700 flex items-center gap-2">
+                  <History className="h-5 w-5 text-brand-500" /> Fast Facts
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-0 pt-4 space-y-6">
+                <div className="flex items-start gap-4">
+                  <div className="p-2 bg-brand-50 rounded-lg text-brand-600">
+                    <Target className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <h4 className="text-xs font-bold text-brand-900 uppercase tracking-widest">Founded</h4>
+                    <p className="text-sm text-gray-600">2017/2018 Academic Session</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-4">
+                  <div className="p-2 bg-brand-50 rounded-lg text-brand-600">
+                    <Eye className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <h4 className="text-xs font-bold text-brand-900 uppercase tracking-widest">Leadership</h4>
+                    <p className="text-sm text-gray-600">9th President currently in office</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-4">
+                  <div className="p-2 bg-brand-50 rounded-lg text-brand-600">
+                    <Heart className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <h4 className="text-xs font-bold text-brand-900 uppercase tracking-widest">Location</h4>
+                    <p className="text-sm text-gray-600">KWASU SU Building, Malete</p>
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </div>
