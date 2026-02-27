@@ -75,8 +75,9 @@ const EventsPage: React.FC = () => {
   return (
     <>
       <Helmet>
-        <title>Events & Calendar | KWASU Students' Union</title>
-        <meta name="description" content="Explore upcoming events, workshops, and social gatherings organized by KWASU Students' Union." />
+        <title>Campus Events & Academic Calendar | KWASU Students' Union</title>
+        <meta name="description" content="Explore upcoming events, workshops, and social gatherings organized by the KWASU Students' Union. Stay updated with the official campus calendar." />
+        <link rel="canonical" href="https://thekwasusu.com/events" />
       </Helmet>
       <div className="container py-12">
         <Button asChild variant="ghost" className="mb-8 text-brand-600 hover:text-brand-700 -ml-4">

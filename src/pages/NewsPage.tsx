@@ -60,7 +60,9 @@ const NewsPage: React.FC = () => {
   return (
     <>
       <Helmet>
-        <title>News & Announcements | KWASU Students' Union</title>
+        <title>Latest Campus News & Announcements | KWASU Students' Union</title>
+        <meta name="description" content="Official announcements, campus updates, and student news from the Kwara State University Students' Union (KWASU SU)." />
+        <link rel="canonical" href="https://thekwasusu.com/news" />
       </Helmet>
       <div className="container py-12">
         <Button asChild variant="ghost" className="mb-8 text-brand-600 hover:text-brand-700 -ml-4">

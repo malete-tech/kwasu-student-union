@@ -43,13 +43,44 @@ const Index = () => {
     }
   };
 
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "KWASU Students' Union",
+    "url": "https://thekwasusu.com",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://thekwasusu.com/search?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  };
+
+  const orgData = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "KWASU Students' Union",
+    "url": "https://thekwasusu.com",
+    "logo": "https://thekwasusu.com/logo.png",
+    "sameAs": [
+      "https://facebook.com/thekwasusu",
+      "https://instagram.com/thekwasusu",
+      "https://x.com/thekwasusu",
+      "https://linkedin.com/company/thekwasusu"
+    ]
+  };
+
   return (
     <>
       <Helmet>
-        <title>Home | KWASU Students' Union</title>
-        <meta name="description" content="Official website of KWASU Students' Union. Stay updated with news, events, and student services." />
-        <meta property="og:image" content="/logo.png" />
-        <meta property="twitter:image" content="/logo.png" />
+        <title>KWASU Students' Union | Official Hub for News, Events & Advocacy</title>
+        <meta name="description" content="Stay connected with the Kwara State University Students' Union. Access official news, upcoming campus events, executive profiles, and essential student services." />
+        <link rel="canonical" href="https://thekwasusu.com/" />
+        <meta property="og:title" content="KWASU Students' Union | Official Hub" />
+        <meta property="og:description" content="Official website of KWASU Students' Union. Stay updated with news, events, and student services." />
+        <meta property="og:image" content="https://thekwasusu.com/logo.png" />
+        <meta property="twitter:image" content="https://thekwasusu.com/logo.png" />
+        <script type="application/ld+json">{JSON.stringify(structuredData)}</script>
+        <script type="application/ld+json">{JSON.stringify(orgData)}</script>
       </Helmet>
       <div className="flex flex-col">
         {/* Hero Section */}

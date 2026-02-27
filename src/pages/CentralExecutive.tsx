@@ -31,8 +31,9 @@ const CentralExecutive = () => {
   return (
     <>
       <Helmet>
-        <title>Central Executive | KWASU Students' Union</title>
-        <meta name="description" content="Meet the current Central Executive members of KWASU Students' Union." />
+        <title>Central Executive Council | KWASU Students' Union</title>
+        <meta name="description" content="Meet the current Central Executive members of the Kwara State University Students' Union (KWASU SU). Discover the student leadership team." />
+        <link rel="canonical" href="https://thekwasusu.com/executives/central" />
       </Helmet>
       <div className="container py-12">
         <h1 className="text-3xl sm:text-4xl font-bold text-center mb-10 text-brand-700">Central Executive Council</h1>
