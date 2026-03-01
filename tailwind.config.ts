@@ -18,7 +18,7 @@ export default {
     },
     extend: {
       fontFamily: {
-        "google-sans": ["'Google Sans'", "sans-serif"],
+        "lato": ["'Lato'", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",
