@@ -2,7 +2,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 // @ts-ignore
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.0';
-// Removed HmacSha1 and encode imports as they are replaced by crypto.subtle
 
 // @ts-ignore
 const CLOUDINARY_CLOUD_NAME = Deno.env.get('CLOUDINARY_CLOUD_NAME');
@@ -32,32 +31,28 @@ const corsHeaders = {
   'Access-Control-Max-Age': '86400',
 };
 
-// Utility to generate Cloudinary signature (FIXED: Using SHA-1 digest of parameters + secret)
+const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB limit
+
+// Utility to generate Cloudinary signature
 async function generateCloudinarySignature(params: Record<string, string | number>): Promise<string> {
   if (!CLOUDINARY_API_SECRET) {
-    console.error("Error: CLOUDINARY_API_SECRET is not configured.");
+    console.error("[upload-news-image] Error: CLOUDINARY_API_SECRET is not configured.");
     throw new Error("Cloudinary API Secret not configured.");
   }
   
-  // 1. Filter and sort parameters strictly
   const sortedKeys = Object.keys(params).sort();
-  
-  // Crucial step: Ensure values are converted to strings and concatenated correctly
   const sortedParams = sortedKeys
-    .filter((key) => params[key]) // Exclude null/undefined/empty string parameters
+    .filter((key) => params[key])
     .map(key => `${key}=${String(params[key])}`)
     .join('&');
 
-  // 2. Concatenate sorted parameters string with the API Secret (trimmed)
   const toSign = `${sortedParams}${CLOUDINARY_API_SECRET.trim()}`;
 
-  // 3. Generate SHA-1 digest
   const hashBuffer = await crypto.subtle.digest(
     "SHA-1",
     new TextEncoder().encode(toSign)
   );
   
-  // 4. Convert ArrayBuffer to Hexadecimal string
   const hashArray = Array.from(new Uint8Array(hashBuffer));
   const signature = hashArray.map(b => b.toString(16).padStart(2, "0")).join("");
   
@@ -67,7 +62,7 @@ async function generateCloudinarySignature(params: Record<string, string | numbe
 // Utility to upload base64 data to Cloudinary
 async function uploadToCloudinary(base64Data: string, folder: string) {
   if (!CLOUDINARY_CLOUD_NAME || !CLOUDINARY_API_KEY || !CLOUDINARY_API_SECRET) {
-    console.error("Cloudinary credentials missing during upload attempt.");
+    console.error("[upload-news-image] Cloudinary credentials missing during upload attempt.");
     throw new Error("Cloudinary credentials missing.");
   }
 
@@ -81,7 +76,7 @@ async function uploadToCloudinary(base64Data: string, folder: string) {
 
   // @ts-ignore
   const formData = new FormData();
-  formData.append('file', base64Data); // Assuming base64Data is the full data URI string
+  formData.append('file', base64Data);
   formData.append('api_key', CLOUDINARY_API_KEY);
   formData.append('timestamp', timestamp.toString());
   formData.append('signature', signature);
@@ -105,7 +100,7 @@ async function uploadToCloudinary(base64Data: string, folder: string) {
 // Utility to delete image from Cloudinary
 async function deleteFromCloudinary(publicId: string) {
   if (!CLOUDINARY_CLOUD_NAME || !CLOUDINARY_API_KEY || !CLOUDINARY_API_SECRET) {
-    console.error("Cloudinary credentials missing during delete attempt.");
+    console.error("[upload-news-image] Cloudinary credentials missing during delete attempt.");
     throw new Error("Cloudinary credentials missing.");
   }
 
@@ -141,16 +136,13 @@ async function deleteFromCloudinary(publicId: string) {
 
 
 serve(async (req: Request) => {
-  // --- CORS PREFLIGHT CHECK ---
   if (req.method === 'OPTIONS') {
-    // Ensure we return 200 OK with CORS headers for preflight
     return new Response(null, { status: 200, headers: corsHeaders });
   }
-  // ----------------------------
 
-  // 1. Authentication Check (Admin only)
   const authHeader = req.headers.get('Authorization');
   if (!authHeader) {
+    console.error("[upload-news-image] Unauthorized: Missing Authorization header");
     return new Response(JSON.stringify({ error: 'Unauthorized: Missing Authorization header' }), {
       status: 401,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -158,9 +150,10 @@ serve(async (req: Request) => {
   }
   
   const token = authHeader.replace('Bearer ', '');
-  const { data: { user } } = await supabase.auth.getUser(token);
+  const { data: { user }, error: userError } = await supabase.auth.getUser(token);
 
-  if (!user) {
+  if (userError || !user) {
+    console.error("[upload-news-image] Unauthorized: Invalid token or user", { userError });
     return new Response(JSON.stringify({ error: 'Unauthorized: Invalid token or user' }), {
       status: 401,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -178,15 +171,29 @@ serve(async (req: Request) => {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         });
       }
+
+      // Enforce 2MB size limit on the server side
+      // Base64 is roughly 33% larger than binary data.
+      const base64Content = base64Data.split(',')[1] || base64Data;
+      const approxSizeInBytes = (base64Content.length * 3) / 4;
+
+      if (approxSizeInBytes > MAX_FILE_SIZE) {
+        console.warn("[upload-news-image] Rejecting upload: File too large", { approxSizeInBytes });
+        return new Response(JSON.stringify({ 
+          error: `File size exceeds the 2MB limit.` 
+        }), {
+          status: 400,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
       
       const result = await uploadToCloudinary(base64Data, folder);
       
-      // Check for Cloudinary specific error message in the result body
       if (result.error) {
-        // If Cloudinary returns an error object, throw it to be caught below
         throw new Error(result.error.message || "Cloudinary upload failed.");
       }
 
+      console.log("[upload-news-image] Successful upload", { publicId: result.public_id });
       return new Response(JSON.stringify({ 
         publicUrl: result.secure_url,
         publicId: result.public_id,
@@ -206,11 +213,11 @@ serve(async (req: Request) => {
       
       const result = await deleteFromCloudinary(publicId);
       
-      // Cloudinary returns { result: 'ok' } on success, or { result: 'not found' } if resource doesn't exist, which is fine.
       if (result.error) {
         throw new Error(result.error.message || "Cloudinary deletion failed.");
       }
 
+      console.log("[upload-news-image] Successful deletion", { publicId });
       return new Response(JSON.stringify({ success: true }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
@@ -222,8 +229,7 @@ serve(async (req: Request) => {
     });
 
   } catch (error) {
-    console.error("Edge Function Error:", error);
-    // Return 401 if the error message indicates an authentication failure with Cloudinary
+    console.error("[upload-news-image] Edge Function Error:", error);
     const status = (error as Error).message.includes("Unauthorized") ? 401 : 500;
     
     return new Response(JSON.stringify({ error: (error as Error).message }), {

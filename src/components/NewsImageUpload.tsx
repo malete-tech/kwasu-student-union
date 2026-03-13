@@ -18,7 +18,8 @@ interface NewsImageUploadProps {
   className?: string;
 }
 
-const CLOUDINARY_FOLDER = "news-images"; // Define the folder path
+const CLOUDINARY_FOLDER = "news-images";
+const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB limit
 
 const NewsImageUpload: React.FC<NewsImageUploadProps> = ({
   label,
@@ -38,7 +39,14 @@ const NewsImageUpload: React.FC<NewsImageUploadProps> = ({
   const handleFileChange = useCallback(async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file || !session?.access_token) {
-      toast.error("Authentication required or no file selected.");
+      if (!session?.access_token && file) toast.error("Authentication required.");
+      return;
+    }
+
+    // Check file size (2MB limit)
+    if (file.size > MAX_FILE_SIZE) {
+      toast.error("File is too large. Maximum size allowed is 2MB.");
+      event.target.value = ""; // Clear input
       return;
     }
 
@@ -78,7 +86,6 @@ const NewsImageUpload: React.FC<NewsImageUploadProps> = ({
     try {
       const publicId = getCloudinaryPublicId(previewUrl);
       if (!publicId) {
-        // If we can't get the public ID, just clear the URL locally
         toast.warning("Could not determine Cloudinary Public ID. Clearing URL locally.");
         setPreviewUrl(undefined);
         onChange(undefined);
@@ -154,6 +161,7 @@ const NewsImageUpload: React.FC<NewsImageUploadProps> = ({
               </>
             )}
           </Label>
+          <p className="text-[10px] text-muted-foreground mt-1">Max size: 2MB</p>
         </div>
       </div>
       {previewUrl && (
