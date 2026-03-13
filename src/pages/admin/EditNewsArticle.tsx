@@ -20,13 +20,14 @@ import { Helmet } from "react-helmet-async";
 import { Skeleton } from "@/components/ui/skeleton";
 import NewsImageUpload from "@/components/NewsImageUpload";
 import MarkdownEditor from "@/components/MarkdownEditor";
+import TagSelector from "@/components/admin/TagSelector";
 
 const formSchema = z.object({
   title: z.string().min(1, { message: "Title is required." }),
   slug: z.string().min(1, { message: "Slug is required." }).regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, { message: "Slug must be lowercase, alphanumeric, and use hyphens for spaces." }),
   excerpt: z.string().min(1, { message: "Excerpt is required." }),
   bodyMd: z.string().min(1, { message: "Body content is required." }),
-  tags: z.string().min(1, { message: "At least one tag is required." }),
+  tags: z.array(z.string()).min(1, { message: "At least one tag is required." }),
   publishedAt: z.date({ required_error: "Published date is required." }),
   coverUrl: z.string().optional(),
 });
@@ -45,7 +46,7 @@ const EditNewsArticle: React.FC = () => {
       slug: "",
       excerpt: "",
       bodyMd: "",
-      tags: "",
+      tags: [],
       publishedAt: new Date(),
       coverUrl: undefined,
     },
@@ -66,7 +67,7 @@ const EditNewsArticle: React.FC = () => {
             slug: fetchedArticle.slug,
             excerpt: fetchedArticle.excerpt,
             bodyMd: fetchedArticle.bodyMd,
-            tags: fetchedArticle.tags.join(', '),
+            tags: fetchedArticle.tags,
             publishedAt: new Date(fetchedArticle.publishedAt),
             coverUrl: fetchedArticle.coverUrl,
           });
@@ -92,7 +93,7 @@ const EditNewsArticle: React.FC = () => {
         slug: values.slug,
         excerpt: values.excerpt,
         bodyMd: values.bodyMd,
-        tags: values.tags.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0),
+        tags: values.tags,
         publishedAt: values.publishedAt.toISOString(),
         coverUrl: values.coverUrl,
       };
@@ -279,54 +280,61 @@ const EditNewsArticle: React.FC = () => {
                 </div>
                 <p className="text-sm text-muted-foreground">Adjust the publication date and relevant organization tags.</p>
               </div>
-              <div className="md:col-span-2 flex flex-col sm:flex-row gap-6">
-                <FormField
-                  control={form.control}
-                  name="publishedAt"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-col flex-1">
-                      <FormLabel className="text-slate-700 font-semibold">Release Date</FormLabel>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <FormControl>
-                            <Button
-                              variant={"outline"}
-                              className={cn(
-                                "h-12 pl-3 text-left font-normal rounded-xl border-brand-100 bg-white/50 focus-visible:ring-brand-gold shadow-sm",
-                                !field.value && "text-muted-foreground"
-                              )}
-                            >
-                              {field.value ? (
-                                format(field.value, "PPP")
-                              ) : (
-                                <span>Pick a date</span>
-                              )}
-                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                            </Button>
-                          </FormControl>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0 rounded-2xl border-brand-100 shadow-2xl" align="start">
-                          <Calendar
-                            mode="single"
-                            selected={field.value}
-                            onSelect={field.onChange}
-                            initialFocus
-                            className="p-3"
-                          />
-                        </PopoverContent>
-                      </Popover>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+              <div className="md:col-span-2 space-y-6">
+                <div className="flex flex-col sm:flex-row gap-6">
+                  <FormField
+                    control={form.control}
+                    name="publishedAt"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-col flex-1">
+                        <FormLabel className="text-slate-700 font-semibold">Release Date</FormLabel>
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <FormControl>
+                              <Button
+                                variant={"outline"}
+                                className={cn(
+                                  "h-12 pl-3 text-left font-normal rounded-xl border-brand-100 bg-white/50 focus-visible:ring-brand-gold shadow-sm",
+                                  !field.value && "text-muted-foreground"
+                                )}
+                              >
+                                {field.value ? (
+                                  format(field.value, "PPP")
+                                ) : (
+                                  <span>Pick a date</span>
+                                )}
+                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                              </Button>
+                            </FormControl>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0 rounded-2xl border-brand-100 shadow-2xl" align="start">
+                            <Calendar
+                              mode="single"
+                              selected={field.value}
+                              onSelect={field.onChange}
+                              initialFocus
+                              className="p-3"
+                            />
+                          </PopoverContent>
+                        </Popover>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <div className="flex-1" />
+                </div>
+
                 <FormField
                   control={form.control}
                   name="tags"
                   render={({ field }) => (
-                    <FormItem className="flex-1">
-                      <FormLabel className="text-slate-700 font-semibold">Tags</FormLabel>
+                    <FormItem>
+                      <FormLabel className="text-slate-700 font-semibold">Categories / Tags</FormLabel>
                       <FormControl>
-                        <Input placeholder="e.g. academic, events, notice" {...field} className="h-12 rounded-xl border-brand-100 bg-white/50 focus-visible:ring-brand-gold focus-visible:bg-white transition-all shadow-sm" />
+                        <TagSelector 
+                          selectedTags={field.value} 
+                          onChange={field.onChange} 
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
