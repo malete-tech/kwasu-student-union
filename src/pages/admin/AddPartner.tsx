@@ -15,7 +15,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import ImageUpload from "@/components/ImageUpload";
+import PartnerLogoUpload from "@/components/PartnerLogoUpload";
 
 const formSchema = z.object({
   name: z.string().min(1, { message: "Name is required." }),
@@ -115,10 +115,8 @@ const AddPartner: React.FC = () => {
                     <FormItem>
                       <FormLabel className="text-slate-700 font-semibold">Company Logo</FormLabel>
                       <FormControl>
-                        <ImageUpload 
+                        <PartnerLogoUpload 
                           label="Choose Logo" 
-                          bucketName="partner-logos" 
-                          folderPath="public" 
                           value={field.value} 
                           onChange={field.onChange} 
                           disabled={isSubmitting} 

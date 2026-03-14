@@ -21,8 +21,11 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { deleteImageFromCloudinary, getCloudinaryPublicId } from "@/utils/cloudinary-upload";
+import { useSession } from "@/components/SessionContextProvider";
 
 const PartnersManagement: React.FC = () => {
+  const { session } = useSession();
   const [partners, setPartners] = useState<Partner[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -46,12 +49,26 @@ const PartnersManagement: React.FC = () => {
     fetchPartners();
   }, []);
 
-  const handleDelete = async (id: string, name: string) => {
-    setDeletingId(id);
+  const handleDelete = async (partner: Partner) => {
+    if (!session?.access_token) {
+      toast.error("Authentication token missing.");
+      return;
+    }
+
+    setDeletingId(partner.id);
     try {
-      await api.partners.delete(id);
-      toast.success(`Partner "${name}" removed successfully!`);
-      setPartners((prev) => prev.filter((p) => p.id !== id));
+      // 1. Delete image from Cloudinary if it exists
+      if (partner.logoUrl) {
+        const publicId = getCloudinaryPublicId(partner.logoUrl);
+        if (publicId) {
+          await deleteImageFromCloudinary(publicId, session.access_token);
+        }
+      }
+
+      // 2. Delete record from DB
+      await api.partners.delete(partner.id);
+      toast.success(`Partner "${partner.name}" removed successfully!`);
+      setPartners((prev) => prev.filter((p) => p.id !== partner.id));
     } catch (error) {
       console.error("Failed to delete partner:", error);
       toast.error("Failed to delete partner.");
@@ -163,7 +180,7 @@ const PartnersManagement: React.FC = () => {
                       </AlertDialogHeader>
                       <AlertDialogFooter>
                         <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction onClick={() => handleDelete(partner.id, partner.name)} className="bg-destructive">Delete</AlertDialogAction>
+                        <AlertDialogAction onClick={() => handleDelete(partner)} className="bg-destructive">Delete</AlertDialogAction>
                       </AlertDialogFooter>
                     </AlertDialogContent>
                   </AlertDialog>

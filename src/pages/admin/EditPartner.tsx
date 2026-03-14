@@ -15,7 +15,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import ImageUpload from "@/components/ImageUpload";
+import PartnerLogoUpload from "@/components/PartnerLogoUpload";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const formSchema = z.object({
@@ -153,10 +153,8 @@ const EditPartner: React.FC = () => {
                     <FormItem>
                       <FormLabel className="text-slate-700 font-semibold">Company Logo</FormLabel>
                       <FormControl>
-                        <ImageUpload 
+                        <PartnerLogoUpload 
                           label="Change Logo" 
-                          bucketName="partner-logos" 
-                          folderPath="public" 
                           value={field.value} 
                           onChange={field.onChange} 
                           disabled={isSubmitting} 
