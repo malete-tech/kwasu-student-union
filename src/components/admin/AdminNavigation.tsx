@@ -13,6 +13,7 @@ import {
   Star,
   LogOut,
   Megaphone,
+  Handshake,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -33,6 +34,7 @@ const adminNavLinks: AdminLink[] = [
   { name: "Opportunities", href: "/admin/opportunities", icon: Briefcase },
   { name: "Spotlight", href: "/admin/spotlight", icon: Star },
   { name: "Announcements", href: "/admin/announcements", icon: Megaphone },
+  { name: "Partners", href: "/admin/partners", icon: Handshake }, // Added
 ];
 
 interface AdminNavigationProps {

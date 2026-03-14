@@ -20,6 +20,7 @@ const navLinks = [
   { name: "News", href: "/news", icon: "fa-solid fa-newspaper" },
   { name: "Events", href: "/events", icon: "fa-solid fa-calendar-days" },
   { name: "Services", href: "/services", icon: "fa-solid fa-briefcase" },
+  { name: "Partners", href: "/partners", icon: "fa-solid fa-handshake" }, // Added
 ];
 
 const executiveLinks = [

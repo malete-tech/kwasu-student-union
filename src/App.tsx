@@ -24,7 +24,8 @@ import ContactPage from "./pages/ContactPage";
 import SearchResultsPage from "./pages/SearchResultsPage";
 import SubmitComplaintPage from "./pages/SubmitComplaintPage";
 import SpotlightPage from "./pages/SpotlightPage";
-import SuggestionBoxPage from "./pages/SuggestionBoxPage"; // Added
+import SuggestionBoxPage from "./pages/SuggestionBoxPage";
+import PartnersPage from "./pages/PartnersPage"; // Added
 
 // Admin Imports
 import AdminLayout from "./app/AdminLayout";
@@ -52,6 +53,9 @@ import SpotlightManagement from "./pages/admin/SpotlightManagement";
 import AddSpotlight from "./pages/admin/AddSpotlight";
 import EditSpotlight from "./pages/admin/EditSpotlight";
 import GlobalAnnouncementManagement from "./pages/admin/GlobalAnnouncementManagement";
+import PartnersManagement from "./pages/admin/PartnersManagement"; // Added
+import AddPartner from "./pages/admin/AddPartner"; // Added
+import EditPartner from "./pages/admin/EditPartner"; // Added
 
 
 const queryClient = new QueryClient();
@@ -83,6 +87,7 @@ const App = () => (
               <Route path="/services/complaints" element={<SubmitComplaintPage />} />
               <Route path="/services/suggestion-box" element={<SuggestionBoxPage />} />
               <Route path="/spotlight" element={<SpotlightPage />} />
+              <Route path="/partners" element={<PartnersPage />} />
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/search" element={<SearchResultsPage />} />
             </Route>
@@ -113,6 +118,9 @@ const App = () => (
               <Route path="spotlight/add" element={<AddSpotlight />} />
               <Route path="spotlight/edit/:id" element={<EditSpotlight />} />
               <Route path="announcements" element={<GlobalAnnouncementManagement />} />
+              <Route path="partners" element={<PartnersManagement />} />
+              <Route path="partners/add" element={<AddPartner />} />
+              <Route path="partners/edit/:id" element={<EditPartner />} />
             </Route>
 
             <Route path="*" element={<NotFound />} />
