@@ -13,7 +13,6 @@ import {
   Menu, 
   ChevronRight,
   Bell,
-  Search,
   Briefcase,
   Star,
   Settings,
@@ -59,143 +58,139 @@ const AdminLayout: React.FC = () => {
       <Link
         to={item.href}
         onClick={() => setIsSidebarOpen(false)}
-        className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group ${
+        className={`flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-200 group ${
           isActive 
             ? "bg-brand-700 text-brand-gold shadow-lg shadow-black/20 translate-x-1" 
             : "text-brand-100 hover:bg-brand-800 hover:text-white"
         }`}
       >
-        <item.icon className={`w-5 h-5 ${isActive ? "text-brand-gold" : "text-brand-300 group-hover:text-brand-100"}`} />
-        <span className="font-medium">{item.name}</span>
-        {isActive && <ChevronRight className="w-4 h-4 ml-auto" />}
+        <item.icon className={`w-4 h-4 ${isActive ? "text-brand-gold" : "text-brand-300 group-hover:text-brand-100"}`} />
+        <span className="text-sm font-medium">{item.name}</span>
+        {isActive && <ChevronRight className="w-3.5 h-3.5 ml-auto opacity-50" />}
       </Link>
     );
   };
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-slate-50 flex">
       {/* Desktop Sidebar */}
-      <aside className="fixed left-0 top-0 bottom-0 w-72 bg-brand-900 hidden lg:flex flex-col z-30 shadow-2xl overflow-hidden border-r border-brand-800/50">
-        {/* Header - Fixed */}
-        <div className="p-8 flex-shrink-0">
+      <aside className="fixed left-0 top-0 h-screen w-64 bg-brand-900 hidden lg:flex flex-col z-30 shadow-2xl border-r border-brand-800/50">
+        {/* Header - Fixed Height */}
+        <div className="h-20 flex items-center px-6 flex-shrink-0">
           <Link to="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 bg-brand-gold rounded-xl flex items-center justify-center text-brand-900 shadow-lg shadow-brand-gold/20 group-hover:scale-105 transition-transform">
-              <LayoutDashboard size={24} />
+            <div className="w-9 h-9 bg-brand-gold rounded-lg flex items-center justify-center text-brand-900 shadow-lg shadow-brand-gold/20 group-hover:scale-105 transition-transform">
+              <LayoutDashboard size={20} />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-white leading-none">Admin</h1>
-              <p className="text-[10px] text-brand-400 font-bold uppercase tracking-widest mt-1">KWASU SU Portal</p>
+              <h1 className="text-lg font-bold text-white leading-none">Admin</h1>
+              <p className="text-[9px] text-brand-400 font-bold uppercase tracking-widest mt-1">KWASU SU</p>
             </div>
           </Link>
         </div>
 
         {/* Scrollable Navigation Area */}
-        <nav className="flex-1 px-4 space-y-1.5 overflow-y-auto custom-scrollbar pb-6">
+        <nav className="flex-1 px-4 py-2 space-y-1 overflow-y-auto custom-scrollbar">
           {navigation.map((item) => (
             <NavItem key={item.name} item={item} />
           ))}
         </nav>
 
-        {/* Footer (User Profile & Logout) - Fixed at bottom */}
-        <div className="p-4 flex-shrink-0 border-t border-brand-800 bg-brand-950/50">
-          <div className="p-4 bg-brand-800/50 rounded-2xl mb-3 border border-brand-700/50">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-brand-gold flex items-center justify-center text-brand-900 font-bold border-2 border-brand-600 shadow-sm">
-                {session?.user?.email?.[0]?.toUpperCase() || "A"}
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold text-white truncate">{session?.user?.email?.split('@')[0] || "Admin"}</p>
-                <p className="text-[10px] text-brand-400 uppercase font-bold tracking-tighter">Administrator</p>
-              </div>
+        {/* Footer (User Identity & Logout) - Collapsed for height safety */}
+        <div className="mt-auto p-4 border-t border-brand-800/50 bg-brand-950/30 flex-shrink-0">
+          <div className="flex items-center gap-3 px-2 mb-4">
+            <div className="w-8 h-8 rounded-full bg-brand-gold flex items-center justify-center text-brand-900 font-bold text-xs">
+              {session?.user?.email?.[0]?.toUpperCase() || "A"}
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="text-xs font-bold text-white truncate">{session?.user?.email?.split('@')[0]}</p>
+              <p className="text-[9px] text-brand-400 uppercase font-medium">Administrator</p>
             </div>
           </div>
+          
           <Button 
             onClick={handleLogout}
             variant="ghost" 
-            className="w-full justify-start gap-3 px-4 py-3 text-brand-300 hover:text-red-400 hover:bg-red-950/30 rounded-xl transition-colors"
+            className="w-full justify-start gap-3 h-10 px-3 text-red-300 hover:text-red-400 hover:bg-red-950/40 rounded-xl transition-colors"
           >
-            <LogOut className="w-5 h-5" />
-            <span className="font-medium">Logout</span>
+            <LogOut className="w-4 h-4" />
+            <span className="text-sm font-bold">Sign Out</span>
           </Button>
         </div>
       </aside>
 
       {/* Mobile Top Navigation */}
-      <header className="lg:hidden sticky top-0 bg-brand-900 text-white border-b border-brand-800 px-4 py-3 flex items-center justify-between z-40 shadow-md">
+      <header className="lg:hidden fixed top-0 left-0 right-0 h-16 bg-brand-900 text-white border-b border-brand-800 px-4 flex items-center justify-between z-40 shadow-md">
         <div className="flex items-center gap-3">
           <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="text-brand-100 hover:bg-brand-800">
+              <Button variant="ghost" size="icon" className="text-brand-100">
                 <Menu className="w-6 h-6" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="left" className="w-72 p-0 border-none bg-brand-900">
-              <div className="flex flex-col h-full overflow-hidden">
-                <div className="p-8 border-b border-brand-800 flex-shrink-0">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-brand-gold rounded-xl flex items-center justify-center text-brand-900">
-                      <LayoutDashboard size={24} />
-                    </div>
-                    <h1 className="text-xl font-bold text-white">Admin</h1>
-                  </div>
+            <SheetContent side="left" className="w-64 p-0 border-none bg-brand-900">
+              <div className="flex flex-col h-full">
+                <div className="h-16 flex items-center px-6 border-b border-brand-800">
+                  <span className="text-lg font-bold text-white">Admin Menu</span>
                 </div>
-                <nav className="flex-1 p-4 space-y-1.5 overflow-y-auto">
+                <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
                   {navigation.map((item) => (
                     <NavItem key={item.name} item={item} />
                   ))}
                 </nav>
-                <div className="p-4 border-t border-brand-800 flex-shrink-0 bg-brand-950/50">
+                <div className="p-4 border-t border-brand-800 bg-brand-950/30">
                   <Button 
                     onClick={handleLogout}
                     variant="ghost" 
-                    className="w-full justify-start gap-3 px-4 py-3 text-red-400 hover:bg-red-950/30 rounded-xl"
+                    className="w-full justify-start gap-3 h-11 px-4 text-red-400 hover:bg-red-950/40 rounded-xl"
                   >
                     <LogOut className="w-5 h-5" />
-                    <span className="font-medium">Logout</span>
+                    <span className="font-bold">Sign Out</span>
                   </Button>
                 </div>
               </div>
             </SheetContent>
           </Sheet>
-          <span className="font-bold text-white tracking-tight">Admin Portal</span>
+          <span className="font-bold tracking-tight">KWASU Admin</span>
         </div>
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-full bg-brand-gold flex items-center justify-center text-brand-900 text-xs font-bold border border-brand-600">
-            {session?.user?.email?.[0]?.toUpperCase() || "A"}
-          </div>
+        <div className="w-8 h-8 rounded-full bg-brand-gold flex items-center justify-center text-brand-900 text-xs font-bold shadow-inner">
+          {session?.user?.email?.[0]?.toUpperCase() || "A"}
         </div>
       </header>
 
-      {/* Main Content */}
-      <div className="lg:pl-72 flex flex-col min-h-screen">
-        <header className="hidden lg:flex items-center justify-between px-10 py-6 bg-white border-b border-slate-200">
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col min-w-0 lg:pl-64">
+        {/* Desktop Header */}
+        <header className="hidden lg:flex h-20 items-center justify-between px-10 bg-white border-b border-slate-200 sticky top-0 z-20">
           <div>
-            <h2 className="text-2xl font-extrabold text-brand-900 uppercase tracking-tight">
+            <h2 className="text-xl font-black text-brand-900 uppercase tracking-tight">
               {navigation.find(item => location.pathname.startsWith(item.href))?.name || "Dashboard"}
             </h2>
-            <p className="text-slate-500 text-sm font-medium">Manage your campus digital hub.</p>
-          </div>
-          <div className="flex items-center gap-6">
-            <div className="relative hidden xl:block">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-              <input 
-                type="text" 
-                placeholder="Search resources..." 
-                className="pl-10 pr-4 py-2 bg-slate-100 border-none rounded-xl text-sm focus:ring-2 focus:ring-brand-500/20 w-64 outline-none transition-all"
-              />
+            <div className="flex items-center gap-2 mt-0.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+              <p className="text-slate-400 text-[11px] font-bold uppercase tracking-widest">Active Session</p>
             </div>
-            <div className="flex items-center gap-3 border-l border-slate-200 pl-6">
+          </div>
+          
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 border-r border-slate-100 pr-4">
               <Button variant="ghost" size="icon" className="text-slate-400 hover:text-brand-600 hover:bg-brand-50 rounded-xl">
-                <Bell className="w-5 h-5" />
+                <Bell size={18} />
               </Button>
               <Button variant="ghost" size="icon" className="text-slate-400 hover:text-brand-600 hover:bg-brand-50 rounded-xl">
-                <Settings className="w-5 h-5" />
+                <Settings size={18} />
               </Button>
+            </div>
+            <div className="flex items-center gap-3 pl-2">
+              <div className="text-right hidden sm:block">
+                <p className="text-xs font-bold text-slate-700 leading-none">{session?.user?.email?.split('@')[0]}</p>
+                <Link to="/admin/update-password" title="Settings" className="text-[10px] text-brand-600 hover:underline">Manage Account</Link>
+              </div>
             </div>
           </div>
         </header>
 
-        <main className="flex-1 px-4 md:px-10 py-6 md:py-10 max-w-[1400px] mx-auto w-full">
+        {/* Content Wrapper */}
+        <main className="flex-1 p-4 md:p-8 lg:p-10 pt-20 lg:pt-8 w-full max-w-[1600px] mx-auto">
           <Outlet />
         </main>
       </div>
