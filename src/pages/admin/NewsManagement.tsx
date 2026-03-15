@@ -78,25 +78,25 @@ const NewsManagement: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6 md:space-y-8">
+    <div className="space-y-8">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-brand-700">News Management</h2>
-          <p className="text-sm md:text-base text-muted-foreground mt-1">Create, edit, and manage news articles for the platform.</p>
+          <h2 className="text-3xl font-bold tracking-tight text-brand-700">News Management</h2>
+          <p className="text-muted-foreground mt-1">Create, edit, and manage news articles for the platform.</p>
         </div>
-        <Button asChild className="w-full sm:w-auto bg-brand-500 hover:bg-brand-600 text-white focus-visible:ring-brand-gold shadow-md">
+        <Button asChild className="bg-brand-500 hover:bg-brand-600 text-white focus-visible:ring-brand-gold shadow-md">
           <Link to="/admin/news/add">
             <PlusCircle className="mr-2 h-4 w-4" /> Add New Article
           </Link>
         </Button>
       </div>
 
-      <div className="mt-4 md:mt-8">
+      <div className="mt-8">
         {loading ? (
           <div className="grid gap-4">
             {[...Array(5)].map((_, i) => (
               <div key={i} className="flex items-center space-x-4 p-4 border-b last:border-b-0">
-                <Skeleton className="h-12 w-12 md:h-16 md:w-16 rounded-lg" />
+                <Skeleton className="h-16 w-16 rounded-lg" />
                 <div className="flex-1 space-y-2">
                   <Skeleton className="h-5 w-1/3" />
                   <Skeleton className="h-4 w-1/4" />
@@ -119,32 +119,32 @@ const NewsManagement: React.FC = () => {
             </Button>
           </div>
         ) : (
-          <div className="grid gap-4 md:gap-6">
+          <div className="grid gap-6">
             {newsArticles.map((article) => (
               <div 
                 key={article.id} 
-                className="group relative flex flex-col md:flex-row md:items-center justify-between p-4 md:p-6 bg-white/50 hover:bg-white rounded-2xl border border-transparent hover:border-brand-100 hover:shadow-xl transition-all duration-300"
+                className="group relative flex flex-col md:flex-row md:items-center justify-between p-6 bg-white/50 hover:bg-white rounded-2xl border border-transparent hover:border-brand-100 hover:shadow-xl transition-all duration-300"
               >
-                <div className="flex items-center space-x-4 md:space-x-6">
-                  <div className="h-14 w-14 md:h-20 md:w-20 flex-shrink-0 rounded-xl overflow-hidden bg-brand-50 border border-brand-100 flex items-center justify-center shadow-inner">
+                <div className="flex items-center space-x-6">
+                  <div className="h-20 w-20 flex-shrink-0 rounded-xl overflow-hidden bg-brand-50 border border-brand-100 flex items-center justify-center shadow-inner">
                     {article.coverUrl ? (
                       <img src={article.coverUrl} alt="Cover" className="h-full w-full object-cover transition-transform group-hover:scale-110" />
                     ) : (
-                      <Image className="h-6 w-6 md:h-8 md:w-8 text-brand-200" />
+                      <Image className="h-8 w-8 text-brand-200" />
                     )}
                   </div>
-                  <div className="min-w-0 flex-1">
-                    <h3 className="text-lg md:text-xl font-bold text-brand-800 group-hover:text-brand-600 transition-colors truncate">
+                  <div>
+                    <h3 className="text-xl font-bold text-brand-800 group-hover:text-brand-600 transition-colors">
                       {article.title}
                     </h3>
                     <div className="flex items-center gap-3 mt-1">
-                      <span className="text-xs md:text-sm font-medium text-muted-foreground">
+                      <span className="text-sm font-medium text-muted-foreground">
                         {article.publishedAt && !isNaN(new Date(article.publishedAt).getTime())
-                          ? format(new Date(article.publishedAt), "MMM dd, yyyy")
+                          ? format(new Date(article.publishedAt), "PPP")
                           : "Draft"}
                       </span>
                       {article.tags && article.tags.length > 0 && (
-                        <div className="hidden sm:flex gap-1">
+                        <div className="flex gap-1">
                           {article.tags.slice(0, 2).map(tag => (
                             <span key={tag} className="text-[10px] uppercase tracking-wider bg-brand-50 text-brand-600 px-2 py-0.5 rounded-full border border-brand-100">
                               {tag}
@@ -156,8 +156,8 @@ const NewsManagement: React.FC = () => {
                   </div>
                 </div>
                 
-                <div className="flex items-center space-x-3 mt-4 md:mt-0 md:opacity-0 group-hover:opacity-100 transition-opacity">
-                  <Button asChild variant="outline" size="sm" className="flex-1 md:flex-none bg-white border-brand-100 text-brand-600 hover:bg-brand-50 hover:text-brand-700 rounded-xl px-4">
+                <div className="flex items-center space-x-3 mt-4 md:mt-0 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity">
+                  <Button asChild variant="outline" size="sm" className="bg-white border-brand-100 text-brand-600 hover:bg-brand-50 hover:text-brand-700 rounded-xl px-4">
                     <Link to={`/admin/news/edit/${article.id}`}>
                       <Edit className="h-4 w-4 mr-2" />
                       Edit
