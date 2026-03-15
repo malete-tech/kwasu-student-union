@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Loader2, ArrowLeft, Layout, Target, CalendarDays } from "lucide-react";
+import { Loader2, ArrowLeft, Layout, Target, CalendarDays, ShieldCheck } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -17,6 +17,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import PartnerLogoUpload from "@/components/PartnerLogoUpload";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Switch } from "@/components/ui/switch";
 
 const PLACEMENT_OPTIONS = [
   { id: 'news_feed', label: 'News Feed' },
@@ -310,11 +311,56 @@ const EditPartner: React.FC = () => {
               <div className="space-y-2">
                 <div className="flex items-center gap-2 text-brand-600 font-bold uppercase tracking-wider text-xs">
                   <CalendarDays className="h-4 w-4" />
-                  Campaign Schedule
+                  Campaign Schedule & Status
                 </div>
                 <p className="text-sm text-muted-foreground">Control the duration and status of the ad.</p>
               </div>
               <div className="md:col-span-2 space-y-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <FormField
+                    control={form.control}
+                    name="tier"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-slate-700 font-semibold">Campaign Tier</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger className="h-12 rounded-xl border-brand-100 bg-white/50 focus-visible:ring-brand-gold shadow-sm">
+                              <SelectValue placeholder="Select tier" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="basic">Basic (Standard)</SelectItem>
+                            <SelectItem value="premium">Premium (Featured)</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="isVerified"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-center justify-between rounded-xl border p-4 bg-white shadow-sm">
+                        <div className="space-y-0.5">
+                          <FormLabel className="text-slate-700 font-semibold flex items-center gap-2">
+                            <ShieldCheck className="h-4 w-4 text-brand-500" /> Verified Partner
+                          </FormLabel>
+                          <FormDescription className="text-[10px]">Show verification badge</FormDescription>
+                        </div>
+                        <FormControl>
+                          <Switch
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <FormField
                     control={form.control}
@@ -349,7 +395,7 @@ const EditPartner: React.FC = () => {
                   name="status"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-slate-700 font-semibold">Initial Status</FormLabel>
+                      <FormLabel className="text-slate-700 font-semibold">Campaign Status</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
                           <SelectTrigger className="h-12 rounded-xl border-brand-100 bg-white/50 focus-visible:ring-brand-gold shadow-sm">
@@ -359,6 +405,7 @@ const EditPartner: React.FC = () => {
                         <SelectContent>
                           <SelectItem value="active">Active (Live)</SelectItem>
                           <SelectItem value="paused">Paused (Draft)</SelectItem>
+                          <SelectItem value="expired">Expired</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />

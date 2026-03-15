@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Loader2, ArrowLeft, Layout, CalendarDays, Target } from "lucide-react";
+import { Loader2, ArrowLeft, Layout, Target, ShieldCheck } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -16,6 +16,7 @@ import { Helmet } from "react-helmet-async";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import PartnerLogoUpload from "@/components/PartnerLogoUpload";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Switch } from "@/components/ui/switch";
 
 const PLACEMENT_OPTIONS = [
   { id: 'news_feed', label: 'News Feed' },
@@ -165,11 +166,25 @@ const AddPartner: React.FC = () => {
               <div className="space-y-2">
                 <div className="flex items-center gap-2 text-brand-600 font-bold uppercase tracking-wider text-xs">
                   <Target className="h-4 w-4" />
-                  Placement & Targeting
+                  Classification & Targeting
                 </div>
-                <p className="text-sm text-muted-foreground">Where should this ad appear on the site?</p>
+                <p className="text-sm text-muted-foreground">Categorize the partner and choose where the ad appears.</p>
               </div>
               <div className="md:col-span-2 space-y-6">
+                <FormField
+                  control={form.control}
+                  name="category"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-slate-700 font-semibold">Category</FormLabel>
+                      <FormControl>
+                        <Input placeholder="e.g. Food & Drinks, Education, Tech" {...field} className="h-12 rounded-xl border-brand-100 bg-white/50 focus-visible:ring-brand-gold shadow-sm" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
                 <FormField
                   control={form.control}
                   name="placements"
@@ -239,12 +254,57 @@ const AddPartner: React.FC = () => {
             <div className="grid gap-8 md:grid-cols-3">
               <div className="space-y-2">
                 <div className="flex items-center gap-2 text-brand-600 font-bold uppercase tracking-wider text-xs">
-                  <CalendarDays className="h-4 w-4" />
-                  Campaign Schedule
+                  <ShieldCheck className="h-4 w-4" />
+                  Status & Tier
                 </div>
-                <p className="text-sm text-muted-foreground">Control the duration and status of the ad.</p>
+                <p className="text-sm text-muted-foreground">Control the visibility and priority of this partner.</p>
               </div>
               <div className="md:col-span-2 space-y-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <FormField
+                    control={form.control}
+                    name="tier"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-slate-700 font-semibold">Campaign Tier</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger className="h-12 rounded-xl border-brand-100 bg-white/50 focus-visible:ring-brand-gold shadow-sm">
+                              <SelectValue placeholder="Select tier" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="basic">Basic (Standard)</SelectItem>
+                            <SelectItem value="premium">Premium (Featured)</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="isVerified"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-center justify-between rounded-xl border p-4 bg-white shadow-sm">
+                        <div className="space-y-0.5">
+                          <FormLabel className="text-slate-700 font-semibold flex items-center gap-2">
+                            <ShieldCheck className="h-4 w-4 text-brand-500" /> Verified Partner
+                          </FormLabel>
+                          <FormDescription className="text-[10px]">Show verification badge</FormDescription>
+                        </div>
+                        <FormControl>
+                          <Switch
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <FormField
                     control={form.control}
