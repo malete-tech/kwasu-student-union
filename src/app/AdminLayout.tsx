@@ -1,165 +1,210 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { Outlet, useNavigate, useLocation } from "react-router-dom";
-import { Helmet } from "react-helmet-async";
-import { useIsMobile } from "@/hooks/use-mobile";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import React, { useState } from "react";
+import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
+import { 
+  LayoutDashboard, 
+  Newspaper, 
+  Calendar, 
+  Users, 
+  FileText, 
+  MessageSquare, 
+  LogOut, 
+  Menu, 
+  ChevronRight,
+  Bell,
+  Search,
+  Briefcase,
+  Star,
+  Settings,
+  Handshake
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Menu, User, LogOut, Settings, ChevronRight } from "lucide-react";
-import AdminNavigation from "@/components/admin/AdminNavigation";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useSession } from "@/components/SessionContextProvider";
 import { supabase } from "@/integrations/supabase/client";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { toast } from "sonner";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const AdminLayout: React.FC = () => {
-  const isMobile = useIsMobile();
-  const [isSheetOpen, setIsSheetOpen] = useState(false);
-  const navigate = useNavigate();
+  const { session } = useSession();
   const location = useLocation();
-  const { session, loading } = useSession();
+  const navigate = useNavigate();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const isMobile = useIsMobile();
 
-  const closeSheet = () => setIsSheetOpen(false);
-
-  useEffect(() => {
-    if (loading) return;
-    if (!session) {
-      navigate("/admin/login", { replace: true });
-    }
-  }, [session, loading, navigate]);
+  const navigation = [
+    { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
+    { name: "News", href: "/admin/news", icon: Newspaper },
+    { name: "Events", href: "/admin/events", icon: Calendar },
+    { name: "Executives", href: "/admin/executives", icon: Users },
+    { name: "Documents", href: "/admin/documents", icon: FileText },
+    { name: "Opportunities", href: "/admin/opportunities", icon: Briefcase },
+    { name: "Student Spotlight", href: "/admin/spotlight", icon: Star },
+    { name: "Complaints", href: "/admin/complaints", icon: MessageSquare },
+    { name: "Partners", href: "/admin/partners", icon: Handshake },
+  ];
 
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
-    if (error) console.error("Error logging out:", error);
-    navigate("/admin/login", { replace: true });
-    closeSheet();
+    if (error) {
+      toast.error("Error signing out");
+    } else {
+      toast.success("Signed out successfully");
+      navigate("/admin/login");
+    }
   };
 
-  const getPageTitle = () => {
-    const path = location.pathname;
-    if (path.includes("/news")) return "News Management";
-    if (path.includes("/events")) return "Events Calendar";
-    if (path.includes("/executives")) return "Executive Council";
-    if (path.includes("/documents")) return "Document Vault";
-    if (path.includes("/complaints")) return "Student Grievances";
-    if (path.includes("/opportunities")) return "Opportunities";
-    return "Dashboard Overview";
-  };
-
-  if (loading) {
+  const NavItem = ({ item }: { item: typeof navigation[0] }) => {
+    const isActive = location.pathname === item.href || (item.href !== "/admin" && location.pathname.startsWith(item.href));
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50/50">
-        <div className="flex flex-col items-center gap-4">
-          <div className="h-10 w-10 border-4 border-brand-200 border-t-brand-600 rounded-full animate-spin"></div>
-          <p className="text-brand-700 font-medium animate-pulse">Initializing Dashboard...</p>
-        </div>
-      </div>
+      <Link
+        to={item.href}
+        onClick={() => setIsSidebarOpen(false)}
+        className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group ${
+          isActive 
+            ? "bg-brand-500 text-white shadow-lg shadow-brand-500/20 translate-x-1" 
+            : "text-slate-600 hover:bg-brand-50 hover:text-brand-600"
+        }`}
+      >
+        <item.icon className={`w-5 h-5 ${isActive ? "text-white" : "text-slate-400 group-hover:text-brand-500"}`} />
+        <span className="font-medium">{item.name}</span>
+        {isActive && <ChevronRight className="w-4 h-4 ml-auto" />}
+      </Link>
     );
-  }
+  };
 
-  if (session) {
-    return (
-      <>
-        <Helmet>
-          <title>Admin Dashboard | KWASU Students' Union</title>
-          <meta name="description" content="Administrator dashboard for managing KWASU Students' Union website content." />
-        </Helmet>
+  return (
+    <div className="min-h-screen bg-[#F8FAFC]">
+      {/* Desktop Sidebar */}
+      <aside className="fixed left-0 top-0 bottom-0 w-72 bg-white border-r border-slate-200 hidden lg:flex flex-col z-30 shadow-sm">
+        <div className="p-8">
+          <Link to="/" className="flex items-center gap-3 group">
+            <div className="w-10 h-10 bg-brand-500 rounded-xl flex items-center justify-center text-white shadow-lg shadow-brand-500/30 group-hover:scale-105 transition-transform">
+              <LayoutDashboard size={24} />
+            </div>
+            <div>
+              <h1 className="text-xl font-bold text-slate-900 leading-none">Admin</h1>
+              <p className="text-[10px] text-slate-400 font-medium uppercase tracking-wider mt-1">Management Portal</p>
+            </div>
+          </Link>
+        </div>
 
-        <div className="flex min-h-screen bg-[#F8FAFC]">
-          {!isMobile && (
-            <aside className="fixed top-0 left-0 flex flex-col h-screen w-64 bg-brand-800 text-white p-6 shadow-2xl z-50 border-r border-brand-700/50">
-              <AdminNavigation onLogout={handleLogout} />
-            </aside>
-          )}
+        <nav className="flex-1 px-4 space-y-1.5 overflow-y-auto custom-scrollbar">
+          {navigation.map((item) => (
+            <NavItem key={item.name} item={item} />
+          ))}
+        </nav>
 
-          <div className={`flex-1 flex flex-col ${!isMobile ? 'lg:ml-64' : ''}`}>
-            <header className="sticky top-0 z-40 w-full bg-white/80 backdrop-blur-md border-b border-gray-100 h-20 flex items-center px-6 md:px-10 justify-between">
-              <div className="flex items-center gap-4">
-                {isMobile && (
-                  <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-                    <SheetTrigger asChild>
-                      <Button variant="ghost" size="icon" className="hover:bg-brand-50 text-brand-700">
-                        <Menu className="h-6 w-6" />
-                      </Button>
-                    </SheetTrigger>
-                    <SheetContent side="left" className="w-[280px] bg-brand-800 text-white p-6 border-none">
-                      <AdminNavigation onLinkClick={closeSheet} onLogout={handleLogout} />
-                    </SheetContent>
-                  </Sheet>
-                )}
-                <div className="flex flex-col">
-                  <div className="flex items-center text-xs font-semibold text-brand-400 uppercase tracking-widest mb-0.5">
-                    Admin <ChevronRight className="h-3 w-3 mx-1" /> {getPageTitle() === "Dashboard Overview" ? "Main" : "Module"}
-                  </div>
-                  <h1 className="text-xl md:text-2xl font-bold text-slate-900 leading-tight">
-                    {getPageTitle()}
-                  </h1>
-                </div>
+        <div className="p-4 mt-auto border-t border-slate-100">
+          <div className="p-4 bg-slate-50 rounded-2xl mb-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-brand-100 flex items-center justify-center text-brand-600 font-bold border-2 border-white shadow-sm">
+                {session?.user?.email?.[0]?.toUpperCase()}
               </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-semibold text-slate-900 truncate">{session?.user?.email?.split('@')[0]}</p>
+                <p className="text-xs text-slate-500 truncate">Administrator</p>
+              </div>
+            </div>
+          </div>
+          <Button 
+            onClick={handleLogout}
+            variant="ghost" 
+            className="w-full justify-start gap-3 px-4 py-3 text-slate-600 hover:text-red-600 hover:bg-red-50 rounded-xl transition-colors"
+          >
+            <LogOut className="w-5 h-5" />
+            <span className="font-medium">Logout</span>
+          </Button>
+        </div>
+      </aside>
 
-              <div className="flex items-center gap-4">
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="relative h-10 w-10 rounded-full p-0 border border-brand-100 hover:border-brand-200 transition-all">
-                      <Avatar className="h-9 w-9 ring-2 ring-white ring-offset-2 ring-offset-brand-50">
-                        <AvatarImage src={session.user.user_metadata?.['avatar_url']} />
-                        <AvatarFallback className="bg-brand-600 text-white font-bold">
-                          {session.user.email?.charAt(0).toUpperCase() || "A"}
-                        </AvatarFallback>
-                      </Avatar>
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent className="w-64 mt-2 p-2 rounded-2xl border-gray-100 shadow-xl" align="end">
-                    <DropdownMenuLabel className="font-normal p-3">
-                      <div className="flex flex-col space-y-1">
-                        <p className="text-sm font-bold text-slate-900 leading-none">
-                          {session.user.user_metadata?.['first_name'] || "Administrator"}
-                        </p>
-                        <p className="text-xs text-muted-foreground truncate">
-                          {session.user.email}
-                        </p>
+      {/* Mobile Top Navigation */}
+      <header className="lg:hidden sticky top-0 bg-white/80 backdrop-blur-md border-b border-slate-200 px-4 py-3 flex items-center justify-between z-40">
+        <div className="flex items-center gap-3">
+          <span className="lg:hidden">
+            <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon" className="text-slate-600">
+                  <Menu className="w-6 h-6" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="left" className="w-72 p-0 border-r-0">
+                <div className="flex flex-col h-full bg-white">
+                  <div className="p-8 border-b border-slate-100">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-brand-500 rounded-xl flex items-center justify-center text-white">
+                        <LayoutDashboard size={24} />
                       </div>
-                    </DropdownMenuLabel>
-                    <DropdownMenuSeparator className="bg-gray-100" />
-                    <DropdownMenuItem className="p-3 rounded-xl focus:bg-brand-50 focus:text-brand-700 cursor-pointer transition-colors">
-                      <User className="mr-3 h-4 w-4" />
-                      <span>View Profile</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem className="p-3 rounded-xl focus:bg-brand-50 focus:text-brand-700 cursor-pointer transition-colors">
-                      <Settings className="mr-3 h-4 w-4" />
-                      <span>Settings</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator className="bg-gray-100" />
-                    <DropdownMenuItem 
+                      <h1 className="text-xl font-bold text-slate-900">Admin</h1>
+                    </div>
+                  </div>
+                  <nav className="flex-1 p-4 space-y-1.5 overflow-y-auto">
+                    {navigation.map((item) => (
+                      <NavItem key={item.name} item={item} />
+                    ))}
+                  </nav>
+                  <div className="p-4 border-t border-slate-100">
+                    <Button 
                       onClick={handleLogout}
-                      className="p-3 rounded-xl focus:bg-red-50 focus:text-red-600 text-red-500 cursor-pointer transition-colors font-medium"
+                      variant="ghost" 
+                      className="w-full justify-start gap-3 px-4 py-3 text-red-600 hover:bg-red-50 rounded-xl"
                     >
-                      <LogOut className="mr-3 h-4 w-4" />
-                      <span>Log out</span>
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
-            </header>
-
-            <main className="flex-1 px-6 md:px-10 py-10 max-w-[1400px] mx-auto w-full">
-              <Outlet />
-            </main>
+                      <LogOut className="w-5 h-5" />
+                      <span className="font-medium">Logout</span>
+                    </Button>
+                  </div>
+                </div>
+              </SheetContent>
+            </Sheet>
+          </span>
+          <span className="font-bold text-slate-900">Admin Portal</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <Button variant="ghost" size="icon" className="text-slate-400">
+            <Bell className="w-5 h-5" />
+          </Button>
+          <div className="w-8 h-8 rounded-full bg-brand-500 flex items-center justify-center text-white text-xs font-bold">
+            {session?.user?.email?.[0]?.toUpperCase()}
           </div>
         </div>
-      </>
-    );
-  }
+      </header>
 
-  return null;
+      {/* Main Content */}
+      <div className={`lg:pl-72 flex flex-col min-h-screen transition-all duration-300 ${isMobile ? 'scale-90 origin-top' : ''}`}>
+        <header className="hidden lg:flex items-center justify-between px-10 py-6 bg-white/50 backdrop-blur-sm border-b border-slate-200">
+          <div>
+            <h2 className="text-2xl font-bold text-slate-900">
+              {navigation.find(item => location.pathname.startsWith(item.href))?.name || "Dashboard"}
+            </h2>
+            <p className="text-slate-500 text-sm mt-0.5">Welcome back, manager!</p>
+          </div>
+          <div className="flex items-center gap-6">
+            <div className="relative hidden xl:block">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <input 
+                type="text" 
+                placeholder="Search anything..." 
+                className="pl-10 pr-4 py-2 bg-slate-100 border-none rounded-xl text-sm focus:ring-2 focus:ring-brand-500/20 w-64 outline-none transition-all"
+              />
+            </div>
+            <div className="flex items-center gap-3 border-l border-slate-200 pl-6">
+              <Button variant="ghost" size="icon" className="text-slate-400 hover:text-brand-500 hover:bg-brand-50 rounded-xl">
+                <Bell className="w-5 h-5" />
+              </Button>
+              <Button variant="ghost" size="icon" className="text-slate-400 hover:text-brand-500 hover:bg-brand-50 rounded-xl">
+                <Settings className="w-5 h-5" />
+              </Button>
+            </div>
+          </div>
+        </header>
+
+        <main className="flex-1 px-4 md:px-10 py-6 md:py-10 max-w-[1400px] mx-auto w-full">
+          <Outlet />
+        </main>
+      </div>
+    </div>
+  );
 };
 
 export default AdminLayout;

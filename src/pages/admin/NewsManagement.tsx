@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { PlusCircle, Edit, Trash2, Loader2, Image } from "lucide-react";
+import { PlusCircle, Edit, Trash2, Loader2, Image as ImageIcon } from "lucide-react";
 import { api } from "@/lib/api";
 import { News } from "@/types";
 import { toast } from "sonner";
@@ -78,32 +78,24 @@ const NewsManagement: React.FC = () => {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-brand-700">News Management</h2>
-          <p className="text-sm md:text-base text-muted-foreground mt-1">Create, edit, and manage news articles for the platform.</p>
+          <p className="text-sm md:text-base text-muted-foreground mt-1">Manage articles for the student portal.</p>
         </div>
-        <Button asChild className="bg-brand-500 hover:bg-brand-600 text-white focus-visible:ring-brand-gold shadow-md w-full sm:w-auto">
+        <Button asChild className="bg-brand-500 hover:bg-brand-600 text-white shadow-lg w-full sm:w-auto">
           <Link to="/admin/news/add">
-            <PlusCircle className="mr-2 h-4 w-4" /> Add New Article
+            <PlusCircle className="mr-2 h-4 w-4" /> New Article
           </Link>
         </Button>
       </div>
 
-      <div className="mt-8">
+      <div className="mt-4">
         {loading ? (
-          <div className="grid gap-4">
+          <div className="space-y-4">
             {[...Array(5)].map((_, i) => (
-              <div key={i} className="flex items-center space-x-4 p-4 border-b last:border-b-0">
-                <Skeleton className="h-12 w-12 md:h-16 md:w-16 rounded-lg" />
-                <div className="flex-1 space-y-2">
-                  <Skeleton className="h-5 w-1/3" />
-                  <Skeleton className="h-4 w-1/4" />
-                </div>
-                <Skeleton className="h-9 w-24" />
-                <Skeleton className="h-9 w-9 rounded-md" />
-              </div>
+              <Skeleton key={i} className="h-24 w-full rounded-2xl" />
             ))}
           </div>
         ) : error ? (
@@ -113,54 +105,50 @@ const NewsManagement: React.FC = () => {
           </div>
         ) : newsArticles.length === 0 ? (
           <div className="py-20 text-center border-2 border-dashed rounded-2xl">
-            <p className="text-muted-foreground text-lg">No news articles found. Start by adding a new one!</p>
+            <p className="text-muted-foreground text-lg">No news articles found.</p>
             <Button asChild variant="link" className="mt-2 text-brand-500">
-              <Link to="/admin/news/add">Add your first article</Link>
+              <Link to="/admin/news/add">Create your first article</Link>
             </Button>
           </div>
         ) : (
-          <div className="grid gap-4 md:gap-6">
+          <div className="grid gap-3">
             {newsArticles.map((article) => (
               <div 
                 key={article.id} 
-                className="group relative flex flex-col md:flex-row md:items-center justify-between p-4 md:p-6 bg-white/50 hover:bg-white rounded-2xl border border-transparent hover:border-brand-100 hover:shadow-xl transition-all duration-300"
+                className="group relative bg-white hover:bg-slate-50 border border-slate-100 rounded-2xl p-3 md:p-4 transition-all duration-200 shadow-sm hover:shadow-md flex items-center gap-3 md:gap-4"
               >
-                <div className="flex items-center space-x-4 md:space-x-6">
-                  <div className="h-16 w-16 md:h-20 md:w-20 flex-shrink-0 rounded-xl overflow-hidden bg-brand-50 border border-brand-100 flex items-center justify-center shadow-inner">
-                    {article.coverUrl ? (
-                      <img src={article.coverUrl} alt="Cover" className="h-full w-full object-cover transition-transform group-hover:scale-110" />
-                    ) : (
-                      <Image className="h-6 w-6 md:h-8 md:w-8 text-brand-200" />
-                    )}
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <h3 className="text-lg md:text-xl font-bold text-brand-800 group-hover:text-brand-600 transition-colors truncate">
-                      {article.title}
-                    </h3>
-                    <div className="flex items-center gap-2 md:gap-3 mt-1">
-                      <span className="text-xs md:text-sm font-medium text-muted-foreground">
-                        {article.publishedAt && !isNaN(new Date(article.publishedAt).getTime())
-                          ? format(new Date(article.publishedAt), "PPP")
-                          : "Draft"}
+                {/* Compact Image */}
+                <div className="h-14 w-14 md:h-16 md:w-16 flex-shrink-0 rounded-xl overflow-hidden bg-slate-50 border border-slate-100 flex items-center justify-center">
+                  {article.coverUrl ? (
+                    <img src={article.coverUrl} alt="" className="h-full w-full object-cover" />
+                  ) : (
+                    <ImageIcon className="h-5 w-5 text-slate-300" />
+                  )}
+                </div>
+
+                {/* Content Info */}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-1">
+                    {article.tags && article.tags.length > 0 && (
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-brand-600 bg-brand-50 px-1.5 py-0.5 rounded">
+                        {article.tags[0]}
                       </span>
-                      {article.tags && article.tags.length > 0 && (
-                        <div className="flex gap-1">
-                          {article.tags.slice(0, 1).map(tag => (
-                            <span key={tag} className="text-[9px] md:text-[10px] uppercase tracking-wider bg-brand-50 text-brand-600 px-2 py-0.5 rounded-full border border-brand-100">
-                              {tag}
-                            </span>
-                          ))}
-                        </div>
-                      )}
-                    </div>
+                    )}
+                    <span className="text-[10px] text-slate-400 font-medium">
+                      {article.publishedAt ? format(new Date(article.publishedAt), "MMM d, yyyy") : "Draft"}
+                    </span>
                   </div>
+                  <h3 className="text-sm md:text-base font-bold text-slate-900 truncate leading-snug group-hover:text-brand-600 transition-colors">
+                    {article.title}
+                  </h3>
                 </div>
                 
-                <div className="flex items-center space-x-2 md:space-x-3 mt-3 md:mt-0 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity">
-                  <Button asChild variant="outline" size="sm" className="flex-1 md:flex-none bg-white border-brand-100 text-brand-600 hover:bg-brand-50 hover:text-brand-700 rounded-xl px-4 h-9">
+                {/* Compact Actions */}
+                <div className="flex items-center gap-1 md:gap-2">
+                  <Button asChild variant="ghost" size="icon" className="h-8 w-8 md:h-10 md:w-10 text-slate-400 hover:text-brand-600 hover:bg-brand-50 rounded-lg">
                     <Link to={`/admin/news/edit/${article.id}`}>
-                      <Edit className="h-4 w-4 mr-2" />
-                      Edit
+                      <Edit className="h-4 w-4" />
+                      <span className="sr-only">Edit</span>
                     </Link>
                   </Button>
                   
@@ -170,7 +158,7 @@ const NewsManagement: React.FC = () => {
                         variant="ghost" 
                         size="icon" 
                         disabled={deletingId === article.id}
-                        className="text-muted-foreground hover:text-destructive hover:bg-destructive/5 rounded-xl h-9 w-9"
+                        className="h-8 w-8 md:h-10 md:w-10 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg"
                       >
                         {deletingId === article.id ? (
                           <Loader2 className="h-4 w-4 animate-spin" />
@@ -180,20 +168,20 @@ const NewsManagement: React.FC = () => {
                         <span className="sr-only">Delete</span>
                       </Button>
                     </AlertDialogTrigger>
-                    <AlertDialogContent className="rounded-2xl border-none shadow-2xl w-[90vw] max-w-md">
+                    <AlertDialogContent className="rounded-2xl max-w-[95vw] md:max-w-md">
                       <AlertDialogHeader>
-                        <AlertDialogTitle className="text-xl md:text-2xl font-bold text-brand-800">Delete article?</AlertDialogTitle>
-                        <AlertDialogDescription className="text-sm md:text-base">
-                          This will permanently remove <span className="font-semibold text-brand-700">"{article.title}"</span> and its cover image. This action is irreversible.
+                        <AlertDialogTitle>Delete news article?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          This will permanently remove "{article.title}". This action cannot be undone.
                         </AlertDialogDescription>
                       </AlertDialogHeader>
-                      <AlertDialogFooter className="mt-6 flex-col sm:flex-row gap-2">
-                        <AlertDialogCancel className="rounded-xl border-brand-100 mt-0">Cancel</AlertDialogCancel>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel className="rounded-xl">Cancel</AlertDialogCancel>
                         <AlertDialogAction 
                           onClick={() => handleDelete(article)} 
-                          className="bg-destructive hover:bg-destructive/90 text-white rounded-xl"
+                          className="bg-red-600 hover:bg-red-700 text-white rounded-xl"
                         >
-                          Delete Article
+                          Delete
                         </AlertDialogAction>
                       </AlertDialogFooter>
                     </AlertDialogContent>
