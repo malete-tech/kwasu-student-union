@@ -61,11 +61,11 @@ const AdminLayout: React.FC = () => {
         onClick={() => setIsSidebarOpen(false)}
         className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group ${
           isActive 
-            ? "bg-brand-500 text-white shadow-lg shadow-brand-500/20 translate-x-1" 
-            : "text-slate-600 hover:bg-brand-50 hover:text-brand-600"
+            ? "bg-brand-700 text-brand-gold shadow-lg shadow-black/20 translate-x-1" 
+            : "text-brand-100 hover:bg-brand-800 hover:text-white"
         }`}
       >
-        <item.icon className={`w-5 h-5 ${isActive ? "text-white" : "text-slate-400 group-hover:text-brand-500"}`} />
+        <item.icon className={`w-5 h-5 ${isActive ? "text-brand-gold" : "text-brand-300 group-hover:text-brand-100"}`} />
         <span className="font-medium">{item.name}</span>
         {isActive && <ChevronRight className="w-4 h-4 ml-auto" />}
       </Link>
@@ -73,18 +73,18 @@ const AdminLayout: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC]">
+    <div className="min-h-screen bg-slate-50">
       {/* Desktop Sidebar */}
-      <aside className="fixed left-0 top-0 bottom-0 w-72 bg-white border-r border-slate-200 hidden lg:flex flex-col z-30 shadow-sm overflow-hidden">
+      <aside className="fixed left-0 top-0 bottom-0 w-72 bg-brand-900 hidden lg:flex flex-col z-30 shadow-2xl overflow-hidden border-r border-brand-800/50">
         {/* Header - Fixed */}
         <div className="p-8 flex-shrink-0">
           <Link to="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 bg-brand-500 rounded-xl flex items-center justify-center text-white shadow-lg shadow-brand-500/30 group-hover:scale-105 transition-transform">
+            <div className="w-10 h-10 bg-brand-gold rounded-xl flex items-center justify-center text-brand-900 shadow-lg shadow-brand-gold/20 group-hover:scale-105 transition-transform">
               <LayoutDashboard size={24} />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-slate-900 leading-none">Admin</h1>
-              <p className="text-[10px] text-slate-400 font-medium uppercase tracking-wider mt-1">Management Portal</p>
+              <h1 className="text-xl font-bold text-white leading-none">Admin</h1>
+              <p className="text-[10px] text-brand-400 font-bold uppercase tracking-widest mt-1">KWASU SU Portal</p>
             </div>
           </Link>
         </div>
@@ -97,22 +97,22 @@ const AdminLayout: React.FC = () => {
         </nav>
 
         {/* Footer (User Profile & Logout) - Fixed at bottom */}
-        <div className="p-4 flex-shrink-0 border-t border-slate-100 bg-white">
-          <div className="p-4 bg-slate-50 rounded-2xl mb-3">
+        <div className="p-4 flex-shrink-0 border-t border-brand-800 bg-brand-950/50">
+          <div className="p-4 bg-brand-800/50 rounded-2xl mb-3 border border-brand-700/50">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-brand-100 flex items-center justify-center text-brand-600 font-bold border-2 border-white shadow-sm">
+              <div className="w-10 h-10 rounded-full bg-brand-gold flex items-center justify-center text-brand-900 font-bold border-2 border-brand-600 shadow-sm">
                 {session?.user?.email?.[0]?.toUpperCase() || "A"}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold text-slate-900 truncate">{session?.user?.email?.split('@')[0] || "Admin"}</p>
-                <p className="text-[10px] text-slate-500 uppercase font-bold tracking-tighter">Administrator</p>
+                <p className="text-sm font-semibold text-white truncate">{session?.user?.email?.split('@')[0] || "Admin"}</p>
+                <p className="text-[10px] text-brand-400 uppercase font-bold tracking-tighter">Administrator</p>
               </div>
             </div>
           </div>
           <Button 
             onClick={handleLogout}
             variant="ghost" 
-            className="w-full justify-start gap-3 px-4 py-3 text-slate-600 hover:text-red-600 hover:bg-red-50 rounded-xl transition-colors"
+            className="w-full justify-start gap-3 px-4 py-3 text-brand-300 hover:text-red-400 hover:bg-red-950/30 rounded-xl transition-colors"
           >
             <LogOut className="w-5 h-5" />
             <span className="font-medium">Logout</span>
@@ -121,22 +121,22 @@ const AdminLayout: React.FC = () => {
       </aside>
 
       {/* Mobile Top Navigation */}
-      <header className="lg:hidden sticky top-0 bg-white/80 backdrop-blur-md border-b border-slate-200 px-4 py-3 flex items-center justify-between z-40">
+      <header className="lg:hidden sticky top-0 bg-brand-900 text-white border-b border-brand-800 px-4 py-3 flex items-center justify-between z-40 shadow-md">
         <div className="flex items-center gap-3">
           <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="text-slate-600">
+              <Button variant="ghost" size="icon" className="text-brand-100 hover:bg-brand-800">
                 <Menu className="w-6 h-6" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="left" className="w-72 p-0 border-r-0">
-              <div className="flex flex-col h-full bg-white overflow-hidden">
-                <div className="p-8 border-b border-slate-100 flex-shrink-0">
+            <SheetContent side="left" className="w-72 p-0 border-none bg-brand-900">
+              <div className="flex flex-col h-full overflow-hidden">
+                <div className="p-8 border-b border-brand-800 flex-shrink-0">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-brand-500 rounded-xl flex items-center justify-center text-white">
+                    <div className="w-10 h-10 bg-brand-gold rounded-xl flex items-center justify-center text-brand-900">
                       <LayoutDashboard size={24} />
                     </div>
-                    <h1 className="text-xl font-bold text-slate-900">Admin</h1>
+                    <h1 className="text-xl font-bold text-white">Admin</h1>
                   </div>
                 </div>
                 <nav className="flex-1 p-4 space-y-1.5 overflow-y-auto">
@@ -144,11 +144,11 @@ const AdminLayout: React.FC = () => {
                     <NavItem key={item.name} item={item} />
                   ))}
                 </nav>
-                <div className="p-4 border-t border-slate-100 flex-shrink-0 bg-white">
+                <div className="p-4 border-t border-brand-800 flex-shrink-0 bg-brand-950/50">
                   <Button 
                     onClick={handleLogout}
                     variant="ghost" 
-                    className="w-full justify-start gap-3 px-4 py-3 text-red-600 hover:bg-red-50 rounded-xl"
+                    className="w-full justify-start gap-3 px-4 py-3 text-red-400 hover:bg-red-950/30 rounded-xl"
                   >
                     <LogOut className="w-5 h-5" />
                     <span className="font-medium">Logout</span>
@@ -157,10 +157,10 @@ const AdminLayout: React.FC = () => {
               </div>
             </SheetContent>
           </Sheet>
-          <span className="font-bold text-slate-900">Admin Portal</span>
+          <span className="font-bold text-white tracking-tight">Admin Portal</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-full bg-brand-500 flex items-center justify-center text-white text-xs font-bold">
+          <div className="w-8 h-8 rounded-full bg-brand-gold flex items-center justify-center text-brand-900 text-xs font-bold border border-brand-600">
             {session?.user?.email?.[0]?.toUpperCase() || "A"}
           </div>
         </div>
@@ -168,27 +168,27 @@ const AdminLayout: React.FC = () => {
 
       {/* Main Content */}
       <div className="lg:pl-72 flex flex-col min-h-screen">
-        <header className="hidden lg:flex items-center justify-between px-10 py-6 bg-white/50 backdrop-blur-sm border-b border-slate-200">
+        <header className="hidden lg:flex items-center justify-between px-10 py-6 bg-white border-b border-slate-200">
           <div>
-            <h2 className="text-2xl font-bold text-slate-900">
+            <h2 className="text-2xl font-extrabold text-brand-900 uppercase tracking-tight">
               {navigation.find(item => location.pathname.startsWith(item.href))?.name || "Dashboard"}
             </h2>
-            <p className="text-slate-500 text-sm mt-0.5">Welcome back, manager!</p>
+            <p className="text-slate-500 text-sm font-medium">Manage your campus digital hub.</p>
           </div>
           <div className="flex items-center gap-6">
             <div className="relative hidden xl:block">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
               <input 
                 type="text" 
-                placeholder="Search anything..." 
+                placeholder="Search resources..." 
                 className="pl-10 pr-4 py-2 bg-slate-100 border-none rounded-xl text-sm focus:ring-2 focus:ring-brand-500/20 w-64 outline-none transition-all"
               />
             </div>
             <div className="flex items-center gap-3 border-l border-slate-200 pl-6">
-              <Button variant="ghost" size="icon" className="text-slate-400 hover:text-brand-500 hover:bg-brand-50 rounded-xl">
+              <Button variant="ghost" size="icon" className="text-slate-400 hover:text-brand-600 hover:bg-brand-50 rounded-xl">
                 <Bell className="w-5 h-5" />
               </Button>
-              <Button variant="ghost" size="icon" className="text-slate-400 hover:text-brand-500 hover:bg-brand-50 rounded-xl">
+              <Button variant="ghost" size="icon" className="text-slate-400 hover:text-brand-600 hover:bg-brand-50 rounded-xl">
                 <Settings className="w-5 h-5" />
               </Button>
             </div>
