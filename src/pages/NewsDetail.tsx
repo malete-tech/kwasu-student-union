@@ -15,6 +15,7 @@ import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Card, CardContent } from "@/components/ui/card";
+import AdPlacement from "@/components/AdPlacement";
 
 const NewsDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -52,14 +53,19 @@ const NewsDetail: React.FC = () => {
         <Helmet>
           <title>Loading News... | KWASU SU</title>
         </Helmet>
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+        <div className="container pb-16">
           <Skeleton className="h-10 w-48 mb-8" />
-          <div className="space-y-8">
-            <Skeleton className="h-12 w-full mb-4" />
-            <Skeleton className="h-64 w-full rounded-lg" />
-            <div className="space-y-4 pt-4">
-              <Skeleton className="h-4 w-full" />
-              <Skeleton className="h-4 w-5/6" />
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+            <div className="lg:col-span-2 space-y-8">
+              <Skeleton className="h-12 w-full mb-4" />
+              <Skeleton className="h-64 w-full rounded-lg" />
+              <div className="space-y-4 pt-4">
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-5/6" />
+              </div>
+            </div>
+            <div className="hidden lg:block lg:col-span-1">
+              <Skeleton className="h-[400px] w-full rounded-2xl" />
             </div>
           </div>
         </div>
@@ -69,8 +75,8 @@ const NewsDetail: React.FC = () => {
 
   if (error || !news) {
     return (
-      <div className="py-12 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <Card className="shadow-lg rounded-2xl p-6">
+      <div className="py-12 container">
+        <Card className="shadow-lg rounded-2xl p-6 max-w-2xl mx-auto">
           <CardContent className="text-center text-destructive text-lg">
             {error || "News article data is not available."}
             <div className="mt-6">
@@ -93,59 +99,80 @@ const NewsDetail: React.FC = () => {
         <meta name="description" content={news.excerpt} />
       </Helmet>
       <div className="min-h-screen py-12 bg-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+        <div className="container pb-16">
           <Button asChild variant="ghost" className="mb-10 text-brand-600 hover:text-brand-700 hover:bg-brand-50 -ml-4">
             <Link to="/news">
               <ArrowLeft className="mr-2 h-4 w-4" /> Back to News
             </Link>
           </Button>
 
-          <article className="overflow-hidden">
-            <header className="mb-10">
-              <h1 className="text-3xl md:text-5xl font-extrabold text-brand-900 mb-6 leading-tight break-words">
-                {news.title}
-              </h1>
-              <div className="flex flex-wrap items-center gap-4 text-muted-foreground text-sm">
-                <div className="flex items-center">
-                  <CalendarDays className="mr-2 h-4 w-4 text-brand-500" />
-                  <span>Published {format(new Date(news.publishedAt), "PPP")}</span>
-                </div>
-                <Separator orientation="vertical" className="h-4 hidden sm:block" />
-                <div className="flex flex-wrap gap-2">
-                  <span className="flex items-center text-sm font-medium text-brand-700">
-                    <Tag className="mr-1 h-4 w-4" /> Tags:
-                  </span>
-                  {news.tags.map((tag) => (
-                    <Badge key={tag} variant="secondary" className="bg-brand-100 text-brand-700 hover:bg-brand-200 border-none">
-                      {tag}
-                    </Badge>
-                  ))}
-                </div>
-              </div>
-            </header>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 max-w-7xl mx-auto">
+            {/* Main Article Content */}
+            <div className="lg:col-span-2">
+              <article className="overflow-hidden">
+                <header className="mb-10">
+                  <h1 className="text-3xl md:text-5xl font-extrabold text-brand-900 mb-6 leading-tight break-words">
+                    {news.title}
+                  </h1>
+                  <div className="flex flex-wrap items-center gap-4 text-muted-foreground text-sm">
+                    <div className="flex items-center">
+                      <CalendarDays className="mr-2 h-4 w-4 text-brand-500" />
+                      <span>Published {format(new Date(news.publishedAt), "PPP")}</span>
+                    </div>
+                    <Separator orientation="vertical" className="h-4 hidden sm:block" />
+                    <div className="flex flex-wrap gap-2">
+                      <span className="flex items-center text-sm font-medium text-brand-700">
+                        <Tag className="mr-1 h-4 w-4" /> Tags:
+                      </span>
+                      {news.tags.map((tag) => (
+                        <Badge key={tag} variant="secondary" className="bg-brand-100 text-brand-700 hover:bg-brand-200 border-none">
+                          {tag}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                </header>
 
-            {news.coverUrl && (
-              <div className="mb-12 group">
-                <div className="flex items-center gap-2 mb-4 text-xs font-bold text-brand-600 uppercase tracking-widest">
-                  <Paperclip className="h-4 w-4" />
-                  Attachment / Bulletin
-                </div>
-                <div className="relative inline-block w-full overflow-hidden bg-white p-3 border border-gray-200 shadow-sm rounded-lg">
-                  <img
-                    src={news.coverUrl}
-                    alt={news.title}
-                    className="w-full h-auto object-contain max-h-[700px] rounded-sm"
-                  />
-                </div>
-              </div>
-            )}
+                {news.coverUrl && (
+                  <div className="mb-12 group">
+                    <div className="flex items-center gap-2 mb-4 text-xs font-bold text-brand-600 uppercase tracking-widest">
+                      <Paperclip className="h-4 w-4" />
+                      Attachment / Bulletin
+                    </div>
+                    <div className="relative inline-block w-full overflow-hidden bg-white p-3 border border-gray-200 shadow-sm rounded-lg">
+                      <img
+                        src={news.coverUrl}
+                        alt={news.title}
+                        className="w-full h-auto object-contain max-h-[700px] rounded-sm"
+                      />
+                    </div>
+                  </div>
+                )}
 
-            <div className="prose prose-slate max-w-none lg:prose-xl break-words">
-              <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreaks]}>
-                {news.bodyMd}
-              </ReactMarkdown>
+                <div className="prose prose-slate max-w-none lg:prose-xl break-words">
+                  <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreaks]}>
+                    {news.bodyMd}
+                  </ReactMarkdown>
+                </div>
+              </article>
             </div>
-          </article>
+
+            {/* Sidebar with Ad Placement */}
+            <div className="lg:col-span-1 space-y-8">
+              <div className="sticky top-24">
+                <h3 className="text-xs font-bold uppercase tracking-widest text-brand-400 mb-4">Sponsored</h3>
+                <AdPlacement placement="news_feed" />
+                
+                <div className="mt-12 p-6 bg-brand-900 rounded-2xl text-white shadow-xl">
+                  <h4 className="font-bold text-brand-gold mb-2">Advertise with SU</h4>
+                  <p className="text-xs text-white/70 mb-4">Reach thousands of students daily. Partner with the KWASU Students' Union.</p>
+                  <Button asChild size="sm" className="w-full bg-brand-gold text-brand-900 hover:bg-brand-gold/90 font-bold">
+                    <Link to="/contact">Get Started</Link>
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </>
