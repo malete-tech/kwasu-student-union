@@ -75,10 +75,12 @@ const DashboardOverview: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <h2 className="text-3xl font-bold text-brand-700">Welcome to the Admin Dashboard!</h2>
-      <p className="text-muted-foreground">
-        Here you can manage all aspects of the KWASU Students' Union website.
-      </p>
+      <div className="space-y-1">
+        <h2 className="text-2xl md:text-3xl font-bold text-brand-700">Welcome to the Admin Dashboard!</h2>
+        <p className="text-sm md:text-base text-muted-foreground">
+          Here you can manage all aspects of the KWASU Students' Union website.
+        </p>
+      </div>
 
       {error && (
         <div className="text-destructive text-center text-lg p-4 border border-destructive rounded-md">
@@ -86,7 +88,7 @@ const DashboardOverview: React.FC = () => {
         </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
         <Card className="shadow-lg rounded-xl">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total News Articles</CardTitle>
@@ -145,9 +147,9 @@ const DashboardOverview: React.FC = () => {
         </Card>
       </div>
 
-      <Card className="shadow-lg rounded-xl p-6">
-        <CardTitle className="text-xl font-semibold mb-4 text-brand-700">Recent Activity</CardTitle>
-        <CardContent>
+      <Card className="shadow-lg rounded-xl p-4 md:p-6">
+        <CardTitle className="text-lg md:text-xl font-semibold mb-4 text-brand-700">Recent Activity</CardTitle>
+        <CardContent className="p-0">
           {loading ? (
             <div className="space-y-2">
               {[...Array(3)].map((_, i) => (
@@ -157,7 +159,7 @@ const DashboardOverview: React.FC = () => {
           ) : recentActivities.length > 0 ? (
             <ul className="list-disc list-inside text-muted-foreground space-y-2">
               {recentActivities.map((activity, index) => (
-                <li key={index}>
+                <li key={index} className="text-sm md:text-base">
                   <Link to={activity.link} className="text-brand-500 hover:underline">
                     {activity.type === 'news' ? "News Update:" : "Event Update:"} {activity.title}
                   </Link>
