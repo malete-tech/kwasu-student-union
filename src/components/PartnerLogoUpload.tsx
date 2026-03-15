@@ -12,7 +12,7 @@ import { uploadImageToCloudinary, deleteImageFromCloudinary, getCloudinaryPublic
 
 interface PartnerLogoUploadProps {
   label: string;
-  value?: string;
+  value?: string; // URL of the uploaded image
   onChange: (url: string | undefined) => void;
   disabled?: boolean;
   className?: string;
@@ -39,18 +39,20 @@ const PartnerLogoUpload: React.FC<PartnerLogoUploadProps> = ({
   const handleFileChange = useCallback(async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file || !session?.access_token) {
-      if (!session?.access_token && file) toast.error("Authentication required.");
+      if (!session?.access_token && file) toast.error("Authentication required for upload.");
       return;
     }
 
+    // Check file size (2MB limit)
     if (file.size > MAX_FILE_SIZE) {
       toast.error("File is too large. Maximum size allowed is 2MB.");
-      event.target.value = "";
+      event.target.value = ""; // Clear input
       return;
     }
 
     setIsUploading(true);
     try {
+      // 1. If there's an existing image, delete it from Cloudinary first
       if (previewUrl) {
         const publicId = getCloudinaryPublicId(previewUrl);
         if (publicId) {
@@ -58,6 +60,7 @@ const PartnerLogoUpload: React.FC<PartnerLogoUploadProps> = ({
         }
       }
 
+      // 2. Upload the new image
       const uploadResult = await uploadImageToCloudinary(file, CLOUDINARY_FOLDER, session.access_token);
       
       if (uploadResult) {
@@ -83,6 +86,7 @@ const PartnerLogoUpload: React.FC<PartnerLogoUploadProps> = ({
     try {
       const publicId = getCloudinaryPublicId(previewUrl);
       if (!publicId) {
+        // If we can't find a public ID, just clear it locally
         setPreviewUrl(undefined);
         onChange(undefined);
         return;
@@ -96,7 +100,7 @@ const PartnerLogoUpload: React.FC<PartnerLogoUploadProps> = ({
       }
     } catch (error) {
       console.error("Error during logo deletion process:", error);
-      toast.error("Failed to remove logo.");
+      toast.error("Failed to remove logo from server.");
     } finally {
       setIsUploading(false);
     }
@@ -104,17 +108,17 @@ const PartnerLogoUpload: React.FC<PartnerLogoUploadProps> = ({
 
   return (
     <div className={cn("space-y-2", className)}>
-      <Label htmlFor="partner-logo-upload">{label}</Label>
+      <Label htmlFor="partner-logo-upload" className="text-slate-700 font-semibold">{label}</Label>
       <div className="flex items-center space-x-4">
         {previewUrl ? (
-          <div className="relative h-24 w-24 flex-shrink-0 rounded-md overflow-hidden border border-gray-200 bg-white p-2">
+          <div className="relative h-24 w-24 flex-shrink-0 rounded-xl overflow-hidden border border-brand-100 bg-white p-2 shadow-sm">
             <img src={previewUrl} alt="Preview" className="h-full w-full object-contain" />
             {!disabled && (
               <Button
                 type="button"
                 variant="destructive"
                 size="icon"
-                className="absolute top-1 right-1 h-6 w-6 rounded-full"
+                className="absolute top-1 right-1 h-6 w-6 rounded-full shadow-lg"
                 onClick={handleRemoveImage}
                 disabled={isUploading}
               >
@@ -124,8 +128,8 @@ const PartnerLogoUpload: React.FC<PartnerLogoUploadProps> = ({
             )}
           </div>
         ) : (
-          <div className="h-24 w-24 flex-shrink-0 rounded-md overflow-hidden border border-dashed border-gray-300 flex items-center justify-center bg-gray-50">
-            <Image className="h-8 w-8 text-muted-foreground" />
+          <div className="h-24 w-24 flex-shrink-0 rounded-xl overflow-hidden border-2 border-dashed border-brand-100 flex items-center justify-center bg-brand-50/30">
+            <Image className="h-8 w-8 text-brand-200" />
           </div>
         )}
         <div className="flex-1">
@@ -140,15 +144,15 @@ const PartnerLogoUpload: React.FC<PartnerLogoUploadProps> = ({
           <Label
             htmlFor="partner-logo-upload"
             className={cn(
-              "flex items-center justify-center px-4 py-2 border border-input rounded-md cursor-pointer text-sm font-medium",
-              "bg-background hover:bg-accent hover:text-accent-foreground",
+              "flex items-center justify-center px-4 py-2.5 border border-brand-100 rounded-xl cursor-pointer text-sm font-bold transition-all",
+              "bg-white text-brand-700 hover:bg-brand-50 hover:border-brand-200 shadow-sm",
               (disabled || isUploading) && "opacity-50 cursor-not-allowed"
             )}
           >
             {isUploading ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Uploading...
+                Processing...
               </>
             ) : (
               <>
@@ -157,9 +161,14 @@ const PartnerLogoUpload: React.FC<PartnerLogoUploadProps> = ({
               </>
             )}
           </Label>
-          <p className="text-[10px] text-muted-foreground mt-1">Max size: 2MB</p>
+          <p className="text-[10px] text-muted-foreground mt-2 font-medium uppercase tracking-wider">Max size: 2MB • PNG/JPG preferred</p>
         </div>
       </div>
+      {previewUrl && (
+        <p className="text-[10px] text-muted-foreground break-all mt-1 opacity-50">
+          Source: <a href={previewUrl} target="_blank" rel="noopener noreferrer" className="underline hover:text-brand-500">{previewUrl}</a>
+        </p>
+      )}
     </div>
   );
 };
