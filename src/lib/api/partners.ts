@@ -6,11 +6,10 @@ export const partners = {
     const { data, error } = await supabase
       .from('partners')
       .select('*')
-      .order('tier', { ascending: false }) // Premium first
-      .order('name', { ascending: true });
+      .order('created_at', { ascending: false });
     
     if (error) {
-      console.error("Supabase error fetching partners:", error);
+      console.error("Supabase error fetching ads:", error);
       throw new Error(error.message);
     }
     
@@ -19,6 +18,32 @@ export const partners = {
       logoUrl: item.logo_url,
       websiteUrl: item.website_url,
       isVerified: item.is_verified,
+      startDate: item.start_date,
+      endDate: item.end_date,
+      createdAt: item.created_at,
+    })) as Partner[];
+  },
+
+  getByPlacement: async (placement: Partner['placement']): Promise<Partner[]> => {
+    const { data, error } = await supabase
+      .from('partners')
+      .select('*')
+      .eq('placement', placement)
+      .eq('status', 'active')
+      .order('tier', { ascending: false }); // Premium ads first
+    
+    if (error) {
+      console.error("Supabase error fetching ads by placement:", error);
+      throw new Error(error.message);
+    }
+    
+    return data.map(item => ({
+      ...item,
+      logoUrl: item.logo_url,
+      websiteUrl: item.website_url,
+      isVerified: item.is_verified,
+      startDate: item.start_date,
+      endDate: item.end_date,
       createdAt: item.created_at,
     })) as Partner[];
   },
@@ -31,7 +56,7 @@ export const partners = {
       .maybeSingle();
     
     if (error) {
-      console.error("Supabase error fetching partner by ID:", error);
+      console.error("Supabase error fetching ad by ID:", error);
       throw new Error(error.message);
     }
     
@@ -42,6 +67,8 @@ export const partners = {
       logoUrl: data.logo_url,
       websiteUrl: data.website_url,
       isVerified: data.is_verified,
+      startDate: data.start_date,
+      endDate: data.end_date,
       createdAt: data.created_at,
     } as Partner;
   },
@@ -57,12 +84,16 @@ export const partners = {
         category: partner.category,
         is_verified: partner.isVerified,
         tier: partner.tier,
+        placement: partner.placement,
+        status: partner.status,
+        start_date: partner.startDate,
+        end_date: partner.endDate,
       })
       .select()
       .single();
 
     if (error) {
-      console.error("Supabase error creating partner:", error);
+      console.error("Supabase error creating ad:", error);
       throw new Error(error.message);
     }
 
@@ -71,6 +102,8 @@ export const partners = {
       logoUrl: data.logo_url,
       websiteUrl: data.website_url,
       isVerified: data.is_verified,
+      startDate: data.start_date,
+      endDate: data.end_date,
       createdAt: data.created_at,
     } as Partner;
   },
@@ -84,6 +117,10 @@ export const partners = {
     if (partner.category !== undefined) updatePayload['category'] = partner.category;
     if (partner.isVerified !== undefined) updatePayload['is_verified'] = partner.isVerified;
     if (partner.tier !== undefined) updatePayload['tier'] = partner.tier;
+    if (partner.placement !== undefined) updatePayload['placement'] = partner.placement;
+    if (partner.status !== undefined) updatePayload['status'] = partner.status;
+    if (partner.startDate !== undefined) updatePayload['start_date'] = partner.startDate;
+    if (partner.endDate !== undefined) updatePayload['end_date'] = partner.endDate;
 
     const { data, error } = await supabase
       .from('partners')
@@ -93,7 +130,7 @@ export const partners = {
       .single();
 
     if (error) {
-      console.error("Supabase error updating partner:", error);
+      console.error("Supabase error updating ad:", error);
       throw new Error(error.message);
     }
 
@@ -102,6 +139,8 @@ export const partners = {
       logoUrl: data.logo_url,
       websiteUrl: data.website_url,
       isVerified: data.is_verified,
+      startDate: data.start_date,
+      endDate: data.end_date,
       createdAt: data.created_at,
     } as Partner;
   },
@@ -109,7 +148,7 @@ export const partners = {
   delete: async (id: string): Promise<void> => {
     const { error } = await supabase.from('partners').delete().eq('id', id);
     if (error) {
-      console.error("Supabase error deleting partner:", error);
+      console.error("Supabase error deleting ad:", error);
       throw new Error(error.message);
     }
   },

@@ -104,8 +104,9 @@ export interface Spotlight {
   link?: string;
 }
 
-// Partner (New)
-export type PartnerTier = 'basic' | 'premium';
+// Ad / Partner (Refactored for Ad Management)
+export type AdPlacement = 'news_feed' | 'events_feed' | 'opportunities_feed';
+export type AdStatus = 'active' | 'paused' | 'expired';
 
 export interface Partner {
   id: string;
@@ -115,7 +116,11 @@ export interface Partner {
   websiteUrl?: string;
   category: string;
   isVerified: boolean;
-  tier: PartnerTier;
+  tier: 'basic' | 'premium';
+  placement: AdPlacement;
+  status: AdStatus;
+  startDate: string;
+  endDate?: string;
   createdAt: string;
 }
 

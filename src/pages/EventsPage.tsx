@@ -12,6 +12,7 @@ import { Search, ArrowLeft } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import AdPlacement from "@/components/AdPlacement";
 
 const EventsPage: React.FC = () => {
   const [allEvents, setAllEvents] = useState<Event[]>([]);
@@ -75,8 +76,8 @@ const EventsPage: React.FC = () => {
   return (
     <>
       <Helmet>
-        <title>Campus Events & Academic Calendar | KWASU Students' Union</title>
-        <meta name="description" content="Explore upcoming events, workshops, and social gatherings organized by the KWASU Students' Union. Stay updated with the official campus calendar." />
+        <title>Campus Events & Academic Calendar | KWASU SU</title>
+        <meta name="description" content="Explore upcoming events, workshops, and social gatherings organized by the KWASU Students' Union." />
         <link rel="canonical" href="https://thekwasusu.com/events" />
       </Helmet>
       <div className="container py-12">
@@ -92,7 +93,7 @@ const EventsPage: React.FC = () => {
         </p>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
-          <div className="lg:col-span-1 flex flex-col items-center">
+          <div className="lg:col-span-1 flex flex-col items-center space-y-8">
             <div className="w-full max-w-sm p-4 bg-white rounded-2xl shadow-xl border border-brand-50">
               <h3 className="text-xs font-bold uppercase tracking-widest text-brand-500 mb-4 px-2">Filter by Date</h3>
               <Calendar
@@ -111,6 +112,11 @@ const EventsPage: React.FC = () => {
               >
                 Clear Calendar Selection
               </Button>
+            </div>
+
+            {/* Ad Placement in Sidebar */}
+            <div className="w-full max-w-sm">
+              <AdPlacement placement="events_feed" />
             </div>
           </div>
           

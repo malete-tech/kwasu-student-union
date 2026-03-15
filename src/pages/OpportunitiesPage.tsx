@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { format, isPast } from "date-fns";
 import { cn } from "@/lib/utils";
+import AdPlacement from "@/components/AdPlacement";
 
 const OpportunityCard: React.FC<{ opportunity: Opportunity }> = ({ opportunity }) => {
   const deadlineDate = new Date(opportunity.deadline);
@@ -164,6 +165,11 @@ const OpportunitiesPage: React.FC = () => {
               </Badge>
             ))}
           </div>
+        </div>
+
+        {/* Top Ad Placement */}
+        <div className="max-w-5xl mx-auto mb-10">
+          <AdPlacement placement="opportunities_feed" />
         </div>
 
         {loading ? (

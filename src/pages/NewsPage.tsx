@@ -12,6 +12,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import AdPlacement from "@/components/AdPlacement";
 
 const NewsPage: React.FC = () => {
   const [allNews, setAllNews] = useState<News[]>([]);
@@ -60,7 +61,7 @@ const NewsPage: React.FC = () => {
   return (
     <>
       <Helmet>
-        <title>Latest Campus News & Announcements | KWASU Students' Union</title>
+        <title>Latest Campus News & Announcements | KWASU SU</title>
         <meta name="description" content="Official announcements, campus updates, and student news from the Kwara State University Students' Union (KWASU SU)." />
         <link rel="canonical" href="https://thekwasusu.com/news" />
       </Helmet>
@@ -113,29 +114,49 @@ const NewsPage: React.FC = () => {
           </div>
         </div>
 
-        {loading ? (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-12 gap-y-10 max-w-7xl mx-auto">
-            {[...Array(6)].map((_, i) => (
-              <div key={i} className="flex gap-4">
-                <Skeleton className="w-32 h-24 rounded-xl" />
-                <div className="flex-1 space-y-2">
-                  <Skeleton className="h-5 w-full" />
-                  <Skeleton className="h-4 w-3/4" />
-                </div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 max-w-7xl mx-auto">
+          <div className="lg:col-span-2">
+            {loading ? (
+              <div className="grid grid-cols-1 gap-y-10">
+                {[...Array(4)].map((_, i) => (
+                  <div key={i} className="flex gap-4">
+                    <Skeleton className="w-32 h-24 rounded-xl" />
+                    <div className="flex-1 space-y-2">
+                      <Skeleton className="h-5 w-full" />
+                      <Skeleton className="h-4 w-3/4" />
+                    </div>
+                  </div>
+                ))}
               </div>
-            ))}
+            ) : error ? (
+              <div className="text-center py-12 text-destructive font-medium">{error}</div>
+            ) : filteredNews.length > 0 ? (
+              <div className="grid grid-cols-1 gap-y-12">
+                {filteredNews.map((newsItem) => (
+                  <NewsFeedItem key={newsItem.id} news={newsItem} variant="list" />
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-20 text-muted-foreground italic">No news found matching your criteria.</div>
+            )}
           </div>
-        ) : error ? (
-          <div className="text-center py-12 text-destructive font-medium">{error}</div>
-        ) : filteredNews.length > 0 ? (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-12 gap-y-12 max-w-7xl mx-auto">
-            {filteredNews.map((newsItem) => (
-              <NewsFeedItem key={newsItem.id} news={newsItem} variant="list" />
-            ))}
+
+          {/* Sidebar with Ad Placement */}
+          <div className="lg:col-span-1 space-y-8">
+            <div className="sticky top-24">
+              <h3 className="text-xs font-bold uppercase tracking-widest text-brand-400 mb-4">Sponsored Content</h3>
+              <AdPlacement placement="news_feed" />
+              
+              <div className="mt-12 p-6 bg-brand-900 rounded-2xl text-white shadow-xl">
+                <h4 className="font-bold text-brand-gold mb-2">Advertise with SU</h4>
+                <p className="text-xs text-white/70 mb-4">Reach thousands of students daily. Partner with the KWASU Students' Union.</p>
+                <Button asChild size="sm" className="w-full bg-brand-gold text-brand-900 hover:bg-brand-gold/90 font-bold">
+                  <Link to="/contact">Get Started</Link>
+                </Button>
+              </div>
+            </div>
           </div>
-        ) : (
-          <div className="text-center py-20 text-muted-foreground italic">No news found matching your criteria.</div>
-        )}
+        </div>
       </div>
     </>
   );
