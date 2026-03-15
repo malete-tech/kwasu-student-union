@@ -146,9 +146,13 @@ const PartnersManagement: React.FC = () => {
                       </Badge>
                     </div>
                     <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-1 text-xs text-slate-500">
-                      <span className="flex items-center gap-1 font-semibold text-brand-600">
-                        <Target className="h-3 w-3" /> {getPlacementLabel(ad.placement)}
-                      </span>
+                      <div className="flex flex-wrap gap-1">
+                        {ad.placements.map(p => (
+                          <span key={p} className="flex items-center gap-1 font-semibold text-brand-600 bg-brand-50 px-2 py-0.5 rounded-full text-[10px]">
+                            <Target className="h-2.5 w-2.5" /> {getPlacementLabel(p)}
+                          </span>
+                        ))}
+                      </div>
                       <span className="flex items-center gap-1">
                         <Clock className="h-3 w-3" /> Starts: {format(new Date(ad.startDate), "MMM dd")}
                       </span>

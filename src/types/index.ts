@@ -117,7 +117,7 @@ export interface Partner {
   category: string;
   isVerified: boolean;
   tier: 'basic' | 'premium';
-  placement: AdPlacement;
+  placements: AdPlacement[]; // Changed to array
   status: AdStatus;
   startDate: string;
   endDate?: string;

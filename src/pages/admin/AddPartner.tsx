@@ -6,7 +6,7 @@ import { Loader2, ArrowLeft, Layout, CalendarDays, Target } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { api } from "@/lib/api";
@@ -15,6 +15,13 @@ import { Link, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import PartnerLogoUpload from "@/components/PartnerLogoUpload";
+import { Checkbox } from "@/components/ui/checkbox";
+
+const PLACEMENT_OPTIONS = [
+  { id: 'news_feed', label: 'News Feed' },
+  { id: 'events_feed', label: 'Events Page' },
+  { id: 'opportunities_feed', label: 'Opportunities Page' },
+] as const;
 
 const formSchema = z.object({
   name: z.string().min(1, { message: "Advertiser name is required." }),
@@ -24,7 +31,7 @@ const formSchema = z.object({
   logoUrl: z.string().optional(),
   isVerified: z.boolean().default(false),
   tier: z.enum(['basic', 'premium']).default('basic'),
-  placement: z.enum(['news_feed', 'events_feed', 'opportunities_feed']).default('news_feed'),
+  placements: z.array(z.string()).min(1, { message: "Select at least one target page." }),
   status: z.enum(['active', 'paused', 'expired']).default('active'),
   startDate: z.string().default(new Date().toISOString()),
   endDate: z.string().optional(),
@@ -44,7 +51,7 @@ const AddPartner: React.FC = () => {
       logoUrl: undefined,
       isVerified: false,
       tier: 'basic',
-      placement: 'news_feed',
+      placements: ['news_feed'],
       status: 'active',
       startDate: new Date().toISOString().split('T')[0],
     },
@@ -61,7 +68,7 @@ const AddPartner: React.FC = () => {
         logoUrl: values.logoUrl || undefined,
         isVerified: values.isVerified,
         tier: values.tier,
-        placement: values.placement,
+        placements: values.placements as any,
         status: values.status,
         startDate: new Date(values.startDate).toISOString(),
         endDate: values.endDate ? new Date(values.endDate).toISOString() : undefined,
@@ -162,25 +169,51 @@ const AddPartner: React.FC = () => {
                 </div>
                 <p className="text-sm text-muted-foreground">Where should this ad appear on the site?</p>
               </div>
-              <div className="md:col-span-2 space-y-4">
+              <div className="md:col-span-2 space-y-6">
                 <FormField
                   control={form.control}
-                  name="placement"
-                  render={({ field }) => (
+                  name="placements"
+                  render={() => (
                     <FormItem>
-                      <FormLabel className="text-slate-700 font-semibold">Target Page</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <FormControl>
-                          <SelectTrigger className="h-12 rounded-xl border-brand-100 bg-white/50 focus-visible:ring-brand-gold shadow-sm">
-                            <SelectValue placeholder="Select placement" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value="news_feed">News Feed</SelectItem>
-                          <SelectItem value="events_feed">Events Page</SelectItem>
-                          <SelectItem value="opportunities_feed">Opportunities Page</SelectItem>
-                        </SelectContent>
-                      </Select>
+                      <div className="mb-4">
+                        <FormLabel className="text-slate-700 font-semibold">Target Pages</FormLabel>
+                        <FormDescription>Select all pages where this ad should be displayed.</FormDescription>
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        {PLACEMENT_OPTIONS.map((option) => (
+                          <FormField
+                            key={option.id}
+                            control={form.control}
+                            name="placements"
+                            render={({ field }) => {
+                              return (
+                                <FormItem
+                                  key={option.id}
+                                  className="flex flex-row items-start space-x-3 space-y-0 rounded-xl border p-4 bg-white shadow-sm"
+                                >
+                                  <FormControl>
+                                    <Checkbox
+                                      checked={field.value?.includes(option.id)}
+                                      onCheckedChange={(checked) => {
+                                        return checked
+                                          ? field.onChange([...field.value, option.id])
+                                          : field.onChange(
+                                              field.value?.filter(
+                                                (value) => value !== option.id
+                                              )
+                                            )
+                                      }}
+                                    />
+                                  </FormControl>
+                                  <FormLabel className="font-medium cursor-pointer">
+                                    {option.label}
+                                  </FormLabel>
+                                </FormItem>
+                              )
+                            }}
+                          />
+                        ))}
+                      </div>
                       <FormMessage />
                     </FormItem>
                   )}

@@ -21,16 +21,17 @@ export const partners = {
       startDate: item.start_date,
       endDate: item.end_date,
       createdAt: item.created_at,
+      placements: item.placements || [],
     })) as Partner[];
   },
 
-  getByPlacement: async (placement: Partner['placement']): Promise<Partner[]> => {
+  getByPlacement: async (placement: Partner['placements'][number]): Promise<Partner[]> => {
     const { data, error } = await supabase
       .from('partners')
       .select('*')
-      .eq('placement', placement)
+      .contains('placements', [placement]) // Filter for ads containing this placement
       .eq('status', 'active')
-      .order('tier', { ascending: false }); // Premium ads first
+      .order('tier', { ascending: false });
     
     if (error) {
       console.error("Supabase error fetching ads by placement:", error);
@@ -45,6 +46,7 @@ export const partners = {
       startDate: item.start_date,
       endDate: item.end_date,
       createdAt: item.created_at,
+      placements: item.placements || [],
     })) as Partner[];
   },
 
@@ -70,6 +72,7 @@ export const partners = {
       startDate: data.start_date,
       endDate: data.end_date,
       createdAt: data.created_at,
+      placements: data.placements || [],
     } as Partner;
   },
 
@@ -84,7 +87,7 @@ export const partners = {
         category: partner.category,
         is_verified: partner.isVerified,
         tier: partner.tier,
-        placement: partner.placement,
+        placements: partner.placements,
         status: partner.status,
         start_date: partner.startDate,
         end_date: partner.endDate,
@@ -105,6 +108,7 @@ export const partners = {
       startDate: data.start_date,
       endDate: data.end_date,
       createdAt: data.created_at,
+      placements: data.placements || [],
     } as Partner;
   },
 
@@ -117,7 +121,7 @@ export const partners = {
     if (partner.category !== undefined) updatePayload['category'] = partner.category;
     if (partner.isVerified !== undefined) updatePayload['is_verified'] = partner.isVerified;
     if (partner.tier !== undefined) updatePayload['tier'] = partner.tier;
-    if (partner.placement !== undefined) updatePayload['placement'] = partner.placement;
+    if (partner.placements !== undefined) updatePayload['placements'] = partner.placements;
     if (partner.status !== undefined) updatePayload['status'] = partner.status;
     if (partner.startDate !== undefined) updatePayload['start_date'] = partner.startDate;
     if (partner.endDate !== undefined) updatePayload['end_date'] = partner.endDate;
@@ -142,6 +146,7 @@ export const partners = {
       startDate: data.start_date,
       endDate: data.end_date,
       createdAt: data.created_at,
+      placements: data.placements || [],
     } as Partner;
   },
 

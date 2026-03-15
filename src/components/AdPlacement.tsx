@@ -2,14 +2,14 @@
 
 import React, { useEffect, useState } from "react";
 import { api } from "@/lib/api";
-import { Partner } from "@/types";
+import { Partner, AdPlacement as AdPlacementType } from "@/types";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ExternalLink, ShieldCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface AdPlacementProps {
-  placement: Partner['placement'];
+  placement: AdPlacementType;
   className?: string;
 }
 

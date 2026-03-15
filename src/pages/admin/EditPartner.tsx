@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Loader2, ArrowLeft, Handshake, Layout, ShieldCheck } from "lucide-react";
+import { Loader2, ArrowLeft, Layout, Target, CalendarDays } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -18,6 +18,12 @@ import { Checkbox } from "@/components/ui/checkbox";
 import PartnerLogoUpload from "@/components/PartnerLogoUpload";
 import { Skeleton } from "@/components/ui/skeleton";
 
+const PLACEMENT_OPTIONS = [
+  { id: 'news_feed', label: 'News Feed' },
+  { id: 'events_feed', label: 'Events Page' },
+  { id: 'opportunities_feed', label: 'Opportunities Page' },
+] as const;
+
 const formSchema = z.object({
   name: z.string().min(1, { message: "Name is required." }),
   description: z.string().min(10, { message: "Description must be at least 10 characters." }),
@@ -26,6 +32,10 @@ const formSchema = z.object({
   logoUrl: z.string().optional(),
   isVerified: z.boolean().default(false),
   tier: z.enum(['basic', 'premium']).default('basic'),
+  placements: z.array(z.string()).min(1, { message: "Select at least one target page." }),
+  status: z.enum(['active', 'paused', 'expired']).default('active'),
+  startDate: z.string(),
+  endDate: z.string().optional(),
 });
 
 const EditPartner: React.FC = () => {
@@ -44,6 +54,10 @@ const EditPartner: React.FC = () => {
       logoUrl: undefined,
       isVerified: false,
       tier: 'basic',
+      placements: [],
+      status: 'active',
+      startDate: "",
+      endDate: "",
     },
   });
 
@@ -61,6 +75,10 @@ const EditPartner: React.FC = () => {
             logoUrl: data.logoUrl || undefined,
             isVerified: data.isVerified,
             tier: data.tier,
+            placements: data.placements || [],
+            status: data.status,
+            startDate: data.startDate ? new Date(data.startDate).toISOString().split('T')[0] : "",
+            endDate: data.endDate ? new Date(data.endDate).toISOString().split('T')[0] : "",
           });
         }
       } catch (err) {
@@ -84,6 +102,10 @@ const EditPartner: React.FC = () => {
         logoUrl: values.logoUrl || undefined,
         isVerified: values.isVerified,
         tier: values.tier,
+        placements: values.placements as any,
+        status: values.status,
+        startDate: new Date(values.startDate).toISOString(),
+        endDate: values.endDate ? new Date(values.endDate).toISOString() : undefined,
       });
       toast.success("Partner updated successfully!");
       navigate("/admin/partners");
@@ -172,7 +194,7 @@ const EditPartner: React.FC = () => {
             <div className="grid gap-8 md:grid-cols-3">
               <div className="space-y-2">
                 <div className="flex items-center gap-2 text-brand-600 font-bold uppercase tracking-wider text-xs">
-                  <Handshake className="h-4 w-4" />
+                  <Layout className="h-4 w-4" />
                   Details & Classification
                 </div>
                 <p className="text-sm text-muted-foreground">Describe what they offer and categorize them.</p>
@@ -225,47 +247,121 @@ const EditPartner: React.FC = () => {
             <div className="grid gap-8 md:grid-cols-3">
               <div className="space-y-2">
                 <div className="flex items-center gap-2 text-brand-600 font-bold uppercase tracking-wider text-xs">
-                  <ShieldCheck className="h-4 w-4" />
-                  Status & Tier
+                  <Target className="h-4 w-4" />
+                  Placement & Targeting
                 </div>
-                <p className="text-sm text-muted-foreground">Control visibility and verification status.</p>
+                <p className="text-sm text-muted-foreground">Where should this ad appear on the site?</p>
               </div>
               <div className="md:col-span-2 space-y-6">
                 <FormField
                   control={form.control}
-                  name="tier"
-                  render={({ field }) => (
+                  name="placements"
+                  render={() => (
                     <FormItem>
-                      <FormLabel className="text-slate-700 font-semibold">Listing Tier</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <FormControl>
-                          <SelectTrigger className="h-12 rounded-xl border-brand-100 bg-white/50 focus-visible:ring-brand-gold shadow-sm">
-                            <SelectValue placeholder="Select tier" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value="basic">Basic (Standard Listing)</SelectItem>
-                          <SelectItem value="premium">Premium (Featured at Top)</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <FormDescription>Premium partners are highlighted and shown first.</FormDescription>
+                      <div className="mb-4">
+                        <FormLabel className="text-slate-700 font-semibold">Target Pages</FormLabel>
+                        <FormDescription>Select all pages where this ad should be displayed.</FormDescription>
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        {PLACEMENT_OPTIONS.map((option) => (
+                          <FormField
+                            key={option.id}
+                            control={form.control}
+                            name="placements"
+                            render={({ field }) => {
+                              return (
+                                <FormItem
+                                  key={option.id}
+                                  className="flex flex-row items-start space-x-3 space-y-0 rounded-xl border p-4 bg-white shadow-sm"
+                                >
+                                  <FormControl>
+                                    <Checkbox
+                                      checked={field.value?.includes(option.id)}
+                                      onCheckedChange={(checked) => {
+                                        return checked
+                                          ? field.onChange([...field.value, option.id])
+                                          : field.onChange(
+                                              field.value?.filter(
+                                                (value) => value !== option.id
+                                              )
+                                            )
+                                      }}
+                                    />
+                                  </FormControl>
+                                  <FormLabel className="font-medium cursor-pointer">
+                                    {option.label}
+                                  </FormLabel>
+                                </FormItem>
+                              )
+                            }}
+                          />
+                        ))}
+                      </div>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-                
+              </div>
+            </div>
+
+            <hr className="border-slate-100" />
+
+            <div className="grid gap-8 md:grid-cols-3">
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 text-brand-600 font-bold uppercase tracking-wider text-xs">
+                  <CalendarDays className="h-4 w-4" />
+                  Campaign Schedule
+                </div>
+                <p className="text-sm text-muted-foreground">Control the duration and status of the ad.</p>
+              </div>
+              <div className="md:col-span-2 space-y-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="startDate"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Start Date</FormLabel>
+                        <FormControl>
+                          <Input type="date" {...field} className="rounded-xl border-brand-100" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="endDate"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>End Date (Optional)</FormLabel>
+                        <FormControl>
+                          <Input type="date" {...field} className="rounded-xl border-brand-100" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
                 <FormField
                   control={form.control}
-                  name="isVerified"
+                  name="status"
                   render={({ field }) => (
-                    <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-xl border p-4 bg-brand-50/30">
-                      <FormControl>
-                        <Checkbox checked={field.value} onCheckedChange={field.onChange} />
-                      </FormControl>
-                      <div className="space-y-1 leading-none">
-                        <FormLabel className="text-slate-700 font-semibold">Good Standing / Verified</FormLabel>
-                        <FormDescription>Show the "SU Verified" badge on this partner's card.</FormDescription>
-                      </div>
+                    <FormItem>
+                      <FormLabel className="text-slate-700 font-semibold">Initial Status</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger className="h-12 rounded-xl border-brand-100 bg-white/50 focus-visible:ring-brand-gold shadow-sm">
+                            <SelectValue placeholder="Select status" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="active">Active (Live)</SelectItem>
+                          <SelectItem value="paused">Paused (Draft)</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
