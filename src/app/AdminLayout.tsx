@@ -24,14 +24,12 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useSession } from "@/components/SessionContextProvider";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { useIsMobile } from "@/hooks/use-mobile";
 
 const AdminLayout: React.FC = () => {
   const { session } = useSession();
   const location = useLocation();
   const navigate = useNavigate();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const isMobile = useIsMobile();
 
   const navigation = [
     { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
@@ -100,10 +98,10 @@ const AdminLayout: React.FC = () => {
           <div className="p-4 bg-slate-50 rounded-2xl mb-4">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-brand-100 flex items-center justify-center text-brand-600 font-bold border-2 border-white shadow-sm">
-                {session?.user?.email?.[0]?.toUpperCase()}
+                {session?.user?.email?.[0]?.toUpperCase() || "A"}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold text-slate-900 truncate">{session?.user?.email?.split('@')[0]}</p>
+                <p className="text-sm font-semibold text-slate-900 truncate">{session?.user?.email?.split('@')[0] || "Admin"}</p>
                 <p className="text-xs text-slate-500 truncate">Administrator</p>
               </div>
             </div>
@@ -122,56 +120,51 @@ const AdminLayout: React.FC = () => {
       {/* Mobile Top Navigation */}
       <header className="lg:hidden sticky top-0 bg-white/80 backdrop-blur-md border-b border-slate-200 px-4 py-3 flex items-center justify-between z-40">
         <div className="flex items-center gap-3">
-          <span className="lg:hidden">
-            <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
-              <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="text-slate-600">
-                  <Menu className="w-6 h-6" />
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="left" className="w-72 p-0 border-r-0">
-                <div className="flex flex-col h-full bg-white">
-                  <div className="p-8 border-b border-slate-100">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-brand-500 rounded-xl flex items-center justify-center text-white">
-                        <LayoutDashboard size={24} />
-                      </div>
-                      <h1 className="text-xl font-bold text-slate-900">Admin</h1>
+          <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="icon" className="text-slate-600">
+                <Menu className="w-6 h-6" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left" className="w-72 p-0 border-r-0">
+              <div className="flex flex-col h-full bg-white">
+                <div className="p-8 border-b border-slate-100">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-brand-500 rounded-xl flex items-center justify-center text-white">
+                      <LayoutDashboard size={24} />
                     </div>
-                  </div>
-                  <nav className="flex-1 p-4 space-y-1.5 overflow-y-auto">
-                    {navigation.map((item) => (
-                      <NavItem key={item.name} item={item} />
-                    ))}
-                  </nav>
-                  <div className="p-4 border-t border-slate-100">
-                    <Button 
-                      onClick={handleLogout}
-                      variant="ghost" 
-                      className="w-full justify-start gap-3 px-4 py-3 text-red-600 hover:bg-red-50 rounded-xl"
-                    >
-                      <LogOut className="w-5 h-5" />
-                      <span className="font-medium">Logout</span>
-                    </Button>
+                    <h1 className="text-xl font-bold text-slate-900">Admin</h1>
                   </div>
                 </div>
-              </SheetContent>
-            </Sheet>
-          </span>
+                <nav className="flex-1 p-4 space-y-1.5 overflow-y-auto">
+                  {navigation.map((item) => (
+                    <NavItem key={item.name} item={item} />
+                  ))}
+                </nav>
+                <div className="p-4 border-t border-slate-100">
+                  <Button 
+                    onClick={handleLogout}
+                    variant="ghost" 
+                    className="w-full justify-start gap-3 px-4 py-3 text-red-600 hover:bg-red-50 rounded-xl"
+                  >
+                    <LogOut className="w-5 h-5" />
+                    <span className="font-medium">Logout</span>
+                  </Button>
+                </div>
+              </div>
+            </SheetContent>
+          </Sheet>
           <span className="font-bold text-slate-900">Admin Portal</span>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="ghost" size="icon" className="text-slate-400">
-            <Bell className="w-5 h-5" />
-          </Button>
           <div className="w-8 h-8 rounded-full bg-brand-500 flex items-center justify-center text-white text-xs font-bold">
-            {session?.user?.email?.[0]?.toUpperCase()}
+            {session?.user?.email?.[0]?.toUpperCase() || "A"}
           </div>
         </div>
       </header>
 
       {/* Main Content */}
-      <div className={`lg:pl-72 flex flex-col min-h-screen transition-all duration-300 ${isMobile ? 'scale-90 origin-top' : ''}`}>
+      <div className="lg:pl-72 flex flex-col min-h-screen">
         <header className="hidden lg:flex items-center justify-between px-10 py-6 bg-white/50 backdrop-blur-sm border-b border-slate-200">
           <div>
             <h2 className="text-2xl font-bold text-slate-900">
