@@ -75,8 +75,9 @@ const AdminLayout: React.FC = () => {
   return (
     <div className="min-h-screen bg-[#F8FAFC]">
       {/* Desktop Sidebar */}
-      <aside className="fixed left-0 top-0 bottom-0 w-72 bg-white border-r border-slate-200 hidden lg:flex flex-col z-30 shadow-sm">
-        <div className="p-8">
+      <aside className="fixed left-0 top-0 bottom-0 w-72 bg-white border-r border-slate-200 hidden lg:flex flex-col z-30 shadow-sm overflow-hidden">
+        {/* Header - Fixed */}
+        <div className="p-8 flex-shrink-0">
           <Link to="/" className="flex items-center gap-3 group">
             <div className="w-10 h-10 bg-brand-500 rounded-xl flex items-center justify-center text-white shadow-lg shadow-brand-500/30 group-hover:scale-105 transition-transform">
               <LayoutDashboard size={24} />
@@ -88,21 +89,23 @@ const AdminLayout: React.FC = () => {
           </Link>
         </div>
 
-        <nav className="flex-1 px-4 space-y-1.5 overflow-y-auto custom-scrollbar">
+        {/* Scrollable Navigation Area */}
+        <nav className="flex-1 px-4 space-y-1.5 overflow-y-auto custom-scrollbar pb-6">
           {navigation.map((item) => (
             <NavItem key={item.name} item={item} />
           ))}
         </nav>
 
-        <div className="p-4 mt-auto border-t border-slate-100">
-          <div className="p-4 bg-slate-50 rounded-2xl mb-4">
+        {/* Footer (User Profile & Logout) - Fixed at bottom */}
+        <div className="p-4 flex-shrink-0 border-t border-slate-100 bg-white">
+          <div className="p-4 bg-slate-50 rounded-2xl mb-3">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-brand-100 flex items-center justify-center text-brand-600 font-bold border-2 border-white shadow-sm">
                 {session?.user?.email?.[0]?.toUpperCase() || "A"}
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-semibold text-slate-900 truncate">{session?.user?.email?.split('@')[0] || "Admin"}</p>
-                <p className="text-xs text-slate-500 truncate">Administrator</p>
+                <p className="text-[10px] text-slate-500 uppercase font-bold tracking-tighter">Administrator</p>
               </div>
             </div>
           </div>
@@ -127,8 +130,8 @@ const AdminLayout: React.FC = () => {
               </Button>
             </SheetTrigger>
             <SheetContent side="left" className="w-72 p-0 border-r-0">
-              <div className="flex flex-col h-full bg-white">
-                <div className="p-8 border-b border-slate-100">
+              <div className="flex flex-col h-full bg-white overflow-hidden">
+                <div className="p-8 border-b border-slate-100 flex-shrink-0">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 bg-brand-500 rounded-xl flex items-center justify-center text-white">
                       <LayoutDashboard size={24} />
@@ -141,7 +144,7 @@ const AdminLayout: React.FC = () => {
                     <NavItem key={item.name} item={item} />
                   ))}
                 </nav>
-                <div className="p-4 border-t border-slate-100">
+                <div className="p-4 border-t border-slate-100 flex-shrink-0 bg-white">
                   <Button 
                     onClick={handleLogout}
                     variant="ghost" 
