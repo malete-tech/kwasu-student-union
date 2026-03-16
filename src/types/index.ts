@@ -14,6 +14,7 @@ export interface Executive {
     twitter?: string;
     instagram?: string;
     phone?: string;
+    linkedin?: string; // Added linkedin field
   };
   displayOrder: number;
   councilType: 'Central' | 'Senate' | 'Judiciary';

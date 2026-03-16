@@ -140,6 +140,13 @@ const ExecutiveDetail = () => {
                       </a>
                     </Button>
                   )}
+                  {executive.contacts.linkedin && (
+                    <Button asChild variant="secondary" size="icon" className="h-10 w-10 rounded-full bg-white/10 hover:bg-brand-gold text-white hover:text-brand-900 border-none transition-all">
+                      <a href={executive.contacts.linkedin} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+                        <i className="fa-brands fa-linkedin text-lg"></i>
+                      </a>
+                    </Button>
+                  )}
                   {executive.contacts.twitter && (
                     <Button asChild variant="secondary" size="icon" className="h-10 w-10 rounded-full bg-white/10 hover:bg-brand-gold text-white hover:text-brand-900 border-none transition-all">
                       <a href={`https://twitter.com/${executive.contacts.twitter}`} target="_blank" rel="noopener noreferrer" aria-label="Twitter">

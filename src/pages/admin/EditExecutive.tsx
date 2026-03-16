@@ -39,6 +39,7 @@ const formSchema = z.object({
   contactTwitter: z.string().optional().or(z.literal('')),
   contactInstagram: z.string().optional().or(z.literal('')),
   contactPhone: z.string().optional().or(z.literal('')),
+  contactLinkedin: z.string().optional().or(z.literal('')), // Added
 });
 
 const EditExecutive: React.FC = () => {
@@ -64,6 +65,7 @@ const EditExecutive: React.FC = () => {
       contactTwitter: "",
       contactInstagram: "",
       contactPhone: "",
+      contactLinkedin: "", // Added
     },
   });
 
@@ -88,6 +90,7 @@ const EditExecutive: React.FC = () => {
             contactTwitter: fetchedExecutive.contacts?.twitter || "",
             contactInstagram: fetchedExecutive.contacts?.instagram || "",
             contactPhone: fetchedExecutive.contacts?.phone || "",
+            contactLinkedin: fetchedExecutive.contacts?.linkedin || "", // Added
           });
         }
       } catch (err) {
@@ -118,6 +121,7 @@ const EditExecutive: React.FC = () => {
           twitter: values.contactTwitter || undefined,
           instagram: values.contactInstagram || undefined,
           phone: values.contactPhone || undefined,
+          linkedin: values.contactLinkedin || undefined, // Added
         },
       };
       await api.executives.update(executiveId, updatedExecutive);
@@ -335,6 +339,9 @@ const EditExecutive: React.FC = () => {
                   )} />
                   <FormField control={form.control} name="contactPhone" render={({ field }) => (
                     <FormItem><FormLabel>Phone</FormLabel><FormControl><Input {...field} className="rounded-xl border-brand-100" /></FormControl><FormMessage /></FormItem>
+                  )} />
+                  <FormField control={form.control} name="contactLinkedin" render={({ field }) => (
+                    <FormItem><FormLabel>LinkedIn URL</FormLabel><FormControl><Input placeholder="https://linkedin.com/in/..." {...field} className="rounded-xl border-brand-100" /></FormControl><FormMessage /></FormItem>
                   )} />
                   <FormField control={form.control} name="contactTwitter" render={({ field }) => (
                     <FormItem><FormLabel>Twitter</FormLabel><FormControl><Input {...field} className="rounded-xl border-brand-100" /></FormControl><FormMessage /></FormItem>
