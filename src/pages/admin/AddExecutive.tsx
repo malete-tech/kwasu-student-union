@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Loader2, ArrowLeft, CalendarDays, Mail, Layout } from "lucide-react";
+import { Loader2, ArrowLeft, CalendarDays, Mail, Layout, Linkedin, Twitter, Instagram, Phone } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -38,7 +38,7 @@ const formSchema = z.object({
   contactTwitter: z.string().optional().or(z.literal('')),
   contactInstagram: z.string().optional().or(z.literal('')),
   contactPhone: z.string().optional().or(z.literal('')),
-  contactLinkedin: z.string().optional().or(z.literal('')), // Added
+  contactLinkedin: z.string().optional().or(z.literal('')),
 });
 
 const AddExecutive: React.FC = () => {
@@ -61,7 +61,7 @@ const AddExecutive: React.FC = () => {
       contactTwitter: "",
       contactInstagram: "",
       contactPhone: "",
-      contactLinkedin: "", // Added
+      contactLinkedin: "",
     },
   });
 
@@ -95,7 +95,7 @@ const AddExecutive: React.FC = () => {
           twitter: values.contactTwitter || undefined,
           instagram: values.contactInstagram || undefined,
           phone: values.contactPhone || undefined,
-          linkedin: values.contactLinkedin || undefined, // Added
+          linkedin: values.contactLinkedin || undefined,
         },
       };
       await api.executives.create(newExecutive);
@@ -113,7 +113,6 @@ const AddExecutive: React.FC = () => {
     <>
       <Helmet>
         <title>Add Executive | KWASU SU Admin</title>
-        <meta name="description" content="Add a new executive profile to the KWASU Students' Union website." />
       </Helmet>
       <div className="max-w-5xl mx-auto space-y-10">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
@@ -285,7 +284,7 @@ const AddExecutive: React.FC = () => {
               <div className="space-y-2">
                 <div className="flex items-center gap-2 text-brand-600 font-bold uppercase tracking-wider text-xs">
                   <Mail className="h-4 w-4" />
-                  Transparency
+                  Contact & Socials
                 </div>
                 <p className="text-sm text-muted-foreground">Add key projects and public contact details.</p>
               </div>
@@ -305,19 +304,39 @@ const AddExecutive: React.FC = () => {
                 />
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <FormField control={form.control} name="contactEmail" render={({ field }) => (
-                    <FormItem><FormLabel>Email</FormLabel><FormControl><Input {...field} className="rounded-xl border-brand-100" /></FormControl><FormMessage /></FormItem>
+                    <FormItem>
+                      <FormLabel className="flex items-center gap-2"><Mail className="h-3 w-3" /> Email</FormLabel>
+                      <FormControl><Input {...field} className="rounded-xl border-brand-100" /></FormControl>
+                      <FormMessage />
+                    </FormItem>
                   )} />
                   <FormField control={form.control} name="contactPhone" render={({ field }) => (
-                    <FormItem><FormLabel>Phone</FormLabel><FormControl><Input {...field} className="rounded-xl border-brand-100" /></FormControl><FormMessage /></FormItem>
+                    <FormItem>
+                      <FormLabel className="flex items-center gap-2"><Phone className="h-3 w-3" /> Phone</FormLabel>
+                      <FormControl><Input {...field} className="rounded-xl border-brand-100" /></FormControl>
+                      <FormMessage />
+                    </FormItem>
                   )} />
                   <FormField control={form.control} name="contactLinkedin" render={({ field }) => (
-                    <FormItem><FormLabel>LinkedIn URL</FormLabel><FormControl><Input placeholder="https://linkedin.com/in/..." {...field} className="rounded-xl border-brand-100" /></FormControl><FormMessage /></FormItem>
+                    <FormItem>
+                      <FormLabel className="flex items-center gap-2"><Linkedin className="h-3 w-3" /> LinkedIn URL</FormLabel>
+                      <FormControl><Input placeholder="https://linkedin.com/in/..." {...field} className="rounded-xl border-brand-100" /></FormControl>
+                      <FormMessage />
+                    </FormItem>
                   )} />
                   <FormField control={form.control} name="contactTwitter" render={({ field }) => (
-                    <FormItem><FormLabel>Twitter</FormLabel><FormControl><Input {...field} className="rounded-xl border-brand-100" /></FormControl><FormMessage /></FormItem>
+                    <FormItem>
+                      <FormLabel className="flex items-center gap-2"><Twitter className="h-3 w-3" /> Twitter Handle</FormLabel>
+                      <FormControl><Input placeholder="username" {...field} className="rounded-xl border-brand-100" /></FormControl>
+                      <FormMessage />
+                    </FormItem>
                   )} />
                   <FormField control={form.control} name="contactInstagram" render={({ field }) => (
-                    <FormItem><FormLabel>Instagram</FormLabel><FormControl><Input {...field} className="rounded-xl border-brand-100" /></FormControl><FormMessage /></FormItem>
+                    <FormItem>
+                      <FormLabel className="flex items-center gap-2"><Instagram className="h-3 w-3" /> Instagram Handle</FormLabel>
+                      <FormControl><Input placeholder="username" {...field} className="rounded-xl border-brand-100" /></FormControl>
+                      <FormMessage />
+                    </FormItem>
                   )} />
                 </div>
               </div>
