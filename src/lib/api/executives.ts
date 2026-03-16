@@ -66,26 +66,21 @@ export const executives = {
       contacts: executive.contacts,
       display_order: newDisplayOrder,
       council_type: executive.councilType,
-    }).select();
+    }).select().single();
 
     if (error) {
       console.error("Supabase error creating executive:", error);
       throw new Error(error.message);
     }
 
-    if (!data || data.length === 0) {
-      throw new Error("Failed to create executive profile. You might not have required permissions.");
-    }
-
-    const item = data[0];
     return {
-      ...item,
-      tenureStart: item.tenure_start,
-      tenureEnd: item.tenure_end,
-      photoUrl: item.photo_url,
-      projectsMd: item.projects_md,
-      displayOrder: item.display_order,
-      councilType: item.council_type,
+      ...data,
+      tenureStart: data.tenure_start,
+      tenureEnd: data.tenure_end,
+      photoUrl: data.photo_url,
+      projectsMd: data.projects_md,
+      displayOrder: data.display_order,
+      councilType: data.council_type,
     } as Executive;
   },
   update: async (id: string, executive: Partial<Omit<Executive, 'id' | 'created_at'>>): Promise<Executive> => {
@@ -101,26 +96,30 @@ export const executives = {
     if (executive.contacts !== undefined) updatePayload['contacts'] = executive.contacts;
     if (executive.councilType !== undefined) updatePayload['council_type'] = executive.councilType;
 
-    const { data, error } = await supabase.from('executives').update(updatePayload).eq('id', id).select();
+    const { data, error } = await supabase
+      .from('executives')
+      .update(updatePayload)
+      .eq('id', id)
+      .select()
+      .maybeSingle();
 
     if (error) {
       console.error("Supabase error updating executive:", error);
       throw new Error(error.message);
     }
 
-    if (!data || data.length === 0) {
-      throw new Error("Failed to update executive profile. You might not have the required permissions or the profile does not exist.");
+    if (!data) {
+      throw new Error("Failed to update executive profile. The record may no longer exist or you lack update permissions.");
     }
 
-    const item = data[0];
     return {
-      ...item,
-      tenureStart: item.tenure_start,
-      tenureEnd: item.tenure_end,
-      photoUrl: item.photo_url,
-      projectsMd: item.projects_md,
-      displayOrder: item.display_order,
-      councilType: item.council_type,
+      ...data,
+      tenureStart: data.tenure_start,
+      tenureEnd: data.tenure_end,
+      photoUrl: data.photo_url,
+      projectsMd: data.projects_md,
+      displayOrder: data.display_order,
+      councilType: data.council_type,
     } as Executive;
   },
   reorder: async (id: string, newOrder: number): Promise<void> => {
