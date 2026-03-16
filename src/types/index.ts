@@ -14,7 +14,7 @@ export interface Executive {
     twitter?: string;
     instagram?: string;
     phone?: string;
-    linkedin?: string; // Added linkedin field
+    linkedin?: string; // Social link
   };
   displayOrder: number;
   councilType: 'Central' | 'Senate' | 'Judiciary';
@@ -118,7 +118,7 @@ export interface Partner {
   category: string;
   isVerified: boolean;
   tier: 'basic' | 'premium';
-  placements: AdPlacement[]; // Changed to array
+  placements: AdPlacement[];
   status: AdStatus;
   startDate: string;
   endDate?: string;

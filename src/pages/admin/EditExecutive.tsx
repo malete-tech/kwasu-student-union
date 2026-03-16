@@ -129,7 +129,7 @@ const EditExecutive: React.FC = () => {
       navigate("/admin/executives");
     } catch (error) {
       console.error("Failed to update profile:", error);
-      toast.error("Failed to update profile.");
+      toast.error("Failed to update profile. Please check your connection.");
     } finally {
       setIsSubmitting(false);
     }
