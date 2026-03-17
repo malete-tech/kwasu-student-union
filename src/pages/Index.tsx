@@ -19,7 +19,7 @@ import { motion } from "framer-motion";
 const Index = () => {
   const [spotlights, setSpotlights] = useState<Spotlight[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [, setError] = useState<string | null>(null);
   const [localSearchTerm, setLocalSearchTerm] = useState("");
   const navigate = useNavigate();
 
