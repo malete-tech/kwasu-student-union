@@ -162,14 +162,6 @@ const NewsDetail: React.FC = () => {
               <div className="sticky top-24">
                 <h3 className="text-xs font-bold uppercase tracking-widest text-brand-400 mb-4">Sponsored</h3>
                 <AdPlacement placement="news_feed" />
-                
-                <div className="mt-12 p-6 bg-brand-900 rounded-2xl text-white shadow-xl">
-                  <h4 className="font-bold text-brand-gold mb-2">Advertise with SU</h4>
-                  <p className="text-xs text-white/70 mb-4">Reach thousands of students daily. Partner with the KWASU Students' Union.</p>
-                  <Button asChild size="sm" className="w-full bg-brand-gold text-brand-900 hover:bg-brand-gold/90 font-bold">
-                    <Link to="/contact">Get Started</Link>
-                  </Button>
-                </div>
               </div>
             </div>
           </div>
