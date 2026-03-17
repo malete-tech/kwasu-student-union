@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { CalendarDays, User } from "lucide-react";
+import { motion } from "framer-motion";
 
 interface NewsFeedItemProps {
   news: News;
@@ -19,13 +20,16 @@ const NewsFeedItem: React.FC<NewsFeedItemProps> = ({ news, variant = "default", 
 
   if (variant === "featured") {
     return (
-      <div className={cn("flex flex-col md:flex-row overflow-hidden shadow-xl transition-shadow duration-300 rounded-2xl bg-white", className)}>
+      <motion.div 
+        whileHover={{ scale: 1.01 }}
+        className={cn("flex flex-col md:flex-row overflow-hidden shadow-xl transition-shadow duration-300 rounded-2xl bg-white", className)}
+      >
         {news.coverUrl && (
           <div className="relative w-full md:w-1/2 lg:w-2/5 aspect-video md:aspect-auto overflow-hidden flex-shrink-0">
             <img
               src={news.coverUrl}
               alt={news.title}
-              className="absolute inset-0 h-full w-full object-cover"
+              className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
             />
           </div>
         )}
@@ -54,19 +58,22 @@ const NewsFeedItem: React.FC<NewsFeedItemProps> = ({ news, variant = "default", 
             ))}
           </div>
         </div>
-      </div>
+      </motion.div>
     );
   }
 
   if (variant === "list") {
     return (
-      <div className={cn("flex gap-4 items-start group", className)}>
+      <motion.div 
+        whileHover={{ x: 5 }}
+        className={cn("flex gap-4 items-start group cursor-pointer", className)}
+      >
         <div className="w-24 h-20 sm:w-32 sm:h-24 flex-shrink-0 overflow-hidden rounded-md bg-gray-100 border">
           {news.coverUrl ? (
             <img 
               src={news.coverUrl} 
               alt={news.title} 
-              className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" 
+              className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" 
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center text-gray-400">
@@ -75,7 +82,7 @@ const NewsFeedItem: React.FC<NewsFeedItemProps> = ({ news, variant = "default", 
           )}
         </div>
         <div className="flex-1 min-w-0">
-          <h3 className="text-base sm:text-lg font-bold leading-tight line-clamp-2 mb-1">
+          <h3 className="text-base sm:text-lg font-bold leading-tight line-clamp-2 mb-1 group-hover:text-brand-600 transition-colors">
             <Link to={`/news/${news.id}`} className={linkClasses}>
               {news.title}
             </Link>
@@ -88,53 +95,44 @@ const NewsFeedItem: React.FC<NewsFeedItemProps> = ({ news, variant = "default", 
               <CalendarDays className="h-3.5 w-3.5 text-brand-500" />
               {format(new Date(news.publishedAt), "dd MMMM yyyy")}
             </div>
-            <div className="flex items-center gap-1.5 border-l pl-4 border-gray-200">
-              <User className="h-3.5 w-3.5 text-brand-500" />
-              SU Admin
-            </div>
           </div>
         </div>
-      </div>
+      </motion.div>
     );
   }
 
   return (
-    <div className={cn("flex flex-col overflow-hidden border shadow-sm hover:shadow-md transition-all duration-300 rounded-xl bg-white", className)}>
+    <motion.div 
+      whileHover={{ y: -5 }}
+      className={cn("flex flex-col overflow-hidden border shadow-sm hover:shadow-lg transition-all duration-300 rounded-xl bg-white", className)}
+    >
       {news.coverUrl && (
         <Link to={`/news/${news.id}`} className="relative h-48 w-full overflow-hidden block group">
           <img
             src={news.coverUrl}
             alt={news.title}
-            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
           />
         </Link>
       )}
       <div className="p-4 flex flex-col flex-grow">
-        <div className="pb-2">
-          <h3 className="text-xl font-semibold leading-tight line-clamp-2">
-            <Link to={`/news/${news.id}`} className={linkClasses}>
-              {news.title}
-            </Link>
-          </h3>
-          <div className="text-sm text-muted-foreground flex items-center mt-1">
-            <CalendarDays className="mr-1 h-3 w-3 text-brand-500" />
-            {format(new Date(news.publishedAt), "MMM dd, yyyy")}
-          </div>
-        </div>
-        <div className="flex-grow py-2">
-          <p className="text-sm text-gray-700 line-clamp-3">
-            {news.excerpt}
-          </p>
-        </div>
-        <div className="flex flex-wrap gap-2 pt-4 mt-auto">
+        <h3 className="text-xl font-semibold leading-tight line-clamp-2 mb-2">
+          <Link to={`/news/${news.id}`} className={linkClasses}>
+            {news.title}
+          </Link>
+        </h3>
+        <p className="text-sm text-gray-700 line-clamp-3 mb-4 flex-grow">
+          {news.excerpt}
+        </p>
+        <div className="flex flex-wrap gap-2 mt-auto">
           {news.tags.slice(0, 2).map((tag) => (
-            <Badge key={tag} variant="secondary" className="bg-brand-100 text-brand-700">
+            <Badge key={tag} variant="secondary" className="bg-brand-100 text-brand-700 border-none">
               {tag}
             </Badge>
           ))}
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
