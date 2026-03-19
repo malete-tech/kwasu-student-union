@@ -41,7 +41,7 @@ To be a leading Students' Union, recognized for its transparency, accountability
 
 The Kwara State University Students' Union (KWASU SU) emerged as the official representative body of students of Kwara State University (KWASU), Malete, with a clear mandate to serve as the collective voice of the student community. 
 
-Its establishment marked a defining moment in the democratic and participatory development of the university, creating a structured platform through which students could engage university management, advocate for their welfare, and contribute meaningfully to institutional growth.
+Its establishment marking a defining moment in the democratic and participatory development of the university, creating a structured platform through which students could engage university management, advocate for their welfare, and contribute meaningfully to institutional growth.
 
 ### The Foundation (2017/2018)
 The formal installation of the Students’ Union took place during the **2017/2018 academic session** under the leadership of **Comrade Aliyu Uthman Abdulkadir (Phodeo)**, who was then serving as the National Association of Nigerian Students (NANS)- Kwara Chairman. This foundational phase provided the constitutional and administrative framework upon which the Union continues to operate.
@@ -67,6 +67,7 @@ The Union has evolved through the dedicated leadership of its elected Presidents
     *   Reinforced the Union’s position as a formidable and organized body within the university.
 *   **9th President (Current): Comrade Abdulsamad Olamilekan Raji (PEOPLE)**
     *   Continues to uphold the Union’s enduring mission of progressive leadership and constructive engagement.
+    *   **Official website of the Students’ Union**, established during the 2025/2026 People’s Era Administration under the leadership of Comr. Abdulsamad Olamilekan Raji, and initiated by the Office of the 9th Students’ Union Public Relations Officer, Victor Olayinka Otitodun.
 `;
 
 const galleryImages = [
