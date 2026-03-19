@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { Helmet } from "react-helmet-async";
 import { useEffect, useState } from "react";
@@ -58,7 +60,7 @@ const Index = () => {
             <FadeIn direction="right" duration={0.8}>
               <div className="flex flex-col items-center text-center lg:items-start lg:text-left">
                 <div className="inline-flex items-center rounded-full bg-brand-neon/20 px-3 py-1 text-sm font-medium text-white mb-4">
-                  <i className="fa-solid fa-circle-check mr-2"></i> Your Voice, Your Future
+                  <i className="fa-solid fa-circle-check mr-2"></i> Attaining Justice with Synergy
                 </div>
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white mb-6 leading-tight">
                   Empower Your Future with <span className="text-brand-neon">KWASU SU</span>
