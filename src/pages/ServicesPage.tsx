@@ -73,9 +73,38 @@ const ServicesPage: React.FC = () => {
     <>
       <Helmet>
         <title>Student Services | KWASU Students' Union</title>
-        <meta name="description" content="Access various student services provided by KWASU Students' Union, including kerosene depot, printing services, and complaints." />
+        <meta name="description" content="Access various student services provided by KWASU Students' Union, including kerosene depot, printing services, and emergency contacts." />
       </Helmet>
       <div className="container py-12">
+        
+        {/* Emergency Contacts Section */}
+        <div className="mb-16 bg-red-50 border-2 border-red-100 rounded-3xl p-6 md:p-8 shadow-sm">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="flex items-center gap-4">
+              <div className="p-4 bg-red-600 text-white rounded-2xl animate-pulse">
+                <i className="fa-solid fa-truck-medical text-3xl"></i>
+              </div>
+              <div>
+                <h2 className="text-2xl font-black text-red-900 uppercase tracking-tight">Campus Emergency</h2>
+                <p className="text-red-700 font-medium">Official University Response Lines</p>
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full md:w-auto">
+              <Button asChild variant="destructive" className="h-14 px-8 rounded-2xl font-bold text-lg shadow-lg hover:scale-105 transition-transform">
+                <a href="tel:+2349033124706">
+                  <i className="fa-solid fa-ambulance mr-3"></i> Ambulance
+                </a>
+              </Button>
+              <Button asChild variant="destructive" className="h-14 px-8 rounded-2xl font-bold text-lg shadow-lg hover:scale-105 transition-transform">
+                <a href="tel:+2347034356532">
+                  <i className="fa-solid fa-shield-halved mr-3"></i> Safety Unit
+                </a>
+              </Button>
+            </div>
+          </div>
+        </div>
+
         {/* Union Ventures Section */}
         <div className="mb-20">
           <div className="text-center mb-12">
