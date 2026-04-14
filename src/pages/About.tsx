@@ -49,7 +49,7 @@ The formal installation of the Students’ Union took place during the **2017/20
 ### Presidential Legacy & Leadership
 The Union has evolved through the dedicated leadership of its elected Presidents:
 
-*   **1st Pioneer President: Comrade Adio Usman Olawale (Adio)**
+*   ** Pioneer President: Comrade Adio Usman Olawale (Adio)**
     *   Laid the groundwork for effective student leadership and institutional engagement, setting important precedents in governance.
 *   **2nd President: Comrade Abdulganiyu Dayo Dikko (Dikko)**
     *   Strengthened advocacy efforts and deepened the Union’s institutional presence within the university.
@@ -111,7 +111,7 @@ const About = () => {
         <title>About Us | KWASU Students' Union</title>
         <meta name="description" content="Official history and mission of the KWASU Students' Union. Meet our presidential legacy and access key documents." />
       </Helmet>
-      
+
       <AboutHero />
 
       <div className="container py-12 px-4 sm:px-6 lg:px-8">
@@ -141,9 +141,9 @@ const About = () => {
                     {galleryImages.map((src, index) => (
                       <CarouselItem key={index} className="pl-2 md:pl-4 basis-[90%] md:basis-1/2 lg:basis-1/2">
                         <div className="overflow-hidden rounded-xl md:rounded-2xl aspect-[16/10] md:aspect-[4/3] shadow-lg border border-brand-50 bg-white">
-                          <img 
-                            src={src} 
-                            alt={`Union activity ${index + 1}`} 
+                          <img
+                            src={src}
+                            alt={`Union activity ${index + 1}`}
                             className="w-full h-full object-cover transition-transform duration-700 hover:scale-110"
                           />
                         </div>
