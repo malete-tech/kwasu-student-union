@@ -16,22 +16,24 @@ Welcome to the official developer documentation for the Kwara State University S
 ## 📁 Project Structure
 
 ```text
-src/
-├── app/                # Layout components (Public & Admin)
-├── components/         # Reusable UI components
-│   ├── admin/          # Admin-specific UI components
-│   └── ui/             # shadcn/ui base components
-├── data/               # Local JSON fallbacks (legacy/mocking)
-├── hooks/              # Custom React hooks (use-mobile, use-toast, etc.)
-├── integrations/       # External service clients
-│   └── supabase/       # Supabase client and storage utilities
-├── lib/                # Core logic and API wrappers
-│   └── api/            # Modular API functions (news, events, etc.)
-├── pages/              # Application views/routes
-│   └── admin/          # Protected administrative pages
-├── types/              # TypeScript interfaces and types
-└── utils/              # Helper functions (auth, cloudinary, toast)
+apps/
+├── admin/              # Admin-specific control panel (React/Vite)
+│   ├── src/pages/      # Admin dashboard and management views
+│   └── ...
+└── web/                # Public Student Union website (React/Vite)
+    ├── src/pages/      # Public-facing views (Home, News, Events, etc)
+    └── ...
 
+packages/
+└── shared/             # Shared logic and UI between admin and web
+    ├── src/components/ # Reusable UI components
+    │   ├── admin/      # Admin-specific shared UI components
+    │   └── ui/         # shadcn/ui base components
+    ├── src/lib/        # Core logic, API wrappers, Supabase client
+    ├── src/types/      # TypeScript interfaces and types
+    └── src/utils/      # Helper functions (auth, formatting, etc.)
+
+public/                 # Global static assets (images, fonts)
 supabase/
 └── functions/          # Deno-based Edge Functions (Cloudinary bridge)
 ```
