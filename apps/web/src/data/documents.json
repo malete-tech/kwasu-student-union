@@ -1,0 +1,47 @@
+[
+  {
+    "id": "doc-1",
+    "title": "KWASU SU Constitution (Revised 2023)",
+    "url": "/placeholder.pdf",
+    "tags": ["policy", "constitution"],
+    "updatedAt": "2023-10-20T10:00:00Z",
+    "fileType": "PDF",
+    "fileSize": "1.2 MB"
+  },
+  {
+    "id": "doc-2",
+    "title": "KWASU Student Handbook (2024/2025)",
+    "url": "/placeholder.pdf",
+    "tags": ["handbook", "policy", "academic"],
+    "updatedAt": "2024-09-15T14:30:00Z",
+    "fileType": "PDF",
+    "fileSize": "2.5 MB"
+  },
+  {
+    "id": "doc-3",
+    "title": "Complaint Form Template",
+    "url": "/placeholder.docx",
+    "tags": ["form", "welfare"],
+    "updatedAt": "2024-01-05T09:00:00Z",
+    "fileType": "DOCX",
+    "fileSize": "0.1 MB"
+  },
+  {
+    "id": "doc-4",
+    "title": "Event Proposal Guidelines",
+    "url": "/placeholder.pdf",
+    "tags": ["guidelines", "events"],
+    "updatedAt": "2023-11-01T11:00:00Z",
+    "fileType": "PDF",
+    "fileSize": "0.8 MB"
+  },
+  {
+    "id": "doc-5",
+    "title": "Scholarship Application Checklist",
+    "url": "/placeholder.pdf",
+    "tags": ["form", "opportunities"],
+    "updatedAt": "2024-03-10T16:00:00Z",
+    "fileType": "PDF",
+    "fileSize": "0.3 MB"
+  }
+]

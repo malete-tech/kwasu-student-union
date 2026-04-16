@@ -1,0 +1,196 @@
+"use client";
+
+import React, { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Loader2, ArrowLeft, Star, Image as ImageIcon, FileText } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { api } from "@/lib/api";
+import { toast } from "sonner";
+import ImageUpload from "@/components/ImageUpload";
+import { Link, useNavigate } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
+
+const formSchema = z.object({
+  name: z.string().min(1, { message: "Name is required." }),
+  achievement: z.string().min(1, { message: "Achievement is required." }),
+  descriptionMd: z.string().min(1, { message: "Description is required." }),
+  photoUrl: z.string().optional(),
+  link: z.string().url({ message: "Invalid URL." }).optional().or(z.literal('')),
+});
+
+const AddSpotlight: React.FC = () => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const navigate = useNavigate();
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: { name: "", achievement: "", descriptionMd: "", photoUrl: undefined, link: "" },
+  });
+
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    setIsSubmitting(true);
+    try {
+      const newSpotlight = {
+        name: values.name,
+        achievement: values.achievement,
+        descriptionMd: values.descriptionMd,
+        photoUrl: values.photoUrl || undefined,
+        link: values.link || undefined,
+      };
+      await api.spotlight.create(newSpotlight);
+      toast.success("Spotlight created successfully!");
+      navigate("/spotlight");
+    } catch (error) {
+      console.error("Failed to add spotlight:", error);
+      toast.error("Failed to create spotlight.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    <>
+      <Helmet>
+        <title>Add Spotlight | KWASU SU Admin</title>
+      </Helmet>
+      <div className="max-w-5xl mx-auto space-y-10">
+        <div className="flex items-center gap-4 border-b border-slate-100 pb-8">
+          <Button asChild variant="ghost" size="icon" className="h-10 w-10 text-slate-400 hover:text-brand-700 hover:bg-brand-50 rounded-xl shrink-0 transition-all">
+            <Link to="/spotlight">
+              <ArrowLeft className="h-5 w-5" />
+            </Link>
+          </Button>
+          <div>
+            <h2 className="text-2xl font-black text-brand-900 uppercase tracking-tight">Feature Student</h2>
+            <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-0.5">Excellence & Success stories</p>
+          </div>
+        </div>
+        
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-12">
+            {/* 1. Profile Section */}
+            <div className="grid gap-8 md:grid-cols-3">
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 text-brand-600 font-bold uppercase tracking-wider text-xs">
+                  <Star className="h-4 w-4" />
+                  Student Info
+                </div>
+                <p className="text-sm text-muted-foreground">Who are we celebrating and what have they done?</p>
+              </div>
+              <div className="md:col-span-2 space-y-4">
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-slate-700 font-semibold">Full Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="e.g. Aisha Bello" {...field} className="h-12 rounded-xl border-brand-100 bg-white/50 focus-visible:ring-brand-gold shadow-sm" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="achievement"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-slate-700 font-semibold">Core Achievement</FormLabel>
+                      <FormControl>
+                        <Input placeholder="e.g. Developed a campus app" {...field} className="h-12 rounded-xl border-brand-100 bg-white/50 focus-visible:ring-brand-gold shadow-sm" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+
+            <hr className="border-slate-100" />
+
+            {/* 2. Visuals & Link Section */}
+            <div className="grid gap-8 md:grid-cols-3">
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 text-brand-600 font-bold uppercase tracking-wider text-xs">
+                  <ImageIcon className="h-4 w-4" />
+                  Media & Link
+                </div>
+                <p className="text-sm text-muted-foreground">Provide a visual and optionally link to a full feature.</p>
+              </div>
+              <div className="md:col-span-2 space-y-4">
+                <FormField
+                  control={form.control}
+                  name="photoUrl"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-slate-700 font-semibold">Student Portrait</FormLabel>
+                      <FormControl>
+                        <ImageUpload label="Upload Photo" bucketName="student-spotlight-photos" folderPath="public" value={field.value} onChange={field.onChange} disabled={isSubmitting} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="link"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-slate-700 font-semibold">External Story Link (Optional)</FormLabel>
+                      <FormControl>
+                        <Input type="url" placeholder="https://..." {...field} className="h-10 rounded-xl border-brand-100 bg-white/50 focus-visible:ring-brand-gold shadow-sm" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+
+            <hr className="border-slate-100" />
+
+            {/* 3. Narrative Section */}
+            <div className="grid gap-8 md:grid-cols-3">
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 text-brand-600 font-bold uppercase tracking-wider text-xs">
+                  <FileText className="h-4 w-4" />
+                  Achievement Narrative
+                </div>
+                <p className="text-sm text-muted-foreground">The full story of the student's success.</p>
+              </div>
+              <div className="md:col-span-2 space-y-4">
+                <FormField
+                  control={form.control}
+                  name="descriptionMd"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-slate-700 font-semibold">The Story (Markdown)</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Share the detailed success story..." rows={8} {...field} className="rounded-xl border-brand-100 bg-white/50 focus-visible:ring-brand-gold shadow-sm" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+
+            <div className="flex pt-6">
+              <Button type="submit" className="w-full sm:w-auto px-10 h-14 bg-brand-700 hover:bg-brand-800 text-white rounded-2xl shadow-xl hover:shadow-2xl transition-all text-lg font-bold" disabled={isSubmitting || !form.formState.isValid}>
+                {isSubmitting ? <><Loader2 className="mr-3 h-5 w-5 animate-spin" /> Creating...</> : "Add Spotlight"}
+              </Button>
+            </div>
+          </form>
+        </Form>
+      </div>
+    </>
+  );
+};
+
+export default AddSpotlight;

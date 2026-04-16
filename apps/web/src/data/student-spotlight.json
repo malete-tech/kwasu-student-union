@@ -1,0 +1,26 @@
+[
+  {
+    "id": "spotlight-1",
+    "name": "Aisha Bello",
+    "achievement": "Developed an award-winning campus navigation app.",
+    "descriptionMd": "Aisha, a 400-level Computer Science student, recently won the 'Tech for Good' award at the National Innovation Summit for her intuitive campus navigation application. The app helps students locate lecture halls, offices, and amenities with ease.",
+    "photoUrl": "/placeholder.svg",
+    "link": "/news/aisha-bello-app"
+  },
+  {
+    "id": "spotlight-2",
+    "name": "Chidi Okoro",
+    "achievement": "Published a research paper in a reputable journal.",
+    "descriptionMd": "Chidi, a final-year Biochemistry student, has achieved a significant milestone by publishing his research on 'Sustainable Agricultural Practices' in the Journal of Environmental Science. His work focuses on eco-friendly farming methods.",
+    "photoUrl": "/placeholder.svg",
+    "link": "/news/chidi-okoro-research"
+  },
+  {
+    "id": "spotlight-3",
+    "name": "Fatima Musa",
+    "achievement": "Led the KWASU Debate Team to national victory.",
+    "descriptionMd": "Fatima, a Law student, captained the KWASU Debate Team to victory at the National Inter-University Debate Championship. Her exceptional leadership and oratorical skills brought immense pride to the university.",
+    "photoUrl": "/placeholder.svg",
+    "link": "/news/fatima-musa-debate"
+  }
+]

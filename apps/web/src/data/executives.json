@@ -1,0 +1,87 @@
+[
+  {
+    "id": "exec-1",
+    "slug": "president-john-doe",
+    "name": "John Doe",
+    "role": "President",
+    "faculty": "Social Sciences",
+    "tenureStart": "2024-01-01",
+    "tenureEnd": "2024-12-31",
+    "photoUrl": "/placeholder.svg",
+    "bioMd": "John Doe is a final-year student of Political Science. He is passionate about student welfare and good governance. He previously served as the Welfare Secretary.",
+    "manifestoMd": "## My Vision for KWASU SU\n\nMy manifesto is built on three pillars: **Accountability, Welfare, and Innovation.**\n\n**Accountability:** I pledge to run a transparent administration, ensuring that all union activities and finances are open to scrutiny. Regular town hall meetings and a dedicated feedback portal will be established.\n\n**Welfare:** I will prioritize student well-being by advocating for improved campus facilities, affordable services, and a robust palliative system. We will work closely with the university management to address issues affecting students' daily lives.\n\n**Innovation:** I aim to introduce digital solutions to streamline union processes, enhance communication, and create platforms for student skill development and entrepreneurship. This includes a revamped SU website and a mentorship program.\n\nTogether, we can build a Students' Union that truly represents and serves every KWASU student.",
+    "projectsMd": "### Key Projects\n*   **Digital Feedback System:** Launch an online portal for complaints and suggestions.\n*   **SU Mentorship Program:** Connect senior students with freshers for academic and social guidance.\n*   **Campus Shuttle Service Advocacy:** Push for more affordable and reliable intra-campus transportation.",
+    "contacts": {
+      "email": "president@kwasusu.edu",
+      "twitter": "johndoe_kwasu",
+      "instagram": "johndoe_kwasu"
+    }
+  },
+  {
+    "id": "exec-2",
+    "slug": "vice-president-jane-smith",
+    "name": "Jane Smith",
+    "role": "Vice President",
+    "faculty": "Pure & Applied Sciences",
+    "tenureStart": "2024-01-01",
+    "tenureEnd": "2024-12-31",
+    "photoUrl": "/placeholder.svg",
+    "bioMd": "Jane Smith is a 300-level student of Biochemistry. She is dedicated to fostering academic excellence and promoting student engagement in research.",
+    "manifestoMd": "## Empowering Academic Excellence\n\nAs Vice President, my focus will be on supporting the academic growth of every KWASU student. I believe that a strong academic foundation is key to future success.\n\n**My commitments include:**\n*   **Academic Support Programs:** Organizing free tutorials and study groups for challenging courses.\n*   **Research & Innovation Hub:** Collaborating with faculties to create opportunities for students to engage in research and present their findings.\n*   **Inter-Faculty Academic Competitions:** Initiating debates, quizzes, and essay competitions to stimulate intellectual curiosity.\n\nI will work tirelessly to ensure that every student has the resources and support needed to excel academically.",
+    "projectsMd": "### Key Projects\n*   **Peer-Assisted Learning (PAL) Scheme:** Establish a program where senior students mentor junior students academically.\n*   **Annual Student Research Showcase:** Organize an event for students to present their research projects.\n*   **Digital Library Access Advocacy:** Work with the university library to improve access to online academic resources.",
+    "contacts": {
+      "email": "vicepresident@kwasusu.edu",
+      "instagram": "janesmith_kwasu"
+    }
+  },
+  {
+    "id": "exec-3",
+    "slug": "secretary-general-mike-adams",
+    "name": "Mike Adams",
+    "role": "Secretary General",
+    "faculty": "Humanities, Management & Social Sciences",
+    "tenureStart": "2024-01-01",
+    "tenureEnd": "2024-12-31",
+    "photoUrl": "/placeholder.svg",
+    "bioMd": "Mike Adams is a 400-level student of Mass Communication. He is known for his organizational skills and commitment to effective communication within the union.",
+    "manifestoMd": "## Streamlining Communication and Operations\n\nMy goal as Secretary General is to ensure seamless communication within the Students' Union and between the Union and the student body. Efficiency and clarity will be my watchwords.\n\n**My pledges are:**\n*   **Transparent Record Keeping:** Maintaining accurate and accessible records of all union meetings and decisions.\n*   **Enhanced Information Dissemination:** Utilizing multiple channels (website, social media, notice boards) to ensure students are well-informed.\n*   **Efficient Administrative Support:** Providing timely and effective administrative support to all executive members and student committees.\n\nI am committed to making the Students' Union more organized and responsive to the needs of KWASU students.",
+    "projectsMd": "### Key Projects\n*   **Centralized Document Repository:** Create an online archive for all SU documents, minutes, and reports.\n*   **SU Newsletter:** Launch a monthly digital newsletter to summarize union activities and upcoming events.\n*   **Improved Notice Board System:** Implement a more organized and regularly updated physical and digital notice board system.",
+    "contacts": {
+      "email": "secretary@kwasusu.edu",
+      "twitter": "mikeadams_kwasu"
+    }
+  },
+  {
+    "id": "exec-4",
+    "slug": "financial-secretary-sarah-brown",
+    "name": "Sarah Brown",
+    "role": "Financial Secretary",
+    "faculty": "Agriculture",
+    "tenureStart": "2024-01-01",
+    "tenureEnd": "2024-12-31",
+    "photoUrl": "/placeholder.svg",
+    "bioMd": "Sarah Brown is a 300-level student of Agricultural Economics. She is meticulous and committed to ensuring financial prudence and accountability.",
+    "manifestoMd": "## Prudent Financial Management\n\nAs Financial Secretary, I will ensure that the Students' Union's finances are managed with utmost transparency, accountability, and prudence. Every kobo will be accounted for.\n\n**My commitments include:**\n*   **Regular Financial Reports:** Publishing quarterly financial statements for public access.\n*   **Budgetary Discipline:** Ensuring that all expenditures align with approved budgets and student priorities.\n*   **Revenue Generation Initiatives:** Exploring ethical and sustainable ways to generate funds for student welfare projects.\n\nI am dedicated to building trust in the financial operations of the Students' Union.",
+    "projectsMd": "### Key Projects\n*   **Online Dues Payment System:** Implement a secure and convenient online platform for students to pay their SU dues.\n*   **Financial Literacy Workshops:** Organize workshops to educate students on personal finance and investment.\n*   **SU Business Ventures Audit:** Conduct a comprehensive audit of existing SU business ventures to ensure profitability and transparency.",
+    "contacts": {
+      "email": "finance@kwasusu.edu"
+    }
+  },
+  {
+    "id": "exec-5",
+    "slug": "welfare-secretary-david-green",
+    "name": "David Green",
+    "role": "Welfare Secretary",
+    "faculty": "Education",
+    "tenureStart": "2024-01-01",
+    "tenureEnd": "2024-12-31",
+    "photoUrl": "/placeholder.svg",
+    "bioMd": "David Green is a 200-level student of Educational Management. He is a strong advocate for student rights and well-being, always ready to assist his fellow students.",
+    "manifestoMd": "## Prioritizing Student Welfare\n\nMy primary goal is to enhance the welfare of all KWASU students. I believe that a conducive environment is essential for academic success and personal growth.\n\n**My agenda includes:**\n*   **Improved Campus Amenities:** Advocating for better hostel facilities, cleaner restrooms, and reliable power supply.\n*   **Health & Safety Initiatives:** Organizing health awareness campaigns, free medical check-ups, and promoting campus security.\n*   **Student Support Services:** Establishing a robust system for addressing student complaints and providing necessary support.\n\nI am committed to being the voice of students on all welfare matters.",
+    "projectsMd": "### Key Projects\n*   **Campus Sanitation Drive:** Organize regular clean-up exercises and advocate for improved waste management.\n*   **Emergency Contact System:** Develop a quick access system for students to report emergencies.\n*   **Affordable Meal Scheme Advocacy:** Work with cafeteria vendors to ensure affordable and nutritious food options.",
+    "contacts": {
+      "email": "welfare@kwasusu.edu",
+      "phone": "+2348012345678"
+    }
+  }
+]

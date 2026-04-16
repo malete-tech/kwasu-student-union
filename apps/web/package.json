@@ -1,14 +1,14 @@
 {
-  "name": "vite_react_shadcn_ts",
+  "name": "web",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev:web": "pnpm --filter web dev",
-    "dev:admin": "pnpm --filter admin dev",
-    "build:web": "pnpm --filter web build",
-    "build:admin": "pnpm --filter admin build",
-    "lint": "eslint ."
+    "dev": "vite",
+    "build": "vite build",
+    "build:dev": "vite build --mode development",
+    "lint": "eslint .",
+    "preview": "vite preview"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
