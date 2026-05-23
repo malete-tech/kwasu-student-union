@@ -5,6 +5,7 @@ import Header from "@/components/header";
 import Footer from "@/components/footer";
 import GlobalAnnouncementModal from "@/components/GlobalAnnouncementModal";
 import PageTransition from "@/components/PageTransition";
+import { SEO } from "@/components/SEO";
 import { AnimatePresence } from "framer-motion";
 
 const Layout = () => {
@@ -15,6 +16,7 @@ const Layout = () => {
 
   return (
     <div className="flex min-h-screen flex-col">
+      <SEO />
       <Header />
       <main className="flex-1">
         <AnimatePresence mode="wait">

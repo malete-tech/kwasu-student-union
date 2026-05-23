@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
+import { SEO } from "@/components/SEO";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import remarkBreaks from "remark-breaks";
@@ -94,10 +95,13 @@ const NewsDetail: React.FC = () => {
 
   return (
     <>
-      <Helmet>
-        <title>{news.title} | KWASU Students' Union News</title>
-        <meta name="description" content={news.excerpt} />
-      </Helmet>
+      <SEO 
+        title={`${news.title} | KWASU Students' Union News`} 
+        description={news.excerpt} 
+        image={news.coverUrl || "https://thekwasusu.com/logo.png"}
+        url={`https://thekwasusu.com/news/${news.id}`}
+        type="article"
+      />
       <div className="min-h-screen py-12 bg-white">
         <div className="container pb-16">
           <Button asChild variant="ghost" className="mb-10 text-brand-600 hover:text-brand-700 hover:bg-brand-50 -ml-4">

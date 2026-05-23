@@ -40,6 +40,11 @@ const Footer: React.FC = () => {
           <h3 className="text-xl font-semibold mb-4 uppercase">Quick Links</h3>
           <ul className="space-y-2">
             <li>
+              <Link to="/about" className="text-sm opacity-80 hover:opacity-100 hover:text-brand-gold transition-opacity">
+                About SU
+              </Link>
+            </li>
+            <li>
               <Link to="/news" className="text-sm opacity-80 hover:opacity-100 hover:text-brand-gold transition-opacity">
                 News & Announcements
               </Link>
@@ -50,18 +55,13 @@ const Footer: React.FC = () => {
               </Link>
             </li>
             <li>
-              <Link to="/services/downloads" className="text-sm opacity-80 hover:opacity-100 hover:text-brand-gold transition-opacity">
-                Downloads
+              <Link to="/contact" className="text-sm opacity-80 hover:opacity-100 hover:text-brand-gold transition-opacity">
+                Contact Us
               </Link>
             </li>
             <li>
-              <Link to="/about" className="text-sm opacity-80 hover:opacity-100 hover:text-brand-gold transition-opacity">
-                Constitution
-              </Link>
-            </li>
-            <li>
-              <Link to="/about" className="text-sm opacity-80 hover:opacity-100 hover:text-brand-gold transition-opacity">
-                Student Handbook
+              <Link to="/partners" className="text-sm opacity-80 hover:opacity-100 hover:text-brand-gold transition-opacity">
+                Our Partners
               </Link>
             </li>
           </ul>
@@ -71,6 +71,11 @@ const Footer: React.FC = () => {
         <div className="col-span-1">
           <h3 className="text-xl font-semibold mb-4 uppercase">Services</h3>
           <ul className="space-y-2">
+            <li>
+              <Link to="/executives/central" className="text-sm opacity-80 hover:opacity-100 hover:text-brand-gold transition-opacity">
+                Meet the Executives
+              </Link>
+            </li>
             <li>
               <Link to="/services/complaints" className="text-sm opacity-80 hover:opacity-100 hover:text-brand-gold transition-opacity">
                 Submit Complaint
@@ -82,8 +87,18 @@ const Footer: React.FC = () => {
               </Link>
             </li>
             <li>
-              <Link to="/executives/central" className="text-sm opacity-80 hover:opacity-100 hover:text-brand-gold transition-opacity">
-                Meet the Executives
+              <Link to="/services/downloads" className="text-sm opacity-80 hover:opacity-100 hover:text-brand-gold transition-opacity">
+                Downloads Vault
+              </Link>
+            </li>
+            <li>
+              <Link to="/services/downloads?tag=constitution" className="text-sm opacity-80 hover:opacity-100 hover:text-brand-gold transition-opacity">
+                SU Constitution
+              </Link>
+            </li>
+            <li>
+              <Link to="/services/downloads?tag=handbook" className="text-sm opacity-80 hover:opacity-100 hover:text-brand-gold transition-opacity">
+                Student Handbook
               </Link>
             </li>
             <li>

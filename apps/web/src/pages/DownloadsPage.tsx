@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { api } from "@/lib/api";
 import { Document } from "@/types";
 import { Card } from "@/components/ui/card";
@@ -14,12 +14,23 @@ import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 
 const DownloadsPage: React.FC = () => {
+  const [searchParams] = useSearchParams();
+  const initialTag = searchParams.get("tag");
+  const initialSearch = searchParams.get("search");
+
   const [allDocuments, setAllDocuments] = useState<Document[]>([]);
   const [filteredDocuments, setFilteredDocuments] = useState<Document[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [activeTag, setActiveTag] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState(initialSearch || "");
+  const [activeTag, setActiveTag] = useState<string | null>(initialTag || null);
+
+  useEffect(() => {
+    const tag = searchParams.get("tag");
+    const search = searchParams.get("search");
+    setActiveTag(tag);
+    setSearchTerm(search || "");
+  }, [searchParams]);
 
   useEffect(() => {
     const fetchDocuments = async () => {

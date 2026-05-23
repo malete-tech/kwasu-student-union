@@ -85,7 +85,7 @@ const ServicesPage: React.FC = () => {
             <div className="h-1.5 w-24 bg-brand-gold mx-auto mt-4 rounded-full"></div>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-4xl mx-auto px-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto px-4">
             <ServiceCard
               icon="fa-solid fa-fire-flame-simple"
               title="SU Kerosene Depot"
@@ -101,6 +101,15 @@ const ServicesPage: React.FC = () => {
               description="Professional printing, photocopying, and digital services. Fast, reliable, and student-friendly rates."
               href="https://wa.me/message/T2EV3QZOQPAVC1"
               buttonText="Chat with Cafe"
+              isExternal
+              featured
+            />
+            <ServiceCard
+              icon="fa-solid fa-tv"
+              title="SU Viewing Center"
+              description="Catch all live football matches, premium entertainment, and gaming tournaments in an electric atmosphere. Located at Royal Garden, Opposite Ajeem Hostel, On Campus."
+              href="https://wa.me/2349027379115?text=Hello%20KWASU%20SU,%20I%20would%20like%20to%20inquire%20about%20the%20SU%20Viewing%20Center."
+              buttonText="Inquire on WhatsApp"
               isExternal
               featured
             />
@@ -168,6 +177,16 @@ const ServicesPage: React.FC = () => {
               <Button asChild variant="destructive" className="h-14 px-8 rounded-2xl font-bold text-lg shadow-lg hover:scale-105 transition-transform">
                 <a href="tel:+2347034356532">
                   <i className="fa-solid fa-shield-halved mr-3"></i> Safety Unit
+                </a>
+              </Button>
+              <Button asChild variant="destructive" className="h-14 px-8 rounded-2xl font-bold text-lg shadow-lg hover:scale-105 transition-transform">
+                <a href="tel:+2348169770435">
+                  <i className="fa-solid fa-fire-extinguisher mr-3"></i> Fire Service 1
+                </a>
+              </Button>
+              <Button asChild variant="destructive" className="h-14 px-8 rounded-2xl font-bold text-lg shadow-lg hover:scale-105 transition-transform">
+                <a href="tel:+23470535435475">
+                  <i className="fa-solid fa-fire-extinguisher mr-3"></i> Fire Service 2
                 </a>
               </Button>
             </div>

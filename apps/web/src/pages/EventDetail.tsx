@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
+import { SEO } from "@/components/SEO";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { api } from "@/lib/api";
@@ -103,10 +104,13 @@ const EventDetail: React.FC = () => {
 
   return (
     <>
-      <Helmet>
-        <title>{event.title} | KWASU Students' Union Events</title>
-        <meta name="description" content={event.descriptionMd.split('\n')[0]} />
-      </Helmet>
+      <SEO 
+        title={`${event.title} | KWASU Students' Union Events`} 
+        description={event.descriptionMd.split('\n')[0]} 
+        image="https://thekwasusu.com/logo.png"
+        url={`https://thekwasusu.com/events/${event.slug}`}
+        type="website"
+      />
       <div className="container py-12">
         <Button asChild variant="outline" className="mb-8 border-brand-500 text-brand-500 hover:bg-brand-50 hover:text-brand-600 focus-visible:ring-brand-gold">
           <Link to="/events">
