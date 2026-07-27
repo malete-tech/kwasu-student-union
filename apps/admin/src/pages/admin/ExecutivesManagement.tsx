@@ -16,7 +16,7 @@ import {
   History, 
   RotateCcw,
   AlertTriangle
-} from "lucide-react";
+} from "@/components/ui/font-awesome-icon";
 import { api } from "@/lib/api";
 import { sortExecutivesByHierarchy } from "@/lib/hierarchy";
 import { Executive, PastExecutive } from "@/types";

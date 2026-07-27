@@ -5,7 +5,7 @@ import { Partner } from "@/types";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ShieldCheck, ExternalLink, Star } from "lucide-react";
+import { ShieldCheck, ExternalLink, Star } from "@/components/ui/font-awesome-icon";
 import { cn } from "@/lib/utils";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 

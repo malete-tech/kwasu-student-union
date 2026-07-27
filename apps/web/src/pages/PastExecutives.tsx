@@ -9,7 +9,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { User, History, Calendar, Layers } from "lucide-react";
+import { User, History, Calendar, Layers } from "@/components/ui/font-awesome-icon";
 import { Link } from "react-router-dom";
 
 const councilCategories: { label: string; value: Executive['councilType'] | 'All' }[] = [

@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { OTPInput, SlotProps } from "input-otp";
-import { Dot } from "lucide-react";
+import { Dot } from "./font-awesome-icon";
 
 import { cn } from "@/lib/utils";
 

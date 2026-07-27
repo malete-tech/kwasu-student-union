@@ -7,7 +7,7 @@ import EventCard from "@/components/event-card";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Calendar } from "@/components/ui/calendar";
 import { Input } from "@/components/ui/input";
-import { Search } from "lucide-react";
+import { Search } from "@/components/ui/font-awesome-icon";
 import { Skeleton } from "@/components/ui/skeleton";
 // import { format } from "date-fns"; // Removed unused import
 import { Link } from "react-router-dom";

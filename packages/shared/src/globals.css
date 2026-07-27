@@ -55,6 +55,16 @@
     font-feature-settings: "rlig" 1, "calt" 1, "cv02" 1, "cv03" 1, "cv04" 1;
   }
 
+  /* FontAwesome Icon Alignment Fix for Circular & Flex Containers */
+  i[class^="fa-"], i[class*=" fa-"] {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    text-align: center;
+    vertical-align: middle;
+  }
+
   /* Figtree Typography Hierarchy */
   h1, .h1 {
     @apply font-sans font-extrabold text-3xl sm:text-4xl md:text-5xl tracking-tight text-foreground leading-[1.15];

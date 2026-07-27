@@ -3,7 +3,7 @@
 import React, { useCallback } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Bold, Italic, List, Link, Code } from "lucide-react";
+import { Bold, Italic, List, Link, Code } from "@/components/ui/font-awesome-icon";
 import { cn } from "@/lib/utils";
 
 interface MarkdownEditorProps {

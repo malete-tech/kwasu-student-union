@@ -7,7 +7,7 @@ import { Executive } from "@/types";
 import ExecutiveCard from "@/components/ExecutiveCard";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "react-router-dom";
-import { History } from "lucide-react";
+import { History } from "@/components/ui/font-awesome-icon";
 import { Button } from "@/components/ui/button";
 
 const SenateCouncil = () => {

@@ -3,7 +3,7 @@
 import React from "react";
 import { Card } from "@/components/ui/card"; // Removed CardContent
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { BellRing } from "lucide-react"; // Removed Megaphone
+import { BellRing } from "@/components/ui/font-awesome-icon";
 import { cn } from "@/lib/utils";
 
 interface AnnouncementCardProps {

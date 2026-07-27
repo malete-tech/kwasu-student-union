@@ -10,7 +10,7 @@ import { api } from "@/lib/api";
 import { Event } from "@/types";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, CalendarDays, MapPin, Tag, Clock, ExternalLink } from "lucide-react";
+import { ArrowLeft, CalendarDays, MapPin, Tag, Clock, ExternalLink } from "@/components/ui/font-awesome-icon";
 import { Skeleton } from "@/components/ui/skeleton";
 import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";

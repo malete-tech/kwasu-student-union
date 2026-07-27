@@ -2,7 +2,7 @@
 
 import React from "react";
 import { NavLink, Link } from "react-router-dom";
-import { LogOut } from "lucide-react";
+import { LogOut } from "@/components/ui/font-awesome-icon";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { NAVIGATION_ITEMS, NavItem } from "@/config/navigation";

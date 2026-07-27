@@ -10,7 +10,7 @@ import remarkBreaks from "remark-breaks";
 import { api } from "@/lib/api";
 import { News } from "@/types";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, CalendarDays, Tag, Paperclip } from "lucide-react";
+import { ArrowLeft, CalendarDays, Tag, Paperclip } from "@/components/ui/font-awesome-icon";
 import { Skeleton } from "@/components/ui/skeleton";
 import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";

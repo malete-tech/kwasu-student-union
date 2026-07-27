@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { signIn } from "@/utils/auth-helpers";
 import { motion } from "framer-motion";
-import { Loader2, Mail, Lock } from "lucide-react";
+import { Loader2, Mail, Lock } from "@/components/ui/font-awesome-icon";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Invalid email address." }),

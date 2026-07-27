@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { PlusCircle, Edit, Trash2, Loader2, Image as ImageIcon, Inbox } from "lucide-react";
+import { PlusCircle, Edit, Trash2, Loader2, Image as ImageIcon, Inbox } from "@/components/ui/font-awesome-icon";
 import { api } from "@/lib/api";
 import { News } from "@/types";
 import { toast } from "sonner";

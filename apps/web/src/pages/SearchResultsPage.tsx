@@ -7,7 +7,7 @@ import { api } from "@/lib/api";
 import { News, Event, Opportunity } from "@/types";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Search, Newspaper, CalendarDays, Briefcase, ArrowRight } from "lucide-react";
+import { Search, Newspaper, CalendarDays, Briefcase, ArrowRight } from "@/components/ui/font-awesome-icon";
 import { Button } from "@/components/ui/button";
 import NewsFeedItem from "@/components/NewsFeedItem"; // Updated import
 import EventCard from "@/components/event-card";

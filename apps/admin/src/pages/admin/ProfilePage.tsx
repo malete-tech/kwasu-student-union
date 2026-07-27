@@ -11,7 +11,7 @@ import {
   Loader2, 
   Camera,
   CheckCircle2
-} from "lucide-react";
+} from "@/components/ui/font-awesome-icon";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

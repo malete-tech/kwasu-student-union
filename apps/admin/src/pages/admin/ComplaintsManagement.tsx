@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { MessageSquare, Search, Filter, ArrowRight, Inbox } from "lucide-react";
+import { MessageSquare, Search, Filter, ArrowRight, Inbox } from "@/components/ui/font-awesome-icon";
 import { api } from "@/lib/api";
 import { Complaint, ComplaintStatus, ComplaintCategory } from "@/types";
 import { Skeleton } from "@/components/ui/skeleton";

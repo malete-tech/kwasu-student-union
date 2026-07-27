@@ -8,7 +8,7 @@ import { Spotlight } from "@/types";
 import SpotlightCard from "@/components/SpotlightCard";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card } from "@/components/ui/card";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft } from "@/components/ui/font-awesome-icon";
 import { Button } from "@/components/ui/button";
 
 const SpotlightPage: React.FC = () => {

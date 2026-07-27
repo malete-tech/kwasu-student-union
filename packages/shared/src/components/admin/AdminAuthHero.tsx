@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Settings, ShieldCheck, TrendingUp } from "lucide-react";
+import { Settings, ShieldCheck, TrendingUp } from "@/components/ui/font-awesome-icon";
 import { motion, Variants } from "framer-motion";
 
 const AdminAuthHero: React.FC = () => {

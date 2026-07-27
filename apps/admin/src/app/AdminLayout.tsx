@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import {
   LogOut,
-  Menu,
   ChevronRight,
   Bell,
   LayoutDashboard,
@@ -18,7 +17,8 @@ import {
   Handshake,
   Megaphone,
   MoreHorizontal,
-} from "lucide-react";
+} from "@/components/ui/font-awesome-icon";
+import { HamburgerButton } from "@/components/ui/hamburger-button";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useSession } from "@/components/SessionContextProvider";
@@ -283,15 +283,9 @@ const AdminLayout: React.FC = () => {
         <div className="flex items-center gap-3">
           <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
             <SheetTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8 text-slate-600 hover:bg-slate-100 rounded-md"
-              >
-                <Menu className="w-5 h-5" />
-              </Button>
+              <HamburgerButton isOpen={isSidebarOpen} variant="ghost" />
             </SheetTrigger>
-            <SheetContent side="left" className="w-64 p-0 border-none"
+            <SheetContent side="left" hideCloseButton className="w-64 p-0 border-none"
               style={{ background: "hsl(150 60% 8%)" }}>
               <SidebarContent
                 pathname={location.pathname}

@@ -6,7 +6,7 @@ import { News } from "@/types";
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
-import { CalendarDays } from "lucide-react";
+import { CalendarDays } from "@/components/ui/font-awesome-icon";
 import { motion } from "framer-motion";
 
 interface NewsFeedItemProps {

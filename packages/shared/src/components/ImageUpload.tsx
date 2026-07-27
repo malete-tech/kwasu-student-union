@@ -4,7 +4,7 @@ import React, { useState, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Loader2, Upload, XCircle } from "lucide-react";
+import { Loader2, Upload, XCircle } from "@/components/ui/font-awesome-icon";
 import { cn } from "@/lib/utils";
 import { uploadImage, deleteImage } from "@/integrations/supabase/storage";
 import { toast } from "sonner";

@@ -11,7 +11,7 @@ import {
   Megaphone,
   PlusCircle,
   List
-} from "lucide-react";
+} from "@/components/ui/font-awesome-icon";
 import React from "react";
 
 export interface NavChild {

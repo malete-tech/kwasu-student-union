@@ -12,7 +12,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from "@/components/ui/form";
-import { Loader2 } from "lucide-react";
+import { Loader2 } from "@/components/ui/font-awesome-icon";
 import { api } from "@/lib/api";
 import { toast } from "sonner";
 import { ComplaintCategory } from "@/types";

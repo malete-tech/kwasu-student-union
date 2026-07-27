@@ -10,7 +10,7 @@ import { api } from "@/lib/api";
 import { Document } from "@/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { FileText, Download, History, Target, Eye, Heart } from "lucide-react";
+import { FileText, Download, History, Target, Eye, Heart } from "@/components/ui/font-awesome-icon";
 import { Skeleton } from "@/components/ui/skeleton";
 import AboutHero from "@/components/AboutHero";
 import {

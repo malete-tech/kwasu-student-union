@@ -5,7 +5,7 @@ import { api } from "@/lib/api";
 import { Partner, AdPlacement as AdPlacementType } from "@/types";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ExternalLink, ShieldCheck, Target } from "lucide-react";
+import { ExternalLink, ShieldCheck, Target } from "@/components/ui/font-awesome-icon";
 import { cn } from "@/lib/utils";
 
 interface AdPlacementProps {

@@ -11,7 +11,7 @@ import {
   CalendarDays,
   ExternalLink,
   Inbox,
-} from "lucide-react";
+} from "@/components/ui/font-awesome-icon";
 import { api } from "@/lib/api";
 import { Opportunity } from "@/types";
 import { toast } from "sonner";

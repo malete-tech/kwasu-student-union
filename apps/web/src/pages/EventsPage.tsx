@@ -8,7 +8,7 @@ import { Event } from "@/types";
 import EventCard from "@/components/event-card";
 import { Calendar } from "@/components/ui/calendar";
 import { Input } from "@/components/ui/input";
-import { Search, ArrowLeft } from "lucide-react";
+import { Search, ArrowLeft } from "@/components/ui/font-awesome-icon";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";

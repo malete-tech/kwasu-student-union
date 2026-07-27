@@ -6,7 +6,7 @@ import {
   LogOut, 
   ShieldCheck,
   ChevronDown
-} from "lucide-react";
+} from "@/components/ui/font-awesome-icon";
 import {
   DropdownMenu,
   DropdownMenuContent,

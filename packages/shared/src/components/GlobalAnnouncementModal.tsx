@@ -4,7 +4,7 @@ import React, { useEffect, useState, useCallback } from "react";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { api } from "@/lib/api";
-import { Megaphone, AlertTriangle, PartyPopper } from "lucide-react";
+import { Megaphone, AlertTriangle, PartyPopper } from "@/components/ui/font-awesome-icon";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { cn } from "@/lib/utils";

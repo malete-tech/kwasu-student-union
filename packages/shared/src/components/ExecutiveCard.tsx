@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import { Executive } from "@/types";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { User } from "lucide-react";
+import { User } from "@/components/ui/font-awesome-icon";
 import { motion } from "framer-motion";
 
 interface ExecutiveCardProps {

@@ -6,7 +6,7 @@ import { Event } from "@/types";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
-import { MapPin, CalendarDays, ExternalLink } from "lucide-react";
+import { MapPin, CalendarDays, ExternalLink } from "@/components/ui/font-awesome-icon";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button"; // Import Button
 

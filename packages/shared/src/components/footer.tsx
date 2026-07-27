@@ -1,134 +1,118 @@
 "use client";
 
+import React from "react";
 import { Link } from "react-router-dom";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 
 const Footer: React.FC = () => {
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   return (
-    <footer className="bg-primary text-primary-foreground py-12 mt-12">
-      <div className="container grid grid-cols-1 md:grid-cols-4 gap-8">
-        {/* About SU */}
-        <div className="col-span-1">
-          <Link to="/" className="flex items-center focus-visible:ring-brand-gold rounded-md outline-none mb-4">
-            <img src="/logo.png" alt="KWASU SU Logo" className="h-12 w-12 object-contain" />
-          </Link>
-          <p className="text-sm opacity-80">
-            Your voice, our mission. Empowering students for a better university experience.
-          </p>
-          <div className="flex space-x-4 mt-6">
-            <a href="https://x.com/thekwasusu" target="_blank" rel="noopener noreferrer" aria-label="X (Twitter)" className="text-xl hover:text-brand-gold transition-colors">
-              <i className="fa-brands fa-x-twitter"></i>
-            </a>
-            <a href="https://instagram.com/thekwasusu" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="text-xl hover:text-brand-gold transition-colors">
-              <i className="fa-brands fa-instagram"></i>
-            </a>
-            <a href="https://facebook.com/thekwasusu" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="text-xl hover:text-brand-gold transition-colors">
-              <i className="fa-brands fa-facebook-f"></i>
-            </a>
-            <a href="https://linkedin.com/company/thekwasusu" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="text-xl hover:text-brand-gold transition-colors">
-              <i className="fa-brands fa-linkedin-in"></i>
-            </a>
-            <a href="https://tiktok.com/@thekwasusu" target="_blank" rel="noopener noreferrer" aria-label="TikTok" className="text-xl hover:text-brand-gold transition-colors">
-              <i className="fa-brands fa-tiktok"></i>
-            </a>
+    <footer className="bg-brand-900 text-white border-t border-brand-800/50 pt-10 pb-6 mt-16">
+      <div className="container max-w-7xl mx-auto px-4 sm:px-6">
+        {/* Main Footer Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 pb-8 border-b border-brand-800/60">
+          
+          {/* Brand & Mission Column (Col 1-5) */}
+          <div className="md:col-span-5 space-y-3">
+            <Link to="/" className="inline-flex items-center gap-2 group outline-none">
+              <img src="/logo.png" alt="KWASU SU Logo" className="h-9 w-9 object-contain" />
+              <span className="font-extrabold text-sm uppercase tracking-wider text-white group-hover:text-brand-gold transition-colors">
+                KWASU Students' Union
+              </span>
+            </Link>
+            <p className="text-xs text-brand-100/70 leading-relaxed max-w-sm">
+              Empowering student voices, driving academic excellence, and fostering a vibrant campus community at Kwara State University.
+            </p>
+            {/* Social Links */}
+            <div className="flex items-center gap-2 pt-1">
+              {[
+                { icon: "fa-brands fa-x-twitter", href: "https://x.com/thekwasusu", label: "X" },
+                { icon: "fa-brands fa-instagram", href: "https://instagram.com/thekwasusu", label: "Instagram" },
+                { icon: "fa-brands fa-facebook-f", href: "https://facebook.com/thekwasusu", label: "Facebook" },
+                { icon: "fa-brands fa-linkedin-in", href: "https://linkedin.com/company/thekwasusu", label: "LinkedIn" },
+                { icon: "fa-brands fa-tiktok", href: "https://tiktok.com/@thekwasusu", label: "TikTok" },
+              ].map((s) => (
+                <a
+                  key={s.label}
+                  href={s.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={s.label}
+                  className="w-7 h-7 rounded-lg bg-brand-800/60 hover:bg-brand-gold hover:text-brand-900 text-brand-100 flex items-center justify-center text-xs transition-all shadow-sm"
+                >
+                  <i className={s.icon}></i>
+                </a>
+              ))}
+            </div>
           </div>
+
+          {/* Quick Navigation (Col 6-8) */}
+          <div className="md:col-span-3 space-y-2.5">
+            <h4 className="text-[11px] font-bold uppercase tracking-widest text-brand-gold">
+              Navigation
+            </h4>
+            <ul className="space-y-1.5 text-xs">
+              {[
+                { name: "About SU", href: "/about" },
+                { name: "News & Notices", href: "/news" },
+                { name: "Campus Events", href: "/events" },
+                { name: "Executive Councils", href: "/executives/central" },
+                { name: "Partners", href: "/partners" },
+              ].map((item) => (
+                <li key={item.name}>
+                  <Link
+                    to={item.href}
+                    className="text-brand-100/80 hover:text-brand-gold transition-colors inline-block"
+                  >
+                    {item.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Student Services (Col 9-12) */}
+          <div className="md:col-span-4 space-y-2.5">
+            <h4 className="text-[11px] font-bold uppercase tracking-widest text-brand-gold">
+              Student Services
+            </h4>
+            <ul className="grid grid-cols-2 gap-x-4 gap-y-1.5 text-xs">
+              {[
+                { name: "Services Hub", href: "/services" },
+                { name: "Submit Complaint", href: "/services/complaints" },
+                { name: "Opportunities", href: "/services/opportunities" },
+                { name: "Downloads Vault", href: "/services/downloads" },
+                { name: "Suggestion Box", href: "/services/suggestion-box" },
+                { name: "Contact Union", href: "/contact" },
+              ].map((item) => (
+                <li key={item.name}>
+                  <Link
+                    to={item.href}
+                    className="text-brand-100/80 hover:text-brand-gold transition-colors inline-block truncate"
+                  >
+                    {item.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
         </div>
 
-        {/* Quick Links */}
-        <div className="col-span-1">
-          <h3 className="text-xl font-semibold mb-4 uppercase">Quick Links</h3>
-          <ul className="space-y-2">
-            <li>
-              <Link to="/about" className="text-sm opacity-80 hover:opacity-100 hover:text-brand-gold transition-opacity">
-                About SU
-              </Link>
-            </li>
-            <li>
-              <Link to="/news" className="text-sm opacity-80 hover:opacity-100 hover:text-brand-gold transition-opacity">
-                News & Announcements
-              </Link>
-            </li>
-            <li>
-              <Link to="/events" className="text-sm opacity-80 hover:opacity-100 hover:text-brand-gold transition-opacity">
-                Events & Calendar
-              </Link>
-            </li>
-            <li>
-              <Link to="/contact" className="text-sm opacity-80 hover:opacity-100 hover:text-brand-gold transition-opacity">
-                Contact Us
-              </Link>
-            </li>
-            <li>
-              <Link to="/partners" className="text-sm opacity-80 hover:opacity-100 hover:text-brand-gold transition-opacity">
-                Our Partners
-              </Link>
-            </li>
-          </ul>
-        </div>
+        {/* Minimal Copyright & Back To Top */}
+        <div className="pt-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-brand-100/50">
+          <p>© {new Date().getFullYear()} KWASU Students' Union. Built by Malete Tech Forum.</p>
 
-        {/* Services */}
-        <div className="col-span-1">
-          <h3 className="text-xl font-semibold mb-4 uppercase">Services</h3>
-          <ul className="space-y-2">
-            <li>
-              <Link to="/executives/central" className="text-sm opacity-80 hover:opacity-100 hover:text-brand-gold transition-opacity">
-                Meet the Executives
-              </Link>
-            </li>
-            <li>
-              <Link to="/services/complaints" className="text-sm opacity-80 hover:opacity-100 hover:text-brand-gold transition-opacity">
-                Submit Complaint
-              </Link>
-            </li>
-            <li>
-              <Link to="/services/opportunities" className="text-sm opacity-80 hover:opacity-100 hover:text-brand-gold transition-opacity">
-                Opportunities
-              </Link>
-            </li>
-            <li>
-              <Link to="/services/downloads" className="text-sm opacity-80 hover:opacity-100 hover:text-brand-gold transition-opacity">
-                Downloads Vault
-              </Link>
-            </li>
-            <li>
-              <Link to="/services/downloads?tag=constitution" className="text-sm opacity-80 hover:opacity-100 hover:text-brand-gold transition-opacity">
-                SU Constitution
-              </Link>
-            </li>
-            <li>
-              <Link to="/services/downloads?tag=handbook" className="text-sm opacity-80 hover:opacity-100 hover:text-brand-gold transition-opacity">
-                Student Handbook
-              </Link>
-            </li>
-            <li>
-              <Link to="/services/suggestion-box" className="text-sm opacity-80 hover:opacity-100 hover:text-brand-gold transition-opacity">
-                Suggestion Box
-              </Link>
-            </li>
-          </ul>
+          <button
+            onClick={scrollToTop}
+            className="flex items-center gap-1.5 hover:text-brand-gold transition-colors bg-brand-800/40 hover:bg-brand-800 px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider"
+          >
+            <span>Back to top</span>
+            <i className="fa-solid fa-arrow-up text-[9px]"></i>
+          </button>
         </div>
-
-        {/* Newsletter */}
-        <div className="col-span-1">
-          <h3 className="text-xl font-semibold mb-4 uppercase">Newsletter</h3>
-          <p className="text-sm opacity-80 mb-4">
-            Stay updated with the latest news and events from KWASU SU.
-          </p>
-          <form className="flex gap-2">
-            <Input
-              type="email"
-              placeholder="Your email"
-              className="flex-grow bg-primary-foreground/20 border-primary-foreground/30 text-primary-foreground placeholder:text-primary-foreground/70 focus-visible:ring-brand-gold"
-            />
-            <Button type="submit" variant="secondary" className="bg-brand-gold text-primary hover:bg-brand-gold/90 focus-visible:ring-brand-gold">
-              Subscribe
-            </Button>
-          </form>
-        </div>
-      </div>
-      <div className="container text-center text-sm opacity-70 mt-10 border-t border-primary-foreground/20 pt-8">
-        &copy; {new Date().getFullYear()} KWASU Students' Union. Powered by Malete Tech Forum. All rights reserved.
       </div>
     </footer>
   );

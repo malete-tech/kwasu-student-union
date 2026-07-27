@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { PlusCircle, Edit, Trash2, Loader2, Star, ExternalLink, AlertCircle } from "lucide-react";
+import { PlusCircle, Edit, Trash2, Loader2, Star, ExternalLink, AlertCircle } from "@/components/ui/font-awesome-icon";
 import { api } from "@/lib/api";
 import { Spotlight } from "@/types";
 import { toast } from "sonner";
@@ -21,7 +21,6 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
-import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
 const SpotlightManagement: React.FC = () => {

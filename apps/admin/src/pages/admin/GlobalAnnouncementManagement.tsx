@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Loader2, Megaphone, Edit, Trash2, PlusCircle } from "lucide-react";
+import { Loader2, Megaphone, Edit, Trash2, PlusCircle } from "@/components/ui/font-awesome-icon";
 import { api } from "@/lib/api";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";

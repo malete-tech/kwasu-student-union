@@ -14,6 +14,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
+import { HamburgerButton } from "@/components/ui/hamburger-button";
+
 const navLinks = [
   { name: "Home", href: "/", icon: "fa-solid fa-house" },
   { name: "About SU", href: "/about", icon: "fa-solid fa-users" },
@@ -37,8 +39,8 @@ const Header: React.FC = () => {
 
   const linkClasses = ({ isActive }: { isActive: boolean }) =>
     cn(
-      "text-sm font-medium transition-colors hover:text-brand-500 focus-visible:ring-brand-gold focus-visible:ring-2 focus-visible:ring-offset-2 rounded-md outline-none px-3 py-2",
-      isActive ? "text-brand-700" : "text-muted-foreground"
+      "text-xs font-bold uppercase tracking-wider transition-colors hover:text-brand-500 focus-visible:ring-brand-gold focus-visible:ring-2 focus-visible:ring-offset-2 rounded-md outline-none px-3 py-2",
+      isActive ? "text-brand-700 font-extrabold" : "text-muted-foreground"
     );
 
   return (
@@ -52,16 +54,13 @@ const Header: React.FC = () => {
           <div className="flex items-center gap-2">
             <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="focus-visible:ring-brand-500">
-                  <i className="fa-solid fa-bars text-xl"></i>
-                  <span className="sr-only">Toggle navigation menu</span>
-                </Button>
+                <HamburgerButton isOpen={isSheetOpen} variant="default" />
               </SheetTrigger>
-              <SheetContent side="right" className="w-[300px] sm:w-[400px] flex flex-col">
+              <SheetContent side="right" className="w-[300px] sm:w-[360px] flex flex-col">
                 <SheetHeader className="pb-4">
-                  <SheetTitle className="flex items-center text-brand-700">
+                  <SheetTitle className="flex items-center text-brand-700 uppercase tracking-wider font-bold">
                     <img src="/logo.png" alt="KWASU SU Logo" className="h-10 w-10 mr-2 object-contain" />
-                    Menu
+                    MENU
                   </SheetTitle>
                   <Separator />
                 </SheetHeader>
@@ -74,7 +73,7 @@ const Header: React.FC = () => {
                       onClick={closeSheet}
                       className={({ isActive }) =>
                         cn(
-                          "flex items-center gap-4 p-3 rounded-lg transition-colors focus-visible:ring-brand-gold focus-visible:ring-2 focus-visible:ring-offset-2 outline-none",
+                          "flex items-center gap-4 p-3 rounded-lg transition-colors focus-visible:ring-brand-gold focus-visible:ring-2 focus-visible:ring-offset-2 outline-none uppercase tracking-wider text-sm font-bold",
                           isActive
                             ? "bg-brand-500 text-white shadow-md"
                             : "text-gray-700 hover:bg-brand-50 hover:text-brand-700"
@@ -84,13 +83,13 @@ const Header: React.FC = () => {
                       {({ isActive }) => (
                         <>
                           <i className={cn(link.icon, "w-6 text-center text-lg", isActive ? "text-white" : "text-brand-500")}></i>
-                          <span className="text-lg font-medium">{link.name}</span>
+                          <span>{link.name}</span>
                         </>
                       )}
                     </NavLink>
                   ))}
                   <Separator className="my-2" />
-                  <h4 className="text-sm font-semibold text-brand-700 px-3">Executive Councils</h4>
+                  <h4 className="text-xs font-bold text-brand-700 uppercase tracking-wider px-3">EXECUTIVE COUNCILS</h4>
                   {executiveLinks.map((link) => (
                     <NavLink
                       key={link.name}
@@ -98,7 +97,7 @@ const Header: React.FC = () => {
                       onClick={closeSheet}
                       className={({ isActive }) =>
                         cn(
-                          "flex items-center gap-4 p-3 pl-6 rounded-lg transition-colors focus-visible:ring-brand-gold focus-visible:ring-2 focus-visible:ring-offset-2 outline-none",
+                          "flex items-center gap-4 p-3 pl-6 rounded-lg transition-colors focus-visible:ring-brand-gold focus-visible:ring-2 focus-visible:ring-offset-2 outline-none uppercase tracking-wider text-xs font-bold",
                           isActive
                             ? "bg-brand-100 text-brand-700 shadow-sm"
                             : "text-gray-700 hover:bg-brand-50 hover:text-brand-700"
@@ -106,15 +105,15 @@ const Header: React.FC = () => {
                       }
                     >
                       <i className="fa-solid fa-users-viewfinder w-6 text-center text-brand-500"></i>
-                      <span className="text-base font-medium">{link.name}</span>
+                      <span>{link.name}</span>
                     </NavLink>
                   ))}
                 </nav>
 
                 <SheetFooter className="mt-6 pt-4 border-t">
-                  <Button asChild className="w-full bg-brand-gold hover:bg-brand-gold/90 text-brand-900 focus-visible:ring-brand-gold">
+                  <Button asChild className="w-full bg-brand-gold hover:bg-brand-gold/90 text-brand-900 focus-visible:ring-brand-gold font-bold uppercase tracking-wider text-xs">
                     <Link to="/contact" onClick={closeSheet}>
-                      <i className="fa-solid fa-envelope mr-2"></i> Contact Us
+                      <i className="fa-solid fa-envelope mr-2"></i> CONTACT US
                     </Link>
                   </Button>
                 </SheetFooter>
@@ -132,13 +131,13 @@ const Header: React.FC = () => {
             {/* Executives Dropdown */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="flex items-center gap-1 text-sm font-medium text-muted-foreground transition-colors hover:text-brand-500 focus-visible:ring-brand-gold focus-visible:ring-2 focus-visible:ring-offset-2 rounded-md outline-none px-3 py-2">
-                  Executives <i className="fa-solid fa-chevron-down text-[10px] opacity-50 ml-1"></i>
+                <button className="flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-muted-foreground transition-colors hover:text-brand-500 focus-visible:ring-brand-gold focus-visible:ring-2 focus-visible:ring-offset-2 rounded-md outline-none px-3 py-2">
+                  EXECUTIVES <i className="fa-solid fa-chevron-down text-[10px] opacity-50 ml-1"></i>
                 </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className="w-48 p-2 rounded-xl">
+              <DropdownMenuContent align="start" className="w-52 p-2 rounded-xl">
                 {executiveLinks.map((link) => (
-                  <DropdownMenuItem key={link.name} asChild className="rounded-lg cursor-pointer">
+                  <DropdownMenuItem key={link.name} asChild className="rounded-lg cursor-pointer text-xs font-bold uppercase tracking-wider">
                     <Link to={link.href} className="w-full">
                       {link.name}
                     </Link>
@@ -148,8 +147,8 @@ const Header: React.FC = () => {
             </DropdownMenu>
 
             <div className="ml-4">
-              <Button asChild className="bg-brand-gold hover:bg-brand-gold/90 text-brand-900 focus-visible:ring-brand-gold font-bold">
-                <Link to="/contact">Contact Us</Link>
+              <Button asChild className="bg-brand-gold hover:bg-brand-gold/90 text-brand-900 focus-visible:ring-brand-gold font-bold uppercase tracking-wider text-xs px-4">
+                <Link to="/contact">CONTACT US</Link>
               </Button>
             </div>
           </nav>

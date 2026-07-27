@@ -5,7 +5,7 @@ import { useParams, Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Loader2, User, Mail, Phone, ListChecks, History } from "lucide-react";
+import { ArrowLeft, Loader2, User, Mail, Phone, ListChecks, History } from "@/components/ui/font-awesome-icon";
 import { api } from "@/lib/api";
 import { Complaint, ComplaintStatus } from "@/types";
 import { Skeleton } from "@/components/ui/skeleton";

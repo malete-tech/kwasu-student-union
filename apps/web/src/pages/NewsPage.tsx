@@ -7,7 +7,7 @@ import { api } from "@/lib/api";
 import { News } from "@/types";
 import NewsFeedItem from "@/components/NewsFeedItem";
 import { Input } from "@/components/ui/input";
-import { Search, ArrowLeft } from "lucide-react";
+import { Search, ArrowLeft } from "@/components/ui/font-awesome-icon";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -77,40 +77,74 @@ const NewsPage: React.FC = () => {
           Stay informed with official updates, policy changes, and important notices for the student body.
         </p>
 
-        <div className="flex flex-col md:flex-row gap-4 mb-10 max-w-5xl mx-auto">
-          <div className="relative flex-grow">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-brand-300" />
+        {/* Search & Category Filter Section */}
+        <div className="space-y-4 mb-10 max-w-5xl mx-auto">
+          {/* Full-width Search Bar */}
+          <div className="relative">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
             <Input
-              placeholder="Search news by title or content..."
-              className="h-12 pl-12 rounded-xl border-brand-100 focus-visible:ring-brand-gold shadow-sm"
+              placeholder="Search news by title, category, or content..."
+              className="h-11 pl-11 pr-16 rounded-xl border-slate-200 bg-white/80 backdrop-blur-sm focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:border-brand-500 shadow-sm text-sm"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
-          </div>
-          <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
-            <Badge
-              variant={activeTag === null ? "default" : "secondary"}
-              className={cn(
-                "h-10 px-4 rounded-xl cursor-pointer transition-all uppercase text-[10px] font-bold tracking-wider",
-                activeTag === null ? "bg-brand-700 text-white" : "bg-white border-brand-100 text-brand-600 hover:bg-brand-50"
-              )}
-              onClick={() => setActiveTag(null)}
-            >
-              All News
-            </Badge>
-            {uniqueTags.map(tag => (
-              <Badge
-                key={tag}
-                variant={activeTag === tag ? "default" : "secondary"}
-                className={cn(
-                  "h-10 px-4 rounded-xl cursor-pointer transition-all uppercase text-[10px] font-bold tracking-wider",
-                  activeTag === tag ? "bg-brand-700 text-white" : "bg-white border-brand-100 text-brand-600 hover:bg-brand-50"
-                )}
-                onClick={() => setActiveTag(tag)}
+            {searchTerm && (
+              <button
+                onClick={() => setSearchTerm("")}
+                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs font-semibold text-slate-400 hover:text-slate-600 bg-slate-100 hover:bg-slate-200 px-2 py-0.5 rounded-md transition-colors"
               >
-                {tag}
-              </Badge>
-            ))}
+                Clear
+              </button>
+            )}
+          </div>
+
+          {/* Horizontal Category Filters with Hidden Scrollbar */}
+          <div className="relative">
+            <div className="flex items-center gap-2 overflow-x-auto py-1 px-0.5 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+              <button
+                type="button"
+                onClick={() => setActiveTag(null)}
+                className={cn(
+                  "h-8 px-3.5 rounded-lg text-xs font-semibold transition-all whitespace-nowrap shrink-0 border flex items-center gap-1.5 shadow-sm",
+                  activeTag === null
+                    ? "bg-brand-800 text-white border-brand-800 shadow-brand-700/20"
+                    : "bg-white text-slate-600 border-slate-200 hover:border-brand-300 hover:text-brand-700 hover:bg-brand-50/50"
+                )}
+              >
+                <span>All News</span>
+                <span className={cn(
+                  "px-1.5 py-0.5 rounded-full text-[10px] font-bold leading-none",
+                  activeTag === null ? "bg-brand-600 text-white" : "bg-slate-100 text-slate-500"
+                )}>
+                  {allNews.length}
+                </span>
+              </button>
+
+              {uniqueTags.map((tag) => {
+                const count = allNews.filter(news => news.tags.includes(tag)).length;
+                return (
+                  <button
+                    key={tag}
+                    type="button"
+                    onClick={() => setActiveTag(tag)}
+                    className={cn(
+                      "h-8 px-3.5 rounded-lg text-xs font-semibold transition-all whitespace-nowrap shrink-0 border flex items-center gap-1.5 shadow-sm",
+                      activeTag === tag
+                        ? "bg-brand-800 text-white border-brand-800 shadow-brand-700/20"
+                        : "bg-white text-slate-600 border-slate-200 hover:border-brand-300 hover:text-brand-700 hover:bg-brand-50/50"
+                    )}
+                  >
+                    <span>{tag}</span>
+                    <span className={cn(
+                      "px-1.5 py-0.5 rounded-full text-[10px] font-bold leading-none",
+                      activeTag === tag ? "bg-brand-600 text-white" : "bg-slate-100 text-slate-500"
+                    )}>
+                      {count}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
           </div>
         </div>
 

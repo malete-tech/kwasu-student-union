@@ -3,7 +3,7 @@
 import { useLocation, Link } from "react-router-dom";
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Home, ArrowLeft, Search, Newspaper, CalendarDays } from "lucide-react";
+import { Home, ArrowLeft, Search, Newspaper, CalendarDays } from "@/components/ui/font-awesome-icon";
 import { Helmet } from "react-helmet-async";
 
 const NotFound = () => {

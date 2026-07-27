@@ -17,7 +17,7 @@ import {
   Star,
   Settings,
   Handshake
-} from "lucide-react";
+} from "@/components/ui/font-awesome-icon";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useSession } from "@/components/SessionContextProvider";

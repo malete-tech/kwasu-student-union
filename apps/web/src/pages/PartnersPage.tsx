@@ -10,7 +10,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Search, Handshake, PlusCircle } from "lucide-react";
+import { ArrowLeft, Search, Handshake, PlusCircle } from "@/components/ui/font-awesome-icon";
 import { cn } from "@/lib/utils";
 
 const PartnersPage: React.FC = () => {

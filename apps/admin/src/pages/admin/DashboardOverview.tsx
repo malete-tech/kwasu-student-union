@@ -15,7 +15,7 @@ import {
   ArrowRight,
   Inbox,
   AlertCircle,
-} from "lucide-react";
+} from "@/components/ui/font-awesome-icon";
 
 interface StatCardProps {
   label: string;
