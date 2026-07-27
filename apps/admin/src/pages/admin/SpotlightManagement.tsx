@@ -92,13 +92,13 @@ const SpotlightManagement: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-100 pb-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 ">
         <div>
-          <h2 className="text-2xl font-black text-brand-900 uppercase tracking-tight">Student Spotlight</h2>
+          <h2 className="text-lg font-semibold text-slate-900">Student Spotlight</h2>
           <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-0.5">Excellence & Success Stories</p>
         </div>
         <div className="flex items-center gap-3">
-          <Button asChild className="bg-brand-700 hover:bg-brand-800 text-white focus-visible:ring-brand-gold rounded-xl shadow-xl h-10 px-6 transition-all">
+          <Button asChild className="bg-brand-700 hover:bg-brand-800 text-white focus-visible:ring-brand-gold rounded-md h-9 px-4 text-sm whitespace-nowrap">
             <Link to="/spotlight/add">
               <PlusCircle className="mr-2 h-4 w-4" /> Add Spotlight
             </Link>

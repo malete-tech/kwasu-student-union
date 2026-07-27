@@ -2,7 +2,16 @@
 
 import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { PlusCircle, Edit, Trash2, Loader2, Briefcase, CalendarDays, ExternalLink, Sparkles, AlertCircle } from "lucide-react";
+import {
+  PlusCircle,
+  Edit,
+  Trash2,
+  Loader2,
+  Briefcase,
+  CalendarDays,
+  ExternalLink,
+  Inbox,
+} from "lucide-react";
 import { api } from "@/lib/api";
 import { Opportunity } from "@/types";
 import { toast } from "sonner";
@@ -63,147 +72,199 @@ const OpportunitiesManagement: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-100 pb-6">
-        <div>
-          <h2 className="text-2xl font-black text-brand-900 uppercase tracking-tight">Opportunities</h2>
-          <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-0.5">Career & Academic Pathways</p>
+      {/* Page Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div className="min-w-0">
+          <h1 className="text-lg font-semibold text-slate-900 leading-tight">
+            Opportunities
+            {!loading && (
+              <span className="ml-2 text-sm font-normal text-slate-400">
+                ({opportunities.length})
+              </span>
+            )}
+          </h1>
+          <p className="text-sm text-slate-500 mt-0.5">Career &amp; academic pathways</p>
         </div>
-        <div className="flex items-center gap-3 w-full sm:w-auto">
-          <Button asChild className="flex-1 sm:flex-none bg-brand-700 hover:bg-brand-800 text-white rounded-xl shadow-xl h-10 px-6 transition-all">
-            <Link to="/opportunities/add">
-              <PlusCircle className="mr-2 h-4 w-4" /> Add Opportunity
-            </Link>
-          </Button>
-        </div>
+        <Button
+          asChild
+          className="bg-brand-700 hover:bg-brand-800 text-white rounded-md h-9 px-4 text-sm whitespace-nowrap shrink-0"
+        >
+          <Link to="/opportunities/add">
+            <PlusCircle className="mr-2 h-4 w-4" /> Add Opportunity
+          </Link>
+        </Button>
       </div>
 
-      <div className="mt-6">
+      {/* List */}
+      <div>
         {loading ? (
-          <div className="grid gap-4">
+          <div className="space-y-2">
             {[...Array(4)].map((_, i) => (
-              <div key={i} className="flex items-center space-x-4 p-6 border rounded-2xl bg-white/50">
-                <Skeleton className="h-14 w-14 rounded-2xl flex-shrink-0" />
-                <div className="flex-1 space-y-2">
-                  <Skeleton className="h-6 w-1/3" />
-                  <Skeleton className="h-4 w-1/4" />
-                </div>
-              </div>
+              <Skeleton key={i} className="h-[78px] w-full rounded-lg" />
             ))}
           </div>
         ) : error ? (
-          <div className="py-20 text-center px-4">
-            <div className="mx-auto w-12 h-12 rounded-full bg-red-50 flex items-center justify-center mb-4">
-              <AlertCircle className="h-6 w-6 text-red-500" />
-            </div>
-            <p className="text-destructive text-lg font-medium">{error}</p>
-            <Button variant="outline" onClick={fetchOpportunities} className="mt-4 rounded-xl border-brand-100">Try Again</Button>
+          <div className="py-12 text-center border border-slate-200 rounded-lg">
+            <p className="text-sm text-red-600 font-medium">{error}</p>
+            <Button
+              variant="outline"
+              onClick={fetchOpportunities}
+              className="mt-3 rounded-md h-8 text-sm"
+            >
+              Try Again
+            </Button>
           </div>
         ) : opportunities.length === 0 ? (
-          <div className="py-24 text-center border-2 border-dashed rounded-3xl bg-white/30 border-brand-100 px-4">
-            <div className="mx-auto w-14 h-14 rounded-full bg-brand-50 flex items-center justify-center mb-4">
-              <Sparkles className="h-7 w-7 text-brand-300" />
+          <div className="py-16 flex flex-col items-center gap-3 border border-dashed border-slate-200 rounded-lg bg-white">
+            <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center">
+              <Inbox className="w-5 h-5 text-slate-400" />
             </div>
-            <h3 className="text-lg font-bold text-slate-900">No opportunities listed yet</h3>
-            <p className="text-muted-foreground">Start by posting internships, scholarships, or workshop opportunities.</p>
-            <Button asChild className="mt-6 bg-brand-500 hover:bg-brand-600 text-white rounded-xl">
+            <div className="text-center">
+              <p className="text-sm font-medium text-slate-700">No opportunities listed yet</p>
+              <p className="text-xs text-slate-400 mt-0.5">
+                Post internships, scholarships, or workshops
+              </p>
+            </div>
+            <Button
+              asChild
+              className="bg-brand-700 hover:bg-brand-800 text-white rounded-md h-8 px-4 text-sm mt-1"
+            >
               <Link to="/opportunities/add">
-                <PlusCircle className="mr-2 h-4 w-4" /> Add Your First Opportunity
+                <PlusCircle className="mr-2 h-3.5 w-3.5" /> Add Opportunity
               </Link>
             </Button>
           </div>
         ) : (
-          <div className="grid gap-4">
+          <div className="bg-white border border-slate-200 rounded-lg overflow-hidden divide-y divide-slate-100">
             {opportunities.map((opportunity) => {
               const deadlineDate = new Date(opportunity.deadline);
               const isClosed = isPast(deadlineDate);
-              
+
               return (
-                <div 
-                  key={opportunity.id} 
+                <div
+                  key={opportunity.id}
                   className={cn(
-                    "group relative flex flex-col lg:flex-row lg:items-center justify-between p-5 rounded-2xl border transition-all duration-300 gap-4",
-                    isClosed 
-                      ? "bg-slate-50/50 border-slate-100 opacity-75 grayscale-[0.5]" 
-                      : "bg-white/50 hover:bg-white border-transparent hover:border-brand-100 hover:shadow-lg shadow-sm"
+                    "flex flex-col sm:flex-row sm:items-center",
+                    isClosed && "opacity-60"
                   )}
                 >
-                  <div className="flex items-start sm:items-center space-x-4 sm:space-x-5 flex-1 min-w-0">
-                    <div className={cn(
-                      "p-3 rounded-xl sm:rounded-2xl flex-shrink-0 transition-colors duration-300",
-                      isClosed 
-                        ? "bg-slate-200 text-slate-500" 
-                        : "bg-brand-50 text-brand-600 group-hover:bg-brand-600 group-hover:text-white"
-                    )}>
-                      <Briefcase className="h-5 w-5 sm:h-6 sm:w-6" />
+                  {/* Content */}
+                  <div className="flex items-start gap-3 p-4 flex-1 min-w-0">
+                    <div
+                      className={cn(
+                        "w-10 h-10 shrink-0 rounded-md flex items-center justify-center mt-0.5",
+                        isClosed ? "bg-slate-100" : "bg-brand-50"
+                      )}
+                    >
+                      <Briefcase
+                        className={cn(
+                          "w-4 h-4",
+                          isClosed ? "text-slate-400" : "text-brand-600"
+                        )}
+                      />
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex flex-wrap items-center gap-2 mb-1">
-                        <h3 className="text-base sm:text-lg font-bold text-slate-900 group-hover:text-brand-700 transition-colors truncate">
-                          {opportunity.title}
-                        </h3>
-                        {isClosed && (
-                          <Badge variant="outline" className="text-[9px] sm:text-[10px] uppercase font-bold tracking-tighter border-slate-200 bg-slate-100 text-slate-500">
+                    <div className="min-w-0 flex-1">
+                      <div className="flex flex-wrap items-center gap-2 mb-0.5">
+                        {opportunity.type && (
+                          <span className="text-[10px] font-semibold uppercase tracking-wide text-brand-600 bg-brand-50 px-1.5 py-0.5 rounded">
+                            {opportunity.type}
+                          </span>
+                        )}
+                        {isClosed ? (
+                          <Badge
+                            variant="outline"
+                            className="text-[10px] h-4 px-1.5 py-0 border-slate-200 bg-slate-100 text-slate-500"
+                          >
                             Closed
+                          </Badge>
+                        ) : (
+                          <Badge
+                            variant="outline"
+                            className="text-[10px] h-4 px-1.5 py-0 border-green-200 bg-green-50 text-green-700"
+                          >
+                            Open
                           </Badge>
                         )}
                       </div>
-                      <div className="flex flex-wrap items-center gap-y-1 gap-x-3 sm:gap-x-4 text-xs sm:text-sm">
-                        <div className="flex items-center text-slate-500 font-medium">
-                          <CalendarDays className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1.5 text-brand-400" />
-                          {isClosed ? 'Expired on' : 'Deadline:'} {format(deadlineDate, "MMM dd, yyyy")}
-                        </div>
+                      <p className="text-sm font-medium text-slate-900 truncate">
+                        {opportunity.title}
+                      </p>
+                      <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 mt-0.5">
+                        <span className="flex items-center gap-1 text-[11px] text-slate-400">
+                          <CalendarDays className="w-3 h-3" />
+                          {isClosed ? "Expired" : "Deadline:"}{" "}
+                          {format(deadlineDate, "MMM d, yyyy")}
+                        </span>
                         {opportunity.sponsor && (
-                          <div className="flex items-center text-slate-400 italic">
-                            <span className="mr-1.5 hidden sm:inline">•</span>
-                            Sponsor: {opportunity.sponsor}
-                          </div>
+                          <span className="text-[11px] text-slate-400 truncate">
+                            · {opportunity.sponsor}
+                          </span>
                         )}
                       </div>
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-end gap-2 sm:gap-3 flex-shrink-0 pt-3 sm:pt-0 border-t sm:border-none border-slate-100/50">
-                    <Button asChild variant="ghost" size="icon" className="h-9 w-9 sm:h-10 sm:w-10 text-brand-500 hover:bg-brand-50 hover:text-brand-600 rounded-xl">
-                      <a href={opportunity.link} target="_blank" rel="noopener noreferrer" aria-label="View Link">
-                        <ExternalLink className="h-4 w-4" />
+                  {/* Actions — full-width strip on mobile, inline on desktop */}
+                  <div className="flex items-center gap-2 px-4 py-3 sm:py-0 sm:pr-4 border-t border-slate-100 sm:border-t-0 bg-slate-50/70 sm:bg-transparent">
+                    {/* External link */}
+                    {opportunity.link && (
+                      <a
+                        href={opportunity.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="h-8 w-8 flex items-center justify-center rounded-md text-slate-400 hover:text-brand-600 hover:bg-brand-50 transition-colors shrink-0"
+                        aria-label="View external link"
+                      >
+                        <ExternalLink className="w-3.5 h-3.5" />
                       </a>
-                    </Button>
-                    
-                    <Button asChild variant="outline" className="h-9 sm:h-10 px-3 sm:px-4 bg-white border-brand-100 text-brand-700 hover:bg-brand-50 rounded-xl shadow-sm text-xs sm:text-sm">
+                    )}
+
+                    <Button
+                      asChild
+                      variant="outline"
+                      size="sm"
+                      className="flex-1 sm:flex-none h-8 rounded-md border-slate-200 text-slate-700 hover:text-brand-700 hover:border-brand-200 hover:bg-brand-50 text-xs"
+                    >
                       <Link to={`/opportunities/edit/${opportunity.id}`}>
-                        <Edit className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1.5 sm:mr-2" />
+                        <Edit className="h-3.5 w-3.5 mr-1.5" />
                         Edit
                       </Link>
                     </Button>
 
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
-                        <Button 
-                          variant="ghost" 
-                          size="icon" 
+                        <Button
+                          variant="ghost"
+                          size="sm"
                           disabled={deletingId === opportunity.id}
-                          className="h-9 w-9 sm:h-10 sm:w-10 text-muted-foreground hover:text-destructive hover:bg-destructive/5 rounded-xl"
+                          className="flex-1 sm:flex-none h-8 rounded-md text-slate-400 hover:text-red-600 hover:bg-red-50 text-xs"
                         >
                           {deletingId === opportunity.id ? (
-                            <Loader2 className="h-4 w-4 animate-spin" />
+                            <Loader2 className="h-3.5 w-3.5 animate-spin" />
                           ) : (
-                            <Trash2 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                            <>
+                              <Trash2 className="h-3.5 w-3.5 mr-1.5" />
+                              Delete
+                            </>
                           )}
-                          <span className="sr-only">Delete</span>
                         </Button>
                       </AlertDialogTrigger>
-                      <AlertDialogContent className="rounded-2xl border-none shadow-2xl mx-4">
+                      <AlertDialogContent className="rounded-lg w-[90vw] max-w-md border-slate-200">
                         <AlertDialogHeader>
-                          <AlertDialogTitle className="text-xl sm:text-2xl font-bold text-brand-800">Delete opportunity?</AlertDialogTitle>
-                          <AlertDialogDescription className="text-sm sm:text-base">
-                            This will permanently remove <span className="font-semibold text-brand-700">"{opportunity.title}"</span> from the student dashboard.
+                          <AlertDialogTitle className="text-base">
+                            Delete opportunity?
+                          </AlertDialogTitle>
+                          <AlertDialogDescription className="text-sm">
+                            This will permanently remove "{opportunity.title}" from the student dashboard.
                           </AlertDialogDescription>
                         </AlertDialogHeader>
-                        <AlertDialogFooter className="mt-6 flex-col sm:flex-row gap-2">
-                          <AlertDialogCancel className="rounded-xl border-brand-100 w-full sm:w-auto">Cancel</AlertDialogCancel>
-                          <AlertDialogAction 
-                            onClick={() => handleDelete(opportunity.id, opportunity.title)} 
-                            className="bg-destructive hover:bg-destructive/90 text-white rounded-xl w-full sm:w-auto"
+                        <AlertDialogFooter className="flex-col sm:flex-row gap-2">
+                          <AlertDialogCancel className="rounded-md mt-0 h-9">
+                            Cancel
+                          </AlertDialogCancel>
+                          <AlertDialogAction
+                            onClick={() => handleDelete(opportunity.id, opportunity.title)}
+                            className="bg-red-600 hover:bg-red-700 text-white rounded-md h-9"
                           >
                             Delete Opportunity
                           </AlertDialogAction>

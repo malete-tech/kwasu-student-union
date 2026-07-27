@@ -1,5 +1,6 @@
-import { Executive } from "@/types";
+import { Executive, PastExecutive } from "@/types";
 import { supabase } from "@/integrations/supabase/client";
+import { sortExecutivesByHierarchy } from "../hierarchy";
 
 export const executives = {
   getAll: async (councilType?: Executive['councilType']): Promise<Executive[]> => {
@@ -17,7 +18,7 @@ export const executives = {
       console.error("Supabase error fetching executives:", error);
       throw new Error(error.message);
     }
-    return data.map(item => ({
+    const formatted = data.map(item => ({
       ...item,
       tenureStart: item.tenure_start,
       tenureEnd: item.tenure_end,
@@ -26,6 +27,8 @@ export const executives = {
       displayOrder: item.display_order,
       councilType: item.council_type,
     })) as Executive[];
+
+    return sortExecutivesByHierarchy(formatted);
   },
   getBySlug: async (slug: string): Promise<Executive | undefined> => {
     const { data, error } = await supabase.from('executives').select('*').eq('slug', slug).maybeSingle();
@@ -139,4 +142,161 @@ export const executives = {
       throw new Error(error.message);
     }
   },
-};
+
+  // Past Executives API Methods
+  getPast: async (councilType?: Executive['councilType'], academicSession?: string): Promise<PastExecutive[]> => {
+    let query = supabase.from('past_executives')
+      .select('*')
+      .order('transitioned_at', { ascending: false });
+
+    if (councilType) {
+      query = query.eq('council_type', councilType);
+    }
+    if (academicSession) {
+      query = query.eq('academic_session', academicSession);
+    }
+
+    const { data, error } = await query;
+    if (error) {
+      console.error("Supabase error fetching past executives:", error);
+      throw new Error(error.message);
+    }
+    const formatted = (data || []).map(item => ({
+      id: item.id,
+      slug: item.slug,
+      name: item.name,
+      role: item.role,
+      faculty: item.faculty,
+      tenureStart: item.tenure_start,
+      tenureEnd: item.tenure_end,
+      photoUrl: item.photo_url,
+      projectsMd: item.projects_md,
+      contacts: item.contacts || {},
+      councilType: item.council_type as Executive['councilType'],
+      academicSession: item.academic_session,
+      transitionedAt: item.transitioned_at,
+    })) as PastExecutive[];
+
+    return sortExecutivesByHierarchy(formatted);
+  },
+
+  getPastSessions: async (): Promise<string[]> => {
+    const { data, error } = await supabase
+      .from('past_executives')
+      .select('academic_session');
+
+    if (error) {
+      console.error("Supabase error fetching past executive sessions:", error);
+      return [];
+    }
+
+    const sessionsSet = new Set<string>();
+    (data || []).forEach(row => {
+      if (row.academic_session) sessionsSet.add(row.academic_session);
+    });
+
+    return Array.from(sessionsSet).sort().reverse();
+  },
+
+  initiatePowerTransition: async (params: {
+    academicSession: string;
+    councilType?: Executive['councilType'] | 'All';
+  }): Promise<{ count: number }> => {
+    const { academicSession, councilType = 'All' } = params;
+
+    // 1. Fetch target active executives
+    let query = supabase.from('executives').select('*');
+    if (councilType !== 'All') {
+      query = query.eq('council_type', councilType);
+    }
+
+    const { data: targetExecs, error: fetchError } = await query;
+    if (fetchError) {
+      console.error("Error fetching active executives for transition:", fetchError);
+      throw new Error(fetchError.message);
+    }
+
+    if (!targetExecs || targetExecs.length === 0) {
+      return { count: 0 };
+    }
+
+    // 2. Prepare past executives payload
+    const pastRecordsPayload = targetExecs.map(exec => ({
+      slug: exec.slug,
+      name: exec.name,
+      role: exec.role,
+      faculty: exec.faculty,
+      tenure_start: exec.tenure_start,
+      tenure_end: exec.tenure_end,
+      photo_url: exec.photo_url,
+      projects_md: exec.projects_md,
+      contacts: exec.contacts || {},
+      council_type: exec.council_type,
+      academic_session: academicSession,
+    }));
+
+    // 3. Insert into past_executives
+    const { error: insertError } = await supabase
+      .from('past_executives')
+      .insert(pastRecordsPayload);
+
+    if (insertError) {
+      console.error("Error inserting into past_executives:", insertError);
+      throw new Error(insertError.message);
+    }
+
+    // 4. Delete transferred records from executives table
+    const idsToDelete = targetExecs.map(exec => exec.id);
+    const { error: deleteError } = await supabase
+      .from('executives')
+      .delete()
+      .in('id', idsToDelete);
+
+    if (deleteError) {
+      console.error("Error clearing transitioned executives from active table:", deleteError);
+      throw new Error(deleteError.message);
+    }
+
+    return { count: targetExecs.length };
+  },
+
+  deletePast: async (id: string): Promise<void> => {
+    const { error } = await supabase.from('past_executives').delete().eq('id', id);
+    if (error) {
+      console.error("Supabase error deleting past executive record:", error);
+      throw new Error(error.message);
+    }
+  },
+
+  restorePastToActive: async (id: string): Promise<Executive> => {
+    // Fetch past executive record
+    const { data: pastExec, error: fetchError } = await supabase
+      .from('past_executives')
+      .select('*')
+      .eq('id', id)
+      .single();
+
+    if (fetchError || !pastExec) {
+      throw new Error("Past executive record not found.");
+    }
+
+    // Create in active executives table
+    const activeExec = await executives.create({
+      name: pastExec.name,
+      slug: pastExec.slug,
+      role: pastExec.role,
+      faculty: pastExec.faculty,
+      tenureStart: pastExec.tenure_start,
+      tenureEnd: pastExec.tenure_end,
+      photoUrl: pastExec.photo_url,
+      projectsMd: pastExec.projects_md,
+      contacts: pastExec.contacts || {},
+      councilType: pastExec.council_type as Executive['councilType'],
+    });
+
+    // Remove from past executives
+    await executives.deletePast(id);
+
+    return activeExec;
+  },
+};

@@ -51,12 +51,42 @@
   }
 
   body {
-    @apply bg-background text-foreground font-lato antialiased;
+    @apply bg-background text-foreground font-sans antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1, "cv02" 1, "cv03" 1, "cv04" 1;
+  }
+
+  /* Figtree Typography Hierarchy */
+  h1, .h1 {
+    @apply font-sans font-extrabold text-3xl sm:text-4xl md:text-5xl tracking-tight text-foreground leading-[1.15];
+  }
+
+  h2, .h2 {
+    @apply font-sans font-bold text-2xl sm:text-3xl tracking-tight text-foreground leading-tight;
+  }
+
+  h3, .h3 {
+    @apply font-sans font-semibold text-xl sm:text-2xl tracking-tight text-foreground leading-snug;
+  }
+
+  h4, .h4 {
+    @apply font-sans font-semibold text-lg sm:text-xl text-foreground leading-snug;
+  }
+
+  h5, .h5 {
+    @apply font-sans font-medium text-base text-foreground leading-normal;
+  }
+
+  h6, .h6 {
+    @apply font-sans font-medium text-sm text-muted-foreground uppercase tracking-wider;
+  }
+
+  p {
+    @apply font-sans text-base leading-relaxed;
   }
 
   /* Standardizing Prose (Markdown content) for News-style reading */
   .prose {
-    @apply max-w-none text-slate-800 leading-relaxed break-words;
+    @apply max-w-none text-slate-800 leading-relaxed break-words font-sans;
     overflow-wrap: break-word;
     word-wrap: break-word;
   }
@@ -66,7 +96,7 @@
   }
 
   .prose h1, .prose h2, .prose h3, .prose h4 {
-    @apply text-brand-900 uppercase tracking-tight mt-10 mb-6 font-extrabold border-b border-brand-50 pb-2;
+    @apply text-brand-900 tracking-tight mt-10 mb-6 font-extrabold border-b border-brand-50 pb-2;
   }
 
   .prose strong {

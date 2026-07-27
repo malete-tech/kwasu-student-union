@@ -18,7 +18,9 @@ export default {
     },
     extend: {
       fontFamily: {
-        "lato": ["'Lato'", "sans-serif"],
+        sans: ["'Figtree'", "sans-serif"],
+        figtree: ["'Figtree'", "sans-serif"],
+        geist: ["'Figtree'", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",

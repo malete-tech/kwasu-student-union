@@ -26,6 +26,7 @@ const executiveLinks = [
   { name: "Central Executive", href: "/executives/central" },
   { name: "Senate Council", href: "/executives/senate" },
   { name: "Judiciary Council", href: "/executives/judiciary" },
+  { name: "Past Executives", href: "/executives/past" },
 ];
 
 const Header: React.FC = () => {

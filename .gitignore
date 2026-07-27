@@ -24,3 +24,7 @@ dist-ssr
 *.sw?
 
 .env
+
+# Agent skills
+.agents/skills
+.agents

@@ -6,6 +6,9 @@ import { api } from "@/lib/api";
 import { Executive } from "@/types";
 import ExecutiveCard from "@/components/ExecutiveCard";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Link } from "react-router-dom";
+import { History } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const CentralExecutive = () => {
   const [executives, setExecutives] = useState<Executive[]>([]);
@@ -36,7 +39,17 @@ const CentralExecutive = () => {
         <link rel="canonical" href="https://thekwasusu.com/executives/central" />
       </Helmet>
       <div className="container py-12">
-        <h1 className="text-3xl sm:text-4xl font-bold text-center mb-10 text-brand-700">Central Executive Council</h1>
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-10 pb-6 border-b">
+          <div>
+            <h1 className="text-3xl sm:text-4xl font-bold text-brand-700">Central Executive Council</h1>
+            <p className="text-sm text-slate-500 mt-1">Current leadership team of the Kwara State University Students' Union.</p>
+          </div>
+          <Button asChild variant="outline" className="rounded-xl border-brand-200 text-brand-700 hover:bg-brand-50">
+            <Link to="/executives/past">
+              <History className="h-4 w-4 mr-2 text-brand-500" /> View Past Executives Archive
+            </Link>
+          </Button>
+        </div>
 
         {loading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">

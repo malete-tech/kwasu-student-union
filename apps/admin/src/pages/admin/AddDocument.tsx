@@ -65,7 +65,7 @@ const AddDocument: React.FC = () => {
             </Link>
           </Button>
           <div>
-            <h2 className="text-2xl font-black text-brand-900 uppercase tracking-tight">Post Resource</h2>
+            <h2 className="text-lg font-semibold text-slate-900">Post Resource</h2>
             <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-0.5">Academic & Union archives</p>
           </div>
         </div>

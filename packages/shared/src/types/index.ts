@@ -20,6 +20,12 @@ export interface Executive {
   councilType: 'Central' | 'Senate' | 'Judiciary';
 }
 
+export interface PastExecutive extends Omit<Executive, 'displayOrder'> {
+  academicSession: string;
+  transitionedAt?: string;
+}
+
+
 // News
 export interface News {
   id: string;
@@ -91,6 +97,7 @@ export interface Opportunity {
   deadline: string;
   link: string;
   sponsor?: string;
+  type?: string;
   tags: string[];
   descriptionMd: string;
 }

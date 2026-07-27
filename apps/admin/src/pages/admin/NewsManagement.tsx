@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { PlusCircle, Edit, Trash2, Loader2, Image as ImageIcon } from "lucide-react";
+import { PlusCircle, Edit, Trash2, Loader2, Image as ImageIcon, Inbox } from "lucide-react";
 import { api } from "@/lib/api";
 import { News } from "@/types";
 import { toast } from "sonner";
@@ -53,7 +53,6 @@ const NewsManagement: React.FC = () => {
       toast.error("Authentication token missing for deletion.");
       return;
     }
-
     setDeletingId(article.id);
     try {
       if (article.coverUrl) {
@@ -65,7 +64,6 @@ const NewsManagement: React.FC = () => {
           }
         }
       }
-
       await api.news.delete(article.id);
       toast.success("News article deleted successfully!");
       setNewsArticles((prev) => prev.filter((a) => a.id !== article.id));
@@ -79,112 +77,141 @@ const NewsManagement: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-100 pb-6">
+      {/* Page Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <h2 className="text-2xl font-black text-brand-900 uppercase tracking-tight">Manage Articles</h2>
-          <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-0.5">Editoral & Press Center</p>
+          <h1 className="text-lg font-semibold text-slate-900">
+            News Articles
+            {!loading && (
+              <span className="ml-2 text-sm font-normal text-slate-400">
+                ({newsArticles.length})
+              </span>
+            )}
+          </h1>
+          <p className="text-sm text-slate-500 mt-0.5">Editorial & press center</p>
         </div>
-        <Button asChild className="bg-brand-700 hover:bg-brand-800 text-white shadow-xl rounded-xl px-6 h-12 transition-all hover:scale-[1.02]">
+        <Button asChild className="bg-brand-700 hover:bg-brand-800 text-white rounded-md h-9 px-4 text-sm whitespace-nowrap">
           <Link to="/news/add">
-            <PlusCircle className="mr-2 h-4 w-4" /> New Article
+            <PlusCircle className="mr-2 h-4 w-4" />
+            New Article
           </Link>
         </Button>
       </div>
 
-
-      <div className="mt-4">
+      {/* List */}
+      <div>
         {loading ? (
-          <div className="grid gap-4 sm:grid-cols-1">
+          <div className="space-y-2">
             {[...Array(5)].map((_, i) => (
-              <Skeleton key={i} className="h-24 w-full rounded-2xl" />
+              <Skeleton key={i} className="h-[72px] w-full rounded-lg" />
             ))}
           </div>
         ) : error ? (
-          <div className="py-12 text-center">
-            <p className="text-destructive text-lg font-medium">{error}</p>
-            <Button variant="outline" onClick={fetchNews} className="mt-4">Try Again</Button>
+          <div className="py-12 text-center border border-slate-200 rounded-lg">
+            <p className="text-sm text-red-600 font-medium">{error}</p>
+            <Button variant="outline" onClick={fetchNews} className="mt-3 rounded-md h-8 text-sm">
+              Try Again
+            </Button>
           </div>
         ) : newsArticles.length === 0 ? (
-          <div className="py-20 text-center border-2 border-dashed rounded-2xl">
-            <p className="text-muted-foreground text-lg">No news articles found.</p>
-            <Button asChild variant="link" className="mt-2 text-brand-500 font-bold">
-              <Link to="/news/add">Create your first article</Link>
+          <div className="py-16 flex flex-col items-center gap-3 border border-dashed border-slate-200 rounded-lg bg-white">
+            <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center">
+              <Inbox className="w-5 h-5 text-slate-400" />
+            </div>
+            <div className="text-center">
+              <p className="text-sm font-medium text-slate-700">No articles yet</p>
+              <p className="text-xs text-slate-400 mt-0.5">Publish your first news article</p>
+            </div>
+            <Button asChild className="bg-brand-700 hover:bg-brand-800 text-white rounded-md h-8 px-4 text-sm mt-1">
+              <Link to="/news/add">
+                <PlusCircle className="mr-2 h-3.5 w-3.5" />
+                New Article
+              </Link>
             </Button>
           </div>
         ) : (
-          <div className="grid gap-4">
+          <div className="bg-white border border-slate-200 rounded-lg overflow-hidden divide-y divide-slate-100">
             {newsArticles.map((article) => (
-              <div 
-                key={article.id} 
-                className="group relative bg-white border border-slate-100 rounded-2xl transition-all duration-200 shadow-sm hover:shadow-md overflow-hidden flex flex-col sm:flex-row sm:items-center"
+              <div
+                key={article.id}
+                className="flex flex-col sm:flex-row sm:items-center"
               >
-                {/* Image and Content Wrapper */}
-                <div className="flex flex-1 items-start p-4 gap-4">
-                  {/* Image */}
-                  <div className="h-16 w-16 md:h-20 md:w-20 flex-shrink-0 rounded-xl overflow-hidden bg-slate-50 border border-slate-100 flex items-center justify-center">
+                {/* Content */}
+                <div className="flex items-center gap-3 p-4 flex-1 min-w-0">
+                  <div className="h-12 w-12 sm:h-14 sm:w-14 shrink-0 rounded-md overflow-hidden bg-slate-100 border border-slate-100 flex items-center justify-center">
                     {article.coverUrl ? (
-                      <img src={article.coverUrl} alt="" className="h-full w-full object-cover" />
+                      <img
+                        src={article.coverUrl}
+                        alt=""
+                        className="h-full w-full object-cover"
+                      />
                     ) : (
-                      <ImageIcon className="h-6 w-6 text-slate-300" />
+                      <ImageIcon className="h-5 w-5 text-slate-300" />
                     )}
                   </div>
-
-
-                  {/* Text Content */}
-                  <div className="flex-1 min-w-0">
-                    <div className="flex flex-wrap items-center gap-2 mb-1">
+                  <div className="min-w-0 flex-1">
+                    <div className="flex flex-wrap items-center gap-2 mb-0.5">
                       {article.tags && article.tags.length > 0 && (
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-brand-600 bg-brand-50 px-2 py-0.5 rounded">
+                        <span className="text-[10px] font-semibold uppercase tracking-wide text-brand-600 bg-brand-50 px-1.5 py-0.5 rounded">
                           {article.tags[0]}
                         </span>
                       )}
-                      <span className="text-[10px] text-slate-400 font-medium">
-                        {article.publishedAt ? format(new Date(article.publishedAt), "MMM d, yyyy") : "Draft"}
+                      <span className="text-[11px] text-slate-400">
+                        {article.publishedAt
+                          ? format(new Date(article.publishedAt), "MMM d, yyyy")
+                          : "Draft"}
                       </span>
                     </div>
-                    <h3 className="text-base md:text-lg font-bold text-slate-900 line-clamp-2 leading-tight group-hover:text-brand-600 transition-colors">
+                    <p className="text-sm font-medium text-slate-900 truncate">
                       {article.title}
-                    </h3>
+                    </p>
                   </div>
                 </div>
-                
-                {/* Actions Section */}
-                <div className="flex items-center justify-end gap-2 p-3 sm:p-4 bg-slate-50/50 sm:bg-transparent border-t sm:border-t-0 border-slate-100">
-                  <Button asChild variant="outline" size="sm" className="flex-1 sm:flex-none h-9 rounded-xl bg-white border-slate-200 text-slate-600 hover:text-brand-600 hover:border-brand-200">
+
+                {/* Actions — full-width strip on mobile, inline on desktop */}
+                <div className="flex items-center gap-2 px-4 py-3 sm:py-0 sm:pr-4 border-t border-slate-100 sm:border-t-0 bg-slate-50/70 sm:bg-transparent">
+                  <Button
+                    asChild
+                    variant="outline"
+                    size="sm"
+                    className="flex-1 sm:flex-none h-8 rounded-md border-slate-200 text-slate-700 hover:text-brand-700 hover:border-brand-200 hover:bg-brand-50 text-xs"
+                  >
                     <Link to={`/news/edit/${article.id}`}>
-                      <Edit className="h-4 w-4 mr-2" />
+                      <Edit className="h-3.5 w-3.5 mr-1.5" />
                       Edit
                     </Link>
                   </Button>
-                  
+
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
-                      <Button 
-                        variant="ghost" 
-                        size="icon" 
+                      <Button
+                        variant="ghost"
+                        size="sm"
                         disabled={deletingId === article.id}
-                        className="h-9 w-9 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-xl border border-transparent sm:border-none"
+                        className="flex-1 sm:flex-none h-8 rounded-md text-slate-400 hover:text-red-600 hover:bg-red-50 text-xs"
                       >
                         {deletingId === article.id ? (
-                          <Loader2 className="h-4 w-4 animate-spin" />
+                          <Loader2 className="h-3.5 w-3.5 animate-spin" />
                         ) : (
-                          <Trash2 className="h-4 w-4" />
+                          <>
+                            <Trash2 className="h-3.5 w-3.5 mr-1.5" />
+                            Delete
+                          </>
                         )}
-                        <span className="sr-only">Delete</span>
                       </Button>
                     </AlertDialogTrigger>
-                    <AlertDialogContent className="rounded-2xl w-[95vw] max-w-md">
+                    <AlertDialogContent className="rounded-lg w-[90vw] max-w-md border-slate-200">
                       <AlertDialogHeader>
-                        <AlertDialogTitle>Delete news article?</AlertDialogTitle>
-                        <AlertDialogDescription>
+                        <AlertDialogTitle className="text-base">Delete article?</AlertDialogTitle>
+                        <AlertDialogDescription className="text-sm">
                           This will permanently remove "{article.title}". This action cannot be undone.
                         </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter className="flex-col sm:flex-row gap-2">
-                        <AlertDialogCancel className="rounded-xl mt-0">Cancel</AlertDialogCancel>
-                        <AlertDialogAction 
-                          onClick={() => handleDelete(article)} 
-                          className="bg-red-600 hover:bg-red-700 text-white rounded-xl"
+                        <AlertDialogCancel className="rounded-md mt-0 h-9">Cancel</AlertDialogCancel>
+                        <AlertDialogAction
+                          onClick={() => handleDelete(article)}
+                          className="bg-red-600 hover:bg-red-700 text-white rounded-md h-9"
                         >
                           Delete
                         </AlertDialogAction>

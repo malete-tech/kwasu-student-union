@@ -144,7 +144,7 @@ const EditNewsArticle: React.FC = () => {
             </Link>
           </Button>
           <div>
-            <h2 className="text-2xl font-black text-brand-900 uppercase tracking-tight">Modify Article</h2>
+            <h2 className="text-lg font-semibold text-slate-900">Modify Article</h2>
             <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-0.5">Refine existing news</p>
           </div>
         </div>

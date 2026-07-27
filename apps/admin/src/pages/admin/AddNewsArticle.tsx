@@ -98,7 +98,7 @@ const AddNewsArticle: React.FC = () => {
             </Link>
           </Button>
           <div>
-            <h2 className="text-2xl font-black text-brand-900 uppercase tracking-tight">Compose Article</h2>
+            <h2 className="text-lg font-semibold text-slate-900">Compose Article</h2>
             <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-0.5">Draft a new announcement</p>
           </div>
         </div>

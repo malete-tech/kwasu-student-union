@@ -140,7 +140,7 @@ const EditPartner: React.FC = () => {
             </Link>
           </Button>
           <div className="flex-1 min-w-0">
-            <h2 className="text-2xl font-black text-brand-900 uppercase tracking-tight truncate">Edit Partner</h2>
+            <h2 className="text-lg font-semibold text-slate-900 truncate">Edit Partner</h2>
             <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-0.5 line-clamp-1">{form.getValues("name")}</p>
           </div>
         </div>

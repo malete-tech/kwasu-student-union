@@ -66,7 +66,7 @@ const AddSpotlight: React.FC = () => {
             </Link>
           </Button>
           <div>
-            <h2 className="text-2xl font-black text-brand-900 uppercase tracking-tight">Feature Student</h2>
+            <h2 className="text-lg font-semibold text-slate-900">Feature Student</h2>
             <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-0.5">Excellence & Success stories</p>
           </div>
         </div>

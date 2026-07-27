@@ -117,14 +117,14 @@ const ComplaintDetailPage: React.FC = () => {
         <meta name="description" content={`Manage complaint: ${complaint.title}`} />
       </Helmet>
       <div className="space-y-6">
-        <div className="flex items-center gap-4 border-b border-slate-100 pb-6">
+        <div className="flex items-center gap-4 ">
           <Button asChild variant="ghost" size="icon" className="h-10 w-10 text-slate-400 hover:text-brand-700 hover:bg-brand-50 rounded-xl shrink-0 transition-all">
             <Link to="/complaints">
               <ArrowLeft className="h-5 w-5" />
             </Link>
           </Button>
           <div className="flex-1 min-w-0">
-            <h2 className="text-2xl font-black text-brand-900 uppercase tracking-tight truncate">CASE #{complaint.id.substring(0, 8)}</h2>
+            <h2 className="text-lg font-semibold text-slate-900 truncate">CASE #{complaint.id.substring(0, 8)}</h2>
             <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-0.5 line-clamp-1">{complaint.title}</p>
           </div>
           <div className="hidden sm:block">
@@ -141,7 +141,7 @@ const ComplaintDetailPage: React.FC = () => {
             <Card className="shadow-lg rounded-xl p-6">
               <CardHeader className="pb-4">
                 <CardTitle className="text-2xl font-semibold text-brand-700">{complaint.title}</CardTitle>
-                <CardDescription className="flex items-center justify-between">
+                <CardDescription className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                   <Badge className={statusColors[complaint.status]}>
                     Status: {complaint.status}
                   </Badge>

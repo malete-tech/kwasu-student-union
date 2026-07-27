@@ -185,12 +185,12 @@ const GlobalAnnouncementManagement: React.FC = () => {
         <title>Global Announcements | Admin</title>
       </Helmet>
       <div className="space-y-6">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-100 pb-6">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 ">
           <div>
-            <h2 className="text-2xl font-black text-brand-900 uppercase tracking-tight">Institutional Notices</h2>
+            <h2 className="text-lg font-semibold text-slate-900">Institutional Notices</h2>
             <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-0.5">Global Alerts & System Modals</p>
           </div>
-          <Button onClick={() => handleOpenDialog()} className="bg-brand-700 hover:bg-brand-800 text-white rounded-xl shadow-xl h-10 px-6 transition-all">
+          <Button onClick={() => handleOpenDialog()} className="bg-brand-700 hover:bg-brand-800 text-white rounded-md h-9 px-4 text-sm whitespace-nowrap">
             <PlusCircle className="mr-2 h-4 w-4" /> New Announcement
           </Button>
         </div>

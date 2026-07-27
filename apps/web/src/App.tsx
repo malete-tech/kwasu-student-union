@@ -13,6 +13,7 @@ import CentralExecutive from "./pages/CentralExecutive";
 import SenateCouncil from "./pages/SenateCouncil";
 import JudiciaryCouncil from "./pages/JudiciaryCouncil";
 import ExecutiveDetail from "./pages/ExecutiveDetail";
+import PastExecutives from "./pages/PastExecutives";
 import NewsPage from "./pages/NewsPage";
 import NewsDetail from "./pages/NewsDetail";
 import EventsPage from "./pages/EventsPage";
@@ -46,6 +47,7 @@ const App = () => (
               <Route path="/executives/central" element={<CentralExecutive />} />
               <Route path="/executives/senate" element={<SenateCouncil />} />
               <Route path="/executives/judiciary" element={<JudiciaryCouncil />} />
+              <Route path="/executives/past" element={<PastExecutives />} />
               <Route path="/executives/:slug" element={<ExecutiveDetail />} />
               <Route path="/news" element={<NewsPage />} />
               <Route path="/news/:id" element={<NewsDetail />} />

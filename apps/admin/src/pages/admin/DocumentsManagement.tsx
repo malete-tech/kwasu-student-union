@@ -19,10 +19,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { format } from "date-fns";
 import { supabase } from "@/integrations/supabase/client";
-import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
 
 const DocumentsManagement: React.FC = () => {
   const [documents, setDocuments] = useState<Document[]>([]);
@@ -90,35 +87,28 @@ const DocumentsManagement: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-100 pb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <h2 className="text-2xl font-black text-brand-900 uppercase tracking-tight">Document Vault</h2>
-          <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-0.5">Resources & Institutional Archives</p>
+          <h1 className="text-lg font-semibold text-slate-900">
+            Document Vault
+            {!loading && (
+              <span className="ml-2 text-sm font-normal text-slate-400">({documents.length})</span>
+            )}
+          </h1>
+          <p className="text-sm text-slate-500 mt-0.5">Resources & institutional archives</p>
         </div>
-        <div className="flex items-center gap-3">
-          <Button asChild className="bg-brand-700 hover:bg-brand-800 text-white rounded-xl shadow-xl h-10 px-6 transition-all">
-            <Link to="/documents/add">
-              <PlusCircle className="mr-2 h-4 w-4" /> Upload Document
-            </Link>
-          </Button>
-        </div>
+        <Button asChild className="bg-brand-700 hover:bg-brand-800 text-white rounded-md h-9 px-4 text-sm whitespace-nowrap">
+          <Link to="/documents/add">
+            <PlusCircle className="mr-2 h-4 w-4" /> Upload
+          </Link>
+        </Button>
       </div>
 
-      <div className="mt-6">
+      <div>
         {loading ? (
-          <div className="grid gap-4">
+          <div className="space-y-2">
             {[...Array(4)].map((_, i) => (
-              <div key={i} className="flex items-center space-x-4 p-6 border rounded-2xl bg-white/50">
-                <Skeleton className="h-14 w-14 rounded-2xl" />
-                <div className="flex-1 space-y-2">
-                  <Skeleton className="h-6 w-1/3" />
-                  <Skeleton className="h-4 w-1/4" />
-                </div>
-                <div className="flex gap-2">
-                  <Skeleton className="h-10 w-10 rounded-xl" />
-                  <Skeleton className="h-10 w-10 rounded-xl" />
-                </div>
-              </div>
+              <Skeleton key={i} className="h-[72px] w-full rounded-lg" />
             ))}
           </div>
         ) : error ? (
@@ -130,93 +120,95 @@ const DocumentsManagement: React.FC = () => {
             <Button variant="outline" onClick={fetchDocuments} className="mt-4 rounded-xl border-brand-100">Try Again</Button>
           </div>
         ) : documents.length === 0 ? (
-          <div className="py-24 text-center border-2 border-dashed rounded-3xl bg-white/30 border-brand-100">
-            <div className="mx-auto w-14 h-14 rounded-full bg-brand-50 flex items-center justify-center mb-4">
-              <FileText className="h-7 w-7 text-brand-300" />
+          <div className="py-16 flex flex-col items-center gap-3 border border-dashed border-slate-200 rounded-lg bg-white">
+            <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center">
+              <FileText className="w-5 h-5 text-slate-400" />
             </div>
-            <h3 className="text-lg font-bold text-slate-900">No documents uploaded yet</h3>
-            <p className="text-muted-foreground">Upload important resources for students to download.</p>
-            <Button asChild className="mt-6 bg-brand-500 hover:bg-brand-600 text-white rounded-xl">
+            <div className="text-center">
+              <p className="text-sm font-medium text-slate-700">No documents uploaded yet</p>
+              <p className="text-xs text-slate-400 mt-0.5">Upload resources for students to download</p>
+            </div>
+            <Button asChild className="bg-brand-700 hover:bg-brand-800 text-white rounded-md h-8 px-4 text-sm mt-1">
               <Link to="/documents/add">
-                <PlusCircle className="mr-2 h-4 w-4" /> Upload Document
+                <PlusCircle className="mr-2 h-3.5 w-3.5" /> Upload Document
               </Link>
             </Button>
           </div>
         ) : (
-          <div className="grid gap-4">
+          <div className="bg-white border border-slate-200 rounded-lg overflow-hidden divide-y divide-slate-100">
             {documents.map((document) => (
-              <div 
-                key={document.id} 
-                className={cn(
-                  "group relative flex flex-col md:flex-row md:items-center justify-between p-5 rounded-2xl border transition-all duration-300",
-                  "bg-white/50 hover:bg-white border-transparent hover:border-brand-100 hover:shadow-lg shadow-sm"
-                )}
-              >
-                <div className="flex items-start space-x-5 flex-1 min-w-0">
-                  <div className="p-3.5 rounded-2xl bg-brand-50 text-brand-600 group-hover:bg-brand-600 group-hover:text-white flex-shrink-0 transition-colors duration-300">
-                    <FileText className="h-6 w-6" />
+              <div key={document.id} className="flex flex-col sm:flex-row sm:items-center">
+                {/* Content */}
+                <div className="flex items-center gap-3 p-4 flex-1 min-w-0">
+                  <div className="w-10 h-10 shrink-0 rounded-md bg-brand-50 flex items-center justify-center">
+                    <FileText className="w-4 h-4 text-brand-600" />
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <h3 className="text-lg font-bold text-slate-900 group-hover:text-brand-700 transition-colors truncate">
-                      {document.title}
-                    </h3>
-                    <div className="flex flex-wrap items-center gap-y-1 gap-x-4 text-sm text-slate-500">
-                      <span className="font-medium text-brand-700">{document.fileType}</span>
-                      <span className="text-xs text-muted-foreground italic">• {document.fileSize}</span>
-                      <span className="text-xs text-muted-foreground italic">• Updated: {format(new Date(document.updatedAt), "MMM dd, yyyy")}</span>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex flex-wrap items-center gap-2 mb-0.5">
+                      {document.fileType && (
+                        <span className="text-[10px] font-semibold uppercase tracking-wide text-brand-600 bg-brand-50 px-1.5 py-0.5 rounded">
+                          {document.fileType}
+                        </span>
+                      )}
+                      {document.fileSize && (
+                        <span className="text-[11px] text-slate-400">{document.fileSize}</span>
+                      )}
                     </div>
-                    <div className="flex flex-wrap gap-1 mt-1">
+                    <p className="text-sm font-medium text-slate-900 truncate">{document.title}</p>
+                    <div className="flex flex-wrap gap-1 mt-0.5">
                       {document.tags.slice(0, 3).map(tag => (
-                        <Badge key={tag} variant="secondary" className="bg-slate-100 text-slate-600 border-none text-[10px] py-0">
-                          {tag}
-                        </Badge>
+                        <span key={tag} className="text-[10px] bg-slate-100 text-slate-500 px-1.5 py-0.5 rounded">{tag}</span>
                       ))}
                     </div>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2 mt-4 md:mt-0 flex-shrink-0">
-                  <Button asChild variant="ghost" size="icon" className="h-10 w-10 text-brand-500 hover:bg-brand-50 hover:text-brand-600 rounded-xl">
-                    <a href={document.url} target="_blank" rel="noopener noreferrer" aria-label="Download Document">
-                      <Download className="h-4 w-4" />
-                    </a>
-                  </Button>
-                  
-                  <Button asChild variant="outline" className="h-10 px-4 bg-white border-brand-100 text-brand-700 hover:bg-brand-50 rounded-xl shadow-sm">
+                {/* Actions */}
+                <div className="flex items-center gap-2 px-4 py-3 sm:py-0 sm:pr-4 border-t border-slate-100 sm:border-t-0 bg-slate-50/70 sm:bg-transparent">
+                  <a
+                    href={document.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="h-8 w-8 flex items-center justify-center rounded-md text-slate-400 hover:text-brand-600 hover:bg-brand-50 transition-colors shrink-0"
+                    aria-label="Download"
+                  >
+                    <Download className="w-3.5 h-3.5" />
+                  </a>
+
+                  <Button asChild variant="outline" size="sm" className="flex-1 sm:flex-none h-8 rounded-md border-slate-200 text-slate-700 hover:text-brand-700 hover:border-brand-200 hover:bg-brand-50 text-xs">
                     <Link to={`/documents/edit/${document.id}`}>
-                      <Edit className="h-4 w-4 mr-2" />
+                      <Edit className="h-3.5 w-3.5 mr-1.5" />
                       Edit
                     </Link>
                   </Button>
 
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
-                      <Button 
-                        variant="ghost" 
-                        size="icon" 
+                      <Button
+                        variant="ghost"
+                        size="sm"
                         disabled={deletingId === document.id}
-                        className="h-10 w-10 text-muted-foreground hover:text-destructive hover:bg-destructive/5 rounded-xl"
+                        className="flex-1 sm:flex-none h-8 rounded-md text-slate-400 hover:text-red-600 hover:bg-red-50 text-xs"
                       >
                         {deletingId === document.id ? (
-                          <Loader2 className="h-4 w-4 animate-spin" />
+                          <Loader2 className="h-3.5 w-3.5 animate-spin" />
                         ) : (
-                          <Trash2 className="h-4 w-4" />
+                          <><Trash2 className="h-3.5 w-3.5 mr-1.5" />Delete</>
                         )}
-                        <span className="sr-only">Delete</span>
                       </Button>
                     </AlertDialogTrigger>
-                    <AlertDialogContent className="rounded-2xl border-none shadow-2xl">
+                    <AlertDialogContent className="rounded-lg w-[90vw] max-w-md border-slate-200">
                       <AlertDialogHeader>
-                        <AlertDialogTitle className="text-2xl font-bold text-brand-800">Delete document?</AlertDialogTitle>
-                        <AlertDialogDescription className="text-base">
-                          This will permanently remove <span className="font-semibold text-brand-700">"{document.title}"</span> and its associated file from storage. This action cannot be undone.
+                        <AlertDialogTitle className="text-base">Delete document?</AlertDialogTitle>
+                        <AlertDialogDescription className="text-sm">
+                          This will permanently remove "{document.title}" and its file from storage.
                         </AlertDialogDescription>
                       </AlertDialogHeader>
-                      <AlertDialogFooter className="mt-6">
-                        <AlertDialogCancel className="rounded-xl border-brand-100">Cancel</AlertDialogCancel>
-                        <AlertDialogAction 
-                          onClick={() => handleDelete(document)} 
-                          className="bg-destructive hover:bg-destructive/90 text-white rounded-xl"
+                      <AlertDialogFooter className="flex-col sm:flex-row gap-2">
+                        <AlertDialogCancel className="rounded-md mt-0 h-9">Cancel</AlertDialogCancel>
+                        <AlertDialogAction
+                          onClick={() => handleDelete(document)}
+                          className="bg-red-600 hover:bg-red-700 text-white rounded-md h-9"
                         >
                           Delete Document
                         </AlertDialogAction>

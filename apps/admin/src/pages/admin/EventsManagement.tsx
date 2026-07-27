@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { PlusCircle, Edit, Trash2, Loader2, CalendarDays, AlertCircle } from "lucide-react";
+import { PlusCircle, Edit, Trash2, Loader2, CalendarDays, Inbox } from "lucide-react";
 import { api } from "@/lib/api";
 import { Event } from "@/types";
 import { toast } from "sonner";
@@ -21,7 +21,6 @@ import {
 } from "@/components/ui/alert-dialog";
 import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
 
 const EventsManagement: React.FC = () => {
   const [events, setEvents] = useState<Event[]>([]);
@@ -63,127 +62,132 @@ const EventsManagement: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-100 pb-6">
+      {/* Page Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <h2 className="text-2xl font-black text-brand-900 uppercase tracking-tight">Events Calendar</h2>
-          <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-0.5">Campus Timeline & Planning</p>
+          <h1 className="text-lg font-semibold text-slate-900">
+            Events
+            {!loading && (
+              <span className="ml-2 text-sm font-normal text-slate-400">
+                ({events.length})
+              </span>
+            )}
+          </h1>
+          <p className="text-sm text-slate-500 mt-0.5">Campus timeline & planning</p>
         </div>
-        <div className="flex items-center gap-3">
-          <Button asChild className="bg-brand-700 hover:bg-brand-800 text-white shadow-xl rounded-xl px-6 h-12 transition-all hover:scale-[1.02]">
-            <Link to="/events/add">
-              <PlusCircle className="mr-2 h-4 w-4" /> Add New Event
-            </Link>
-          </Button>
-        </div>
+        <Button asChild className="bg-brand-700 hover:bg-brand-800 text-white rounded-md h-9 px-4 text-sm whitespace-nowrap">
+          <Link to="/events/add">
+            <PlusCircle className="mr-2 h-4 w-4" />
+            Add Event
+          </Link>
+        </Button>
       </div>
 
-      <div className="mt-6">
+      {/* List */}
+      <div>
         {loading ? (
-          <div className="grid gap-4">
+          <div className="space-y-2">
             {[...Array(4)].map((_, i) => (
-              <div key={i} className="flex items-center space-x-4 p-6 border rounded-2xl bg-white/50">
-                <Skeleton className="h-14 w-14 rounded-2xl" />
-                <div className="flex-1 space-y-2">
-                  <Skeleton className="h-6 w-1/3" />
-                  <Skeleton className="h-4 w-1/4" />
-                </div>
-                <div className="flex gap-2">
-                  <Skeleton className="h-10 w-10 rounded-xl" />
-                  <Skeleton className="h-10 w-10 rounded-xl" />
-                </div>
-              </div>
+              <Skeleton key={i} className="h-[78px] w-full rounded-lg" />
             ))}
           </div>
         ) : error ? (
-          <div className="py-20 text-center">
-            <div className="mx-auto w-12 h-12 rounded-full bg-red-50 flex items-center justify-center mb-4">
-              <AlertCircle className="h-6 w-6 text-red-500" />
-            </div>
-            <p className="text-destructive text-lg font-medium">{error}</p>
-            <Button variant="outline" onClick={fetchEvents} className="mt-4 rounded-xl border-brand-100">Try Again</Button>
+          <div className="py-12 text-center border border-slate-200 rounded-lg">
+            <p className="text-sm text-red-600 font-medium">{error}</p>
+            <Button variant="outline" onClick={fetchEvents} className="mt-3 rounded-md h-8 text-sm">
+              Try Again
+            </Button>
           </div>
         ) : events.length === 0 ? (
-          <div className="py-24 text-center border-2 border-dashed rounded-3xl bg-white/30 border-brand-100">
-            <div className="mx-auto w-14 h-14 rounded-full bg-brand-50 flex items-center justify-center mb-4">
-              <CalendarDays className="h-7 w-7 text-brand-300" />
+          <div className="py-16 flex flex-col items-center gap-3 border border-dashed border-slate-200 rounded-lg bg-white">
+            <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center">
+              <Inbox className="w-5 h-5 text-slate-400" />
             </div>
-            <h3 className="text-lg font-bold text-slate-900">No events scheduled yet</h3>
-            <p className="text-muted-foreground">Start by adding a new event to the calendar.</p>
-            <Button asChild className="mt-6 bg-brand-500 hover:bg-brand-600 text-white rounded-xl">
+            <div className="text-center">
+              <p className="text-sm font-medium text-slate-700">No events scheduled</p>
+              <p className="text-xs text-slate-400 mt-0.5">Add your first campus event</p>
+            </div>
+            <Button asChild className="bg-brand-700 hover:bg-brand-800 text-white rounded-md h-8 px-4 text-sm mt-1">
               <Link to="/events/add">
-                <PlusCircle className="mr-2 h-4 w-4" /> Add New Event
+                <PlusCircle className="mr-2 h-3.5 w-3.5" />
+                Add Event
               </Link>
             </Button>
           </div>
         ) : (
-          <div className="grid gap-4">
+          <div className="bg-white border border-slate-200 rounded-lg overflow-hidden divide-y divide-slate-100">
             {events.map((event) => (
-              <div 
-                key={event.id} 
-                className={cn(
-                  "group relative flex flex-col md:flex-row md:items-center justify-between p-5 rounded-2xl border transition-all duration-300",
-                  "bg-white/50 hover:bg-white border-transparent hover:border-brand-100 hover:shadow-lg shadow-sm"
-                )}
-              >
-                <div className="flex items-start space-x-5 flex-1 min-w-0">
-                  <div className="p-3.5 rounded-2xl bg-brand-50 text-brand-600 group-hover:bg-brand-600 group-hover:text-white flex-shrink-0 transition-colors duration-300">
-                    <CalendarDays className="h-6 w-6" />
+              <div key={event.id} className="flex flex-col sm:flex-row sm:items-center">
+                {/* Content */}
+                <div className="flex items-center gap-3 p-4 flex-1 min-w-0">
+                  <div className="w-12 h-12 shrink-0 rounded-md bg-blue-50 flex items-center justify-center">
+                    <CalendarDays className="w-5 h-5 text-blue-600" />
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <h3 className="text-lg font-bold text-slate-900 group-hover:text-brand-700 transition-colors truncate">
-                      {event.title}
-                    </h3>
-                    <div className="flex flex-wrap items-center gap-y-1 gap-x-4 text-sm text-slate-500">
-                      <span className="font-medium text-brand-700">{event.category}</span>
-                      <span className="text-xs text-muted-foreground italic">• {event.venue}</span>
-                      <span className="text-xs text-muted-foreground italic">• {format(new Date(event.startsAt), "MMM dd, yyyy HH:mm")}</span>
-                    </div>
-                    <div className="flex gap-1 mt-1">
+                  <div className="min-w-0 flex-1">
+                    <div className="flex flex-wrap items-center gap-2 mb-0.5">
+                      <span className="text-[10px] font-semibold uppercase tracking-wide text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">
+                        {event.category}
+                      </span>
                       {event.rsvpOpen && (
-                        <Badge variant="secondary" className="bg-blue-100 text-blue-700 border-none text-[10px] py-0">
+                        <Badge variant="secondary" className="bg-green-50 text-green-700 border-none text-[10px] py-0 h-4">
                           RSVP Open
                         </Badge>
                       )}
+                      <span className="text-[11px] text-slate-400">
+                        {format(new Date(event.startsAt), "MMM d, yyyy · HH:mm")}
+                      </span>
                     </div>
+                    <p className="text-sm font-medium text-slate-900 truncate">{event.title}</p>
+                    {event.venue && (
+                      <p className="text-xs text-slate-400 mt-0.5 truncate">{event.venue}</p>
+                    )}
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2 mt-4 md:mt-0 flex-shrink-0">
-                  <Button asChild variant="outline" className="h-10 px-4 bg-white border-brand-100 text-brand-700 hover:bg-brand-50 rounded-xl shadow-sm">
+                {/* Actions */}
+                <div className="flex items-center gap-2 px-4 py-3 sm:py-0 sm:pr-4 border-t border-slate-100 sm:border-t-0 bg-slate-50/70 sm:bg-transparent">
+                  <Button
+                    asChild
+                    variant="outline"
+                    size="sm"
+                    className="flex-1 sm:flex-none h-8 rounded-md border-slate-200 text-slate-700 hover:text-brand-700 hover:border-brand-200 hover:bg-brand-50 text-xs"
+                  >
                     <Link to={`/events/edit/${event.slug}`}>
-                      <Edit className="h-4 w-4 mr-2" />
+                      <Edit className="h-3.5 w-3.5 mr-1.5" />
                       Edit
                     </Link>
                   </Button>
 
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
-                      <Button 
-                        variant="ghost" 
-                        size="icon" 
+                      <Button
+                        variant="ghost"
+                        size="sm"
                         disabled={deletingId === event.id}
-                        className="h-10 w-10 text-muted-foreground hover:text-destructive hover:bg-destructive/5 rounded-xl"
+                        className="flex-1 sm:flex-none h-8 rounded-md text-slate-400 hover:text-red-600 hover:bg-red-50 text-xs"
                       >
                         {deletingId === event.id ? (
-                          <Loader2 className="h-4 w-4 animate-spin" />
+                          <Loader2 className="h-3.5 w-3.5 animate-spin" />
                         ) : (
-                          <Trash2 className="h-4 w-4" />
+                          <>
+                            <Trash2 className="h-3.5 w-3.5 mr-1.5" />
+                            Delete
+                          </>
                         )}
-                        <span className="sr-only">Delete</span>
                       </Button>
                     </AlertDialogTrigger>
-                    <AlertDialogContent className="rounded-2xl border-none shadow-2xl">
+                    <AlertDialogContent className="rounded-lg w-[90vw] max-w-md border-slate-200">
                       <AlertDialogHeader>
-                        <AlertDialogTitle className="text-2xl font-bold text-brand-800">Delete event?</AlertDialogTitle>
-                        <AlertDialogDescription className="text-base">
-                          This will permanently remove <span className="font-semibold text-brand-700">"{event.title}"</span> from the calendar. This action cannot be undone.
+                        <AlertDialogTitle className="text-base">Delete event?</AlertDialogTitle>
+                        <AlertDialogDescription className="text-sm">
+                          This will permanently remove "{event.title}" from the calendar.
                         </AlertDialogDescription>
                       </AlertDialogHeader>
-                      <AlertDialogFooter className="mt-6">
-                        <AlertDialogCancel className="rounded-xl border-brand-100">Cancel</AlertDialogCancel>
-                        <AlertDialogAction 
-                          onClick={() => handleDelete(event.id, event.title)} 
-                          className="bg-destructive hover:bg-destructive/90 text-white rounded-xl"
+                      <AlertDialogFooter className="flex-col sm:flex-row gap-2">
+                        <AlertDialogCancel className="rounded-md mt-0 h-9">Cancel</AlertDialogCancel>
+                        <AlertDialogAction
+                          onClick={() => handleDelete(event.id, event.title)}
+                          className="bg-red-600 hover:bg-red-700 text-white rounded-md h-9"
                         >
                           Delete Event
                         </AlertDialogAction>
