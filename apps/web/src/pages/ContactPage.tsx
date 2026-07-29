@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Helmet } from "react-helmet-async";
+import { SEO } from "@/components/SEO";
 import { Loader2 } from "@/components/ui/font-awesome-icon";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -101,13 +101,11 @@ const ContactPage: React.FC = () => {
 
   return (
     <>
-      <Helmet>
-        <title>Contact Us | KWASU Students' Union</title>
-        <meta
-          name="description"
-          content="Get in touch with KWASU Students' Union. Reach out to the PRO or visit our office."
-        />
-      </Helmet>
+      <SEO
+        title="Contact Us | KWASU Students' Union"
+        description="Get in touch with the Kwara State University Students' Union executive council. Send inquiries, feedback, or official communications."
+        url="https://kwasusu.com.ng/contact"
+      />
 
       {/* ── PAGE BANNER ───────────────────────────────────────────────────── */}
       <section className="relative w-full bg-brand-900 border-b border-brand-800 overflow-hidden">

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Helmet } from "react-helmet-async";
+import { SEO } from "@/components/SEO";
 import { api } from "@/lib/api";
 import { Document } from "@/types";
 
@@ -121,13 +121,11 @@ const About = () => {
 
   return (
     <>
-      <Helmet>
-        <title>About Us | KWASU Students' Union</title>
-        <meta
-          name="description"
-          content="Official history and mission of the KWASU Students' Union. Learn about our mission, vision, presidential legacy, and access key governing documents."
-        />
-      </Helmet>
+      <SEO
+        title="About Us | KWASU Students' Union"
+        description="Learn about the Kwara State University Students' Union mission, vision, leadership history, and access official governing documents."
+        url="https://kwasusu.com.ng/about"
+      />
 
       {/* ── 1. PAGE BANNER ───────────────────────────────────────────────── */}
       <AboutHero />

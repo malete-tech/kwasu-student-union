@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Helmet } from "react-helmet-async";
+import { SEO } from "@/components/SEO";
 import { api } from "@/lib/api";
 import { PastExecutive, Executive } from "@/types";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -69,14 +69,11 @@ const PastExecutives: React.FC = () => {
 
   return (
     <>
-      <Helmet>
-        <title>Past Executives Archive | KWASU Students' Union</title>
-        <meta
-          name="description"
-          content="Historical directory of past student leaders, Central Executive, Senate Council, and Judiciary Council members of KWASU SU."
-        />
-        <link rel="canonical" href="https://thekwasusu.com/executives/past" />
-      </Helmet>
+      <SEO
+        title="Past Executive Leaders | KWASU Students' Union"
+        description="Explore the presidential legacy and past student union leaders who shaped Kwara State University Students' Union over the years."
+        url="https://kwasusu.com.ng/executives/past"
+      />
 
       <ExecutiveCouncilHeader
         title="Hall of Fame & Past Leadership"

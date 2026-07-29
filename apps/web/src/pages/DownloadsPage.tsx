@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Helmet } from "react-helmet-async";
+import { SEO } from "@/components/SEO";
 import { Link, useSearchParams } from "react-router-dom";
 import { api } from "@/lib/api";
 import { Document } from "@/types";
@@ -70,9 +70,11 @@ const DownloadsPage: React.FC = () => {
 
   return (
     <>
-      <Helmet>
-        <title>Downloads | KWASU Students' Union</title>
-      </Helmet>
+      <SEO
+        title="Downloads Vault | KWASU Students' Union"
+        description="Download official Kwara State University Students' Union documents, constitutions, handbooks, forms, and academic resources."
+        url="https://kwasusu.com.ng/services/downloads"
+      />
       <div className="container py-12">
         <Button asChild variant="ghost" className="mb-8 text-brand-600 hover:text-brand-700 -ml-4">
           <Link to="/services">

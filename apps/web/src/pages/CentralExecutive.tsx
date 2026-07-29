@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Helmet } from "react-helmet-async";
+import { SEO } from "@/components/SEO";
 import { api } from "@/lib/api";
 import { Executive } from "@/types";
 import ExecutiveCard from "@/components/ExecutiveCard";
@@ -31,14 +31,11 @@ const CentralExecutive = () => {
 
   return (
     <>
-      <Helmet>
-        <title>Central Executive Council | KWASU Students' Union</title>
-        <meta
-          name="description"
-          content="Meet the current Central Executive members of the Kwara State University Students' Union (KWASU SU)."
-        />
-        <link rel="canonical" href="https://thekwasusu.com/executives/central" />
-      </Helmet>
+      <SEO
+        title="Central Executive Council | KWASU Students' Union"
+        description="Meet the elected Central Executive Council members of the Kwara State University Students' Union representing student welfare and governance."
+        url="https://kwasusu.com.ng/executives/central"
+      />
 
       <ExecutiveCouncilHeader
         title="Central Executive Council"

@@ -1,6 +1,6 @@
 "use client";
 
-import { Helmet } from "react-helmet-async";
+import { SEO } from "@/components/SEO";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
@@ -83,14 +83,11 @@ const Index = () => {
 
   return (
     <>
-      <Helmet>
-        <title>KWASU Students' Union | Official Hub for News, Events & Advocacy</title>
-        <meta
-          name="description"
-          content="Stay connected with the Kwara State University Students' Union. Access official news, upcoming campus events, executive profiles, and essential student services."
-        />
-        <link rel="canonical" href="https://thekwasusu.com/" />
-      </Helmet>
+      <SEO
+        title="KWASU Students' Union | Official Hub for News & Events"
+        description="Official digital hub of the Kwara State University Students' Union (KWASU SU). Access official campus news, events, student services, and leadership."
+        url="https://kwasusu.com.ng/"
+      />
 
       {/* ── ANNOUNCEMENT TICKER ──────────────────────────────────────────── */}
       <AnnouncementBanner />

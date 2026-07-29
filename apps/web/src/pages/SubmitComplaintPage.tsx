@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Helmet } from "react-helmet-async";
+import { SEO } from "@/components/SEO";
 import { Card, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -95,9 +95,11 @@ const SubmitComplaintPage: React.FC = () => {
 
   return (
     <>
-      <Helmet>
-        <title>Submit Complaint | KWASU Students' Union</title>
-      </Helmet>
+      <SEO
+        title="Submit a Complaint | KWASU Students' Union"
+        description="Report student welfare, academic, or security issues directly to the Kwara State University Students' Union executive committee."
+        url="https://kwasusu.com.ng/services/complaints"
+      />
       <div className="container py-12">
         <Button asChild variant="ghost" className="mb-8 text-brand-600 hover:text-brand-700 -ml-4">
           <Link to="/services">

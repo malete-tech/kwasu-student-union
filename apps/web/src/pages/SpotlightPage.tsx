@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Helmet } from "react-helmet-async";
+import { SEO } from "@/components/SEO";
 import { Link } from "react-router-dom";
 import { api } from "@/lib/api";
 import { Spotlight } from "@/types";
@@ -33,10 +33,11 @@ const SpotlightPage: React.FC = () => {
 
   return (
     <>
-      <Helmet>
-        <title>Spotlight | KWASU Students' Union</title>
-        <meta name="description" content="View all past and present student spotlight features highlighting achievements and success stories." />
-      </Helmet>
+      <SEO
+        title="Student Spotlight | KWASU SU"
+        description="Celebrating exceptional Kwara State University student achievers, innovators, and leaders making an impact."
+        url="https://kwasusu.com.ng/spotlight"
+      />
       <div className="container py-12">
         <Button asChild variant="ghost" className="mb-8 text-brand-600 hover:text-brand-700 -ml-4">
           <Link to="/">

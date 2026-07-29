@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { Helmet } from "react-helmet-async";
+import { SEO } from "@/components/SEO";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { api } from "@/lib/api";
@@ -78,11 +78,12 @@ const ExecutiveDetail = () => {
 
   return (
     <>
-      <Helmet>
-        <title>{executive.name} — {executive.role} | KWASU Students' Union</title>
-        <meta name="description" content={`Official profile of ${executive.name}, ${executive.role} of the KWASU Students' Union.`} />
-        <link rel="canonical" href={`https://thekwasusu.com/executives/${executive.slug}`} />
-      </Helmet>
+      <SEO
+        title={`${executive.name} — ${executive.role} | KWASU SU`}
+        description={`Profile and contact details of ${executive.name}, ${executive.role} of the Kwara State University Students' Union.`}
+        image={executive.avatarUrl ? (executive.avatarUrl.startsWith('http') ? executive.avatarUrl : `https://kwasusu.com.ng${executive.avatarUrl}`) : 'https://kwasusu.com.ng/logo.png'}
+        url={`https://kwasusu.com.ng/executives/${executive.slug}`}
+      />
 
       {/* Top Breadcrumb Header */}
       <div className="border-b border-gray-100 bg-white">

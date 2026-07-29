@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Helmet } from "react-helmet-async";
+import { SEO } from "@/components/SEO";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
@@ -277,14 +277,11 @@ const studentSupport: ServiceItem[] = [
 const ServicesPage: React.FC = () => {
   return (
     <>
-      <Helmet>
-        <title>Student Services | KWASU Students' Union</title>
-        <meta
-          name="description"
-          content="Access student services provided by KWASU Students' Union — kerosene depot, SU cafe, printing, complaint filing, and emergency contacts."
-        />
-        <link rel="canonical" href="https://thekwasusu.com/services" />
-      </Helmet>
+      <SEO
+        title="Student Services Hub | KWASU Students' Union"
+        description="Access essential Kwara State University student services including welfare complaint submission, document downloads, and opportunities."
+        url="https://kwasusu.com.ng/services"
+      />
 
       {/* ── PAGE BANNER ─────────────────────────────────────────────────── */}
       <section className="relative w-full bg-brand-900 border-b border-brand-800 overflow-hidden">

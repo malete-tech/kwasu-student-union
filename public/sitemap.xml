@@ -1,78 +1,83 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://thekwasusu.com/</loc>
-    <lastmod>2026-04-16</lastmod>
+    <loc>https://kwasusu.com.ng/</loc>
+    <lastmod>2026-07-29</lastmod>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://thekwasusu.com/about</loc>
-    <lastmod>2026-04-16</lastmod>
+    <loc>https://kwasusu.com.ng/about</loc>
+    <lastmod>2026-07-29</lastmod>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://thekwasusu.com/news</loc>
-    <lastmod>2026-04-16</lastmod>
+    <loc>https://kwasusu.com.ng/news</loc>
+    <lastmod>2026-07-29</lastmod>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://thekwasusu.com/events</loc>
-    <lastmod>2026-04-16</lastmod>
+    <loc>https://kwasusu.com.ng/events</loc>
+    <lastmod>2026-07-29</lastmod>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://thekwasusu.com/services</loc>
-    <lastmod>2026-04-16</lastmod>
+    <loc>https://kwasusu.com.ng/services</loc>
+    <lastmod>2026-07-29</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://thekwasusu.com/services/downloads</loc>
-    <lastmod>2026-04-16</lastmod>
+    <loc>https://kwasusu.com.ng/services/downloads</loc>
+    <lastmod>2026-07-29</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://thekwasusu.com/services/opportunities</loc>
-    <lastmod>2026-04-16</lastmod>
+    <loc>https://kwasusu.com.ng/services/opportunities</loc>
+    <lastmod>2026-07-29</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://thekwasusu.com/services/complaints</loc>
-    <lastmod>2026-04-16</lastmod>
+    <loc>https://kwasusu.com.ng/services/complaints</loc>
+    <lastmod>2026-07-29</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://thekwasusu.com/services/suggestion-box</loc>
-    <lastmod>2026-04-16</lastmod>
+    <loc>https://kwasusu.com.ng/services/suggestion-box</loc>
+    <lastmod>2026-07-29</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://thekwasusu.com/executives/central</loc>
-    <lastmod>2026-04-16</lastmod>
+    <loc>https://kwasusu.com.ng/executives/central</loc>
+    <lastmod>2026-07-29</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://thekwasusu.com/executives/senate</loc>
-    <lastmod>2026-04-16</lastmod>
+    <loc>https://kwasusu.com.ng/executives/senate</loc>
+    <lastmod>2026-07-29</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://thekwasusu.com/executives/judiciary</loc>
-    <lastmod>2026-04-16</lastmod>
+    <loc>https://kwasusu.com.ng/executives/judiciary</loc>
+    <lastmod>2026-07-29</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://thekwasusu.com/spotlight</loc>
-    <lastmod>2026-04-16</lastmod>
+    <loc>https://kwasusu.com.ng/executives/past</loc>
+    <lastmod>2026-07-29</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://thekwasusu.com/partners</loc>
-    <lastmod>2026-04-16</lastmod>
+    <loc>https://kwasusu.com.ng/spotlight</loc>
+    <lastmod>2026-07-29</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://thekwasusu.com/contact</loc>
-    <lastmod>2026-04-16</lastmod>
+    <loc>https://kwasusu.com.ng/partners</loc>
+    <lastmod>2026-07-29</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://kwasusu.com.ng/contact</loc>
+    <lastmod>2026-07-29</lastmod>
     <priority>0.7</priority>
   </url>
 </urlset>

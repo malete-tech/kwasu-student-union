@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Helmet } from "react-helmet-async";
+import { SEO } from "@/components/SEO";
 import { api } from "@/lib/api";
 import { Event } from "@/types";
 import EventCard from "@/components/event-card";
@@ -79,14 +79,11 @@ const EventsPage: React.FC = () => {
 
   return (
     <>
-      <Helmet>
-        <title>Campus Events & Academic Calendar | KWASU SU</title>
-        <meta
-          name="description"
-          content="Explore upcoming events, workshops, and social gatherings organized by the KWASU Students' Union."
-        />
-        <link rel="canonical" href="https://thekwasusu.com/events" />
-      </Helmet>
+      <SEO
+        title="Campus Events Calendar | KWASU Students' Union"
+        description="Discover upcoming Kwara State University campus events, workshops, union meetings, and student activities."
+        url="https://kwasusu.com.ng/events"
+      />
 
       {/* ── PAGE BANNER ───────────────────────────────────────────────────── */}
       <section className="relative w-full bg-brand-900 border-b border-brand-800 overflow-hidden">

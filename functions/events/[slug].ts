@@ -1,8 +1,11 @@
 /**
  * Cloudflare Pages Function: /events/:slug
  *
- * Same pattern as functions/news/[id].ts — intercepts event detail pages
- * and injects event-specific OG / Twitter Card tags for social sharing.
+ * Intercepts GET requests to event detail URLs before they reach the static SPA.
+ * Fetches event data from Supabase and injects event-specific Open Graph / Twitter
+ * Card meta tags + Event JSON-LD structured data so social media crawlers
+ * (WhatsApp, Telegram, Facebook, X, LinkedIn) receive a rich link preview and Google
+ * receives structured Event metadata.
  */
 
 const SUPABASE_URL = "https://hblljnhofvcflilawtkn.supabase.co";
@@ -19,55 +22,90 @@ function escapeHtml(str: string): string {
     .replace(/>/g, "&gt;");
 }
 
+function truncateText(str: string, maxLength: number): string {
+  if (!str || str.length <= maxLength) return str;
+  const sub = str.slice(0, maxLength - 1);
+  const lastSpace = sub.lastIndexOf(" ");
+  return (lastSpace > 0 ? sub.slice(0, lastSpace) : sub) + "…";
+}
+
 function buildOgTags(event: {
   title: string;
   description: string;
   startsAt: string;
+  endsAt?: string | null;
   venue: string;
   category: string;
   url: string;
 }): string {
-  const title = escapeHtml(`${event.title} | KWASU Students' Union Events`);
-  // Strip basic markdown for description
-  const description = escapeHtml(
-    event.description.replace(/[#*`_>]/g, "").split("\n")[0] ?? event.title
+  const rawTitle = event.title.trim();
+  const pageTitle = escapeHtml(
+    rawTitle.length > 44
+      ? truncateText(rawTitle, 58)
+      : `${rawTitle} | KWASU Events`
   );
+
+  // Clean markdown syntax from description
+  const cleanDesc = event.description.replace(/[#*`_>]/g, "").split("\n")[0] ?? rawTitle;
+
+  const metaDesc = escapeHtml(truncateText(cleanDesc, 155));
+  const ogDesc = escapeHtml(truncateText(cleanDesc, 122));
   const url = escapeHtml(event.url);
 
-  // Format date for description suffix
-  let dateSuffix = "";
-  try {
-    const d = new Date(event.startsAt);
-    dateSuffix = ` — ${d.toLocaleDateString("en-NG", {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-    })} @ ${escapeHtml(event.venue)}`;
-  } catch {
-    // ignore date formatting errors
-  }
+  const jsonLd = JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "Event",
+    "name": rawTitle,
+    "description": cleanDesc,
+    "startDate": event.startsAt,
+    "endDate": event.endsAt || event.startsAt,
+    "eventStatus": "https://schema.org/EventScheduled",
+    "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+    "location": {
+      "@type": "Place",
+      "name": event.venue,
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Malete",
+        "addressRegion": "Kwara State",
+        "addressCountry": "NG"
+      }
+    },
+    "image": [FALLBACK_IMAGE],
+    "organizer": {
+      "@type": "Organization",
+      "name": "KWASU Students' Union",
+      "url": SITE_ORIGIN
+    }
+  });
 
   return `
-  <!-- Injected by Cloudflare Pages Function for social sharing -->
-  <title>${title}</title>
-  <meta name="description" content="${description}${dateSuffix}" />
+  <!-- Injected by Cloudflare Pages Function for social sharing & SEO -->
+  <title>${pageTitle}</title>
+  <meta name="description" content="${metaDesc}" />
+  <link rel="canonical" href="${url}" />
 
   <meta property="og:type" content="event" />
   <meta property="og:url" content="${url}" />
-  <meta property="og:title" content="${title}" />
-  <meta property="og:description" content="${description}${dateSuffix}" />
+  <meta property="og:title" content="${pageTitle}" />
+  <meta property="og:description" content="${ogDesc}" />
   <meta property="og:image" content="${FALLBACK_IMAGE}" />
+  <meta property="og:image:secure_url" content="${FALLBACK_IMAGE}" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
   <meta property="og:site_name" content="KWASU Students' Union" />
   <meta property="og:locale" content="en_NG" />
 
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:url" content="${url}" />
-  <meta name="twitter:title" content="${title}" />
-  <meta name="twitter:description" content="${description}${dateSuffix}" />
-  <meta name="twitter:image" content="${FALLBACK_IMAGE}" />
   <meta name="twitter:site" content="@thekwasusu" />
+  <meta name="twitter:url" content="${url}" />
+  <meta name="twitter:title" content="${pageTitle}" />
+  <meta name="twitter:description" content="${ogDesc}" />
+  <meta name="twitter:image" content="${FALLBACK_IMAGE}" />
+
+  <script type="application/ld+json">
+  ${jsonLd}
+  </script>
   <!-- /Injected by Cloudflare Pages Function -->`;
 }
 
@@ -76,7 +114,7 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
 
   try {
     // ── 1. Fetch event from Supabase REST API ─────────────────────────────
-    const apiUrl = `${SUPABASE_URL}/rest/v1/events?slug=eq.${encodeURIComponent(slug)}&select=id,slug,title,description_md,starts_at,venue,category&limit=1`;
+    const apiUrl = `${SUPABASE_URL}/rest/v1/events?slug=eq.${encodeURIComponent(slug)}&select=id,slug,title,description_md,starts_at,ends_at,venue,category&limit=1`;
 
     const supabaseRes = await fetch(apiUrl, {
       headers: {
@@ -103,6 +141,7 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
       title: row.title ?? "",
       description: row.description_md ?? "",
       startsAt: row.starts_at ?? "",
+      endsAt: row.ends_at ?? null,
       venue: row.venue ?? "",
       category: row.category ?? "",
       url: eventUrl,
@@ -118,17 +157,12 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
 
     let html = await indexRes.text();
 
-    // ── 3. Replace static tags and inject OG block before </head> ─────────
-    html = html.replace(
-      /<title>[^<]*<\/title>/i,
-      `<title>${escapeHtml(row.title ?? "")} | KWASU Students' Union Events</title>`
-    );
-    html = html.replace(
-      /<meta\s+name="description"[^>]*>/i,
-      `<meta name="description" content="${escapeHtml(
-        (row.description_md ?? "").replace(/[#*`_>]/g, "").split("\n")[0] ?? ""
-      )}" />`
-    );
+    // ── 3. Replace static tags and inject OG block ────────────────────────
+    html = html.replace(/<title>[^<]*<\/title>/i, "");
+    html = html.replace(/<meta\s+name="description"[^>]*>/gi, "");
+    html = html.replace(/<meta\s+property="og:[^>]*>/gi, "");
+    html = html.replace(/<meta\s+name="twitter:[^>]*>/gi, "");
+    html = html.replace(/<link\s+rel="canonical"[^>]*>/gi, "");
 
     html = html.replace("</head>", `${ogTags}\n</head>`);
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Helmet } from "react-helmet-async";
+import { SEO } from "@/components/SEO";
 import { api } from "@/lib/api";
 import { Executive } from "@/types";
 import ExecutiveCard from "@/components/ExecutiveCard";
@@ -31,14 +31,11 @@ const SenateCouncil = () => {
 
   return (
     <>
-      <Helmet>
-        <title>Senate Council | KWASU Students' Union</title>
-        <meta
-          name="description"
-          content="Meet the principal officers and legislative leaders of the KWASU Students' Union Senate Council."
-        />
-        <link rel="canonical" href="https://thekwasusu.com/executives/senate" />
-      </Helmet>
+      <SEO
+        title="Senate Council | KWASU Students' Union"
+        description="Meet the legislative Senate Council members of the Kwara State University Students' Union advocating for student rights and representation."
+        url="https://kwasusu.com.ng/executives/senate"
+      />
 
       <ExecutiveCouncilHeader
         title="Senate Council"

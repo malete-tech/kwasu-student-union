@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Helmet } from "react-helmet-async";
+import { SEO } from "@/components/SEO";
 import { Link } from "react-router-dom";
 import { api } from "@/lib/api";
 import { Partner } from "@/types";
@@ -60,10 +60,11 @@ const PartnersPage: React.FC = () => {
 
   return (
     <>
-      <Helmet>
-        <title>Our Partners | KWASU Students' Union</title>
-        <meta name="description" content="Discover organizations and businesses in good standing with the KWASU Students' Union." />
-      </Helmet>
+      <SEO
+        title="Official Partners & Sponsors | KWASU SU"
+        description="Discover corporate partners, sponsors, and organizations supporting Kwara State University Students' Union programs."
+        url="https://kwasusu.com.ng/partners"
+      />
 
       <div className="container py-12">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">

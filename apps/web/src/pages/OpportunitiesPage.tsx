@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Helmet } from "react-helmet-async";
+import { SEO } from "@/components/SEO";
 import { Link } from "react-router-dom";
 import { api } from "@/lib/api";
 import { Opportunity } from "@/types";
@@ -115,9 +115,11 @@ const OpportunitiesPage: React.FC = () => {
 
   return (
     <>
-      <Helmet>
-        <title>Opportunities | KWASU Students' Union</title>
-      </Helmet>
+      <SEO
+        title="Opportunities & Scholarships | KWASU SU"
+        description="Explore verified scholarships, internships, fellowships, and career development opportunities for KWASU students."
+        url="https://kwasusu.com.ng/services/opportunities"
+      />
       <div className="container py-12">
         <Button asChild variant="ghost" className="mb-8 text-brand-600 hover:text-brand-700 -ml-4">
           <Link to="/services">

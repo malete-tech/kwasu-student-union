@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Helmet } from "react-helmet-async";
+import { SEO } from "@/components/SEO";
 import { Card, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -57,9 +57,11 @@ const SuggestionBoxPage: React.FC = () => {
 
   return (
     <>
-      <Helmet>
-        <title>Suggestion Box | KWASU Students' Union</title>
-      </Helmet>
+      <SEO
+        title="Student Suggestion Box | KWASU SU"
+        description="Share innovative ideas, feedback, and suggestions with the KWASU Students' Union to improve campus life and academic welfare."
+        url="https://kwasusu.com.ng/services/suggestion-box"
+      />
       <div className="container py-12">
         <Button asChild variant="ghost" className="mb-8 text-brand-600 hover:text-brand-700 -ml-4">
           <Link to="/services">
