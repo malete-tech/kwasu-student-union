@@ -3,11 +3,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { News } from "@/types";
-import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { CalendarDays } from "@/components/ui/font-awesome-icon";
-import { motion } from "framer-motion";
 
 interface NewsFeedItemProps {
   news: News;
@@ -20,16 +18,18 @@ const NewsFeedItem: React.FC<NewsFeedItemProps> = ({ news, variant = "default", 
 
   if (variant === "featured") {
     return (
-      <motion.div 
-        whileHover={{ scale: 1.01 }}
-        className={cn("flex flex-col md:flex-row overflow-hidden shadow-xl transition-shadow duration-300 rounded-2xl bg-white", className)}
+      <div
+        className={cn(
+          "flex flex-col md:flex-row overflow-hidden border border-gray-100 transition-shadow duration-200 hover:shadow-md rounded bg-white",
+          className
+        )}
       >
         {news.coverUrl && (
           <div className="relative w-full md:w-1/2 lg:w-2/5 aspect-video md:aspect-auto overflow-hidden flex-shrink-0">
             <img
               src={news.coverUrl}
               alt={news.title}
-              className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+              className="absolute inset-0 h-full w-full object-cover"
             />
           </div>
         )}
@@ -52,87 +52,100 @@ const NewsFeedItem: React.FC<NewsFeedItemProps> = ({ news, variant = "default", 
           </div>
           <div className="flex flex-wrap gap-2 pt-4">
             {news.tags.map((tag) => (
-              <Badge key={tag} variant="secondary" className="bg-brand-100 text-brand-700">
+              <span
+                key={tag}
+                className="text-[10px] font-bold uppercase tracking-wider text-brand-600 bg-brand-50 px-2 py-0.5 rounded"
+              >
                 {tag}
-              </Badge>
+              </span>
             ))}
           </div>
         </div>
-      </motion.div>
+      </div>
     );
   }
 
   if (variant === "list") {
     return (
-      <motion.div 
-        whileHover={{ x: 5 }}
-        className={cn("flex gap-4 items-start group cursor-pointer", className)}
+      <Link
+        to={`/news/${news.id}`}
+        className={cn(
+          "flex gap-4 items-start py-5 group border-l-2 border-transparent hover:border-brand-500 pl-3 -ml-3 transition-colors duration-150",
+          className
+        )}
       >
-        <div className="w-24 h-20 sm:w-32 sm:h-24 flex-shrink-0 overflow-hidden rounded-md bg-gray-100 border">
+        {/* Thumbnail */}
+        <div className="w-20 h-16 sm:w-28 sm:h-20 flex-shrink-0 overflow-hidden rounded bg-gray-100 border border-gray-100">
           {news.coverUrl ? (
-            <img 
-              src={news.coverUrl} 
-              alt={news.title} 
-              className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" 
+            <img
+              src={news.coverUrl}
+              alt={news.title}
+              className="w-full h-full object-cover"
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center text-gray-400">
-              <CalendarDays className="h-8 w-8 opacity-20" />
+            <div className="w-full h-full flex items-center justify-center">
+              <CalendarDays className="h-6 w-6 text-gray-300" />
             </div>
           )}
         </div>
-        <div className="flex-1 min-w-0">
-          <h3 className="text-base sm:text-lg font-bold leading-tight line-clamp-2 mb-1 group-hover:text-brand-600 transition-colors">
-            <Link to={`/news/${news.id}`} className={linkClasses}>
-              {news.title}
-            </Link>
+
+        {/* Text */}
+        <div className="flex-1 min-w-0 pt-0.5">
+          <h3 className="text-sm sm:text-base font-bold text-brand-900 leading-snug line-clamp-2 mb-1 group-hover:text-brand-600 transition-colors">
+            {news.title}
           </h3>
-          <p className="text-xs sm:text-sm text-gray-600 line-clamp-2 mb-2">
+          <p className="text-xs text-gray-500 line-clamp-2 mb-2 leading-relaxed">
             {news.excerpt}
           </p>
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[10px] sm:text-xs text-muted-foreground uppercase tracking-wider font-semibold">
-            <div className="flex items-center gap-1.5">
-              <CalendarDays className="h-3.5 w-3.5 text-brand-500" />
-              {format(new Date(news.publishedAt), "dd MMMM yyyy")}
-            </div>
+          <div className="flex items-center gap-1.5 text-[10px] font-bold text-gray-400 uppercase tracking-wider">
+            <CalendarDays className="h-3 w-3 text-brand-400" />
+            {format(new Date(news.publishedAt), "dd MMMM yyyy")}
           </div>
         </div>
-      </motion.div>
+      </Link>
     );
   }
 
   return (
-    <motion.div 
-      whileHover={{ y: -5 }}
-      className={cn("flex flex-col overflow-hidden border shadow-sm hover:shadow-lg transition-all duration-300 rounded-xl bg-white", className)}
+    <div
+      className={cn(
+        "flex flex-col overflow-hidden border border-gray-100 hover:border-brand-200 hover:shadow-sm transition-all duration-150 rounded bg-white",
+        className
+      )}
     >
       {news.coverUrl && (
-        <Link to={`/news/${news.id}`} className="relative h-48 w-full overflow-hidden block group">
+        <Link
+          to={`/news/${news.id}`}
+          className="relative h-44 w-full overflow-hidden block"
+        >
           <img
             src={news.coverUrl}
             alt={news.title}
-            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+            className="h-full w-full object-cover"
           />
         </Link>
       )}
       <div className="p-4 flex flex-col flex-grow">
-        <h3 className="text-xl font-semibold leading-tight line-clamp-2 mb-2">
+        <h3 className="text-base font-bold text-brand-900 leading-snug line-clamp-2 mb-2">
           <Link to={`/news/${news.id}`} className={linkClasses}>
             {news.title}
           </Link>
         </h3>
-        <p className="text-sm text-gray-700 line-clamp-3 mb-4 flex-grow">
+        <p className="text-sm text-gray-600 line-clamp-3 mb-4 flex-grow leading-relaxed">
           {news.excerpt}
         </p>
-        <div className="flex flex-wrap gap-2 mt-auto">
+        <div className="flex flex-wrap gap-1.5 mt-auto">
           {news.tags.slice(0, 2).map((tag) => (
-            <Badge key={tag} variant="secondary" className="bg-brand-100 text-brand-700 border-none">
+            <span
+              key={tag}
+              className="text-[10px] font-bold uppercase tracking-wider text-brand-600 bg-brand-50 px-2 py-0.5 rounded"
+            >
               {tag}
-            </Badge>
+            </span>
           ))}
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 };
 

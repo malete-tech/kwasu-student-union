@@ -3,33 +3,32 @@
 import React, { useEffect, useState } from "react";
 import { api } from "@/lib/api";
 import { Event } from "@/types";
-import EventCard from "@/components/event-card";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Calendar } from "@/components/ui/calendar";
-import { Input } from "@/components/ui/input";
-import { Search } from "@/components/ui/font-awesome-icon";
 import { Skeleton } from "@/components/ui/skeleton";
-// import { format } from "date-fns"; // Removed unused import
 import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
+import { format } from "date-fns";
+import { cn } from "@/lib/utils";
 
 const EventsCalendarSection: React.FC = () => {
-  const [allEvents, setAllEvents] = useState<Event[]>([]);
-  const [filteredEvents, setFilteredEvents] = useState<Event[]>([]);
+  const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
-  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     const fetchEvents = async () => {
       try {
         const data = await api.events.getAll();
-        setAllEvents(data);
-        setFilteredEvents(data);
+        const now = new Date();
+        const upcoming = data
+          .filter((e) => new Date(e.startsAt) >= now)
+          .sort(
+            (a, b) =>
+              new Date(a.startsAt).getTime() - new Date(b.startsAt).getTime()
+          )
+          .slice(0, 3);
+        setEvents(upcoming);
       } catch (err) {
         console.error("Failed to fetch events:", err);
-        setError("Failed to load events calendar.");
+        setError("Failed to load upcoming events.");
       } finally {
         setLoading(false);
       }
@@ -37,101 +36,98 @@ const EventsCalendarSection: React.FC = () => {
     fetchEvents();
   }, []);
 
-  useEffect(() => {
-    let currentEvents = allEvents;
-
-    if (selectedDate) {
-      currentEvents = currentEvents.filter(event => {
-        const eventStartDate = new Date(event.startsAt);
-        const eventEndDate = event.endsAt ? new Date(event.endsAt) : eventStartDate;
-        return (
-          selectedDate.toDateString() >= eventStartDate.toDateString() &&
-          selectedDate.toDateString() <= eventEndDate.toDateString()
-        );
-      });
-    }
-
-    if (searchTerm) {
-      currentEvents = currentEvents.filter(event =>
-        event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        event.descriptionMd.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        event.venue.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        event.category.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    }
-
-    setFilteredEvents(currentEvents.sort((a, b) => new Date(a.startsAt).getTime() - new Date(b.startsAt).getTime()));
-  }, [searchTerm, selectedDate, allEvents]);
-
-  const modifiers = {
-    hasEvent: allEvents.map(event => new Date(event.startsAt)),
-  };
-
-  const modifiersClassNames = {
-    hasEvent: "bg-brand-500 text-white rounded-full",
-  };
-
   return (
-    <div className="space-y-6">
-      <div className="pb-4 flex justify-between items-center">
-        <h2 className="text-2xl font-semibold text-brand-700">Events Calendar</h2>
-        <Button asChild variant="link" size="sm" className="text-brand-500 hover:text-brand-600 focus-visible:ring-brand-gold">
-          <Link to="/events">View All</Link>
-        </Button>
+    <div className="space-y-0">
+      {/* Section header */}
+      <div className="flex items-center justify-between mb-5">
+        <div>
+          <p className="text-[10px] font-bold text-brand-400 uppercase tracking-[0.15em] mb-0.5">
+            Upcoming
+          </p>
+          <h2 className="text-lg font-bold text-gray-900 leading-snug">
+            Events Calendar
+          </h2>
+        </div>
+        <Link
+          to="/events"
+          className="text-xs font-bold text-brand-600 hover:text-brand-700 transition-colors"
+        >
+          View all <i className="fa-solid fa-arrow-right text-[10px] ml-1" aria-hidden="true" />
+        </Link>
       </div>
-      <div className="space-y-6">
-        <div className="flex justify-center">
-          <Calendar
-            mode="single"
-            selected={selectedDate}
-            onSelect={setSelectedDate}
-            className="rounded-md border shadow-md"
-            modifiers={modifiers}
-            modifiersClassNames={modifiersClassNames}
-          />
-        </div>
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder="Search events..."
-            className="pl-9 pr-3 py-2 rounded-md border focus-visible:ring-brand-gold"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
 
-        {loading ? (
-          <div className="space-y-4">
-            {[...Array(2)].map((_, i) => (
-              <Card key={i} className="flex flex-col overflow-hidden shadow-sm">
-                <CardHeader className="pb-2">
-                  <Skeleton className="h-5 w-3/4 mb-2" />
-                  <Skeleton className="h-3 w-1/2" />
-                  <Skeleton className="h-3 w-2/3" />
-                </CardHeader>
-                <CardContent className="flex-grow">
-                  <Skeleton className="h-3 w-full mb-1" />
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        ) : error ? (
-          <div className="text-destructive text-sm text-center">{error}</div>
-        ) : filteredEvents.length > 0 ? (
-          <div className="space-y-4">
-            {filteredEvents.slice(0, 2).map((eventItem) => ( // Limit to 2 for homepage
-              <EventCard key={eventItem.id} event={eventItem} className="shadow-sm" />
-            ))}
-          </div>
-        ) : (
-          <p className="text-center text-muted-foreground text-sm">No events found for this date or search.</p>
-        )}
-        <div className="text-center mt-4">
-          <Button asChild variant="outline" className="border-brand-500 text-brand-500 hover:bg-brand-50 hover:text-brand-600 px-6 py-3 focus-visible:ring-brand-gold">
-            <Link to="/events">View All Events</Link>
-          </Button>
+      {loading ? (
+        <div className="space-y-2">
+          {[...Array(3)].map((_, i) => (
+            <div key={i} className="flex gap-4 border border-gray-100 rounded p-4 bg-white">
+              <Skeleton className="w-12 h-14 rounded flex-shrink-0" />
+              <div className="flex-1 space-y-2 pt-1">
+                <Skeleton className="h-4 w-3/4" />
+                <Skeleton className="h-3 w-1/2" />
+              </div>
+            </div>
+          ))}
         </div>
-      </div>
+      ) : error ? (
+        <div className="py-8 text-center text-sm text-red-500 border border-red-100 rounded bg-red-50/50">
+          {error}
+        </div>
+      ) : events.length === 0 ? (
+        <div className="py-12 text-center text-xs text-gray-400 border border-gray-100 rounded bg-white">
+          <i className="fa-solid fa-calendar-xmark text-3xl text-gray-200 mb-3" />
+          <p>No upcoming events scheduled.</p>
+        </div>
+      ) : (
+        <div className="space-y-2">
+          {events.map((event) => {
+            const start = new Date(event.startsAt);
+            return (
+              <Link
+                key={event.id}
+                to={`/events/${event.slug}`}
+                className={cn(
+                  "group flex items-start gap-4 border border-gray-100 rounded p-4 bg-white",
+                  "hover:border-brand-300 hover:shadow-sm transition-all duration-150"
+                )}
+                id={`event-item-${event.slug}`}
+              >
+                {/* Date Badge */}
+                <div className="flex-shrink-0 w-12 text-center border border-gray-100 rounded bg-brand-50 py-1.5">
+                  <p className="text-[10px] font-bold text-brand-500 uppercase leading-none">
+                    {format(start, "MMM")}
+                  </p>
+                  <p className="text-xl font-extrabold text-brand-900 leading-none mt-0.5">
+                    {format(start, "dd")}
+                  </p>
+                </div>
+
+                {/* Event info */}
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-sm font-bold text-gray-900 leading-snug line-clamp-1 mb-1 group-hover:text-brand-600 transition-colors">
+                    {event.title}
+                  </h3>
+                  <div className="flex items-center gap-1.5 text-[11px] text-gray-500">
+                    <i className="fa-solid fa-location-dot text-brand-400 text-[10px]" aria-hidden="true" />
+                    <span className="truncate">{event.venue}</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 text-[10px] font-bold mt-1">
+                    <span className="text-brand-600 bg-brand-50 px-1.5 py-0.5 rounded uppercase tracking-wider">
+                      {event.category}
+                    </span>
+                    {event.rsvpOpen && (
+                      <span className="text-brand-gold bg-brand-gold/10 px-1.5 py-0.5 rounded uppercase tracking-wider">
+                        RSVP Open
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                <i className="fa-solid fa-chevron-right text-[10px] text-gray-300 group-hover:text-brand-400 transition-colors mt-1 flex-shrink-0" aria-hidden="true" />
+              </Link>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 };

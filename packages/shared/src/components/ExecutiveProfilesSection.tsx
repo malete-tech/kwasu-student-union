@@ -6,7 +6,6 @@ import { Executive } from "@/types";
 import ExecutiveCard from "@/components/ExecutiveCard";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
 
 const ExecutiveProfilesSection: React.FC = () => {
   const [executives, setExecutives] = useState<Executive[]>([]);
@@ -16,9 +15,8 @@ const ExecutiveProfilesSection: React.FC = () => {
   useEffect(() => {
     const fetchExecutives = async () => {
       try {
-        // Fetch only Central Executive members for the homepage preview
-        const data = await api.executives.getAll('Central');
-        setExecutives(data.slice(0, 4)); // Limit to 4 for the homepage section
+        const data = await api.executives.getAll("Central");
+        setExecutives(data.slice(0, 4));
       } catch (err) {
         console.error("Failed to fetch executives:", err);
         setError("Failed to load executive profiles.");
@@ -30,39 +28,53 @@ const ExecutiveProfilesSection: React.FC = () => {
   }, []);
 
   return (
-    <div className="space-y-6">
-      <div className="pb-4 flex justify-between items-center">
-        <h2 className="text-2xl font-semibold text-brand-700">Central Executive Council</h2>
-        <Button asChild variant="link" size="sm" className="text-brand-500 hover:text-brand-600 focus-visible:ring-brand-gold">
-          <Link to="/executives/central">View All</Link>
-        </Button>
-      </div>
-      <div className="space-y-6">
-        <div className="relative p-4 bg-brand-50 rounded-lg border-l-4 border-brand-500 text-brand-800 italic">
-          <i className="fa-solid fa-quote-left absolute top-2 left-2 text-2xl text-brand-300 opacity-50"></i>
-          <p className="ml-8 text-sm">
-            "The Students' Union is committed to fostering a supportive and dynamic environment where every student can achieve their full potential."
+    <div>
+      {/* Section header */}
+      <div className="flex items-center justify-between mb-5">
+        <div>
+          <p className="text-[10px] font-bold text-brand-400 uppercase tracking-[0.15em] mb-0.5">
+            Leadership
           </p>
-          <i className="fa-solid fa-quote-right absolute bottom-2 right-2 text-2xl text-brand-300 opacity-50"></i>
+          <h2 className="text-lg font-bold text-gray-900 leading-snug">
+            Central Executive Council
+          </h2>
         </div>
-        {loading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            {[...Array(4)].map((_, i) => (
-              <Skeleton key={i} className="h-[380px] w-full rounded-2xl" />
-            ))}
-          </div>
-        ) : error ? (
-          <div className="text-destructive text-sm text-center">{error}</div>
-        ) : executives.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            {executives.map((executive) => (
-              <ExecutiveCard key={executive.id} executive={executive} />
-            ))}
-          </div>
-        ) : (
-          <p className="text-muted-foreground text-sm text-center">No executives to display.</p>
-        )}
+        <Link
+          to="/executives/central"
+          className="text-xs font-bold text-brand-600 hover:text-brand-700 transition-colors"
+        >
+          Full directory <i className="fa-solid fa-arrow-right text-[10px] ml-1" aria-hidden="true" />
+        </Link>
       </div>
+
+      {loading ? (
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {[...Array(4)].map((_, i) => (
+            <div key={i} className="border border-gray-100 rounded overflow-hidden">
+              <Skeleton className="aspect-[3/4] w-full" />
+              <div className="p-3 space-y-2">
+                <Skeleton className="h-3 w-full" />
+                <Skeleton className="h-3 w-2/3" />
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : error ? (
+        <div className="py-10 text-center text-sm text-red-500 border border-red-100 rounded bg-red-50/50">
+          {error}
+        </div>
+      ) : executives.length > 0 ? (
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {executives.map((executive) => (
+            <ExecutiveCard key={executive.id} executive={executive} />
+          ))}
+        </div>
+      ) : (
+        <div className="py-14 text-center text-xs text-gray-400 border border-gray-100 rounded bg-white">
+          <i className="fa-solid fa-users-slash text-3xl text-gray-200 mb-2" />
+          <p>No executive profiles available yet.</p>
+        </div>
+      )}
     </div>
   );
 };

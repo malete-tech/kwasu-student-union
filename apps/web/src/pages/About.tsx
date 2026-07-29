@@ -1,98 +1,112 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
-import remarkBreaks from "remark-breaks";
-import Autoplay from "embla-carousel-autoplay";
 import { api } from "@/lib/api";
 import { Document } from "@/types";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { FileText, Download, History, Target, Eye, Heart } from "@/components/ui/font-awesome-icon";
+
+import { FileText, Download } from "@/components/ui/font-awesome-icon";
 import { Skeleton } from "@/components/ui/skeleton";
 import AboutHero from "@/components/AboutHero";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
+import FadeIn from "@/components/FadeIn";
 
-const aboutContent = `
-## Our Mission
-To represent, advocate for, and empower the students of Kwara State University, fostering a vibrant and inclusive campus community where every student can thrive academically, socially, and personally.
+// ─── Data ────────────────────────────────────────────────────────────────────
 
-## Our Vision
-To be a leading Students' Union, recognized for its transparency, accountability, and unwavering commitment to student welfare, academic excellence, and innovative solutions that enhance the overall university experience.
-
-## Our Core Values
-*   **Student-Centricity:** Placing the needs and interests of students at the forefront.
-*   **Integrity & Transparency:** Upholding honesty and openness in all operations.
-*   **Advocacy & Empowerment:** Championing student rights and leadership potential.
-*   **Inclusivity & Diversity:** Valuing every student and promoting equal opportunities.
-*   **Innovation & Progress:** Embracing new ideas to improve student services.
-
----
-
-## Brief History of KWASU SU
-
-The Kwara State University Students' Union (KWASU SU) emerged as the official representative body of students of Kwara State University (KWASU), Malete, with a clear mandate to serve as the collective voice of the student community. 
-
-Its establishment marking a defining moment in the democratic and participatory development of the university, creating a structured platform through which students could engage university management, advocate for their welfare, and contribute meaningfully to institutional growth.
-
-### The Foundation (2017/2018)
-The formal installation of the Students’ Union took place during the **2017/2018 academic session** under the leadership of **Comrade Aliyu Uthman Abdulkadir (Phodeo)**, who was then serving as the National Association of Nigerian Students (NANS)- Kwara Chairman. This foundational phase provided the constitutional and administrative framework upon which the Union continues to operate.
-
-### Presidential Legacy & Leadership
-The Union has evolved through the dedicated leadership of its elected Presidents:
-
-*   **Pioneer President: Comrade Adio Usman Olawale (Adio)**
-    *   Laid the groundwork for effective student leadership and institutional engagement, setting important precedents in governance.
-*   **2nd President: Comrade Abdulganiyu Dayo Dikko (Dikko)**
-    *   Strengthened advocacy efforts and deepened the Union’s institutional presence within the university.
-*   **3rd President: Comrade Kozeem Olaitan Hanafy (Hanafy)**
-    *   Expanded the Union’s visibility through impactful initiatives and broadened student participation.
-*   **4th President: Lawal Azeez Okikiola (Okiki)**
-    *   Consolidated administrative stability and promoted structured engagement between students and management.
-*   **5th President: Comrade Yusuf Umar Danshitta (Danshitta)**
-    *   Prioritized welfare-centered programs, reinforcing the Union’s commitment to student well-being.
-*   **6th President: Comrade Adewoye Isreal Jesutofunmi (Isreal.ait)**
-    *   Further strengthened student representation and encouraged broader inclusion in Union affairs.
-*   **7th President: Comrade Abdulkadir Soliu Kolapo (Sen. Kolapapaz)**
-    *   Emphasized accountability and continuity in student governance.
-*   **8th President: Comrade Abdulafeez Babatunde Kewulere (Baba)**
-    *   Reinforced the Union’s position as a formidable and organized body within the university.
-*   **9th President (Current): Comrade Abdulsamad Olamilekan Raji (PEOPLE)**
-    *   Continues to uphold the Union’s enduring mission of progressive leadership and constructive engagement.
-    *   **Official website of the Students’ Union**, established during the 2025/2026 People’s Era Administration under the leadership of Comr. Abdulsamad Olamilekan Raji, and initiated by the Office of the 9th Students’ Union Public Relations Officer, Victor Olayinka Otitodun.
-`;
-
-const galleryImages = [
-  "/about-gallery/photo1.jpg",
-  "/about-gallery/photo2.jpg",
-  "/about-gallery/photo3.jpg",
-  "/about-gallery/photo4.jpg",
-  "/about-gallery/photo5.jpg",
-  "/about-gallery/photo6.jpg",
+const pillars = [
+  {
+    index: "01",
+    title: "Our Mission",
+    body: "To represent, advocate for, and empower the students of Kwara State University — fostering a vibrant and inclusive campus community where every student can thrive academically, socially, and personally.",
+  },
+  {
+    index: "02",
+    title: "Our Vision",
+    body: "To be a leading Students' Union recognized for transparency, accountability, and an unwavering commitment to student welfare, academic excellence, and innovative solutions.",
+  },
+  {
+    index: "03",
+    title: "Core Values",
+    body: "Student-centricity · Integrity & Transparency · Advocacy & Empowerment · Inclusivity & Diversity · Innovation & Progress.",
+  },
 ];
+
+const presidents = [
+  {
+    order: "1st",
+    name: "Comrade Adio Usman Olawale",
+    alias: "Adio",
+    note: "Laid the groundwork for effective student leadership and institutional engagement, setting important precedents in governance.",
+  },
+  {
+    order: "2nd",
+    name: "Comrade Abdulganiyu Dayo Dikko",
+    alias: "Dikko",
+    note: "Strengthened advocacy efforts and deepened the Union's institutional presence within the university.",
+  },
+  {
+    order: "3rd",
+    name: "Comrade Kozeem Olaitan Hanafy",
+    alias: "Hanafy",
+    note: "Expanded the Union's visibility through impactful initiatives and broadened student participation.",
+  },
+  {
+    order: "4th",
+    name: "Lawal Azeez Okikiola",
+    alias: "Okiki",
+    note: "Consolidated administrative stability and promoted structured engagement between students and management.",
+  },
+  {
+    order: "5th",
+    name: "Comrade Yusuf Umar Danshitta",
+    alias: "Danshitta",
+    note: "Prioritized welfare-centered programs, reinforcing the Union's commitment to student well-being.",
+  },
+  {
+    order: "6th",
+    name: "Comrade Adewoye Isreal Jesutofunmi",
+    alias: "Isreal.ait",
+    note: "Further strengthened student representation and encouraged broader inclusion in Union affairs.",
+  },
+  {
+    order: "7th",
+    name: "Comrade Abdulkadir Soliu Kolapo",
+    alias: "Sen. Kolapapaz",
+    note: "Emphasized accountability and continuity in student governance.",
+  },
+  {
+    order: "8th",
+    name: "Comrade Abdulafeez Babatunde Kewulere",
+    alias: "Baba",
+    note: "Reinforced the Union's position as a formidable and organized body within the university.",
+  },
+  {
+    order: "9th",
+    name: "Comrade Abdulsamad Olamilekan Raji",
+    alias: "PEOPLE",
+    note: "Continues to uphold the Union's enduring mission of progressive leadership and constructive engagement. The People's Era Administration.",
+    isCurrent: true,
+  },
+];
+
+const quickFacts = [
+  { label: "Founded", value: "2017 / 2018" },
+  { label: "Presidents", value: "9 administrations" },
+  { label: "Location", value: "KWASU SU Building, Malete" },
+];
+
+// ─── Component ───────────────────────────────────────────────────────────────
 
 const About = () => {
   const [documents, setDocuments] = useState<Document[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const plugin = useRef(
-    Autoplay({ delay: 3000, stopOnInteraction: true })
-  );
 
   useEffect(() => {
     const fetchDocuments = async () => {
       try {
         const allDocs = await api.documents.getAll();
-        const filteredDocs = allDocs.filter(doc =>
-          doc.tags.includes("constitution") || doc.tags.includes("handbook")
+        const filteredDocs = allDocs.filter(
+          (doc) => doc.tags.includes("constitution") || doc.tags.includes("handbook")
         );
         setDocuments(filteredDocs);
       } catch (err) {
@@ -109,138 +123,257 @@ const About = () => {
     <>
       <Helmet>
         <title>About Us | KWASU Students' Union</title>
-        <meta name="description" content="Official history and mission of the KWASU Students' Union. Meet our presidential legacy and access key documents." />
+        <meta
+          name="description"
+          content="Official history and mission of the KWASU Students' Union. Learn about our mission, vision, presidential legacy, and access key governing documents."
+        />
       </Helmet>
 
+      {/* ── 1. PAGE BANNER ───────────────────────────────────────────────── */}
       <AboutHero />
 
-      <div className="container py-12 px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-          {/* Main History Content */}
-          <div className="lg:col-span-2 space-y-16">
-            <div className="prose">
-              <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreaks]}>
-                {aboutContent}
-              </ReactMarkdown>
-            </div>
-
-            {/* Photo Carousel Section */}
-            <div className="space-y-6">
-              <div className="relative">
-                <Carousel
-                  plugins={[plugin.current]}
-                  onMouseEnter={plugin.current.stop}
-                  onMouseLeave={plugin.current.reset}
-                  opts={{
-                    align: "start",
-                    loop: true,
-                  }}
-                  className="w-full"
+      {/* ── 2. MISSION · VISION · VALUES ─────────────────────────────────── */}
+      <FadeIn>
+        <section className="border-b border-gray-100">
+          <div className="container">
+            <div className="grid grid-cols-1 md:grid-cols-3">
+              {pillars.map((pillar, i) => (
+                <div
+                  key={pillar.index}
+                  className={`py-10 px-6 md:py-12 md:px-8 ${
+                    i < pillars.length - 1
+                      ? "border-b md:border-b-0 md:border-r border-gray-100"
+                      : ""
+                  }`}
                 >
-                  <CarouselContent className="-ml-2 md:-ml-4">
-                    {galleryImages.map((src, index) => (
-                      <CarouselItem key={index} className="pl-2 md:pl-4 basis-[90%] md:basis-1/2 lg:basis-1/2">
-                        <div className="overflow-hidden rounded-xl md:rounded-2xl aspect-[16/10] md:aspect-[4/3] shadow-lg border border-brand-50 bg-white">
-                          <img
-                            src={src}
-                            alt={`Union activity ${index + 1}`}
-                            className="w-full h-full object-cover transition-transform duration-700 hover:scale-110"
-                          />
-                        </div>
-                      </CarouselItem>
-                    ))}
-                  </CarouselContent>
-                  <div className="hidden md:block">
-                    <CarouselPrevious className="-left-4 bg-white hover:bg-brand-50 text-brand-700 border-brand-100" />
-                    <CarouselNext className="-right-4 bg-white hover:bg-brand-50 text-brand-700 border-brand-100" />
-                  </div>
-                </Carousel>
-              </div>
+                  <span className="block text-[11px] font-bold text-brand-gold uppercase tracking-[0.18em] mb-4">
+                    {pillar.index}
+                  </span>
+                  <h2 className="text-base font-bold text-brand-900 mb-3">{pillar.title}</h2>
+                  <p className="text-sm text-gray-600 leading-relaxed">{pillar.body}</p>
+                </div>
+              ))}
             </div>
           </div>
+        </section>
+      </FadeIn>
 
-          {/* Sidebar: Documents & Fast Facts */}
-          <div className="lg:col-span-1 space-y-10">
-            <Card className="p-6 shadow-xl rounded-3xl border-none bg-brand-900 text-white overflow-hidden relative">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-brand-gold/10 rounded-full blur-3xl -mr-16 -mt-16" />
-              <CardHeader className="pb-4 p-0 relative z-10">
-                <CardTitle className="text-xl font-bold uppercase text-brand-gold flex items-center gap-2">
-                  <FileText className="h-5 w-5" /> Important Vault
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-0 space-y-4 pt-4 relative z-10">
-                {loading ? (
-                  <div className="space-y-3">
-                    <Skeleton className="h-12 w-full bg-white/10" />
-                    <Skeleton className="h-12 w-full bg-white/10" />
-                  </div>
-                ) : error ? (
-                  <div className="text-red-300 text-sm">{error}</div>
-                ) : documents.length > 0 ? (
-                  documents.map((doc) => (
-                    <Button
-                      key={doc.id}
-                      asChild
-                      variant="ghost"
-                      className="w-full justify-start text-left h-auto py-4 px-5 bg-white/5 hover:bg-white/15 text-white border-none rounded-2xl transition-all group"
-                    >
-                      <a href={doc.url} target="_blank" rel="noopener noreferrer" className="flex items-center">
-                        <div className="p-2 rounded-lg bg-brand-gold/10 mr-3 text-brand-gold group-hover:scale-110 transition-transform">
-                          <FileText className="h-5 w-5" />
-                        </div>
-                        <div className="flex-grow min-w-0">
-                          <span className="block font-bold truncate text-sm uppercase tracking-tight">{doc.title}</span>
-                          <span className="block text-[10px] text-white/50 uppercase font-bold">{doc.fileType} • {doc.fileSize}</span>
-                        </div>
-                        <Download className="ml-auto h-4 w-4 text-white/30 group-hover:text-white" />
-                      </a>
-                    </Button>
-                  ))
-                ) : (
-                  <p className="text-white/60 text-xs italic bg-white/5 p-4 rounded-xl border border-white/10">Constitution and Handbook coming soon.</p>
-                )}
-              </CardContent>
-            </Card>
+      {/* ── 3. HISTORY & TIMELINE ────────────────────────────────────────── */}
+      <section className="container py-16 md:py-20">
+        <FadeIn>
+          <div className="mb-10 pb-6 border-b border-gray-100">
+            <p className="text-xs font-bold text-brand-400 uppercase tracking-[0.15em] mb-2">
+              Our Story
+            </p>
+            <h2 className="text-2xl md:text-3xl font-extrabold text-brand-900">
+              A Brief History of KWASU SU
+            </h2>
+          </div>
+        </FadeIn>
 
-            <Card className="p-6 shadow-lg rounded-3xl border-brand-50 bg-white">
-              <CardHeader className="pb-4 p-0">
-                <CardTitle className="text-xl font-extrabold uppercase text-brand-900 flex items-center gap-2">
-                  <History className="h-5 w-5 text-brand-500" /> Fast Facts
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-0 pt-6 space-y-8">
-                <div className="flex items-start gap-5">
-                  <div className="p-3 bg-brand-50 rounded-2xl text-brand-600 shadow-sm">
-                    <Target className="h-5 w-5" />
+        {/* Foundation prose */}
+        <FadeIn delay={0.05}>
+          <div className="max-w-2xl mb-14 space-y-4">
+            <p className="text-sm text-gray-600 leading-relaxed">
+              The Kwara State University Students' Union (KWASU SU) emerged as the official
+              representative body of students of Kwara State University, Malete, with a clear
+              mandate to serve as the collective voice of the student community.
+            </p>
+            <p className="text-sm text-gray-600 leading-relaxed">
+              Its establishment marked a defining moment in the democratic and participatory
+              development of the university — creating a structured platform through which
+              students could engage university management, advocate for their welfare, and
+              contribute meaningfully to institutional growth.
+            </p>
+            <p className="text-sm text-gray-600 leading-relaxed">
+              The formal installation took place during the{" "}
+              <strong className="text-brand-800 font-semibold">2017/2018 academic session</strong>{" "}
+              under the leadership of{" "}
+              <strong className="text-brand-800 font-semibold">
+                Comrade Aliyu Uthman Abdulkadir (Phodeo)
+              </strong>
+              , then-serving as the NANS Kwara Chairman. This foundational phase provided the
+              constitutional and administrative framework upon which the Union continues to operate.
+            </p>
+          </div>
+        </FadeIn>
+
+        {/* Presidential Timeline */}
+        <FadeIn delay={0.1}>
+          <p className="text-xs font-bold text-brand-400 uppercase tracking-[0.15em] mb-8">
+            Presidential Legacy
+          </p>
+        </FadeIn>
+
+        <div className="relative">
+          {/* Vertical spine — mobile: left-aligned to node, desktop: centered */}
+          <div
+            className="absolute left-5 md:left-1/2 md:-translate-x-px top-0 bottom-0 w-px bg-gray-200"
+            aria-hidden="true"
+          />
+
+          <div className="space-y-0">
+            {presidents.map((president, i) => {
+              const isRight = i % 2 !== 0;
+
+              // Shared card markup
+              const card = (
+                <div
+                  className={`border border-gray-100 bg-white rounded p-4 ${
+                    president.isCurrent ? "border-brand-gold/40 bg-brand-50/30" : ""
+                  }`}
+                >
+                  <div className="flex items-center gap-2 mb-1 flex-wrap">
+                    <span className="text-[10px] font-bold text-brand-400 uppercase tracking-widest">
+                      {president.order} President
+                    </span>
+                    {president.isCurrent && (
+                      <span className="text-[9px] font-bold bg-brand-gold/15 text-brand-700 px-2 py-0.5 rounded">
+                        Current
+                      </span>
+                    )}
                   </div>
-                  <div>
-                    <h4 className="text-[10px] font-bold text-brand-400 uppercase tracking-widest mb-1">Founded</h4>
-                    <p className="text-sm font-bold text-brand-900">2017/2018 Academic Session</p>
+                  <p className="text-sm font-bold text-brand-900 leading-snug">
+                    {president.name}{" "}
+                    <span className="text-brand-400 font-normal">({president.alias})</span>
+                  </p>
+                  <p className="text-xs text-gray-500 leading-relaxed mt-2">{president.note}</p>
+                </div>
+              );
+
+              // Shared node markup
+              const node = (
+                <div className="relative z-10 flex justify-center pt-1">
+                  <div
+                    className={`w-10 h-10 rounded-full border-2 flex items-center justify-center text-[10px] font-extrabold bg-white ${
+                      president.isCurrent
+                        ? "border-brand-gold text-brand-gold"
+                        : "border-brand-300 text-brand-500"
+                    }`}
+                  >
+                    {i + 1}
                   </div>
                 </div>
-                <div className="flex items-start gap-5">
-                  <div className="p-3 bg-brand-50 rounded-2xl text-brand-600 shadow-sm">
-                    <Eye className="h-5 w-5" />
+              );
+
+              return (
+                <FadeIn key={president.order} delay={i * 0.06} direction="up">
+                  <div className="pb-8">
+                    {/* ── Desktop: strict 3-col grid [left | node | right] ── */}
+                    <div className="hidden md:grid md:items-start pb-2" style={{ gridTemplateColumns: "1fr 56px 1fr" }}>
+                      {/* Left column — only populated on even items */}
+                      <div className="pr-6 flex justify-end">
+                        {!isRight && card}
+                      </div>
+                      {/* Center node */}
+                      {node}
+                      {/* Right column — only populated on odd items */}
+                      <div className="pl-6">
+                        {isRight && card}
+                      </div>
+                    </div>
+
+                    {/* ── Mobile: simple left-to-right with node on far left ── */}
+                    <div className="flex md:hidden items-start gap-4 pl-1">
+                      <div className="relative z-10 flex-shrink-0">
+                        <div
+                          className={`w-10 h-10 rounded-full border-2 flex items-center justify-center text-[10px] font-extrabold bg-white ${
+                            president.isCurrent
+                              ? "border-brand-gold text-brand-gold"
+                              : "border-brand-300 text-brand-500"
+                          }`}
+                        >
+                          {i + 1}
+                        </div>
+                      </div>
+                      <div className="flex-1 pt-1">{card}</div>
+                    </div>
                   </div>
-                  <div>
-                    <h4 className="text-[10px] font-bold text-brand-400 uppercase tracking-widest mb-1">Leadership</h4>
-                    <p className="text-sm font-bold text-brand-900">9th President in office</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-5">
-                  <div className="p-3 bg-brand-50 rounded-2xl text-brand-600 shadow-sm">
-                    <Heart className="h-5 w-5" />
-                  </div>
-                  <div>
-                    <h4 className="text-[10px] font-bold text-brand-400 uppercase tracking-widest mb-1">Location</h4>
-                    <p className="text-sm font-bold text-brand-900">KWASU SU Building, Malete</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+                </FadeIn>
+              );
+            })}
           </div>
         </div>
-      </div>
+      </section>
+
+      {/* ── 4. KEY DOCUMENTS ─────────────────────────────────────────────── */}
+      <FadeIn>
+        <section className="border-t border-gray-100">
+          <div className="container py-12 md:py-14">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <p className="text-xs font-bold text-brand-400 uppercase tracking-[0.15em] mb-1">
+                  Resources
+                </p>
+                <h2 className="text-lg font-extrabold text-brand-900">Key Documents</h2>
+              </div>
+            </div>
+
+            {loading ? (
+              <div className="space-y-3">
+                <Skeleton className="h-16 w-full rounded" />
+                <Skeleton className="h-16 w-full rounded" />
+              </div>
+            ) : error ? (
+              <p className="text-sm text-red-500">{error}</p>
+            ) : documents.length > 0 ? (
+              <div className="divide-y divide-gray-100 border border-gray-100 rounded">
+                {documents.map((doc) => (
+                  <a
+                    key={doc.id}
+                    href={doc.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-4 px-5 py-4 bg-white hover:bg-brand-50/50 transition-colors group"
+                  >
+                    <div className="text-brand-500 flex-shrink-0">
+                      <FileText className="h-5 w-5" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-bold text-brand-900 truncate">{doc.title}</p>
+                      <p className="text-[11px] text-gray-400 uppercase font-medium mt-0.5">
+                        {doc.fileType} · {doc.fileSize}
+                      </p>
+                    </div>
+                    <div className="flex-shrink-0 text-gray-300 group-hover:text-brand-500 transition-colors">
+                      <Download className="h-4 w-4" />
+                    </div>
+                  </a>
+                ))}
+              </div>
+            ) : (
+              <div className="border border-dashed border-gray-200 rounded px-5 py-6 text-sm text-gray-400">
+                Constitution and Student Handbook coming soon.
+              </div>
+            )}
+          </div>
+        </section>
+      </FadeIn>
+
+      {/* ── 5. QUICK FACTS BAR ────────────────────────────────────────────── */}
+      <FadeIn>
+        <section className="bg-brand-900 border-t border-brand-800">
+          <div className="container">
+            <div className="grid grid-cols-1 sm:grid-cols-3">
+              {quickFacts.map((fact, i) => (
+                <div
+                  key={fact.label}
+                  className={`py-8 px-6 md:px-8 ${
+                    i < quickFacts.length - 1
+                      ? "border-b sm:border-b-0 sm:border-r border-brand-800"
+                      : ""
+                  }`}
+                >
+                  <p className="text-[10px] font-bold text-brand-400 uppercase tracking-[0.15em] mb-1">
+                    {fact.label}
+                  </p>
+                  <p className="text-base font-bold text-white">{fact.value}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      </FadeIn>
     </>
   );
 };

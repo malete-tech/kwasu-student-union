@@ -9,8 +9,10 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { User, History, Calendar, Layers } from "@/components/ui/font-awesome-icon";
-import { Link } from "react-router-dom";
+import { User, Calendar, Layers } from "@/components/ui/font-awesome-icon";
+import { ExecutiveCouncilHeader } from "@/components/ExecutiveCouncilHeader";
+import FadeIn from "@/components/FadeIn";
+import { cn } from "@/lib/utils";
 
 const councilCategories: { label: string; value: Executive['councilType'] | 'All' }[] = [
   { label: "All Councils", value: "All" },
@@ -53,184 +55,185 @@ const PastExecutives: React.FC = () => {
     let filtered = [...pastExecutives];
 
     if (selectedCouncil !== "All") {
-      filtered = filtered.filter(e => e.councilType === selectedCouncil);
+      filtered = filtered.filter((e) => e.councilType === selectedCouncil);
     }
 
     if (selectedSession !== "All") {
-      filtered = filtered.filter(e => e.academicSession === selectedSession);
+      filtered = filtered.filter((e) => e.academicSession === selectedSession);
     }
 
     setFilteredExecutives(filtered);
   }, [selectedCouncil, selectedSession, pastExecutives]);
 
+  const isFiltering = selectedCouncil !== "All" || selectedSession !== "All";
+
   return (
     <>
       <Helmet>
-        <title>Past Executives & Alumni Leadership | KWASU Students' Union</title>
-        <meta 
-          name="description" 
-          content="Explore the historical directory of past student leaders, Central Executive, Senate Council, and Judiciary Council members of KWASU SU." 
+        <title>Past Executives Archive | KWASU Students' Union</title>
+        <meta
+          name="description"
+          content="Historical directory of past student leaders, Central Executive, Senate Council, and Judiciary Council members of KWASU SU."
         />
         <link rel="canonical" href="https://thekwasusu.com/executives/past" />
       </Helmet>
 
-      {/* Header Banner */}
-      <div className="relative bg-gradient-to-br from-brand-900 via-brand-800 to-brand-950 text-white py-16 overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-brand-500/20 via-transparent to-transparent"></div>
-        <div className="container relative z-10 text-center max-w-3xl mx-auto px-4">
-          <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-1.5 rounded-full text-brand-gold text-xs font-semibold uppercase tracking-wider mb-4 border border-white/10">
-            <History className="h-4 w-4 text-brand-gold" />
-            Union Hall of Fame & Legacy
-          </div>
-          <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight mb-4 text-white">
-            Past Executives & Leadership
-          </h1>
-          <p className="text-base sm:text-lg text-slate-300 font-light">
-            Honoring the past leaders who paved the way for student governance, advocacy, and excellence at Kwara State University.
-          </p>
-        </div>
-      </div>
+      <ExecutiveCouncilHeader
+        title="Hall of Fame & Past Leadership"
+        subtitle="Honoring the past leaders who paved the way for student governance, advocacy, and excellence at Kwara State University."
+        activeCouncil="Past"
+      />
 
-      <div className="container py-12 px-4 max-w-7xl mx-auto space-y-8">
+      <div className="container py-10">
         {/* Filters bar */}
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 p-4 bg-white/80 backdrop-blur-md rounded-2xl border border-slate-200 shadow-sm">
-          {/* Category Tabs */}
-          <div className="flex flex-wrap gap-2">
-            {councilCategories.map(cat => (
-              <Button
-                key={cat.value}
-                variant={selectedCouncil === cat.value ? "default" : "outline"}
-                size="sm"
-                onClick={() => setSelectedCouncil(cat.value)}
-                className={
-                  selectedCouncil === cat.value
-                    ? "bg-brand-600 hover:bg-brand-700 text-white rounded-xl shadow-md font-semibold"
-                    : "rounded-xl border-slate-200 text-slate-600 hover:bg-slate-100 hover:text-slate-900"
-                }
-              >
-                {cat.label}
-              </Button>
-            ))}
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 pb-6 mb-8 border-b border-gray-100">
+          {/* Council filter pills */}
+          <div className="flex items-center gap-2 overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+            {councilCategories.map((cat) => {
+              const isActive = selectedCouncil === cat.value;
+              return (
+                <button
+                  key={cat.value}
+                  type="button"
+                  onClick={() => setSelectedCouncil(cat.value)}
+                  className={cn(
+                    "h-7 px-3 rounded text-[11px] font-bold transition-colors whitespace-nowrap shrink-0 border",
+                    isActive
+                      ? "bg-brand-900 text-white border-brand-900"
+                      : "bg-white text-gray-500 border-gray-200 hover:border-brand-300 hover:text-brand-700"
+                  )}
+                >
+                  {cat.label}
+                </button>
+              );
+            })}
           </div>
 
           {/* Academic Session Filter */}
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">Tenure Session:</span>
+          <div className="flex items-center gap-2 self-start sm:self-auto">
+            <span className="text-xs font-bold text-gray-500 uppercase tracking-wider whitespace-nowrap">
+              Tenure Session:
+            </span>
             <Select value={selectedSession} onValueChange={setSelectedSession}>
-              <SelectTrigger className="w-[180px] bg-white border-slate-200 rounded-xl focus:ring-brand-gold shadow-sm">
-                <Calendar className="h-4 w-4 mr-2 text-brand-500" />
+              <SelectTrigger className="w-[170px] h-8 bg-white border-gray-200 text-xs font-semibold focus:ring-1 focus:ring-brand-500">
+                <Calendar className="h-3.5 w-3.5 mr-2 text-brand-500" />
                 <SelectValue placeholder="All Sessions" />
               </SelectTrigger>
-              <SelectContent className="rounded-xl">
-                <SelectItem value="All">All Sessions</SelectItem>
-                {sessions.map(session => (
-                  <SelectItem key={session} value={session}>{session}</SelectItem>
+              <SelectContent className="rounded">
+                <SelectItem value="All" className="text-xs">All Sessions</SelectItem>
+                {sessions.map((session) => (
+                  <SelectItem key={session} value={session} className="text-xs">
+                    {session}
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
+
+            {isFiltering && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  setSelectedCouncil("All");
+                  setSelectedSession("All");
+                }}
+                className="h-8 px-2 text-xs text-gray-400 hover:text-gray-600 font-semibold"
+              >
+                Clear
+              </Button>
+            )}
           </div>
         </div>
 
         {/* Executive profiles list */}
         {loading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
             {[...Array(8)].map((_, i) => (
-              <div key={i} className="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm space-y-4">
-                <Skeleton className="h-28 w-28 rounded-full mx-auto" />
-                <Skeleton className="h-6 w-3/4 mx-auto" />
-                <Skeleton className="h-4 w-1/2 mx-auto" />
-                <Skeleton className="h-10 w-full rounded-xl" />
+              <div key={i} className="bg-white border border-gray-100 rounded p-4 space-y-3">
+                <Skeleton className="h-24 w-24 rounded-full mx-auto" />
+                <Skeleton className="h-4 w-3/4 mx-auto" />
+                <Skeleton className="h-3 w-1/2 mx-auto" />
               </div>
             ))}
           </div>
         ) : error ? (
-          <div className="text-center py-16 bg-red-50/50 rounded-3xl border border-red-100 p-8">
-            <p className="text-destructive font-medium text-lg">{error}</p>
+          <div className="py-16 text-center text-sm font-medium text-red-500 bg-red-50/50 rounded border border-red-100">
+            {error}
           </div>
         ) : filteredExecutives.length === 0 ? (
-          <div className="text-center py-20 bg-slate-50/50 rounded-3xl border-2 border-dashed border-slate-200 p-8">
-            <div className="w-16 h-16 rounded-full bg-brand-50 text-brand-500 flex items-center justify-center mx-auto mb-4">
-              <Layers className="h-8 w-8 text-brand-400" />
+          <div className="py-20 flex flex-col items-center text-center">
+            <div className="w-12 h-12 rounded bg-brand-50 text-brand-600 flex items-center justify-center mb-3">
+              <Layers className="h-6 w-6" />
             </div>
-            <h3 className="text-xl font-bold text-slate-800 mb-2">No Past Executives Found</h3>
-            <p className="text-slate-500 text-sm max-w-md mx-auto mb-6">
-              There are currently no archived past executive records matching your selected council or academic session.
+            <h3 className="text-sm font-bold text-gray-900 mb-1">No Past Executives Found</h3>
+            <p className="text-xs text-gray-400 max-w-sm mb-4">
+              There are no archived records matching your selected council or tenure session.
             </p>
-            {(selectedCouncil !== "All" || selectedSession !== "All") && (
-              <Button 
-                variant="outline" 
-                onClick={() => { setSelectedCouncil("All"); setSelectedSession("All"); }}
-                className="rounded-xl border-slate-300"
+            {isFiltering && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  setSelectedCouncil("All");
+                  setSelectedSession("All");
+                }}
+                className="h-8 text-xs font-bold rounded border-gray-200"
               >
                 Clear Filters
               </Button>
             )}
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {filteredExecutives.map(exec => (
-              <div 
-                key={exec.id} 
-                className="group relative bg-white rounded-3xl p-6 border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between"
-              >
-                <div>
-                  <div className="relative mb-5 flex justify-center">
-                    <Avatar className="h-28 w-28 ring-4 ring-slate-50 group-hover:ring-brand-100 transition-all shadow-md">
-                      <AvatarImage src={exec.photoUrl || ""} alt={exec.name} className="object-cover" />
-                      <AvatarFallback className="bg-brand-50 text-brand-400">
-                        <User className="h-12 w-12" />
-                      </AvatarFallback>
-                    </Avatar>
-                    <Badge className="absolute -bottom-2 bg-brand-900 text-brand-gold border border-brand- gold/30 text-[10px] uppercase font-bold tracking-wider px-2.5 py-0.5 rounded-full shadow">
+          <FadeIn>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+              {filteredExecutives.map((exec) => (
+                <div
+                  key={exec.id}
+                  className="group flex flex-col bg-white border border-gray-100 rounded p-5 transition-all duration-200 hover:border-brand-300 hover:shadow-md"
+                >
+                  <div className="flex flex-col items-center text-center mb-4">
+                    <div className="relative mb-3">
+                      <Avatar className="h-20 w-20 border border-gray-100 group-hover:border-brand-300 transition-colors">
+                        <AvatarImage src={exec.photoUrl || ""} alt={exec.name} className="object-cover" />
+                        <AvatarFallback className="bg-brand-50 text-brand-400">
+                          <User className="h-8 w-8" />
+                        </AvatarFallback>
+                      </Avatar>
+                    </div>
+
+                    <Badge variant="outline" className="text-[10px] font-bold text-brand-600 border-brand-200 bg-brand-50/50 mb-2">
                       {exec.academicSession}
                     </Badge>
-                  </div>
 
-                  <div className="text-center space-y-1 mt-2">
-                    <h3 className="text-lg font-bold text-slate-900 group-hover:text-brand-600 transition-colors">
+                    <h3 className="text-base font-bold text-gray-900 group-hover:text-brand-600 transition-colors line-clamp-1">
                       {exec.name}
                     </h3>
-                    <p className="text-sm font-semibold text-brand-600">{exec.role}</p>
-                    <div className="flex flex-wrap items-center justify-center gap-1.5 mt-2">
-                      <Badge variant="secondary" className="bg-slate-100 text-slate-600 text-[10px] font-medium">
+                    <p className="text-xs font-bold text-brand-500 uppercase tracking-wider mt-0.5">
+                      {exec.role}
+                    </p>
+
+                    <div className="flex items-center gap-1.5 mt-2">
+                      <span className="text-[11px] font-medium text-gray-500">
                         {exec.councilType} Council
-                      </Badge>
+                      </span>
                       {exec.faculty && (
-                        <span className="text-[11px] text-slate-400 italic">
+                        <span className="text-[11px] text-gray-400 truncate max-w-[120px]">
                           • {exec.faculty}
                         </span>
                       )}
                     </div>
                   </div>
+
+                  {exec.projectsMd && (
+                    <div className="mt-auto pt-3 border-t border-gray-50 text-[11px] text-gray-500 line-clamp-2 leading-relaxed">
+                      {exec.projectsMd.replace(/[#*`]/g, "")}
+                    </div>
+                  )}
                 </div>
-
-                {exec.projectsMd && (
-                  <div className="mt-6 pt-4 border-t border-slate-100">
-                    <p className="text-xs text-slate-500 line-clamp-2">
-                      {exec.projectsMd.replace(/[#*`]/g, '')}
-                    </p>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          </FadeIn>
         )}
-
-        {/* Link back to current executive councils */}
-        <div className="mt-12 text-center pt-8 border-t border-slate-200">
-          <p className="text-slate-500 text-sm mb-4">Looking for current active student union leadership?</p>
-          <div className="flex flex-wrap justify-center gap-3">
-            <Button asChild variant="outline" className="rounded-xl border-slate-300">
-              <Link to="/executives/central">Central Executive</Link>
-            </Button>
-            <Button asChild variant="outline" className="rounded-xl border-slate-300">
-              <Link to="/executives/senate">Senate Council</Link>
-            </Button>
-            <Button asChild variant="outline" className="rounded-xl border-slate-300">
-              <Link to="/executives/judiciary">Judiciary Council</Link>
-            </Button>
-          </div>
-        </div>
       </div>
     </>
   );

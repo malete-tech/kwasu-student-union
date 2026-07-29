@@ -3,195 +3,356 @@
 import React from "react";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
-import { Card, CardContent, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
-interface ServiceCardProps {
+// ── Types ─────────────────────────────────────────────────────────────────────
+
+interface ServiceItem {
   icon: string;
   title: string;
   description: string;
   href: string;
   buttonText: string;
   isExternal?: boolean;
+}
+
+interface SectionProps {
+  label: string;
+  title: string;
+  items: ServiceItem[];
   featured?: boolean;
 }
 
-const ServiceCard: React.FC<ServiceCardProps> = ({ 
-  icon, 
-  title, 
-  description, 
-  href, 
-  buttonText, 
+// ── Service Card ──────────────────────────────────────────────────────────────
+
+const ServiceCard: React.FC<ServiceItem & { featured?: boolean }> = ({
+  icon,
+  title,
+  description,
+  href,
+  buttonText,
   isExternal = false,
-  featured = false 
-}) => (
-  <Card className={cn(
-    "flex flex-col items-center text-center p-6 transition-all duration-300 rounded-2xl relative overflow-hidden",
-    featured 
-      ? "shadow-2xl border-brand-gold bg-gradient-to-b from-white to-brand-gold/5 scale-105 z-10" 
-      : "shadow-lg hover:shadow-xl border-brand-50 bg-white"
-  )}>
-    {featured && (
-      <div className="absolute top-0 right-0">
-        <Badge className="bg-brand-gold text-brand-900 rounded-none rounded-bl-xl font-bold uppercase text-[10px] px-3 py-1">
-          Union Venture
-        </Badge>
+  featured = false,
+}) => {
+  const content = (
+    <div
+      className={cn(
+        "group flex flex-col h-full border rounded p-5 transition-colors duration-150",
+        featured
+          ? "bg-brand-900 border-brand-800 hover:border-brand-gold/50"
+          : "bg-white border-gray-100 hover:border-gray-300"
+      )}
+    >
+      {/* Icon */}
+      <div
+        className={cn(
+          "w-9 h-9 flex items-center justify-center rounded mb-4",
+          featured
+            ? "bg-brand-gold/15 text-brand-gold"
+            : "bg-brand-50 text-brand-600"
+        )}
+      >
+        <i className={`${icon} text-base`} aria-hidden="true" />
       </div>
-    )}
-    <div className={cn(
-      "p-4 rounded-full mb-4",
-      featured ? "bg-brand-gold text-brand-900" : "bg-brand-100 text-brand-700"
-    )}>
-      <i className={`${icon} text-3xl`}></i>
+
+      {/* Text */}
+      <p
+        className={cn(
+          "text-sm font-bold mb-1.5 leading-snug",
+          featured ? "text-white" : "text-gray-900"
+        )}
+      >
+        {title}
+      </p>
+      <p
+        className={cn(
+          "text-xs leading-relaxed flex-grow mb-5",
+          featured ? "text-brand-300" : "text-gray-500"
+        )}
+      >
+        {description}
+      </p>
+
+      {/* CTA */}
+      <span
+        className={cn(
+          "inline-flex items-center gap-1.5 text-xs font-bold transition-colors",
+          featured
+            ? "text-brand-gold group-hover:text-brand-gold/80"
+            : "text-brand-600 group-hover:text-brand-700"
+        )}
+      >
+        {buttonText}
+        {isExternal ? (
+          <i className="fa-brands fa-whatsapp text-sm" aria-hidden="true" />
+        ) : (
+          <i
+            className="fa-solid fa-arrow-right text-[10px]"
+            aria-hidden="true"
+          />
+        )}
+      </span>
     </div>
-    <CardTitle className="text-xl font-bold mb-2 uppercase tracking-tight">{title}</CardTitle>
-    <CardContent className="flex-grow text-sm text-muted-foreground mb-4">
-      {description}
-    </CardContent>
-    
-    {isExternal ? (
-      <Button asChild className={cn(
-        "w-full sm:w-auto px-8 font-bold shadow-md",
-        featured ? "bg-brand-900 hover:bg-black text-white" : "bg-brand-gold hover:bg-brand-gold/90 text-brand-900"
-      )}>
-        <a href={href} target="_blank" rel="noopener noreferrer">
-          {buttonText} <i className="fa-brands fa-whatsapp ml-2 text-lg"></i>
-        </a>
-      </Button>
-    ) : (
-      <Button asChild className="bg-brand-gold hover:bg-brand-gold/90 text-brand-900 focus-visible:ring-brand-gold w-full sm:w-auto px-8 font-bold">
-        <Link to={href}>{buttonText}</Link>
-      </Button>
-    )}
-  </Card>
+  );
+
+  if (isExternal) {
+    return (
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="block h-full no-underline"
+        id={`service-${title.toLowerCase().replace(/\s+/g, "-")}`}
+      >
+        {content}
+      </a>
+    );
+  }
+
+  return (
+    <Link
+      to={href}
+      className="block h-full no-underline"
+      id={`service-${title.toLowerCase().replace(/\s+/g, "-")}`}
+    >
+      {content}
+    </Link>
+  );
+};
+
+// ── Section Block ─────────────────────────────────────────────────────────────
+
+const ServiceSection: React.FC<SectionProps> = ({
+  label,
+  title,
+  items,
+  featured = false,
+}) => (
+  <div className="mb-14">
+    {/* Section header */}
+    <div className="mb-6">
+      <p className="text-[10px] font-bold text-brand-400 uppercase tracking-[0.15em] mb-1">
+        {label}
+      </p>
+      <h2 className="text-lg font-bold text-gray-900 leading-snug">{title}</h2>
+    </div>
+
+    {/* Grid */}
+    <div
+      className={cn(
+        "grid gap-3",
+        featured
+          ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
+          : "grid-cols-1 sm:grid-cols-2"
+      )}
+    >
+      {items.map((item) => (
+        <ServiceCard key={item.title} {...item} featured={featured} />
+      ))}
+    </div>
+  </div>
 );
+
+// ── Emergency Banner ──────────────────────────────────────────────────────────
+
+const emergencyNumbers = [
+  { label: "Ambulance", icon: "fa-solid fa-ambulance", tel: "+2349033124706" },
+  {
+    label: "Safety Unit",
+    icon: "fa-solid fa-shield-halved",
+    tel: "+2347034356532",
+  },
+  {
+    label: "Fire Service 1",
+    icon: "fa-solid fa-fire-extinguisher",
+    tel: "+2348169770435",
+  },
+  {
+    label: "Fire Service 2",
+    icon: "fa-solid fa-fire-extinguisher",
+    tel: "+23470535435475",
+  },
+];
+
+const EmergencyBanner: React.FC = () => (
+  <div className="border border-red-100 rounded bg-red-50 p-5">
+    {/* Header row */}
+    <div className="flex items-center gap-3 mb-4">
+      <div className="w-8 h-8 flex items-center justify-center rounded bg-red-600 text-white shrink-0">
+        <i className="fa-solid fa-truck-medical text-sm" aria-hidden="true" />
+      </div>
+      <div>
+        <p className="text-[10px] font-bold text-red-400 uppercase tracking-[0.15em]">
+          Emergency
+        </p>
+        <p className="text-sm font-bold text-red-900 leading-snug">
+          Campus Emergency Lines
+        </p>
+      </div>
+    </div>
+
+    {/* Numbers grid */}
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+      {emergencyNumbers.map(({ label, icon, tel }) => (
+        <a
+          key={label}
+          href={`tel:${tel}`}
+          id={`emergency-${label.toLowerCase().replace(/\s+/g, "-")}`}
+          className="flex items-center gap-2 border border-red-200 rounded bg-white px-3 py-2.5 text-xs font-bold text-red-700 hover:bg-red-600 hover:text-white hover:border-red-600 transition-colors"
+        >
+          <i className={`${icon} text-sm shrink-0`} aria-hidden="true" />
+          <span>{label}</span>
+        </a>
+      ))}
+    </div>
+  </div>
+);
+
+// ── Page ──────────────────────────────────────────────────────────────────────
+
+const unionVentures: ServiceItem[] = [
+  {
+    icon: "fa-solid fa-fire-flame-simple",
+    title: "SU Kerosene Depot",
+    description:
+      "Affordable kerosene at union-regulated prices, available on campus for all students.",
+    href: "https://wa.me/message/D75QRKLIXRFFA1",
+    buttonText: "Order on WhatsApp",
+    isExternal: true,
+  },
+  {
+    icon: "fa-solid fa-print",
+    title: "SU Cafe",
+    description:
+      "Professional printing, photocopying, and digital services at student-friendly rates.",
+    href: "https://wa.me/message/T2EV3QZOQPAVC1",
+    buttonText: "Chat with Cafe",
+    isExternal: true,
+  },
+  {
+    icon: "fa-solid fa-tv",
+    title: "SU Viewing Center",
+    description:
+      "Live football, premium entertainment, and gaming tournaments. Royal Garden, opposite Ajeem Hostel.",
+    href: "https://wa.me/2349027379115?text=Hello%20KWASU%20SU,%20I%20would%20like%20to%20inquire%20about%20the%20SU%20Viewing%20Center.",
+    buttonText: "Inquire on WhatsApp",
+    isExternal: true,
+  },
+];
+
+const studentSupport: ServiceItem[] = [
+  {
+    icon: "fa-solid fa-comment-dots",
+    title: "Submit a Complaint",
+    description:
+      "Report welfare issues directly to the union. Every submission is reviewed.",
+    href: "/services/complaints",
+    buttonText: "File a report",
+  },
+  {
+    icon: "fa-solid fa-file-arrow-down",
+    title: "Downloads",
+    description:
+      "Access handbooks, official forms, and important student documents.",
+    href: "/services/downloads",
+    buttonText: "Browse vault",
+  },
+  {
+    icon: "fa-solid fa-briefcase",
+    title: "Opportunities",
+    description:
+      "Scholarships, internships, and jobs curated for KWASU students.",
+    href: "/services/opportunities",
+    buttonText: "Explore now",
+  },
+  {
+    icon: "fa-solid fa-lightbulb",
+    title: "Suggestion Box",
+    description: "Share ideas that make KWASU better for everyone.",
+    href: "/services/suggestion-box",
+    buttonText: "Submit an idea",
+  },
+];
 
 const ServicesPage: React.FC = () => {
   return (
     <>
       <Helmet>
         <title>Student Services | KWASU Students' Union</title>
-        <meta name="description" content="Access various student services provided by KWASU Students' Union, including kerosene depot, printing services, and emergency contacts." />
+        <meta
+          name="description"
+          content="Access student services provided by KWASU Students' Union — kerosene depot, SU cafe, printing, complaint filing, and emergency contacts."
+        />
+        <link rel="canonical" href="https://thekwasusu.com/services" />
       </Helmet>
-      <div className="container py-12">
-        
-        {/* Union Ventures Section */}
-        <div className="mb-20">
-          <div className="text-center mb-12">
-            <h2 className="text-sm font-bold text-brand-500 uppercase tracking-widest mb-2">Union Ventures</h2>
-            <h1 className="text-4xl font-black text-brand-900 uppercase tracking-tighter">Commercial Services</h1>
-            <div className="h-1.5 w-24 bg-brand-gold mx-auto mt-4 rounded-full"></div>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto px-4">
-            <ServiceCard
-              icon="fa-solid fa-fire-flame-simple"
-              title="SU Kerosene Depot"
-              description="Affordable and accessible kerosene for all students. Quality fuel at union-regulated prices."
-              href="https://wa.me/message/D75QRKLIXRFFA1"
-              buttonText="Order on WhatsApp"
-              isExternal
-              featured
-            />
-            <ServiceCard
-              icon="fa-solid fa-print"
-              title="SU Cafe"
-              description="Professional printing, photocopying, and digital services. Fast, reliable, and student-friendly rates."
-              href="https://wa.me/message/T2EV3QZOQPAVC1"
-              buttonText="Chat with Cafe"
-              isExternal
-              featured
-            />
-            <ServiceCard
-              icon="fa-solid fa-tv"
-              title="SU Viewing Center"
-              description="Catch all live football matches, premium entertainment, and gaming tournaments in an electric atmosphere. Located at Royal Garden, Opposite Ajeem Hostel, On Campus."
-              href="https://wa.me/2349027379115?text=Hello%20KWASU%20SU,%20I%20would%20like%20to%20inquire%20about%20the%20SU%20Viewing%20Center."
-              buttonText="Inquire on WhatsApp"
-              isExternal
-              featured
-            />
+
+      {/* ── PAGE BANNER ─────────────────────────────────────────────────── */}
+      <section className="relative w-full bg-brand-900 border-b border-brand-800 overflow-hidden">
+        {/* Subtle grid texture */}
+        <div
+          className="absolute inset-0 opacity-[0.04]"
+          style={{
+            backgroundImage:
+              "repeating-linear-gradient(0deg, transparent, transparent 39px, hsl(150 60% 80%) 39px, hsl(150 60% 80%) 40px), repeating-linear-gradient(90deg, transparent, transparent 39px, hsl(150 60% 80%) 39px, hsl(150 60% 80%) 40px)",
+          }}
+          aria-hidden="true"
+        />
+        <div
+          className="absolute top-0 left-0 right-0 h-[3px] bg-brand-gold"
+          aria-hidden="true"
+        />
+
+        <div className="container relative py-12 md:py-16">
+          <div className="max-w-2xl">
+            <p className="text-brand-300 text-xs font-bold uppercase tracking-[0.15em] mb-4">
+              KWASU Students' Union
+            </p>
+            <h1 className="text-3xl md:text-4xl font-extrabold text-white leading-tight mb-4">
+              Student{" "}
+              <span
+                className="text-brand-gold"
+                style={{
+                  textDecoration: "underline",
+                  textDecorationColor: "hsl(40 80% 60% / 0.35)",
+                  textUnderlineOffset: "6px",
+                }}
+              >
+                Services
+              </span>
+            </h1>
+            <p className="text-brand-200 text-sm leading-relaxed max-w-lg">
+              Union ventures, administrative support, and emergency contacts —
+              everything the union provides for the KWASU student body.
+            </p>
           </div>
         </div>
+      </section>
 
-        {/* Standard Services Section */}
-        <div className="pt-12 border-t border-brand-50 mb-20">
-          <div className="text-center mb-12">
-            <h2 className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-2">Administrative</h2>
-            <h2 className="text-3xl font-bold text-brand-700 uppercase tracking-tight">Student Support</h2>
-          </div>
+      {/* ── CONTENT ─────────────────────────────────────────────────────── */}
+      <div className="container py-10 max-w-5xl">
+        {/* Union Ventures */}
+        <ServiceSection
+          label="Union Ventures"
+          title="Commercial Services"
+          items={unionVentures}
+          featured
+        />
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8 max-w-5xl mx-auto">
-            <ServiceCard
-              icon="fa-solid fa-comment-dots"
-              title="Submit a Complaint"
-              description="Have an issue? Let us know. Your feedback helps us improve student welfare."
-              href="/services/complaints"
-              buttonText="File Report"
-            />
-            <ServiceCard
-              icon="fa-solid fa-file-arrow-down"
-              title="Downloads"
-              description="Access important documents, forms, and handbooks."
-              href="/services/downloads"
-              buttonText="Browse Vault"
-            />
-            <ServiceCard
-              icon="fa-solid fa-briefcase"
-              title="Opportunities"
-              description="Discover scholarships, internships, jobs, and other student opportunities."
-              href="/services/opportunities"
-              buttonText="Explore Now"
-            />
-            <ServiceCard
-              icon="fa-solid fa-lightbulb"
-              title="Suggestion Box"
-              description="Share your ideas to make KWASU a better place for everyone."
-              href="/services/suggestion-box"
-              buttonText="Submit Idea"
-            />
-          </div>
-        </div>
+        {/* Divider */}
+        <div className="border-t border-gray-100 mb-14" />
 
-        {/* Emergency Contacts Section (Moved to Bottom) */}
-        <div className="bg-red-50 border-2 border-red-100 rounded-3xl p-6 md:p-8 shadow-sm">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-            <div className="flex items-center gap-4">
-              <div className="p-4 bg-red-600 text-white rounded-2xl animate-pulse">
-                <i className="fa-solid fa-truck-medical text-3xl"></i>
-              </div>
-              <div>
-                <h2 className="text-2xl font-black text-red-900 uppercase tracking-tight">Campus Emergency</h2>
-                <p className="text-red-700 font-medium">Official University Response Lines</p>
-              </div>
-            </div>
-            
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full md:w-auto">
-              <Button asChild variant="destructive" className="h-14 px-8 rounded-2xl font-bold text-lg shadow-lg hover:scale-105 transition-transform">
-                <a href="tel:+2349033124706">
-                  <i className="fa-solid fa-ambulance mr-3"></i> Ambulance
-                </a>
-              </Button>
-              <Button asChild variant="destructive" className="h-14 px-8 rounded-2xl font-bold text-lg shadow-lg hover:scale-105 transition-transform">
-                <a href="tel:+2347034356532">
-                  <i className="fa-solid fa-shield-halved mr-3"></i> Safety Unit
-                </a>
-              </Button>
-              <Button asChild variant="destructive" className="h-14 px-8 rounded-2xl font-bold text-lg shadow-lg hover:scale-105 transition-transform">
-                <a href="tel:+2348169770435">
-                  <i className="fa-solid fa-fire-extinguisher mr-3"></i> Fire Service 1
-                </a>
-              </Button>
-              <Button asChild variant="destructive" className="h-14 px-8 rounded-2xl font-bold text-lg shadow-lg hover:scale-105 transition-transform">
-                <a href="tel:+23470535435475">
-                  <i className="fa-solid fa-fire-extinguisher mr-3"></i> Fire Service 2
-                </a>
-              </Button>
-            </div>
-          </div>
-        </div>
+        {/* Student Support */}
+        <ServiceSection
+          label="Administrative"
+          title="Student Support"
+          items={studentSupport}
+        />
+
+        {/* Divider */}
+        <div className="border-t border-gray-100 mb-10" />
+
+        {/* Emergency */}
+        <EmergencyBanner />
       </div>
     </>
   );

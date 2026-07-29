@@ -22,7 +22,7 @@ const Footer: React.FC = () => {
                 KWASU Students' Union
               </span>
             </Link>
-            <p className="text-xs text-brand-100/70 leading-relaxed max-w-sm">
+            <p className="text-xs text-brand-300 leading-relaxed max-w-sm">
               Empowering student voices, driving academic excellence, and fostering a vibrant campus community at Kwara State University.
             </p>
             {/* Social Links */}
@@ -40,7 +40,7 @@ const Footer: React.FC = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={s.label}
-                  className="w-7 h-7 rounded-lg bg-brand-800/60 hover:bg-brand-gold hover:text-brand-900 text-brand-100 flex items-center justify-center text-xs transition-all shadow-sm"
+                  className="w-7 h-7 rounded-lg bg-brand-800/60 hover:bg-brand-gold hover:text-brand-900 text-white flex items-center justify-center text-xs transition-all"
                 >
                   <i className={s.icon}></i>
                 </a>
@@ -64,7 +64,7 @@ const Footer: React.FC = () => {
                 <li key={item.name}>
                   <Link
                     to={item.href}
-                    className="text-brand-100/80 hover:text-brand-gold transition-colors inline-block"
+                    className="text-brand-300 hover:text-brand-gold transition-colors inline-block"
                   >
                     {item.name}
                   </Link>
@@ -90,7 +90,7 @@ const Footer: React.FC = () => {
                 <li key={item.name}>
                   <Link
                     to={item.href}
-                    className="text-brand-100/80 hover:text-brand-gold transition-colors inline-block truncate"
+                    className="text-brand-300 hover:text-brand-gold transition-colors inline-block truncate"
                   >
                     {item.name}
                   </Link>
@@ -103,11 +103,11 @@ const Footer: React.FC = () => {
 
         {/* Minimal Copyright & Back To Top */}
         <div className="pt-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-brand-100/50">
-          <p>© {new Date().getFullYear()} KWASU Students' Union. Built by Malete Tech Forum.</p>
+          <p className="text-[11px] text-brand-400">© {new Date().getFullYear()} KWASU Students' Union. Built by Malete Tech Forum.</p>
 
           <button
             onClick={scrollToTop}
-            className="flex items-center gap-1.5 hover:text-brand-gold transition-colors bg-brand-800/40 hover:bg-brand-800 px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider"
+            className="flex items-center gap-1.5 text-brand-400 hover:text-brand-gold transition-colors bg-brand-800/40 hover:bg-brand-800 px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider"
           >
             <span>Back to top</span>
             <i className="fa-solid fa-arrow-up text-[9px]"></i>

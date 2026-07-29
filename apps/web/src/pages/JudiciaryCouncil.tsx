@@ -6,9 +6,8 @@ import { api } from "@/lib/api";
 import { Executive } from "@/types";
 import ExecutiveCard from "@/components/ExecutiveCard";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Link } from "react-router-dom";
-import { History } from "@/components/ui/font-awesome-icon";
-import { Button } from "@/components/ui/button";
+import { ExecutiveCouncilHeader } from "@/components/ExecutiveCouncilHeader";
+import FadeIn from "@/components/FadeIn";
 
 const JudiciaryCouncil = () => {
   const [executives, setExecutives] = useState<Executive[]>([]);
@@ -18,8 +17,7 @@ const JudiciaryCouncil = () => {
   useEffect(() => {
     const fetchExecutives = async () => {
       try {
-        // Fetch only Judiciary Council members
-        const data = await api.executives.getAll('Judiciary');
+        const data = await api.executives.getAll("Judiciary");
         setExecutives(data);
       } catch (err) {
         console.error("Failed to fetch executives:", err);
@@ -35,37 +33,52 @@ const JudiciaryCouncil = () => {
     <>
       <Helmet>
         <title>Judiciary Council | KWASU Students' Union</title>
-        <meta name="description" content="Meet the members of the KWASU Students' Union Judiciary Council." />
+        <meta
+          name="description"
+          content="Meet the justices and members of the KWASU Students' Union Judiciary Council."
+        />
+        <link rel="canonical" href="https://thekwasusu.com/executives/judiciary" />
       </Helmet>
-      <div className="container py-12">
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-10 pb-6 border-b">
-          <div>
-            <h1 className="text-3xl sm:text-4xl font-bold text-brand-700">Judiciary Council</h1>
-            <p className="text-sm text-slate-500 mt-1">Current judicial leadership of the Kwara State University Students' Union.</p>
-          </div>
-          <Button asChild variant="outline" className="rounded-xl border-brand-200 text-brand-700 hover:bg-brand-50">
-            <Link to="/executives/past">
-              <History className="h-4 w-4 mr-2 text-brand-500" /> View Past Executives Archive
-            </Link>
-          </Button>
-        </div>
 
+      <ExecutiveCouncilHeader
+        title="Judiciary Council"
+        subtitle="The judicial branch of the KWASU Students' Union upholding constitutional compliance, rights, and dispute resolution."
+        activeCouncil="Judiciary"
+      />
+
+      <div className="container py-10">
         {loading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
             {[...Array(4)].map((_, i) => (
-              <Skeleton key={i} className="h-[380px] w-full rounded-2xl" />
+              <div key={i} className="border border-gray-100 rounded overflow-hidden p-3 space-y-3 bg-white">
+                <Skeleton className="aspect-[3/4] w-full rounded" />
+                <Skeleton className="h-4 w-3/4" />
+                <Skeleton className="h-3 w-1/2" />
+              </div>
             ))}
           </div>
         ) : error ? (
-          <div className="text-center text-destructive text-lg">{error}</div>
-        ) : executives.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {executives.map((executive) => (
-              <ExecutiveCard key={executive.id} executive={executive} />
-            ))}
+          <div className="py-16 text-center text-sm font-medium text-red-500 bg-red-50/50 rounded border border-red-100">
+            {error}
           </div>
+        ) : executives.length > 0 ? (
+          <FadeIn>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+              {executives.map((executive) => (
+                <ExecutiveCard key={executive.id} executive={executive} />
+              ))}
+            </div>
+          </FadeIn>
         ) : (
-          <p className="text-center text-muted-foreground">No Judiciary Council profiles available yet.</p>
+          <div className="py-20 flex flex-col items-center text-center">
+            <i className="fa-solid fa-users-slash text-4xl text-gray-200 mb-4" />
+            <p className="text-sm font-semibold text-gray-500 mb-1">
+              No Judiciary Council profiles available yet
+            </p>
+            <p className="text-xs text-gray-400">
+              Judiciary directory entries will appear here once updated.
+            </p>
+          </div>
         )}
       </div>
     </>

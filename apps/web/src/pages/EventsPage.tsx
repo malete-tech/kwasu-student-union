@@ -2,17 +2,16 @@
 
 import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
-import { Link } from "react-router-dom";
 import { api } from "@/lib/api";
 import { Event } from "@/types";
 import EventCard from "@/components/event-card";
 import { Calendar } from "@/components/ui/calendar";
 import { Input } from "@/components/ui/input";
-import { Search, ArrowLeft } from "@/components/ui/font-awesome-icon";
+import { Search } from "@/components/ui/font-awesome-icon";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import AdPlacement from "@/components/AdPlacement";
+import FadeIn from "@/components/FadeIn";
 
 const EventsPage: React.FC = () => {
   const [allEvents, setAllEvents] = useState<Event[]>([]);
@@ -26,8 +25,11 @@ const EventsPage: React.FC = () => {
     const fetchEvents = async () => {
       try {
         const data = await api.events.getAll();
-        setAllEvents(data.sort((a, b) => new Date(a.startsAt).getTime() - new Date(b.startsAt).getTime()));
-        setFilteredEvents(data);
+        const sorted = data.sort(
+          (a, b) => new Date(a.startsAt).getTime() - new Date(b.startsAt).getTime()
+        );
+        setAllEvents(sorted);
+        setFilteredEvents(sorted);
       } catch (err) {
         console.error("Failed to fetch events:", err);
         setError("Failed to load events. Please try again later.");
@@ -39,63 +41,101 @@ const EventsPage: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    let currentEvents = allEvents;
+    let current = allEvents;
 
     if (selectedDate) {
-      currentEvents = currentEvents.filter(event => {
-        const eventStartDate = new Date(event.startsAt);
-        const eventEndDate = event.endsAt ? new Date(event.endsAt) : eventStartDate;
+      current = current.filter((event) => {
+        const start = new Date(event.startsAt);
+        const end = event.endsAt ? new Date(event.endsAt) : start;
         return (
-          selectedDate.toDateString() >= eventStartDate.toDateString() &&
-          selectedDate.toDateString() <= eventEndDate.toDateString()
+          selectedDate.toDateString() >= start.toDateString() &&
+          selectedDate.toDateString() <= end.toDateString()
         );
       });
     }
 
     if (searchTerm) {
-      const lowerSearch = searchTerm.toLowerCase();
-      currentEvents = currentEvents.filter(event =>
-        event.title.toLowerCase().includes(lowerSearch) ||
-        event.descriptionMd.toLowerCase().includes(lowerSearch) ||
-        event.venue.toLowerCase().includes(lowerSearch) ||
-        event.category.toLowerCase().includes(lowerSearch)
+      const q = searchTerm.toLowerCase();
+      current = current.filter(
+        (e) =>
+          e.title.toLowerCase().includes(q) ||
+          e.descriptionMd.toLowerCase().includes(q) ||
+          e.venue.toLowerCase().includes(q) ||
+          e.category.toLowerCase().includes(q)
       );
     }
 
-    setFilteredEvents(currentEvents.sort((a, b) => new Date(a.startsAt).getTime() - new Date(b.startsAt).getTime()));
+    setFilteredEvents(
+      current.sort(
+        (a, b) => new Date(a.startsAt).getTime() - new Date(b.startsAt).getTime()
+      )
+    );
   }, [searchTerm, selectedDate, allEvents]);
 
-  const modifiers = {
-    hasEvent: allEvents.map(event => new Date(event.startsAt)),
-  };
+  const isFiltering = !!searchTerm || !!selectedDate;
 
-  const modifiersClassNames = {
-    hasEvent: "bg-brand-500 text-white rounded-full",
-  };
+  const modifiers = { hasEvent: allEvents.map((e) => new Date(e.startsAt)) };
+  const modifiersClassNames = { hasEvent: "bg-brand-500 text-white rounded-full" };
 
   return (
     <>
       <Helmet>
         <title>Campus Events & Academic Calendar | KWASU SU</title>
-        <meta name="description" content="Explore upcoming events, workshops, and social gatherings organized by the KWASU Students' Union." />
+        <meta
+          name="description"
+          content="Explore upcoming events, workshops, and social gatherings organized by the KWASU Students' Union."
+        />
         <link rel="canonical" href="https://thekwasusu.com/events" />
       </Helmet>
-      <div className="container py-12">
-        <Button asChild variant="ghost" className="mb-8 text-brand-600 hover:text-brand-700 -ml-4">
-          <Link to="/">
-            <ArrowLeft className="mr-2 h-4 w-4" /> Back to Home
-          </Link>
-        </Button>
 
-        <h1 className="text-3xl sm:text-4xl font-bold text-center mb-4 text-brand-700">Campus Events</h1>
-        <p className="text-center text-lg text-muted-foreground mb-10 max-w-2xl mx-auto">
-          From academic summits to cultural celebrations, stay updated with everything happening across the campus.
-        </p>
+      {/* ── PAGE BANNER ───────────────────────────────────────────────────── */}
+      <section className="relative w-full bg-brand-900 border-b border-brand-800 overflow-hidden">
+        <div
+          className="absolute inset-0 opacity-[0.04]"
+          style={{
+            backgroundImage:
+              "repeating-linear-gradient(0deg, transparent, transparent 39px, hsl(150 60% 80%) 39px, hsl(150 60% 80%) 40px), repeating-linear-gradient(90deg, transparent, transparent 39px, hsl(150 60% 80%) 39px, hsl(150 60% 80%) 40px)",
+          }}
+          aria-hidden="true"
+        />
+        <div className="absolute top-0 left-0 right-0 h-[3px] bg-brand-gold" aria-hidden="true" />
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
-          <div className="lg:col-span-1 flex flex-col items-center space-y-8">
-            <div className="w-full max-w-sm p-4 bg-white rounded-2xl shadow-xl border border-brand-50">
-              <h3 className="text-xs font-bold uppercase tracking-widest text-brand-500 mb-4 px-2">Filter by Date</h3>
+        <div className="container relative py-12 md:py-16">
+          <div className="max-w-2xl">
+            <p className="text-brand-300 text-xs font-bold uppercase tracking-[0.15em] mb-4">
+              KWASU Students' Union
+            </p>
+            <h1 className="text-3xl md:text-4xl font-extrabold text-white leading-tight mb-4">
+              Campus{" "}
+              <span
+                className="text-brand-gold"
+                style={{
+                  textDecoration: "underline",
+                  textDecorationColor: "hsl(40 80% 60% / 0.35)",
+                  textUnderlineOffset: "6px",
+                }}
+              >
+                Events
+              </span>
+            </h1>
+            <p className="text-brand-200 text-sm leading-relaxed max-w-lg">
+              Academic summits, cultural celebrations, and community gatherings —
+              everything happening across KWASU.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* ── CONTENT ──────────────────────────────────────────────────────── */}
+      <div className="container py-10">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+
+          {/* ── Sidebar: calendar + ad ─────────────────────────────────── */}
+          <div className="lg:col-span-1 space-y-6">
+            <div className="border border-gray-100 rounded p-4 bg-white">
+              <p className="text-[10px] font-bold text-brand-400 uppercase tracking-[0.15em] mb-4">
+                Filter by Date
+              </p>
               <Calendar
                 mode="single"
                 selected={selectedDate}
@@ -108,59 +148,75 @@ const EventsPage: React.FC = () => {
                 variant="outline"
                 onClick={() => setSelectedDate(undefined)}
                 disabled={!selectedDate}
-                className="mt-4 w-full rounded-xl border-brand-100 text-brand-600 hover:bg-brand-50"
+                className="mt-3 w-full h-8 rounded border-gray-200 text-brand-600 hover:bg-brand-50 text-xs font-bold uppercase tracking-wider"
               >
-                Clear Calendar Selection
+                Clear Selection
               </Button>
             </div>
 
-            {/* Ad Placement in Sidebar */}
-            <div className="w-full max-w-sm">
-              <AdPlacement placement="events_feed" />
-            </div>
+            <AdPlacement placement="events_feed" />
           </div>
-          
+
+          {/* ── Main: search + event grid ──────────────────────────────── */}
           <div className="lg:col-span-2 space-y-6">
+            {/* Search bar */}
             <div className="relative">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-brand-300" />
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
               <Input
-                placeholder="Search events by title, venue, or category..."
-                className="h-12 pl-12 rounded-xl border-brand-100 focus-visible:ring-brand-gold shadow-sm"
+                placeholder="Search by title, venue, or category…"
+                className="h-9 pl-10 text-sm rounded border-gray-200 focus-visible:ring-1 focus-visible:ring-brand-500 focus-visible:border-brand-500"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
+              {searchTerm && (
+                <button
+                  onClick={() => setSearchTerm("")}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[11px] font-semibold text-gray-400 hover:text-gray-600 bg-gray-100 hover:bg-gray-200 px-2 py-0.5 rounded transition-colors"
+                >
+                  Clear
+                </button>
+              )}
             </div>
 
+            {/* Results */}
             {loading ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {[...Array(4)].map((_, i) => (
-                  <Card key={i} className="flex flex-col h-[200px] overflow-hidden shadow-lg rounded-xl">
-                    <div className="p-4 space-y-4">
-                      <Skeleton className="h-6 w-3/4" />
-                      <Skeleton className="h-4 w-1/2" />
-                      <div className="space-y-2 pt-2">
-                        <Skeleton className="h-3 w-full" />
-                        <Skeleton className="h-3 w-full" />
-                      </div>
-                    </div>
-                  </Card>
+                  <div key={i} className="border border-gray-100 rounded p-4 space-y-3">
+                    <Skeleton className="h-5 w-3/4" />
+                    <Skeleton className="h-3.5 w-1/2" />
+                    <Skeleton className="h-3.5 w-2/3" />
+                    <Skeleton className="h-3 w-full mt-2" />
+                    <Skeleton className="h-3 w-4/5" />
+                  </div>
                 ))}
               </div>
             ) : error ? (
-              <div className="text-center py-12 text-destructive font-medium bg-red-50 rounded-2xl">{error}</div>
+              <div className="py-10 text-center text-sm text-red-500">{error}</div>
             ) : filteredEvents.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {filteredEvents.map((eventItem) => (
-                  <EventCard key={eventItem.id} event={eventItem} className="h-full" />
-                ))}
-              </div>
+              <FadeIn>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {filteredEvents.map((eventItem) => (
+                    <EventCard key={eventItem.id} event={eventItem} className="h-full" />
+                  ))}
+                </div>
+              </FadeIn>
             ) : (
-              <div className="text-center py-20 bg-slate-50 rounded-2xl border-2 border-dashed border-slate-200">
-                <p className="text-muted-foreground italic">No events found for the selected criteria.</p>
-                {selectedDate && (
-                   <Button variant="link" onClick={() => setSelectedDate(undefined)} className="mt-2 text-brand-500">
-                     View all upcoming events
-                   </Button>
+              <div className="py-20 flex flex-col items-center text-center">
+                <i className="fa-solid fa-calendar-xmark text-4xl text-gray-200 mb-4" />
+                <p className="text-sm font-semibold text-gray-500 mb-1">No events found</p>
+                <p className="text-xs text-gray-400 mb-5">
+                  {isFiltering
+                    ? "Try a different search term or pick another date."
+                    : "No events have been scheduled yet."}
+                </p>
+                {isFiltering && (
+                  <button
+                    onClick={() => { setSearchTerm(""); setSelectedDate(undefined); }}
+                    className="text-xs font-bold text-brand-600 hover:text-brand-700 underline underline-offset-2"
+                  >
+                    Clear filters
+                  </button>
                 )}
               </div>
             )}

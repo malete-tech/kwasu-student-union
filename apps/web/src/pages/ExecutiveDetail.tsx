@@ -7,9 +7,10 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { api } from "@/lib/api";
 import { Executive } from "@/types";
-import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { User } from "@/components/ui/font-awesome-icon";
+import FadeIn from "@/components/FadeIn";
 
 const ExecutiveDetail = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -29,7 +30,7 @@ const ExecutiveDetail = () => {
         if (data) {
           setExecutive(data);
         } else {
-          setError("Executive not found.");
+          setError("Executive profile not found.");
         }
       } catch (err) {
         console.error("Failed to fetch executive details:", err);
@@ -43,14 +44,16 @@ const ExecutiveDetail = () => {
 
   if (loading) {
     return (
-      <div className="container py-12">
-        <Skeleton className="h-10 w-48 mb-8" />
+      <div className="container py-10 max-w-5xl">
+        <Skeleton className="h-4 w-32 mb-6" />
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-1">
-            <Skeleton className="h-[500px] w-full rounded-3xl" />
+            <Skeleton className="aspect-[3/4] w-full rounded" />
           </div>
-          <div className="lg:col-span-2">
-            <Skeleton className="h-[400px] w-full rounded-3xl" />
+          <div className="lg:col-span-2 space-y-4">
+            <Skeleton className="h-8 w-2/3" />
+            <Skeleton className="h-4 w-1/3" />
+            <Skeleton className="h-48 w-full rounded mt-6" />
           </div>
         </div>
       </div>
@@ -59,11 +62,12 @@ const ExecutiveDetail = () => {
 
   if (error || !executive) {
     return (
-      <div className="container py-12 text-center">
-        <p className="text-destructive text-lg font-medium mb-6">{error || "Executive not found."}</p>
-        <Button asChild variant="outline" className="border-brand-500 text-brand-500 hover:bg-brand-50 rounded-xl px-8">
+      <div className="container py-20 text-center max-w-md">
+        <i className="fa-solid fa-user-xmark text-4xl text-gray-300 mb-3" />
+        <p className="text-sm font-semibold text-gray-700 mb-4">{error || "Executive profile not found."}</p>
+        <Button asChild variant="outline" size="sm" className="rounded border-gray-200 text-xs font-bold">
           <Link to="/executives/central">
-            <i className="fa-solid fa-arrow-left mr-2"></i> Back to Directory
+            <i className="fa-solid fa-arrow-left mr-2" /> Back to Directory
           </Link>
         </Button>
       </div>
@@ -75,135 +79,183 @@ const ExecutiveDetail = () => {
   return (
     <>
       <Helmet>
-        <title>{executive.name} - {executive.role} | KWASU Students' Union</title>
-        <meta name="description" content={`Profile of ${executive.name}, ${executive.role} of KWASU Students' Union.`} />
+        <title>{executive.name} — {executive.role} | KWASU Students' Union</title>
+        <meta name="description" content={`Official profile of ${executive.name}, ${executive.role} of the KWASU Students' Union.`} />
+        <link rel="canonical" href={`https://thekwasusu.com/executives/${executive.slug}`} />
       </Helmet>
-      
-      <div className="container py-12">
-        <Button asChild variant="ghost" className="mb-8 text-brand-600 hover:text-brand-700 -ml-4">
-          <Link to={councilPath}>
-            <i className="fa-solid fa-arrow-left mr-2"></i> Back to {executive.councilType} Council
+
+      {/* Top Breadcrumb Header */}
+      <div className="border-b border-gray-100 bg-white">
+        <div className="container py-3">
+          <Link
+            to={councilPath}
+            className="inline-flex items-center text-xs font-bold text-gray-500 hover:text-brand-600 transition-colors"
+          >
+            <i className="fa-solid fa-arrow-left text-[10px] mr-2" />
+            Back to {executive.councilType} Council
           </Link>
-        </Button>
+        </div>
+      </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-          {/* Poster Style Profile Card */}
-          <div className="lg:col-span-1">
-            <Card className="relative overflow-hidden h-[550px] rounded-[2.5rem] border-none shadow-2xl bg-brand-900">
-              {executive.photoUrl ? (
-                <img
-                  src={executive.photoUrl}
-                  alt={executive.name}
-                  className="absolute inset-0 h-full w-full object-cover"
-                />
-              ) : (
-                <div className="absolute inset-0 h-full w-full bg-brand-800 flex items-center justify-center">
-                  <i className="fa-solid fa-user h-32 w-32 text-brand-700 flex items-center justify-center text-8xl"></i>
-                </div>
-              )}
+      <div className="container py-10 max-w-5xl">
+        <FadeIn>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+            
+            {/* Left Profile Card */}
+            <div className="lg:col-span-1 border border-brand-800 rounded bg-brand-900 overflow-hidden text-white">
+              <div className="relative aspect-[3/4] w-full bg-brand-950 overflow-hidden">
+                {executive.photoUrl ? (
+                  <img
+                    src={executive.photoUrl}
+                    alt={executive.name}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full flex flex-col items-center justify-center text-brand-300">
+                    <User className="h-20 w-20 opacity-40 mb-2" />
+                    <span className="text-[10px] uppercase font-bold tracking-widest opacity-50">KWASU SU</span>
+                  </div>
+                )}
+                <div className="absolute inset-0 bg-gradient-to-t from-brand-900 via-transparent to-transparent" />
+              </div>
 
-              {/* Cinematic Gradient Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent" />
-
-              {/* Bottom Content */}
-              <div className="absolute bottom-0 left-0 p-8 w-full">
-                <div className="space-y-1 mb-6">
-                  <h1 className="text-white text-3xl md:text-4xl font-extrabold leading-tight uppercase tracking-tighter">
-                    {executive.name}
-                  </h1>
-                  <p className="text-brand-gold text-xl font-bold uppercase tracking-widest">
+              <div className="p-5 space-y-4">
+                <div>
+                  <p className="text-[10px] font-bold text-brand-gold uppercase tracking-widest mb-1">
                     {executive.role}
                   </p>
+                  <h1 className="text-xl font-extrabold text-white leading-tight">
+                    {executive.name}
+                  </h1>
+                </div>
+
+                <div className="pt-3 border-t border-brand-800 space-y-1.5 text-xs text-brand-200">
+                  <div className="flex justify-between">
+                    <span className="text-brand-400 font-medium">Council</span>
+                    <span className="font-bold text-white">{executive.councilType} Council</span>
+                  </div>
                   {executive.faculty && (
-                    <p className="text-white/70 text-sm font-medium border-l-2 border-brand-gold pl-3 mt-3">
-                      {executive.faculty}
+                    <div className="flex justify-between">
+                      <span className="text-brand-400 font-medium">Faculty</span>
+                      <span className="font-bold text-white truncate max-w-[140px]">{executive.faculty}</span>
+                    </div>
+                  )}
+                  <div className="flex justify-between">
+                    <span className="text-brand-400 font-medium">Tenure</span>
+                    <span className="font-bold text-brand-gold">
+                      {executive.tenureStart.substring(0, 4)} – {executive.tenureEnd.substring(0, 4)}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Contacts */}
+                {(executive.contacts.email ||
+                  executive.contacts.phone ||
+                  executive.contacts.linkedin ||
+                  executive.contacts.twitter ||
+                  executive.contacts.instagram) && (
+                  <div className="pt-3 border-t border-brand-800">
+                    <p className="text-[10px] font-bold text-brand-400 uppercase tracking-widest mb-2">
+                      Direct Channels
                     </p>
-                  )}
-                  <p className="text-white/40 text-xs mt-2 font-mono">
-                    TERM: {executive.tenureStart.substring(0, 4)} — {executive.tenureEnd.substring(0, 4)}
+                    <div className="flex flex-wrap gap-2">
+                      {executive.contacts.email && (
+                        <a
+                          href={`mailto:${executive.contacts.email}`}
+                          className="w-8 h-8 rounded flex items-center justify-center bg-brand-800 hover:bg-brand-gold hover:text-brand-900 text-white transition-colors"
+                          title="Email"
+                        >
+                          <i className="fa-solid fa-envelope text-xs" />
+                        </a>
+                      )}
+                      {executive.contacts.phone && (
+                        <a
+                          href={`tel:${executive.contacts.phone}`}
+                          className="w-8 h-8 rounded flex items-center justify-center bg-brand-800 hover:bg-brand-gold hover:text-brand-900 text-white transition-colors"
+                          title="Phone"
+                        >
+                          <i className="fa-solid fa-phone text-xs" />
+                        </a>
+                      )}
+                      {executive.contacts.linkedin && (
+                        <a
+                          href={executive.contacts.linkedin}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="w-8 h-8 rounded flex items-center justify-center bg-brand-800 hover:bg-brand-gold hover:text-brand-900 text-white transition-colors"
+                          title="LinkedIn"
+                        >
+                          <i className="fa-brands fa-linkedin text-xs" />
+                        </a>
+                      )}
+                      {executive.contacts.twitter && (
+                        <a
+                          href={`https://twitter.com/${executive.contacts.twitter}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="w-8 h-8 rounded flex items-center justify-center bg-brand-800 hover:bg-brand-gold hover:text-brand-900 text-white transition-colors"
+                          title="Twitter / X"
+                        >
+                          <i className="fa-brands fa-x-twitter text-xs" />
+                        </a>
+                      )}
+                      {executive.contacts.instagram && (
+                        <a
+                          href={`https://instagram.com/${executive.contacts.instagram}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="w-8 h-8 rounded flex items-center justify-center bg-brand-800 hover:bg-brand-gold hover:text-brand-900 text-white transition-colors"
+                          title="Instagram"
+                        >
+                          <i className="fa-brands fa-instagram text-xs" />
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Right Initiatives & Details Panel */}
+            <div className="lg:col-span-2 space-y-6">
+              <div className="border border-gray-100 rounded bg-white p-6">
+                <div className="pb-4 mb-6 border-b border-gray-100">
+                  <p className="text-[10px] font-bold text-brand-500 uppercase tracking-widest mb-1">
+                    Tenure Profile
                   </p>
+                  <h2 className="text-xl font-bold text-gray-900">
+                    Key Initiatives & Mandate
+                  </h2>
                 </div>
 
-                {/* Social Links */}
-                <div className="flex flex-wrap gap-3 pt-6 border-t border-white/10">
-                  {executive.contacts.email && (
-                    <Button asChild variant="secondary" size="icon" className="h-10 w-10 rounded-full bg-white/10 hover:bg-brand-gold text-white hover:text-brand-900 border-none transition-all">
-                      <a href={`mailto:${executive.contacts.email}`} aria-label="Email">
-                        <i className="fa-solid fa-envelope text-lg"></i>
-                      </a>
-                    </Button>
-                  )}
-                  {executive.contacts.phone && (
-                    <Button asChild variant="secondary" size="icon" className="h-10 w-10 rounded-full bg-white/10 hover:bg-brand-gold text-white hover:text-brand-900 border-none transition-all">
-                      <a href={`tel:${executive.contacts.phone}`} aria-label="Phone">
-                        <i className="fa-solid fa-phone text-lg"></i>
-                      </a>
-                    </Button>
-                  )}
-                  {executive.contacts.linkedin && (
-                    <Button asChild variant="secondary" size="icon" className="h-10 w-10 rounded-full bg-white/10 hover:bg-brand-gold text-white hover:text-brand-900 border-none transition-all">
-                      <a href={executive.contacts.linkedin} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
-                        <i className="fa-brands fa-linkedin text-lg"></i>
-                      </a>
-                    </Button>
-                  )}
-                  {executive.contacts.twitter && (
-                    <Button asChild variant="secondary" size="icon" className="h-10 w-10 rounded-full bg-white/10 hover:bg-brand-gold text-white hover:text-brand-900 border-none transition-all">
-                      <a href={`https://twitter.com/${executive.contacts.twitter}`} target="_blank" rel="noopener noreferrer" aria-label="Twitter">
-                        <i className="fa-brands fa-x-twitter text-lg"></i>
-                      </a>
-                    </Button>
-                  )}
-                  {executive.contacts.instagram && (
-                    <Button asChild variant="secondary" size="icon" className="h-10 w-10 rounded-full bg-white/10 hover:bg-brand-gold text-white hover:text-brand-900 border-none transition-all">
-                      <a href={`https://instagram.com/${executive.contacts.instagram}`} target="_blank" rel="noopener noreferrer" aria-label="Instagram">
-                        <i className="fa-brands fa-instagram text-lg"></i>
-                      </a>
-                    </Button>
-                  )}
-                </div>
-              </div>
-            </Card>
-          </div>
-
-          {/* Details Section */}
-          <div className="lg:col-span-2 space-y-8">
-            <Card className="p-8 rounded-[2rem] shadow-xl border-brand-50 bg-white/50 backdrop-blur-sm">
-              <div className="flex items-center gap-3 mb-8 pb-4 border-b border-brand-50">
-                <div className="p-3 bg-brand-50 rounded-2xl text-brand-600">
-                  <i className="fa-solid fa-briefcase text-xl"></i>
-                </div>
-                <CardTitle className="text-2xl font-extrabold text-brand-900 uppercase tracking-tight">Key Initiatives & Projects</CardTitle>
-              </div>
-              
-              <CardContent className="p-0">
                 {executive.projectsMd ? (
-                  <div className="prose prose-brand max-w-none prose-headings:uppercase prose-headings:text-brand-800 prose-strong:text-brand-900">
+                  <div className="prose prose-sm prose-slate max-w-none prose-headings:font-bold prose-headings:text-gray-900 prose-a:text-brand-600">
                     <ReactMarkdown remarkPlugins={[remarkGfm]}>
                       {executive.projectsMd}
                     </ReactMarkdown>
                   </div>
                 ) : (
-                  <div className="flex flex-col items-center justify-center py-12 text-center border-2 border-dashed border-brand-100 rounded-3xl bg-brand-50/20">
-                    <i className="fa-solid fa-briefcase text-3xl text-brand-200 mb-4"></i>
-                    <p className="text-muted-foreground font-medium italic">Project details are being compiled for this tenure.</p>
+                  <div className="py-12 text-center text-xs text-gray-400 border border-dashed border-gray-200 rounded">
+                    <i className="fa-solid fa-file-signature text-2xl text-gray-300 mb-2" />
+                    <p>Mandate and project documentation is currently being compiled for this office.</p>
                   </div>
                 )}
-              </CardContent>
-            </Card>
-
-            {/* Quick Contact Notice */}
-            <div className="p-6 bg-brand-900 rounded-[2rem] text-white flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xl">
-              <div>
-                <h3 className="text-xl font-bold uppercase tracking-tight text-brand-gold">Get in touch</h3>
-                <p className="text-white/60 text-sm">Need assistance? Reach out directly via official channels.</p>
               </div>
-              <Button asChild className="bg-brand-gold hover:bg-brand-gold/90 text-brand-900 rounded-xl px-8 h-12 font-bold uppercase tracking-wider text-xs">
-                <Link to="/contact">Send Official Inquiry</Link>
-              </Button>
+
+              {/* Inquiry Notice */}
+              <div className="border border-brand-800 rounded bg-brand-900 p-5 text-white flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div>
+                  <h3 className="text-sm font-bold text-brand-gold">Official Union Inquiry</h3>
+                  <p className="text-xs text-brand-200 mt-0.5">Need to contact this office for student welfare matters?</p>
+                </div>
+                <Button asChild size="sm" className="bg-brand-gold text-brand-900 hover:bg-brand-gold/90 font-bold text-xs shrink-0">
+                  <Link to="/contact">Contact Union Office</Link>
+                </Button>
+              </div>
             </div>
+
           </div>
-        </div>
+        </FadeIn>
       </div>
     </>
   );

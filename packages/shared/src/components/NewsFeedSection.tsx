@@ -4,122 +4,110 @@ import React, { useEffect, useState } from "react";
 import { api } from "@/lib/api";
 import { News } from "@/types";
 import NewsFeedItem from "@/components/NewsFeedItem";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
 
-const NewsFeedSection: React.FC = () => {
-  const [allNews, setAllNews] = useState<News[]>([]);
-  const [filteredNews, setFilteredNews] = useState<News[]>([]);
+interface NewsFeedSectionProps {
+  /** If true, shows the search/tag filter bar. Use on the /news page. */
+  withFilters?: boolean;
+  /** Max items to show. Defaults to 4 for homepage, use higher for /news page. */
+  limit?: number;
+}
+
+const NewsFeedSection: React.FC<NewsFeedSectionProps> = ({
+  withFilters = false,
+  limit = 4,
+}) => {
+  const [news, setNews] = useState<News[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [activeTag, setActiveTag] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchNews = async () => {
       try {
         const data = await api.news.getAll();
-        setAllNews(data);
-        setFilteredNews(data);
+        setNews(
+          data
+            .sort(
+              (a, b) =>
+                new Date(b.publishedAt).getTime() -
+                new Date(a.publishedAt).getTime()
+            )
+            .slice(0, limit)
+        );
       } catch (err) {
         console.error("Failed to fetch news:", err);
-        setError("Failed to load news feed.");
+        setError("Failed to load news.");
       } finally {
         setLoading(false);
       }
     };
     fetchNews();
-  }, []);
-
-  useEffect(() => {
-    let currentNews = allNews;
-
-    if (activeTag) {
-      currentNews = currentNews.filter(news => news.tags.includes(activeTag));
-    }
-
-    if (searchTerm) {
-      currentNews = currentNews.filter(news =>
-        news.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        news.excerpt.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        news.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
-      );
-    }
-    setFilteredNews(currentNews);
-  }, [searchTerm, activeTag, allNews]);
-
-  const uniqueTags = Array.from(new Set(allNews.flatMap(news => news.tags)));
+  }, [limit]);
 
   return (
-    <div className="space-y-6">
-      <div className="border-b pb-2 flex justify-between items-end border-brand-700 uppercase">
-        <h2 className="text-xl font-extrabold flex items-center gap-2 text-brand-700 tracking-tighter">
-          <i className="fa-solid fa-newspaper text-lg"></i> Latest News
-        </h2>
-        <Button asChild variant="link" size="sm" className="text-brand-500 hover:text-brand-600 focus-visible:ring-brand-gold h-auto p-0 mb-0.5">
-          <Link to="/news">View All</Link>
-        </Button>
-      </div>
-
-      <div className="space-y-6">
-        <div className="flex flex-col sm:flex-row gap-3">
-          <div className="relative flex-grow">
-            <i className="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"></i>
-            <Input
-              placeholder="Search news..."
-              className="pl-9 pr-3 py-2 rounded-md border focus-visible:ring-brand-gold"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </div>
-          <div className="flex gap-2 overflow-x-auto pb-2">
-            <Badge
-              variant={activeTag === null ? "default" : "secondary"}
-              className={activeTag === null ? "bg-brand-500 text-white hover:bg-brand-600 cursor-pointer" : "bg-brand-100 text-brand-700 hover:bg-brand-200 cursor-pointer"}
-              onClick={() => setActiveTag(null)}
-            >
-              All
-            </Badge>
-            {uniqueTags.map(tag => (
-              <Badge
-                key={tag}
-                variant={activeTag === tag ? "default" : "secondary"}
-                className={activeTag === tag ? "bg-brand-500 text-white hover:bg-brand-600 cursor-pointer" : "bg-brand-100 text-brand-700 hover:bg-brand-200 cursor-pointer"}
-                onClick={() => setActiveTag(tag)}
-              >
-                {tag}
-              </Badge>
-            ))}
-          </div>
+    <div className="space-y-0">
+      {/* Section header */}
+      <div className="flex items-center justify-between mb-5">
+        <div>
+          <p className="text-[10px] font-bold text-brand-400 uppercase tracking-[0.15em] mb-0.5">
+            KWASU Students' Union
+          </p>
+          <h2 className="text-lg font-bold text-gray-900 leading-snug">
+            Latest News
+          </h2>
         </div>
-
-        {loading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-6">
-            {[...Array(6)].map((_, i) => (
-              <div key={i} className="flex gap-4">
-                <Skeleton className="w-24 h-20 rounded-md" />
-                <div className="flex-1 space-y-2">
-                  <Skeleton className="h-5 w-full" />
-                  <Skeleton className="h-4 w-3/4" />
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : error ? (
-          <div className="text-destructive text-sm text-center">{error}</div>
-        ) : filteredNews.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-8">
-            {filteredNews.slice(0, 6).map((newsItem) => (
-              <NewsFeedItem key={newsItem.id} news={newsItem} variant="list" />
-            ))}
-          </div>
-        ) : (
-          <p className="text-center text-muted-foreground text-sm">No news found matching your criteria.</p>
-        )}
+        <Link
+          to="/news"
+          className="text-xs font-bold text-brand-600 hover:text-brand-700 transition-colors"
+        >
+          View all <i className="fa-solid fa-arrow-right text-[10px] ml-1" aria-hidden="true" />
+        </Link>
       </div>
+
+      {loading ? (
+        <div className="space-y-0 divide-y divide-gray-100 border border-gray-100 rounded">
+          {/* Lead skeleton */}
+          <div className="flex gap-4 p-4">
+            <Skeleton className="w-32 h-24 rounded flex-shrink-0" />
+            <div className="flex-1 space-y-2 pt-1">
+              <Skeleton className="h-5 w-full" />
+              <Skeleton className="h-5 w-4/5" />
+              <Skeleton className="h-3 w-32 mt-2" />
+            </div>
+          </div>
+          {[...Array(3)].map((_, i) => (
+            <div key={i} className="flex gap-3 p-4">
+              <Skeleton className="w-16 h-12 rounded flex-shrink-0" />
+              <div className="flex-1 space-y-2 pt-0.5">
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-3 w-24" />
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : error ? (
+        <div className="py-10 text-center text-sm text-red-500 border border-red-100 rounded bg-red-50/50">
+          {error}
+        </div>
+      ) : news.length === 0 ? (
+        <div className="py-16 text-center text-xs text-gray-400">
+          <i className="fa-solid fa-newspaper text-3xl text-gray-200 mb-3" />
+          <p>No news published yet.</p>
+        </div>
+      ) : (
+        <div className="border border-gray-100 rounded divide-y divide-gray-100 bg-white">
+          {/* Lead article — featured variant */}
+          <NewsFeedItem news={news[0]!} variant="featured" />
+
+          {/* Supporting articles — list variant */}
+          {news.slice(1).map((item) => (
+            <div key={item.id} className="px-4">
+              <NewsFeedItem news={item} variant="list" />
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

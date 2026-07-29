@@ -10,13 +10,11 @@ import remarkBreaks from "remark-breaks";
 import { api } from "@/lib/api";
 import { News } from "@/types";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, CalendarDays, Tag, Paperclip } from "@/components/ui/font-awesome-icon";
+import { ArrowLeft, CalendarDays } from "@/components/ui/font-awesome-icon";
 import { Skeleton } from "@/components/ui/skeleton";
 import { format } from "date-fns";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
-import { Card, CardContent } from "@/components/ui/card";
 import AdPlacement from "@/components/AdPlacement";
+import FadeIn from "@/components/FadeIn";
 
 const NewsDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -48,112 +46,153 @@ const NewsDetail: React.FC = () => {
     fetchNews();
   }, [id]);
 
+  // ── Loading state ────────────────────────────────────────────────────────
   if (loading) {
     return (
-      <div className="min-h-screen pt-12">
+      <>
         <Helmet>
-          <title>Loading News... | KWASU SU</title>
+          <title>Loading… | KWASU SU</title>
         </Helmet>
-        <div className="container pb-16">
-          <Skeleton className="h-10 w-48 mb-8" />
+
+        {/* Skeleton banner */}
+        <div className="w-full bg-brand-900 py-12 md:py-16">
+          <div className="container">
+            <Skeleton className="h-3 w-32 mb-5 bg-brand-700" />
+            <Skeleton className="h-8 w-3/4 mb-3 bg-brand-700" />
+            <Skeleton className="h-8 w-1/2 bg-brand-700" />
+            <Skeleton className="h-3 w-40 mt-5 bg-brand-700" />
+          </div>
+        </div>
+
+        <div className="container py-10">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-            <div className="lg:col-span-2 space-y-8">
-              <Skeleton className="h-12 w-full mb-4" />
-              <Skeleton className="h-64 w-full rounded-lg" />
-              <div className="space-y-4 pt-4">
+            <div className="lg:col-span-2 space-y-6">
+              <Skeleton className="w-full aspect-[16/9] rounded" />
+              <div className="space-y-3">
                 <Skeleton className="h-4 w-full" />
                 <Skeleton className="h-4 w-5/6" />
+                <Skeleton className="h-4 w-4/5" />
               </div>
             </div>
             <div className="hidden lg:block lg:col-span-1">
-              <Skeleton className="h-[400px] w-full rounded-2xl" />
+              <Skeleton className="h-80 w-full rounded" />
             </div>
           </div>
         </div>
-      </div>
+      </>
     );
   }
 
+  // ── Error state ──────────────────────────────────────────────────────────
   if (error || !news) {
     return (
-      <div className="py-12 container">
-        <Card className="shadow-lg rounded-2xl p-6 max-w-2xl mx-auto">
-          <CardContent className="text-center text-destructive text-lg">
-            {error || "News article data is not available."}
-            <div className="mt-6">
-              <Button asChild variant="outline" className="border-brand-500 text-brand-500 hover:bg-brand-50 hover:text-brand-600 focus-visible:ring-brand-gold">
-                <Link to="/news">
-                  <ArrowLeft className="mr-2 h-4 w-4" /> Back to News
-                </Link>
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+      <div className="container py-20 text-center">
+        <p className="text-sm text-red-500 mb-6">
+          {error || "News article data is not available."}
+        </p>
+        <Button
+          asChild
+          variant="outline"
+          className="border-brand-300 text-brand-600 hover:bg-brand-50 text-xs font-bold uppercase tracking-wider"
+        >
+          <Link to="/news">
+            <ArrowLeft className="mr-2 h-3.5 w-3.5" /> Back to News
+          </Link>
+        </Button>
       </div>
     );
   }
 
+  // ── Article ──────────────────────────────────────────────────────────────
   return (
     <>
-      <SEO 
-        title={`${news.title} | KWASU Students' Union News`} 
-        description={news.excerpt} 
-        image={news.coverUrl || "https://thekwasusu.com/logo.png"}
-        url={`https://thekwasusu.com/news/${news.id}`}
+      <SEO
+        title={`${news.title} | KWASU Students' Union News`}
+        description={news.excerpt}
+        image={news.coverUrl || "https://kwasusu.com.ng/logo.png"}
+        url={`https://kwasusu.com.ng/news/${news.id}`}
         type="article"
+        publishedAt={news.publishedAt}
+        tags={news.tags}
       />
-      <div className="min-h-screen py-12 bg-white">
-        <div className="container pb-16">
-          <Button asChild variant="ghost" className="mb-10 text-brand-600 hover:text-brand-700 hover:bg-brand-50 -ml-4">
-            <Link to="/news">
-              <ArrowLeft className="mr-2 h-4 w-4" /> Back to News
-            </Link>
-          </Button>
 
+      {/* ── ARTICLE BANNER ───────────────────────────────────────────────── */}
+      <section className="relative w-full bg-brand-900 border-b border-brand-800 overflow-hidden">
+        {/* Subtle grid texture */}
+        <div
+          className="absolute inset-0 opacity-[0.04]"
+          style={{
+            backgroundImage:
+              "repeating-linear-gradient(0deg, transparent, transparent 39px, hsl(150 60% 80%) 39px, hsl(150 60% 80%) 40px), repeating-linear-gradient(90deg, transparent, transparent 39px, hsl(150 60% 80%) 39px, hsl(150 60% 80%) 40px)",
+          }}
+          aria-hidden="true"
+        />
+        <div className="absolute top-0 left-0 right-0 h-[3px] bg-brand-gold" aria-hidden="true" />
+
+        <div className="container relative py-10 md:py-14">
+          {/* Back link / breadcrumb */}
+          <Link
+            to="/news"
+            className="inline-flex items-center gap-1.5 text-brand-400 hover:text-brand-200 text-xs font-bold uppercase tracking-[0.12em] mb-6 transition-colors"
+          >
+            <ArrowLeft className="h-3 w-3" />
+            News &amp; Announcements
+          </Link>
+
+          <div className="max-w-3xl">
+            <h1 className="text-2xl md:text-3xl lg:text-4xl font-extrabold text-white leading-tight mb-5">
+              {news.title}
+            </h1>
+
+            {/* Meta row */}
+            <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
+              <div className="flex items-center gap-1.5 text-brand-300 text-xs font-medium">
+                <CalendarDays className="h-3.5 w-3.5" />
+                <span>{format(new Date(news.publishedAt), "dd MMMM yyyy")}</span>
+              </div>
+
+              {news.tags.length > 0 && (
+                <div className="flex items-center gap-2 flex-wrap">
+                  {news.tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="text-[10px] font-bold uppercase tracking-[0.12em] text-brand-400 bg-brand-800 px-2 py-0.5 rounded"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── ARTICLE BODY ─────────────────────────────────────────────────── */}
+      <div className="container py-10 pb-16">
+        <FadeIn>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 max-w-7xl mx-auto">
-            {/* Main Article Content */}
+            {/* Main content */}
             <div className="lg:col-span-2">
-              <article className="overflow-hidden">
-                <header className="mb-10">
-                  <h1 className="text-3xl md:text-5xl font-extrabold text-brand-900 mb-6 leading-tight break-words">
-                    {news.title}
-                  </h1>
-                  <div className="flex flex-wrap items-center gap-4 text-muted-foreground text-sm">
-                    <div className="flex items-center">
-                      <CalendarDays className="mr-2 h-4 w-4 text-brand-500" />
-                      <span>Published {format(new Date(news.publishedAt), "PPP")}</span>
-                    </div>
-                    <Separator orientation="vertical" className="h-4 hidden sm:block" />
-                    <div className="flex flex-wrap gap-2">
-                      <span className="flex items-center text-sm font-medium text-brand-700">
-                        <Tag className="mr-1 h-4 w-4" /> Tags:
-                      </span>
-                      {news.tags.map((tag) => (
-                        <Badge key={tag} variant="secondary" className="bg-brand-100 text-brand-700 hover:bg-brand-200 border-none">
-                          {tag}
-                        </Badge>
-                      ))}
-                    </div>
-                  </div>
-                </header>
-
+              <article>
+                {/* Cover image — full width, no framing chrome */}
                 {news.coverUrl && (
-                  <div className="mb-12 group">
-                    <div className="flex items-center gap-2 mb-4 text-xs font-bold text-brand-600 uppercase tracking-widest">
-                      <Paperclip className="h-4 w-4" />
-                      Attachment / Bulletin
-                    </div>
-                    <div className="relative inline-block w-full overflow-hidden bg-white p-3 border border-gray-200 shadow-sm rounded-lg">
-                      <img
-                        src={news.coverUrl}
-                        alt={news.title}
-                        className="w-full h-auto object-contain max-h-[700px] rounded-sm"
-                      />
-                    </div>
+                  <div className="mb-10 w-full overflow-hidden rounded bg-gray-50 border border-gray-100">
+                    <img
+                      src={news.coverUrl}
+                      alt={news.title}
+                      className="w-full h-auto object-contain max-h-[680px]"
+                    />
                   </div>
                 )}
 
-                <div className="prose prose-slate max-w-none lg:prose-xl break-words">
+                {/* Body */}
+                <div className="prose prose-slate prose-base md:prose-lg max-w-none break-words
+                  prose-headings:text-brand-900 prose-headings:font-bold
+                  prose-a:text-brand-600 prose-a:no-underline hover:prose-a:underline
+                  prose-strong:text-brand-800
+                  prose-blockquote:border-l-brand-400 prose-blockquote:text-gray-600
+                ">
                   <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreaks]}>
                     {news.bodyMd}
                   </ReactMarkdown>
@@ -161,15 +200,14 @@ const NewsDetail: React.FC = () => {
               </article>
             </div>
 
-            {/* Sidebar with Ad Placement */}
-            <div className="lg:col-span-1 space-y-8">
+            {/* Sidebar */}
+            <div className="lg:col-span-1">
               <div className="sticky top-24">
-                <h3 className="text-xs font-bold uppercase tracking-widest text-brand-400 mb-4">Sponsored</h3>
                 <AdPlacement placement="news_feed" />
               </div>
             </div>
           </div>
-        </div>
+        </FadeIn>
       </div>
     </>
   );

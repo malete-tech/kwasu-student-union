@@ -2,19 +2,27 @@
 
 import React, { useState } from "react";
 import { Helmet } from "react-helmet-async";
-import { Link } from "react-router-dom";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, Loader2 } from "@/components/ui/font-awesome-icon";
+import { Loader2 } from "@/components/ui/font-awesome-icon";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { api } from "@/lib/api";
 import { toast } from "sonner";
 import { useSession } from "@/components/SessionContextProvider";
+import FadeIn from "@/components/FadeIn";
+
+// ─── Form schema ─────────────────────────────────────────────────────────────
 
 const formSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
@@ -22,6 +30,38 @@ const formSchema = z.object({
   subject: z.string().min(5, { message: "Subject must be at least 5 characters." }),
   message: z.string().min(10, { message: "Message must be at least 10 characters." }),
 });
+
+// ─── Contact channels data ────────────────────────────────────────────────────
+
+const channels = [
+  {
+    icon: "fa-solid fa-envelope",
+    label: "Email",
+    value: "student.union@kwasu.edu.ng",
+    href: "mailto:student.union@kwasu.edu.ng",
+  },
+  {
+    icon: "fa-solid fa-phone",
+    label: "PRO's Line",
+    value: "08113887492",
+    href: "tel:+2348113887492",
+  },
+  {
+    icon: "fa-solid fa-location-dot",
+    label: "Office",
+    value: "Students' Union Building, Behind Faculty of Information and Technology, KWASU, Malete.",
+    href: null,
+  },
+  {
+    icon: "fa-solid fa-clock",
+    label: "Hours",
+    value: "Monday – Friday, 09:00 AM – 04:00 PM",
+    note: "Closed on weekends and public holidays",
+    href: null,
+  },
+];
+
+// ─── Component ────────────────────────────────────────────────────────────────
 
 const ContactPage: React.FC = () => {
   const { user } = useSession();
@@ -40,24 +80,17 @@ const ContactPage: React.FC = () => {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setIsSubmitting(true);
     try {
-      // Mapping contact form to the complaints schema as an 'Inquiry'
       const inquiryPayload = {
         userId: user?.id || null,
-        category: 'Inquiry' as const,
+        category: "Inquiry" as const,
         title: values.subject,
         description: `Name: ${values.name}\n\nMessage: ${values.message}`,
         contactEmail: values.email,
         isAnonymous: false,
       };
-
       await api.complaints.submit(inquiryPayload);
       toast.success("Inquiry sent! We will get back to you shortly.");
-      form.reset({
-        name: "",
-        email: user?.email || "",
-        subject: "",
-        message: "",
-      });
+      form.reset({ name: "", email: user?.email || "", subject: "", message: "" });
     } catch (error) {
       console.error("Failed to send inquiry:", error);
       toast.error("Failed to send inquiry. Please try again later.");
@@ -70,158 +103,243 @@ const ContactPage: React.FC = () => {
     <>
       <Helmet>
         <title>Contact Us | KWASU Students' Union</title>
-        <meta name="description" content="Get in touch with KWASU Students' Union. Reach out to the PRO or visit our office." />
+        <meta
+          name="description"
+          content="Get in touch with KWASU Students' Union. Reach out to the PRO or visit our office."
+        />
       </Helmet>
-      <div className="container py-12">
-        <Button asChild variant="ghost" className="mb-8 text-brand-600 hover:text-brand-700 -ml-4">
-          <Link to="/">
-            <ArrowLeft className="mr-2 h-4 w-4" /> Back to Home
-          </Link>
-        </Button>
 
-        <h1 className="text-3xl sm:text-4xl font-bold text-center mb-4 text-brand-700">Contact Us</h1>
-        <p className="text-center text-lg text-muted-foreground mb-10 max-w-2xl mx-auto">
-          Have questions or need assistance? Reach out to the Students' Union through any of our official channels.
-        </p>
+      {/* ── PAGE BANNER ───────────────────────────────────────────────────── */}
+      <section className="relative w-full bg-brand-900 border-b border-brand-800 overflow-hidden">
+        <div
+          className="absolute inset-0 opacity-[0.04]"
+          style={{
+            backgroundImage:
+              "repeating-linear-gradient(0deg, transparent, transparent 39px, hsl(150 60% 80%) 39px, hsl(150 60% 80%) 40px), repeating-linear-gradient(90deg, transparent, transparent 39px, hsl(150 60% 80%) 39px, hsl(150 60% 80%) 40px)",
+          }}
+          aria-hidden="true"
+        />
+        <div className="absolute top-0 left-0 right-0 h-[3px] bg-brand-gold" aria-hidden="true" />
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Contact Information */}
-          <Card className="p-6 shadow-xl border-brand-100 bg-white/50">
-            <CardHeader className="flex flex-row items-center gap-3 mb-8 pb-4 border-b border-brand-50 p-0 space-y-0">
-              <div className="p-3 bg-brand-50 rounded-2xl text-brand-600">
-                <i className="fa-solid fa-address-book text-xl"></i>
+        <div className="container relative py-12 md:py-16">
+          <div className="max-w-2xl">
+            <p className="text-brand-300 text-xs font-bold uppercase tracking-[0.15em] mb-4">
+              KWASU Students' Union
+            </p>
+            <h1 className="text-3xl md:text-4xl font-extrabold text-white leading-tight mb-4">
+              Get in{" "}
+              <span
+                className="text-brand-gold"
+                style={{
+                  textDecoration: "underline",
+                  textDecorationColor: "hsl(40 80% 60% / 0.35)",
+                  textUnderlineOffset: "6px",
+                }}
+              >
+                Touch
+              </span>
+            </h1>
+            <p className="text-brand-200 text-sm leading-relaxed max-w-md">
+              Reach out through any official channel or send us a direct message
+              and we'll respond as soon as possible.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* ── CONTENT ──────────────────────────────────────────────────────── */}
+      <div className="container py-12 md:py-16">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 max-w-5xl mx-auto">
+
+          {/* ── LEFT: Contact channels ────────────────────────────────── */}
+          <FadeIn direction="right">
+            <div>
+              <p className="text-xs font-bold text-brand-400 uppercase tracking-[0.15em] mb-6">
+                Official Channels
+              </p>
+
+              <div className="divide-y divide-gray-100 border border-gray-100 rounded">
+                {channels.map((ch) => (
+                  <div key={ch.label} className="flex items-start gap-4 px-5 py-5">
+                    {/* Icon */}
+                    <div className="flex-shrink-0 mt-0.5 w-8 h-8 flex items-center justify-center rounded bg-brand-50 text-brand-600">
+                      <i className={`${ch.icon} text-sm`} />
+                    </div>
+
+                    {/* Text */}
+                    <div className="min-w-0">
+                      <p className="text-[10px] font-bold text-brand-400 uppercase tracking-[0.12em] mb-1">
+                        {ch.label}
+                      </p>
+                      {ch.href ? (
+                        <a
+                          href={ch.href}
+                          className="text-sm font-medium text-brand-900 hover:text-brand-600 transition-colors break-all"
+                        >
+                          {ch.value}
+                        </a>
+                      ) : (
+                        <p className="text-sm text-gray-700 leading-relaxed">{ch.value}</p>
+                      )}
+                      {ch.note && (
+                        <p className="text-xs text-gray-400 mt-0.5">{ch.note}</p>
+                      )}
+                    </div>
+                  </div>
+                ))}
               </div>
-              <CardTitle className="text-2xl font-bold text-brand-900 uppercase">Official Channels</CardTitle>
-            </CardHeader>
-            
-            <CardContent className="space-y-8 p-0">
-              <div className="flex items-start group">
-                <div className="p-2 rounded-xl bg-brand-50 text-brand-500 mr-4 group-hover:bg-brand-500 group-hover:text-white transition-colors">
-                  <i className="fa-solid fa-envelope h-5 w-5 flex items-center justify-center"></i>
-                </div>
-                <div>
-                  <h3 className="font-bold text-brand-800 uppercase text-xs tracking-wider mb-1">Email Correspondence</h3>
-                  <p className="text-gray-700">
-                    <a href="mailto:student.union@kwasu.edu.ng" className="hover:text-brand-500 transition-colors">student.union@kwasu.edu.ng</a>
-                  </p>
+
+              {/* Social links strip */}
+              <div className="mt-6 pt-6 border-t border-gray-100">
+                <p className="text-[10px] font-bold text-brand-400 uppercase tracking-[0.15em] mb-3">
+                  Follow us
+                </p>
+                <div className="flex items-center gap-3">
+                  <a
+                    href="https://x.com/kwasusu"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Twitter / X"
+                    className="w-8 h-8 flex items-center justify-center rounded border border-gray-200 text-gray-500 hover:border-brand-400 hover:text-brand-600 transition-colors text-sm"
+                  >
+                    <i className="fa-brands fa-x-twitter" />
+                  </a>
+                  <a
+                    href="https://instagram.com/kwasusu"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Instagram"
+                    className="w-8 h-8 flex items-center justify-center rounded border border-gray-200 text-gray-500 hover:border-brand-400 hover:text-brand-600 transition-colors text-sm"
+                  >
+                    <i className="fa-brands fa-instagram" />
+                  </a>
+                  <a
+                    href="https://facebook.com/kwasusu"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Facebook"
+                    className="w-8 h-8 flex items-center justify-center rounded border border-gray-200 text-gray-500 hover:border-brand-400 hover:text-brand-600 transition-colors text-sm"
+                  >
+                    <i className="fa-brands fa-facebook-f" />
+                  </a>
                 </div>
               </div>
+            </div>
+          </FadeIn>
 
-              <div className="flex items-start group">
-                <div className="p-2 rounded-xl bg-brand-50 text-brand-500 mr-4 group-hover:bg-brand-500 group-hover:text-white transition-colors">
-                  <i className="fa-solid fa-phone h-5 w-5 flex items-center justify-center"></i>
-                </div>
-                <div>
-                  <h3 className="font-bold text-brand-800 uppercase text-xs tracking-wider mb-1">PRO's Contact</h3>
-                  <p className="text-gray-700 font-semibold tracking-wide">
-                    <a href="tel:+2348113887492" className="hover:text-brand-500 transition-colors">08113887492</a>
-                  </p>
-                </div>
+          {/* ── RIGHT: Contact form ───────────────────────────────────── */}
+          <FadeIn direction="left" delay={0.1}>
+            <div>
+              <p className="text-xs font-bold text-brand-400 uppercase tracking-[0.15em] mb-6">
+                Send a Message
+              </p>
+
+              <div className="border border-gray-100 rounded p-6 bg-white">
+                <Form {...form}>
+                  <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <FormField
+                        control={form.control}
+                        name="name"
+                        render={({ field }) => (
+                          <FormItem className="space-y-1.5">
+                            <FormLabel className="text-[11px] font-bold uppercase tracking-wider text-brand-700">
+                              Your Name
+                            </FormLabel>
+                            <FormControl>
+                              <Input
+                                placeholder="John Doe"
+                                {...field}
+                                className="h-9 rounded border-gray-200 text-sm focus-visible:ring-1 focus-visible:ring-brand-500 focus-visible:border-brand-500"
+                              />
+                            </FormControl>
+                            <FormMessage className="text-xs" />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="email"
+                        render={({ field }) => (
+                          <FormItem className="space-y-1.5">
+                            <FormLabel className="text-[11px] font-bold uppercase tracking-wider text-brand-700">
+                              Your Email
+                            </FormLabel>
+                            <FormControl>
+                              <Input
+                                type="email"
+                                placeholder="you@example.com"
+                                {...field}
+                                className="h-9 rounded border-gray-200 text-sm focus-visible:ring-1 focus-visible:ring-brand-500 focus-visible:border-brand-500"
+                              />
+                            </FormControl>
+                            <FormMessage className="text-xs" />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    <FormField
+                      control={form.control}
+                      name="subject"
+                      render={({ field }) => (
+                        <FormItem className="space-y-1.5">
+                          <FormLabel className="text-[11px] font-bold uppercase tracking-wider text-brand-700">
+                            Subject
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="What is this regarding?"
+                              {...field}
+                              className="h-9 rounded border-gray-200 text-sm focus-visible:ring-1 focus-visible:ring-brand-500 focus-visible:border-brand-500"
+                            />
+                          </FormControl>
+                          <FormMessage className="text-xs" />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="message"
+                      render={({ field }) => (
+                        <FormItem className="space-y-1.5">
+                          <FormLabel className="text-[11px] font-bold uppercase tracking-wider text-brand-700">
+                            Message
+                          </FormLabel>
+                          <FormControl>
+                            <Textarea
+                              placeholder="Type your message here…"
+                              rows={5}
+                              {...field}
+                              className="rounded border-gray-200 text-sm focus-visible:ring-1 focus-visible:ring-brand-500 focus-visible:border-brand-500 resize-none"
+                            />
+                          </FormControl>
+                          <FormMessage className="text-xs" />
+                        </FormItem>
+                      )}
+                    />
+
+                    <Button
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="w-full h-10 bg-brand-700 hover:bg-brand-600 text-white rounded text-sm font-bold uppercase tracking-wider transition-colors"
+                    >
+                      {isSubmitting ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Sending…
+                        </>
+                      ) : (
+                        "Send Inquiry"
+                      )}
+                    </Button>
+                  </form>
+                </Form>
               </div>
+            </div>
+          </FadeIn>
 
-              <div className="flex items-start group">
-                <div className="p-2 rounded-xl bg-brand-50 text-brand-500 mr-4 group-hover:bg-brand-500 group-hover:text-white transition-colors">
-                  <i className="fa-solid fa-location-dot h-5 w-5 flex items-center justify-center"></i>
-                </div>
-                <div>
-                  <h3 className="font-bold text-brand-800 uppercase text-xs tracking-wider mb-1">Physical Location</h3>
-                  <p className="text-gray-700">
-                    Students' Union Building, Behind Faculty of Information and Technology, Kwara State University, Malete.
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-start group">
-                <div className="p-2 rounded-xl bg-brand-50 text-brand-500 mr-4 group-hover:bg-brand-500 group-hover:text-white transition-colors">
-                  <i className="fa-solid fa-clock h-5 w-5 flex items-center justify-center"></i>
-                </div>
-                <div>
-                  <h3 className="font-bold text-brand-800 uppercase text-xs tracking-wider mb-1">Service Hours</h3>
-                  <p className="text-gray-700">Monday - Friday: 09:00 AM - 04:00 PM</p>
-                  <p className="text-xs text-muted-foreground mt-1 italic">Closed on weekends and holidays</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Contact Form */}
-          <Card className="p-6 shadow-xl border-brand-100">
-            <CardHeader className="flex flex-row items-center gap-3 mb-8 pb-4 border-b border-brand-50 p-0 space-y-0">
-              <div className="p-3 bg-brand-50 rounded-2xl text-brand-600">
-                <i className="fa-solid fa-paper-plane text-xl"></i>
-              </div>
-              <CardTitle className="text-2xl font-bold text-brand-900 uppercase">Send Message</CardTitle>
-            </CardHeader>
-
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <FormField
-                    control={form.control}
-                    name="name"
-                    render={({ field }) => (
-                      <FormItem className="space-y-2">
-                        <FormLabel className="text-xs font-bold uppercase tracking-wider text-brand-700">Your Name</FormLabel>
-                        <FormControl>
-                          <Input placeholder="John Doe" {...field} className="h-11 rounded-xl border-brand-100 focus-visible:ring-brand-gold" />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="email"
-                    render={({ field }) => (
-                      <FormItem className="space-y-2">
-                        <FormLabel className="text-xs font-bold uppercase tracking-wider text-brand-700">Your Email</FormLabel>
-                        <FormControl>
-                          <Input type="email" placeholder="john.doe@example.com" {...field} className="h-11 rounded-xl border-brand-100 focus-visible:ring-brand-gold" />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-                <FormField
-                  control={form.control}
-                  name="subject"
-                  render={({ field }) => (
-                    <FormItem className="space-y-2">
-                      <FormLabel className="text-xs font-bold uppercase tracking-wider text-brand-700">Subject</FormLabel>
-                      <FormControl>
-                        <Input placeholder="What is this regarding?" {...field} className="h-11 rounded-xl border-brand-100 focus-visible:ring-brand-gold" />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="message"
-                  render={({ field }) => (
-                    <FormItem className="space-y-2">
-                      <FormLabel className="text-xs font-bold uppercase tracking-wider text-brand-700">Message</FormLabel>
-                      <FormControl>
-                        <Textarea placeholder="Type your message here." rows={5} {...field} className="rounded-xl border-brand-100 focus-visible:ring-brand-gold" />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <Button type="submit" className="w-full h-12 bg-brand-500 hover:bg-brand-600 text-white rounded-xl shadow-md font-bold transition-all" disabled={isSubmitting}>
-                  {isSubmitting ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Sending...
-                    </>
-                  ) : (
-                    "Send Inquiry"
-                  )}
-                </Button>
-              </form>
-            </Form>
-          </Card>
         </div>
       </div>
     </>
