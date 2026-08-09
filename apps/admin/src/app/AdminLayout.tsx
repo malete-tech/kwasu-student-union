@@ -299,8 +299,8 @@ const AdminLayout: React.FC = () => {
         </aside>
 
         {/* ══ Mobile Top Header ════════════════════════════════════════════════ */}
-        <header className="lg:hidden fixed top-0 left-0 right-0 h-14 bg-white border-b border-slate-200 px-4 flex items-center justify-between z-40">
-          <div className="flex items-center gap-3">
+        <header className="lg:hidden fixed top-0 left-0 right-0 h-14 bg-white border-b border-slate-200 px-3 sm:px-4 flex items-center justify-between z-40">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
             <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
               <SheetTrigger asChild>
                 <HamburgerButton isOpen={isSidebarOpen} variant="ghost" />
@@ -315,10 +315,10 @@ const AdminLayout: React.FC = () => {
               </SheetContent>
             </Sheet>
 
-            <span className="text-sm font-semibold text-slate-800">{currentPageName}</span>
+            <span className="text-sm font-semibold text-slate-800 truncate max-w-[120px] sm:max-w-[220px]">{currentPageName}</span>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
             <NotificationToggle />
             <UserDropdown
               userEmail={session?.user?.email}
@@ -332,9 +332,9 @@ const AdminLayout: React.FC = () => {
         <div className="flex-1 flex flex-col min-w-0 lg:pl-64">
 
           {/* Desktop top bar */}
-          <header className="hidden lg:flex h-14 items-center justify-between px-8 bg-white border-b border-slate-200 sticky top-0 z-20">
+          <header className="hidden lg:flex h-14 items-center justify-between px-6 lg:px-8 bg-white border-b border-slate-200 sticky top-0 z-20">
             {/* Breadcrumbs */}
-            <nav className="flex items-center gap-1 text-sm">
+            <nav className="flex items-center gap-1 text-sm min-w-0 truncate pr-4">
               {breadcrumbs.map((crumb, i) => (
                 <React.Fragment key={crumb.href}>
                   {i > 0 && (
@@ -343,21 +343,21 @@ const AdminLayout: React.FC = () => {
                   {i < breadcrumbs.length - 1 ? (
                     <Link
                       to={crumb.href}
-                      className="text-slate-400 hover:text-slate-700 transition-colors"
+                      className="text-slate-400 hover:text-slate-700 transition-colors truncate"
                     >
                       {crumb.name}
                     </Link>
                   ) : (
-                    <span className="text-slate-900 font-semibold">{crumb.name}</span>
+                    <span className="text-slate-900 font-semibold truncate">{crumb.name}</span>
                   )}
                 </React.Fragment>
               ))}
             </nav>
 
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 lg:gap-3 shrink-0">
               <InstallAppButton />
               <NotificationToggle />
-              <div className="w-px h-5 bg-slate-200" />
+              <div className="w-px h-5 bg-slate-200 shrink-0" />
               <UserDropdown
                 userEmail={session?.user?.email}
                 onLogout={handleLogout}

@@ -1,4 +1,5 @@
 {
+  "id": "/",
   "short_name": "KWASUSU ADMIN",
   "name": "KWASUSU ADMIN",
   "description": "KWASU Students' Union Administrative Dashboard & Management Console",
@@ -34,5 +35,7 @@
   "display": "standalone",
   "display_override": ["standalone", "minimal-ui"],
   "orientation": "any",
-  "scope": "/"
+  "scope": "/",
+  "prefer_related_applications": false,
+  "categories": ["utilities", "productivity"]
 }
