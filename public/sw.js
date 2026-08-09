@@ -1,11 +1,14 @@
-// Service Worker for KWASU SU Admin PWA & Push Notifications
+// Service Worker for KWASUSU ADMIN PWA & Push Notifications
 
-const CACHE_NAME = "kwasu-admin-v1";
+const CACHE_NAME = "kwasu-admin-v2";
 const ASSETS_TO_CACHE = [
   "/",
   "/manifest.json",
   "/favicon.ico",
-  "/logo.png"
+  "/logo.png",
+  "/icon-192.png",
+  "/icon-512.png",
+  "/apple-touch-icon.png"
 ];
 
 // Install Event — Cache essential app shell
@@ -17,7 +20,7 @@ self.addEventListener("install", (event) => {
   );
 });
 
-// Activate Event — Clean up stale caches
+// Activate Event — Clean up stale caches and claim clients immediately
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches.keys().then((cacheNames) => {
@@ -47,6 +50,30 @@ self.addEventListener("fetch", (event) => {
       })
       .catch(() => caches.match(event.request))
   );
+});
+
+// Push Event — Listen for background Web Push Notifications
+self.addEventListener("push", (event) => {
+  let data = { title: "KWASUSU ADMIN Alert", body: "New updates received.", url: "/complaints" };
+  try {
+    if (event.data) {
+      data = event.data.json();
+    }
+  } catch (e) {
+    if (event.data) {
+      data.body = event.data.text();
+    }
+  }
+
+  const options = {
+    body: data.body,
+    icon: "/icon-192.png",
+    badge: "/icon-192.png",
+    vibrate: [200, 100, 200],
+    data: { url: data.url || "/complaints" }
+  };
+
+  event.waitUntil(self.registration.showNotification(data.title, options));
 });
 
 // Notification Click Event — Open or focus admin console on notification tap

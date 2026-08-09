@@ -1,5 +1,5 @@
 {
-  "id": "/",
+  "id": "https://admin.thekwasusu.com/",
   "short_name": "KWASUSU ADMIN",
   "name": "KWASUSU ADMIN",
   "description": "KWASU Students' Union Administrative Dashboard & Management Console",
@@ -8,13 +8,13 @@
       "src": "/icon-192.png",
       "type": "image/png",
       "sizes": "192x192",
-      "purpose": "any"
+      "purpose": "any maskable"
     },
     {
       "src": "/icon-512.png",
       "type": "image/png",
       "sizes": "512x512",
-      "purpose": "any"
+      "purpose": "any maskable"
     },
     {
       "src": "/icon-maskable.png",
@@ -34,7 +34,7 @@
   "theme_color": "#ffffff",
   "display": "standalone",
   "display_override": ["standalone", "minimal-ui"],
-  "orientation": "any",
+  "orientation": "portrait",
   "scope": "/",
   "prefer_related_applications": false,
   "categories": ["utilities", "productivity"]
