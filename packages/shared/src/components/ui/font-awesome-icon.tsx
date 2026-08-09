@@ -108,6 +108,9 @@ const iconMap: Record<string, string> = {
   FileDown: "fa-solid fa-file-arrow-down",
   Sliders: "fa-solid fa-sliders",
   Filter: "fa-solid fa-filter",
+  Smartphone: "fa-solid fa-mobile-screen-button",
+  Monitor: "fa-solid fa-desktop",
+  Volume2: "fa-solid fa-volume-high",
 };
 
 export const FaIcon: React.FC<{ name: string } & FontAwesomeIconProps> = ({
@@ -123,11 +126,29 @@ export const FaIcon: React.FC<{ name: string } & FontAwesomeIconProps> = ({
 
   if (typeof size === "number") {
     styleObj.fontSize = `${size}px`;
+  } else if (typeof size === "string") {
+    styleObj.fontSize = size;
+  }
+
+  // Auto-map w-X h-X utility classes to equivalent FontAwesome font sizes if no text size class is specified
+  let autoSizeClass = "";
+  if (!className.includes("text-") && !styleObj.fontSize) {
+    if (className.includes("w-8") || className.includes("h-8")) {
+      autoSizeClass = "text-2xl";
+    } else if (className.includes("w-6") || className.includes("h-6")) {
+      autoSizeClass = "text-xl";
+    } else if (className.includes("w-5") || className.includes("h-5")) {
+      autoSizeClass = "text-lg";
+    } else if (className.includes("w-4") || className.includes("h-4")) {
+      autoSizeClass = "text-base";
+    } else if (className.includes("w-3.5") || className.includes("h-3.5") || className.includes("w-3")) {
+      autoSizeClass = "text-xs";
+    }
   }
 
   return (
     <i
-      className={`inline-flex items-center justify-center text-center leading-none ${iconClass} ${spin ? "fa-spin" : ""} ${className}`.trim()}
+      className={`inline-flex items-center justify-center text-center leading-none ${iconClass} ${spin ? "fa-spin" : ""} ${autoSizeClass} ${className}`.trim()}
       style={styleObj}
       {...props}
     />
@@ -243,3 +264,6 @@ export const Save = createFaIcon("Save");
 export const FileDown = createFaIcon("FileDown");
 export const Sliders = createFaIcon("Sliders");
 export const Filter = createFaIcon("Filter");
+export const Smartphone = createFaIcon("Smartphone");
+export const Monitor = createFaIcon("Monitor");
+export const Volume2 = createFaIcon("Volume2");

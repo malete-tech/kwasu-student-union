@@ -1,18 +1,15 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Helmet } from "react-helmet-async";
+import { SEO } from "@/components/SEO";
 import { useSearchParams, Link } from "react-router-dom";
 import { api } from "@/lib/api";
 import { News, Event, Opportunity } from "@/types";
-import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Search, Newspaper, CalendarDays, Briefcase, ArrowRight } from "@/components/ui/font-awesome-icon";
-import { Button } from "@/components/ui/button";
-import NewsFeedItem from "@/components/NewsFeedItem"; // Updated import
+import NewsFeedItem from "@/components/NewsFeedItem";
 import EventCard from "@/components/event-card";
 import { format, isPast } from "date-fns";
-import { Badge } from "@/components/ui/badge";
+import FadeIn from "@/components/FadeIn";
 
 interface SearchResults {
   news: News[];
@@ -25,24 +22,32 @@ const OpportunityResultCard: React.FC<{ opportunity: Opportunity }> = ({ opportu
   const isDeadlinePast = isPast(deadlineDate);
 
   return (
-    <Card className={`p-4 shadow-sm border hover:shadow-md transition-shadow ${isDeadlinePast ? "opacity-70" : ""}`}>
-      <CardTitle className="text-lg font-semibold leading-tight mb-1">
-        <a href={opportunity.link} target="_blank" rel="noopener noreferrer" className="hover:text-brand-500 focus-visible:ring-brand-gold rounded-md outline-none">
-          {opportunity.title}
-        </a>
-      </CardTitle>
-      <p className="text-sm text-muted-foreground mb-2">
-        Deadline: {format(deadlineDate, "PPP")}
-        {isDeadlinePast && <span className="ml-2 text-destructive font-medium">(Closed)</span>}
-      </p>
-      <div className="flex flex-wrap gap-2">
+    <div className={`border border-gray-100 bg-white rounded p-4 flex flex-col justify-between hover:border-gray-300 transition-colors ${isDeadlinePast ? "opacity-60 bg-gray-50/50" : ""}`}>
+      <div>
+        <div className="flex items-start justify-between gap-2 mb-2">
+          <h3 className="text-xs font-bold text-gray-900 leading-snug">
+            <a href={opportunity.link} target="_blank" rel="noopener noreferrer" className="hover:text-brand-900 transition-colors">
+              {opportunity.title}
+            </a>
+          </h3>
+          {isDeadlinePast && (
+            <span className="px-1.5 py-0.5 rounded text-[9px] font-semibold text-red-600 bg-red-50 border border-red-100 uppercase">
+              Closed
+            </span>
+          )}
+        </div>
+        <p className="text-[11px] text-gray-500 font-medium mb-3">
+          Deadline: {format(deadlineDate, "MMM d, yyyy")}
+        </p>
+      </div>
+      <div className="flex flex-wrap gap-1 pt-2 border-t border-gray-100">
         {opportunity.tags.map((tag) => (
-          <Badge key={tag} variant="secondary" className="bg-brand-100 text-brand-700">
+          <span key={tag} className="px-2 py-0.5 rounded bg-gray-100 text-gray-600 text-[10px] font-semibold uppercase">
             {tag}
-          </Badge>
+          </span>
         ))}
       </div>
-    </Card>
+    </div>
   );
 };
 
@@ -80,106 +85,148 @@ const SearchResultsPage: React.FC = () => {
 
   return (
     <>
-      <Helmet>
-        <title>Search Results for "{searchTerm}" | KWASU SU</title>
-        <meta name="description" content={`Search results for ${searchTerm} across news, events, and opportunities.`} />
-      </Helmet>
-      <div className="container py-12">
-        <div className="flex items-center mb-8">
-          <Search className="h-8 w-8 text-brand-700 mr-3" />
-          <h1 className="text-3xl font-bold text-brand-700">
-            Search Results
-          </h1>
-        </div>
-        <p className="text-xl text-muted-foreground mb-8">
-          Showing {loading ? "..." : totalResults} results for: <span className="font-semibold text-brand-800">"{searchTerm}"</span>
-        </p>
+      <SEO
+        title={`Search Results for "${searchTerm}" | KWASU SU`}
+        description={`Search results for ${searchTerm} across news articles, events, and student opportunities.`}
+        url={`https://kwasusu.com.ng/search?q=${encodeURIComponent(searchTerm)}`}
+      />
 
+      {/* Page Banner */}
+      <section className="relative w-full bg-brand-900 border-b border-brand-800 overflow-hidden">
+        {/* Subtle grid pattern */}
+        <div
+          className="absolute inset-0 opacity-[0.04]"
+          style={{
+            backgroundImage:
+              "repeating-linear-gradient(0deg, transparent, transparent 39px, hsl(150 60% 80%) 39px, hsl(150 60% 80%) 40px), repeating-linear-gradient(90deg, transparent, transparent 39px, hsl(150 60% 80%) 39px, hsl(150 60% 80%) 40px)",
+          }}
+          aria-hidden="true"
+        />
+        <div className="absolute top-0 left-0 right-0 h-[3px] bg-brand-gold" aria-hidden="true" />
+
+        <div className="container relative py-12 md:py-16">
+          <div className="max-w-2xl">
+            <p className="text-brand-300 text-xs font-bold uppercase tracking-[0.15em] mb-4">
+              KWASU SU Global Search
+            </p>
+            <h1 className="text-3xl md:text-4xl font-extrabold text-white leading-tight mb-4">
+              Search{" "}
+              <span
+                className="text-brand-gold"
+                style={{
+                  textDecoration: "underline",
+                  textDecorationColor: "hsl(40 80% 60% / 0.35)",
+                  textUnderlineOffset: "6px",
+                }}
+              >
+                Results
+              </span>
+            </h1>
+            <p className="text-brand-200 text-sm leading-relaxed max-w-lg">
+              {loading ? "Searching repository..." : `Found ${totalResults} result${totalResults === 1 ? "" : "s"} for `}
+              {searchTerm && <span className="font-semibold text-white">"{searchTerm}"</span>}
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <div className="container max-w-5xl mx-auto py-10 px-4">
         {loading ? (
-          <div className="space-y-6">
-            <Skeleton className="h-8 w-1/4" />
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <Skeleton className="h-48 w-full" />
-              <Skeleton className="h-48 w-full" />
-            </div>
-            <Skeleton className="h-8 w-1/4" />
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <Skeleton className="h-48 w-full" />
-              <Skeleton className="h-48 w-full" />
+          <div className="space-y-8">
+            <Skeleton className="h-6 w-40" />
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <Skeleton className="h-40 w-full rounded" />
+              <Skeleton className="h-40 w-full rounded" />
+              <Skeleton className="h-40 w-full rounded" />
             </div>
           </div>
         ) : error ? (
-          <div className="text-center text-destructive text-lg p-6 border border-destructive rounded-lg">{error}</div>
-        ) : totalResults === 0 ? (
-          <Card className="p-8 text-center shadow-lg">
-            <CardTitle className="text-2xl text-muted-foreground">No Results Found</CardTitle>
-            <CardContent className="mt-4">
-              <p>Try searching for different keywords or check the individual News and Events pages.</p>
-            </CardContent>
-          </Card>
-        ) : (
-          <div className="space-y-12">
-            {/* News Results */}
-            {results.news.length > 0 && (
-              <section>
-                <h2 className="text-2xl font-bold text-brand-700 mb-4 flex items-center">
-                  <Newspaper className="h-6 w-6 mr-2 text-brand-500" /> News Articles ({results.news.length})
-                </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {results.news.map((item) => (
-                    <NewsFeedItem key={item.id} news={item} variant="default" />
-                  ))}
-                </div>
-                <div className="mt-6 text-right">
-                  <Button asChild variant="link" className="text-brand-500 hover:text-brand-600 focus-visible:ring-brand-gold">
-                    <Link to="/news">View All News <ArrowRight className="ml-2 h-4 w-4" /></Link>
-                  </Button>
-                </div>
-              </section>
-            )}
-
-            {/* Events Results */}
-            {results.events.length > 0 && (
-              <section>
-                <h2 className="text-2xl font-bold text-brand-700 mb-4 flex items-center">
-                  <CalendarDays className="h-6 w-6 mr-2 text-brand-500" /> Upcoming Events ({results.events.length})
-                </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {results.events.map((item) => (
-                    <EventCard key={item.id} event={item} />
-                  ))}
-                </div>
-                <div className="mt-6 text-right">
-                  <Button asChild variant="link" className="text-brand-500 hover:text-brand-600 focus-visible:ring-brand-gold">
-                    <Link to="/events">View All Events <ArrowRight className="ml-2 h-4 w-4" /></Link>
-                  </Button>
-                </div>
-              </section>
-            )}
-
-            {/* Opportunities Results */}
-            {results.opportunities.length > 0 && (
-              <section>
-                <h2 className="text-2xl font-bold text-brand-700 mb-4 flex items-center">
-                  <Briefcase className="h-6 w-6 mr-2 text-brand-500" /> Opportunities ({results.opportunities.length})
-                </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {results.opportunities.map((item) => (
-                    <OpportunityResultCard key={item.id} opportunity={item} />
-                  ))}
-                </div>
-                <div className="mt-6 text-right">
-                  <Button asChild variant="link" className="text-brand-500 hover:text-brand-600 focus-visible:ring-brand-gold">
-                    <Link to="/services/opportunities">View All Opportunities <ArrowRight className="ml-2 h-4 w-4" /></Link>
-                  </Button>
-                </div>
-              </section>
-            )}
+          <div className="py-12 text-center text-xs font-medium text-red-600 bg-red-50/50 rounded border border-red-100">
+            {error}
           </div>
+        ) : totalResults === 0 ? (
+          <div className="py-16 text-center text-gray-500 border border-dashed border-gray-200 rounded">
+            <i className="fa-solid fa-magnifying-glass text-2xl text-gray-300 mb-2 block" />
+            <p className="text-xs font-semibold text-gray-600 mb-1">No matches found</p>
+            <p className="text-[11px] text-gray-400 mb-4">
+              We couldn't find any content matching "{searchTerm}".
+            </p>
+            <Link
+              to="/news"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded bg-brand-900 text-white text-xs font-bold hover:bg-brand-800 transition-colors"
+            >
+              Browse News
+              <i className="fa-solid fa-arrow-right text-[10px]" aria-hidden="true" />
+            </Link>
+          </div>
+        ) : (
+          <FadeIn>
+            <div className="space-y-10">
+              {/* News Results */}
+              {results.news.length > 0 && (
+                <section>
+                  <div className="flex items-center justify-between border-b border-gray-100 pb-3 mb-4">
+                    <h2 className="text-sm font-bold text-gray-900 flex items-center gap-2">
+                      <i className="fa-solid fa-newspaper text-brand-700" aria-hidden="true" />
+                      News Articles ({results.news.length})
+                    </h2>
+                    <Link to="/news" className="text-xs font-bold text-brand-700 hover:text-brand-900 transition-colors">
+                      View All News &rarr;
+                    </Link>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {results.news.map((item) => (
+                      <NewsFeedItem key={item.id} news={item} variant="default" />
+                    ))}
+                  </div>
+                </section>
+              )}
+
+              {/* Events Results */}
+              {results.events.length > 0 && (
+                <section>
+                  <div className="flex items-center justify-between border-b border-gray-100 pb-3 mb-4">
+                    <h2 className="text-sm font-bold text-gray-900 flex items-center gap-2">
+                      <i className="fa-solid fa-calendar-days text-brand-700" aria-hidden="true" />
+                      Upcoming Events ({results.events.length})
+                    </h2>
+                    <Link to="/events" className="text-xs font-bold text-brand-700 hover:text-brand-900 transition-colors">
+                      View All Events &rarr;
+                    </Link>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {results.events.map((item) => (
+                      <EventCard key={item.id} event={item} />
+                    ))}
+                  </div>
+                </section>
+              )}
+
+              {/* Opportunities Results */}
+              {results.opportunities.length > 0 && (
+                <section>
+                  <div className="flex items-center justify-between border-b border-gray-100 pb-3 mb-4">
+                    <h2 className="text-sm font-bold text-gray-900 flex items-center gap-2">
+                      <i className="fa-solid fa-briefcase text-brand-700" aria-hidden="true" />
+                      Opportunities ({results.opportunities.length})
+                    </h2>
+                    <Link to="/services/opportunities" className="text-xs font-bold text-brand-700 hover:text-brand-900 transition-colors">
+                      View All Opportunities &rarr;
+                    </Link>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {results.opportunities.map((item) => (
+                      <OpportunityResultCard key={item.id} opportunity={item} />
+                    ))}
+                  </div>
+                </section>
+              )}
+            </div>
+          </FadeIn>
         )}
       </div>
     </>
   );
 };
 
-export default SearchResultsPage;
+export default SearchResultsPage;

@@ -83,14 +83,20 @@ const presidents = [
     order: "9th",
     name: "Comrade Abdulsamad Olamilekan Raji",
     alias: "PEOPLE",
-    note: "Continues to uphold the Union's enduring mission of progressive leadership and constructive engagement. The People's Era Administration.",
+    note: "Upheld the Union's enduring mission of progressive leadership and constructive engagement during the People's Era Administration.",
+  },
+  {
+    order: "10th",
+    name: "Comrade Habibullah Muhammad",
+    alias: "PROGRESS",
+    note: "Currently driving student welfare, campus development, and progressive leadership as President of the KWASU Students' Union.",
     isCurrent: true,
   },
 ];
 
 const quickFacts = [
   { label: "Founded", value: "2017 / 2018" },
-  { label: "Presidents", value: "9 administrations" },
+  { label: "Presidents", value: "10 administrations" },
   { label: "Location", value: "KWASU SU Building, Malete" },
 ];
 

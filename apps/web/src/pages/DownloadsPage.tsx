@@ -5,13 +5,11 @@ import { SEO } from "@/components/SEO";
 import { Link, useSearchParams } from "react-router-dom";
 import { api } from "@/lib/api";
 import { Document } from "@/types";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
+import FadeIn from "@/components/FadeIn";
 
 const DownloadsPage: React.FC = () => {
   const [searchParams] = useSearchParams();
@@ -75,102 +73,181 @@ const DownloadsPage: React.FC = () => {
         description="Download official Kwara State University Students' Union documents, constitutions, handbooks, forms, and academic resources."
         url="https://kwasusu.com.ng/services/downloads"
       />
-      <div className="container py-12">
-        <Button asChild variant="ghost" className="mb-8 text-brand-600 hover:text-brand-700 -ml-4">
-          <Link to="/services">
-            <i className="fa-solid fa-arrow-left mr-2"></i> Back to Services
-          </Link>
-        </Button>
 
-        <h1 className="text-3xl sm:text-4xl font-bold text-center mb-4 text-brand-700">Important Downloads</h1>
-        <p className="text-center text-lg text-muted-foreground mb-10 max-w-2xl mx-auto">
-          Access official university handbooks, union constitutions, and essential student forms in the digital vault.
-        </p>
+      {/* Page Banner */}
+      <section className="relative w-full bg-brand-900 border-b border-brand-800 overflow-hidden">
+        {/* Subtle grid pattern */}
+        <div
+          className="absolute inset-0 opacity-[0.04]"
+          style={{
+            backgroundImage:
+              "repeating-linear-gradient(0deg, transparent, transparent 39px, hsl(150 60% 80%) 39px, hsl(150 60% 80%) 40px), repeating-linear-gradient(90deg, transparent, transparent 39px, hsl(150 60% 80%) 39px, hsl(150 60% 80%) 40px)",
+          }}
+          aria-hidden="true"
+        />
+        <div className="absolute top-0 left-0 right-0 h-[3px] bg-brand-gold" aria-hidden="true" />
 
-        <div className="flex flex-col md:flex-row gap-4 mb-10 max-w-5xl mx-auto">
-          <div className="relative flex-grow">
-            <i className="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-brand-300"></i>
+        <div className="container relative py-12 md:py-16">
+          <div className="max-w-2xl">
+            <Link
+              to="/services"
+              className="inline-flex items-center text-xs font-bold text-brand-300 hover:text-white mb-4 transition-colors"
+            >
+              <i className="fa-solid fa-arrow-left text-[10px] mr-2" aria-hidden="true" />
+              Back to Services
+            </Link>
+            <p className="text-brand-300 text-xs font-bold uppercase tracking-[0.15em] mb-4">
+              Digital Repository & Vault
+            </p>
+            <h1 className="text-3xl md:text-4xl font-extrabold text-white leading-tight mb-4">
+              Important{" "}
+              <span
+                className="text-brand-gold"
+                style={{
+                  textDecoration: "underline",
+                  textDecorationColor: "hsl(40 80% 60% / 0.35)",
+                  textUnderlineOffset: "6px",
+                }}
+              >
+                Downloads
+              </span>
+            </h1>
+            <p className="text-brand-200 text-sm leading-relaxed max-w-lg">
+              Access official university handbooks, union constitutions, forms, and essential student resources.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <div className="container max-w-5xl mx-auto py-10 px-4">
+        {/* Search & Tag Filter Bar */}
+        <div className="space-y-4 mb-8">
+          <div className="relative">
+            <i className="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-sm" />
             <Input
-              placeholder="Search documents by title or tag..."
-              className="h-12 pl-12 rounded-xl border-brand-100 focus-visible:ring-brand-gold shadow-sm"
+              placeholder="Search documents by title, tag, or format..."
+              className="h-10 pl-10 pr-4 text-xs bg-white border-gray-200 focus-visible:ring-brand-700 rounded shadow-2xs"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
-          </div>
-          <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
-            <Badge
-              variant={activeTag === null ? "default" : "secondary"}
-              className={cn(
-                "h-10 px-4 rounded-xl cursor-pointer transition-all uppercase text-[10px] font-bold tracking-wider",
-                activeTag === null ? "bg-brand-700 text-white" : "bg-white border-brand-100 text-brand-600 hover:bg-brand-50"
-              )}
-              onClick={() => setActiveTag(null)}
-            >
-              All Files
-            </Badge>
-            {uniqueTags.map(tag => (
-              <Badge
-                key={tag}
-                variant={activeTag === tag ? "default" : "secondary"}
-                className={cn(
-                  "h-10 px-4 rounded-xl cursor-pointer transition-all uppercase text-[10px] font-bold tracking-wider",
-                  activeTag === tag ? "bg-brand-700 text-white" : "bg-white border-brand-100 text-brand-600 hover:bg-brand-50"
-                )}
-                onClick={() => setActiveTag(tag)}
+            {searchTerm && (
+              <button
+                onClick={() => setSearchTerm("")}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-400 hover:text-gray-600"
               >
-                {tag}
-              </Badge>
-            ))}
+                <i className="fa-solid fa-xmark" />
+              </button>
+            )}
           </div>
+
+          {uniqueTags.length > 0 && (
+            <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+              <button
+                type="button"
+                onClick={() => setActiveTag(null)}
+                className={cn(
+                  "px-3 py-1.5 rounded text-xs font-semibold whitespace-nowrap transition-colors border",
+                  activeTag === null
+                    ? "bg-brand-900 text-white border-brand-900"
+                    : "bg-white text-gray-700 border-gray-200 hover:border-gray-300 hover:bg-gray-50"
+                )}
+              >
+                All Files ({allDocuments.length})
+              </button>
+              {uniqueTags.map((tag) => {
+                const count = allDocuments.filter(d => d.tags.includes(tag)).length;
+                return (
+                  <button
+                    key={tag}
+                    type="button"
+                    onClick={() => setActiveTag(tag)}
+                    className={cn(
+                      "px-3 py-1.5 rounded text-xs font-semibold whitespace-nowrap transition-colors border",
+                      activeTag === tag
+                        ? "bg-brand-900 text-white border-brand-900"
+                        : "bg-white text-gray-700 border-gray-200 hover:border-gray-300 hover:bg-gray-50"
+                    )}
+                  >
+                    {tag} ({count})
+                  </button>
+                );
+              })}
+            </div>
+          )}
         </div>
 
+        {/* Content Section */}
         {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {[...Array(6)].map((_, i) => (
-              <Card key={i} className="p-6 rounded-2xl shadow-sm border-brand-50 space-y-4">
-                <div className="flex items-center gap-4">
-                  <Skeleton className="h-12 w-12 rounded-xl" />
+              <div key={i} className="border border-gray-100 rounded p-4 space-y-3 bg-white">
+                <div className="flex items-start gap-3">
+                  <Skeleton className="h-9 w-9 rounded shrink-0" />
                   <div className="flex-1 space-y-2">
-                    <Skeleton className="h-4 w-3/4" />
+                    <Skeleton className="h-4 w-5/6" />
                     <Skeleton className="h-3 w-1/2" />
                   </div>
                 </div>
-              </Card>
+                <div className="pt-3 border-t border-gray-100 flex justify-between items-center">
+                  <Skeleton className="h-3 w-24" />
+                  <Skeleton className="h-6 w-20 rounded" />
+                </div>
+              </div>
             ))}
           </div>
         ) : error ? (
-          <div className="text-center py-12 text-destructive font-medium">{error}</div>
-        ) : filteredDocuments.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
-            {filteredDocuments.map((doc) => (
-              <Card key={doc.id} className="group p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border-brand-50 bg-white/50 hover:bg-white flex flex-col">
-                <div className="flex items-start gap-4 mb-4">
-                  <div className="p-3 rounded-xl bg-brand-50 text-brand-600 group-hover:bg-brand-600 group-hover:text-white transition-colors duration-300">
-                    <i className="fa-solid fa-file-pdf text-2xl"></i>
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <h3 className="font-bold text-brand-900 line-clamp-2 leading-tight mb-1">{doc.title}</h3>
-                    <p className="text-xs text-muted-foreground uppercase font-semibold tracking-wider">
-                      {doc.fileType} • {doc.fileSize}
-                    </p>
-                  </div>
-                </div>
-                <div className="mt-auto pt-4 border-t border-brand-50 flex items-center justify-between">
-                  <span className="text-[10px] text-muted-foreground italic">
-                    Updated: {format(new Date(doc.updatedAt), "MMM dd, yyyy")}
-                  </span>
-                  <Button asChild size="sm" variant="ghost" className="text-brand-600 hover:text-brand-700 hover:bg-brand-50 rounded-lg">
-                    <a href={doc.url} target="_blank" rel="noopener noreferrer">
-                      Download <i className="fa-solid fa-download ml-2 text-xs"></i>
-                    </a>
-                  </Button>
-                </div>
-              </Card>
-            ))}
+          <div className="py-12 text-center text-xs font-medium text-red-600 bg-red-50/50 rounded border border-red-100">
+            {error}
           </div>
+        ) : filteredDocuments.length > 0 ? (
+          <FadeIn>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {filteredDocuments.map((doc) => (
+                <div
+                  key={doc.id}
+                  className="group border border-gray-100 hover:border-gray-300 bg-white rounded p-4 transition-colors flex flex-col justify-between"
+                >
+                  <div>
+                    <div className="flex items-start gap-3 mb-3">
+                      <div className="w-9 h-9 rounded bg-brand-50 text-brand-700 flex items-center justify-center shrink-0 group-hover:bg-brand-900 group-hover:text-white transition-colors">
+                        <i className="fa-solid fa-file-pdf text-sm" aria-hidden="true" />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <h3 className="text-xs font-bold text-gray-900 line-clamp-2 leading-snug mb-1">
+                          {doc.title}
+                        </h3>
+                        <p className="text-[11px] text-gray-500 font-medium">
+                          {doc.fileType} • {doc.fileSize}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="pt-3 border-t border-gray-100 flex items-center justify-between mt-2">
+                    <span className="text-[10px] text-gray-400 font-medium">
+                      Updated {format(new Date(doc.updatedAt), "MMM d, yyyy")}
+                    </span>
+                    <a
+                      href={doc.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 text-xs font-bold text-brand-700 hover:text-brand-900 transition-colors"
+                    >
+                      Download
+                      <i className="fa-solid fa-download text-[10px]" aria-hidden="true" />
+                    </a>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </FadeIn>
         ) : (
-          <div className="text-center py-20 text-muted-foreground italic">
-            No documents found matching your search.
+          <div className="py-16 text-center text-gray-500 border border-dashed border-gray-200 rounded">
+            <i className="fa-solid fa-folder-open text-2xl text-gray-300 mb-2 block" />
+            <p className="text-xs font-semibold text-gray-600 mb-1">No documents found</p>
+            <p className="text-[11px] text-gray-400">
+              Try adjusting your search criteria or tag filters.
+            </p>
           </div>
         )}
       </div>
@@ -178,4 +255,4 @@ const DownloadsPage: React.FC = () => {
   );
 };
 
-export default DownloadsPage;
+export default DownloadsPage;

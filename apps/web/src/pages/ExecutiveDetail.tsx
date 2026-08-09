@@ -12,9 +12,14 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { User } from "@/components/ui/font-awesome-icon";
 import FadeIn from "@/components/FadeIn";
 
+interface DetailedExecutive extends Executive {
+  academicSession?: string;
+  isPast?: boolean;
+}
+
 const ExecutiveDetail = () => {
   const { slug } = useParams<{ slug: string }>();
-  const [executive, setExecutive] = useState<Executive | null>(null);
+  const [executive, setExecutive] = useState<DetailedExecutive | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -28,7 +33,7 @@ const ExecutiveDetail = () => {
       try {
         const data = await api.executives.getBySlug(slug);
         if (data) {
-          setExecutive(data);
+          setExecutive(data as DetailedExecutive);
         } else {
           setError("Executive profile not found.");
         }
@@ -74,26 +79,28 @@ const ExecutiveDetail = () => {
     );
   }
 
-  const councilPath = `/executives/${executive.councilType.toLowerCase()}`;
+  const isPastExec = Boolean(executive.academicSession || executive.isPast);
+  const councilPath = isPastExec ? "/executives/past" : `/executives/${executive.councilType.toLowerCase()}`;
+  const backLabel = isPastExec ? "Back to Hall of Fame & Past Leadership" : `Back to ${executive.councilType} Council`;
 
   return (
     <>
       <SEO
         title={`${executive.name} — ${executive.role} | KWASU SU`}
         description={`Profile and contact details of ${executive.name}, ${executive.role} of the Kwara State University Students' Union.`}
-        image={executive.avatarUrl ? (executive.avatarUrl.startsWith('http') ? executive.avatarUrl : `https://kwasusu.com.ng${executive.avatarUrl}`) : 'https://kwasusu.com.ng/logo.png'}
+        image={executive.photoUrl ? (executive.photoUrl.startsWith('http') ? executive.photoUrl : `https://kwasusu.com.ng${executive.photoUrl}`) : 'https://kwasusu.com.ng/logo.png'}
         url={`https://kwasusu.com.ng/executives/${executive.slug}`}
       />
 
       {/* Top Breadcrumb Header */}
       <div className="border-b border-gray-100 bg-white">
-        <div className="container py-3">
+        <div className="container py-3 max-w-5xl">
           <Link
             to={councilPath}
             className="inline-flex items-center text-xs font-bold text-gray-500 hover:text-brand-600 transition-colors"
           >
             <i className="fa-solid fa-arrow-left text-[10px] mr-2" />
-            Back to {executive.councilType} Council
+            {backLabel}
           </Link>
         </div>
       </div>
@@ -122,9 +129,16 @@ const ExecutiveDetail = () => {
 
               <div className="p-5 space-y-4">
                 <div>
-                  <p className="text-[10px] font-bold text-brand-gold uppercase tracking-widest mb-1">
-                    {executive.role}
-                  </p>
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-[10px] font-bold text-brand-gold uppercase tracking-widest">
+                      {executive.role}
+                    </span>
+                    {isPastExec && (
+                      <span className="px-1.5 py-0.5 rounded text-[9px] font-extrabold uppercase bg-brand-gold/20 text-brand-gold border border-brand-gold/30">
+                        Past Leader
+                      </span>
+                    )}
+                  </div>
                   <h1 className="text-xl font-extrabold text-white leading-tight">
                     {executive.name}
                   </h1>
@@ -141,9 +155,15 @@ const ExecutiveDetail = () => {
                       <span className="font-bold text-white truncate max-w-[140px]">{executive.faculty}</span>
                     </div>
                   )}
+                  {executive.academicSession && (
+                    <div className="flex justify-between">
+                      <span className="text-brand-400 font-medium">Tenure Session</span>
+                      <span className="font-bold text-brand-gold">{executive.academicSession}</span>
+                    </div>
+                  )}
                   <div className="flex justify-between">
-                    <span className="text-brand-400 font-medium">Tenure</span>
-                    <span className="font-bold text-brand-gold">
+                    <span className="text-brand-400 font-medium">Tenure Period</span>
+                    <span className="font-bold text-white">
                       {executive.tenureStart.substring(0, 4)} – {executive.tenureEnd.substring(0, 4)}
                     </span>
                   </div>

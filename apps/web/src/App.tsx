@@ -48,6 +48,7 @@ const App = () => (
               <Route path="/executives/senate" element={<SenateCouncil />} />
               <Route path="/executives/judiciary" element={<JudiciaryCouncil />} />
               <Route path="/executives/past" element={<PastExecutives />} />
+              <Route path="/executives/past/:slug" element={<ExecutiveDetail />} />
               <Route path="/executives/:slug" element={<ExecutiveDetail />} />
               <Route path="/news" element={<NewsPage />} />
               <Route path="/news/:id" element={<NewsDetail />} />

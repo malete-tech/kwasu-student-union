@@ -31,21 +31,56 @@ export const executives = {
     return sortExecutivesByHierarchy(formatted);
   },
   getBySlug: async (slug: string): Promise<Executive | undefined> => {
+    // 1. Check active executives table first
     const { data, error } = await supabase.from('executives').select('*').eq('slug', slug).maybeSingle();
     if (error) {
       console.error("Supabase error fetching executive by slug:", error);
       throw new Error(error.message);
     }
-    if (!data) return undefined;
-    return {
-      ...data,
-      tenureStart: data.tenure_start,
-      tenureEnd: data.tenure_end,
-      photoUrl: data.photo_url,
-      projectsMd: data.projects_md,
-      displayOrder: data.display_order,
-      councilType: data.council_type,
-    } as Executive;
+    if (data) {
+      return {
+        ...data,
+        tenureStart: data.tenure_start,
+        tenureEnd: data.tenure_end,
+        photoUrl: data.photo_url,
+        projectsMd: data.projects_md,
+        displayOrder: data.display_order,
+        councilType: data.council_type,
+      } as Executive;
+    }
+
+    // 2. Check past_executives table if not found in active executives
+    const { data: pastData, error: pastError } = await supabase
+      .from('past_executives')
+      .select('*')
+      .eq('slug', slug)
+      .maybeSingle();
+
+    if (pastError) {
+      console.error("Supabase error fetching past executive by slug:", pastError);
+      throw new Error(pastError.message);
+    }
+
+    if (pastData) {
+      return {
+        id: pastData.id,
+        slug: pastData.slug,
+        name: pastData.name,
+        role: pastData.role,
+        faculty: pastData.faculty,
+        tenureStart: pastData.tenure_start,
+        tenureEnd: pastData.tenure_end,
+        photoUrl: pastData.photo_url,
+        projectsMd: pastData.projects_md,
+        contacts: pastData.contacts || {},
+        displayOrder: 999,
+        councilType: pastData.council_type as Executive['councilType'],
+        academicSession: pastData.academic_session,
+        isPast: true,
+      } as Executive & { academicSession?: string; isPast?: boolean };
+    }
+
+    return undefined;
   },
   create: async (executive: Omit<Executive, 'id' | 'created_at' | 'displayOrder'> & { displayOrder?: number }): Promise<Executive> => {
     const { data: maxOrderData } = await supabase

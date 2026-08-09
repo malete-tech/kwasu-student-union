@@ -78,6 +78,23 @@ export const UserDropdown: React.FC<UserDropdownProps> = ({
               <span className="font-semibold text-sm">My Profile</span>
             </DropdownMenuItem>
           </Link>
+          {window.matchMedia("(display-mode: standalone)").matches || localStorage.getItem("kwasu_pwa_installed") === "true" ? (
+            <div className="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-brand-50/60 text-brand-700 select-none">
+              <ShieldCheck className="w-4 h-4 text-brand-600 shrink-0" />
+              <span className="font-bold text-xs tracking-wide uppercase">App Installed ✓</span>
+            </div>
+          ) : (
+            <DropdownMenuItem
+              onClick={() => {
+                localStorage.removeItem("kwasu_pwa_banner_dismissed");
+                window.location.reload();
+              }}
+              className="flex items-center gap-3 px-3 py-2.5 cursor-pointer rounded-xl hover:bg-brand-50 hover:text-brand-700 focus:bg-brand-50 focus:text-brand-700 group"
+            >
+              <ShieldCheck className="w-4 h-4 text-slate-400 group-hover:text-brand-600" />
+              <span className="font-semibold text-sm">Install Mobile App</span>
+            </DropdownMenuItem>
+          )}
         </DropdownMenuGroup>
         <DropdownMenuSeparator className="my-2 bg-slate-50" />
         <DropdownMenuItem 

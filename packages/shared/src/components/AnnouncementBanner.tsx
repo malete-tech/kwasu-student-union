@@ -2,14 +2,12 @@
 
 import React, { useEffect, useState } from "react";
 import { api } from "@/lib/api";
-import { Link } from "react-router-dom";
 
 // Uses the same announcement source as GlobalAnnouncementModal.
 // Renders a slim persistent ticker bar when a live announcement exists.
 
 const AnnouncementBanner: React.FC = () => {
   const [message, setMessage] = useState<string | null>(null);
-  const [title, setTitle] = useState<string | null>(null);
   const [dismissed, setDismissed] = useState(false);
 
   useEffect(() => {
@@ -17,7 +15,6 @@ const AnnouncementBanner: React.FC = () => {
       try {
         const data = await api.announcements.getActive();
         if (data) {
-          setTitle(data.title);
           // Strip markdown for plain text ticker display
           setMessage(data.messageMd.replace(/[#*`_>]/g, "").split("\n")[0] ?? data.title);
         }

@@ -77,7 +77,7 @@ const CampusPhotoSlider: React.FC<CampusPhotoSliderProps> = ({
 
       {/* Dot indicators */}
       <div className="flex items-center justify-center gap-1.5" role="tablist" aria-label="Image navigation">
-        {images.map((img, i) => (
+        {images.map((_, i) => (
           <button
             key={i}
             role="tab"

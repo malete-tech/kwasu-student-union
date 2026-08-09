@@ -2,9 +2,8 @@
 
 import { useLocation, Link } from "react-router-dom";
 import { useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Home, ArrowLeft, Search, Newspaper, CalendarDays } from "@/components/ui/font-awesome-icon";
-import { Helmet } from "react-helmet-async";
+import { SEO } from "@/components/SEO";
+import FadeIn from "@/components/FadeIn";
 
 const NotFound = () => {
   const location = useLocation();
@@ -18,76 +17,77 @@ const NotFound = () => {
 
   return (
     <>
-      <Helmet>
-        <title>404 - Page Not Found | KWASU SU</title>
-      </Helmet>
-      <div className="min-h-screen flex items-center justify-center bg-brand-50 px-6 py-12">
-        <div className="max-w-2xl w-full text-center space-y-8">
-          {/* Illustration/Icon Area */}
-          <div className="relative flex justify-center">
-            <div className="absolute inset-0 bg-brand-200 blur-3xl rounded-full opacity-30 scale-150"></div>
-            <div className="relative bg-white p-8 rounded-full shadow-xl border border-brand-100">
-              <Search className="h-24 w-24 text-brand-500 animate-pulse" />
-            </div>
-          </div>
+      <SEO
+        title="404 - Page Not Found | KWASU SU"
+        description="The page you are looking for does not exist or has been moved."
+        url="https://kwasusu.com.ng/404"
+      />
 
-          {/* Text Content */}
-          <div className="space-y-4">
-            <h1 className="text-7xl md:text-9xl font-extrabold text-brand-900 tracking-tighter">
+      <div className="min-h-[75vh] flex items-center justify-center bg-gray-50/50 px-4 py-12">
+        <FadeIn>
+          <div className="max-w-md w-full text-center bg-white border border-gray-100 rounded p-8">
+            <div className="w-12 h-12 rounded bg-brand-50 text-brand-700 flex items-center justify-center mx-auto mb-4">
+              <i className="fa-solid fa-compass text-lg" aria-hidden="true" />
+            </div>
+
+            <span className="block text-4xl font-extrabold text-brand-900 tracking-tight mb-1">
               404
+            </span>
+            <h1 className="text-sm font-bold uppercase tracking-wider text-gray-800 mb-2">
+              Page Not Found
             </h1>
-            <h2 className="text-2xl md:text-3xl font-bold text-brand-700 uppercase">
-              Lost in the Campus?
-            </h2>
-            <p className="text-lg text-gray-600 max-w-md mx-auto">
-              The page you're looking for doesn't exist or has been moved to a new location.
+            <p className="text-xs text-gray-500 mb-6 leading-relaxed">
+              The page you are looking for doesn't exist, has been removed, or moved to a different web address.
             </p>
-          </div>
 
-          {/* Action Buttons */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-            <Button asChild size="lg" className="bg-brand-700 hover:bg-brand-800 text-white rounded-xl px-8 h-14 shadow-lg transition-all hover:scale-105">
-              <Link to="/">
-                <Home className="mr-2 h-5 w-5" /> Return Home
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-2 mb-8">
+              <Link
+                to="/"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2 rounded bg-brand-900 text-white text-xs font-bold hover:bg-brand-800 transition-colors"
+              >
+                <i className="fa-solid fa-house text-[10px]" aria-hidden="true" />
+                Return Home
               </Link>
-            </Button>
-            <Button asChild variant="outline" size="lg" className="border-brand-200 text-brand-700 hover:bg-brand-50 rounded-xl px-8 h-14 shadow-sm">
-              <button onClick={() => window.history.back()}>
-                <ArrowLeft className="mr-2 h-5 w-5" /> Go Back
+              <button
+                onClick={() => window.history.back()}
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2 rounded bg-white text-gray-700 border border-gray-200 text-xs font-semibold hover:bg-gray-50 transition-colors"
+              >
+                <i className="fa-solid fa-arrow-left text-[10px]" aria-hidden="true" />
+                Go Back
               </button>
-            </Button>
-          </div>
+            </div>
 
-          {/* Helpful Links */}
-          <div className="pt-12 border-t border-brand-100">
-            <p className="text-sm font-semibold text-brand-400 uppercase tracking-widest mb-6">
-              Try these instead
-            </p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-lg mx-auto">
-              <Link 
-                to="/news" 
-                className="flex items-center p-4 bg-white rounded-2xl border border-brand-50 hover:border-brand-200 hover:shadow-md transition-all group"
-              >
-                <div className="p-2 rounded-xl bg-brand-50 text-brand-600 group-hover:bg-brand-600 group-hover:text-white transition-colors">
-                  <Newspaper className="h-5 w-5" />
-                </div>
-                <span className="ml-3 font-bold text-slate-700">Latest News</span>
-              </Link>
-              <Link 
-                to="/events" 
-                className="flex items-center p-4 bg-white rounded-2xl border border-brand-50 hover:border-brand-200 hover:shadow-md transition-all group"
-              >
-                <div className="p-2 rounded-xl bg-brand-50 text-brand-600 group-hover:bg-brand-600 group-hover:text-white transition-colors">
-                  <CalendarDays className="h-5 w-5" />
-                </div>
-                <span className="ml-3 font-bold text-slate-700">Upcoming Events</span>
-              </Link>
+            <div className="pt-6 border-t border-gray-100 text-left">
+              <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-3">
+                Quick Navigation
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <Link
+                  to="/news"
+                  className="flex items-center gap-2.5 p-2.5 rounded border border-gray-100 hover:border-gray-300 bg-white transition-colors group"
+                >
+                  <div className="w-7 h-7 rounded bg-brand-50 text-brand-700 flex items-center justify-center shrink-0 group-hover:bg-brand-900 group-hover:text-white transition-colors">
+                    <i className="fa-solid fa-newspaper text-xs" aria-hidden="true" />
+                  </div>
+                  <span className="text-xs font-bold text-gray-800">Latest News</span>
+                </Link>
+
+                <Link
+                  to="/events"
+                  className="flex items-center gap-2.5 p-2.5 rounded border border-gray-100 hover:border-gray-300 bg-white transition-colors group"
+                >
+                  <div className="w-7 h-7 rounded bg-brand-50 text-brand-700 flex items-center justify-center shrink-0 group-hover:bg-brand-900 group-hover:text-white transition-colors">
+                    <i className="fa-solid fa-calendar-days text-xs" aria-hidden="true" />
+                  </div>
+                  <span className="text-xs font-bold text-gray-800">Events Calendar</span>
+                </Link>
+              </div>
             </div>
           </div>
-        </div>
+        </FadeIn>
       </div>
     </>
   );
 };
 
-export default NotFound;
+export default NotFound;

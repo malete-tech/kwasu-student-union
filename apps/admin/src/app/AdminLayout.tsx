@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import {
   LogOut,
@@ -27,6 +27,9 @@ import { toast } from "sonner";
 import { NAVIGATION_ITEMS } from "@/config/navigation";
 import { cn } from "@/lib/utils";
 import { UserDropdown } from "@/components/admin/UserDropdown";
+import { InstallPwaBanner, InstallAppButton } from "@/components/pwa/InstallPwaBanner";
+import { NotificationToggle } from "@/components/pwa/NotificationToggle";
+import { useComplaintNotifications } from "@/hooks/useComplaintNotifications";
 
 // ─── Bottom nav (mobile) ────────────────────────────────────────────────────
 const BOTTOM_NAV_ITEMS = [
@@ -46,7 +49,7 @@ const NAV_GROUPS: { label: string; items: string[] }[] = [
   { label: "System",  items: ["Partners"] },
 ];
 
-// Icon map used in sidebar (avoids relying on nav config icons for each item)
+// Icon map used in sidebar
 const ICON_MAP: Record<string, React.ElementType> = {
   Dashboard:     LayoutDashboard,
   News:          Newspaper,
@@ -140,7 +143,7 @@ function NavLink({
   );
 }
 
-// ─── Sidebar content (shared between desktop + mobile sheet) ────────────────
+// ─── Sidebar content ─────────────────────────────────────────────────────────
 function SidebarContent({
   pathname,
   onClose,
@@ -250,6 +253,20 @@ const AdminLayout: React.FC = () => {
   const navigate = useNavigate();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
+  // Activate real-time complaint listener across admin dashboard
+  useComplaintNotifications();
+
+  // Register PWA Service Worker on mount
+  useEffect(() => {
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("/sw.js").then((reg) => {
+        console.log("Service Worker registered with scope:", reg.scope);
+      }).catch((err) => {
+        console.warn("ServiceWorker registration error:", err);
+      });
+    }
+  }, []);
+
   const currentPageName = getCurrentPageName(location.pathname);
   const breadcrumbs     = getBreadcrumbs(location.pathname);
 
@@ -266,95 +283,97 @@ const AdminLayout: React.FC = () => {
   const closeSidebar = () => setIsSidebarOpen(false);
 
   return (
-    <div className="min-h-screen bg-slate-50 flex">
+    <div className="min-h-screen bg-slate-50 flex flex-col">
+      {/* ══ PWA Mobile Installation Banner ═══════════════════════════════════ */}
+      <InstallPwaBanner />
 
-      {/* ══ Desktop Sidebar ══════════════════════════════════════════════════ */}
-      <aside className="fixed left-0 top-0 h-screen w-64 hidden lg:flex flex-col z-30"
-        style={{ background: "hsl(150 60% 8%)" }}>
-        <SidebarContent
-          pathname={location.pathname}
-          onClose={closeSidebar}
-          onLogout={handleLogout}
-        />
-      </aside>
+      <div className="flex-1 flex min-h-screen">
+        {/* ══ Desktop Sidebar ══════════════════════════════════════════════════ */}
+        <aside className="fixed left-0 top-0 h-screen w-64 hidden lg:flex flex-col z-30"
+          style={{ background: "hsl(150 60% 8%)" }}>
+          <SidebarContent
+            pathname={location.pathname}
+            onClose={closeSidebar}
+            onLogout={handleLogout}
+          />
+        </aside>
 
-      {/* ══ Mobile Top Header ════════════════════════════════════════════════ */}
-      <header className="lg:hidden fixed top-0 left-0 right-0 h-14 bg-white border-b border-slate-200 px-4 flex items-center justify-between z-40">
-        <div className="flex items-center gap-3">
-          <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
-            <SheetTrigger asChild>
-              <HamburgerButton isOpen={isSidebarOpen} variant="ghost" />
-            </SheetTrigger>
-            <SheetContent side="left" hideCloseButton className="w-64 p-0 border-none"
-              style={{ background: "hsl(150 60% 8%)" }}>
-              <SidebarContent
-                pathname={location.pathname}
-                onClose={closeSidebar}
-                onLogout={handleLogout}
-              />
-            </SheetContent>
-          </Sheet>
+        {/* ══ Mobile Top Header ════════════════════════════════════════════════ */}
+        <header className="lg:hidden fixed top-0 left-0 right-0 h-14 bg-white border-b border-slate-200 px-4 flex items-center justify-between z-40">
+          <div className="flex items-center gap-3">
+            <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
+              <SheetTrigger asChild>
+                <HamburgerButton isOpen={isSidebarOpen} variant="ghost" />
+              </SheetTrigger>
+              <SheetContent side="left" hideCloseButton className="w-64 p-0 border-none"
+                style={{ background: "hsl(150 60% 8%)" }}>
+                <SidebarContent
+                  pathname={location.pathname}
+                  onClose={closeSidebar}
+                  onLogout={handleLogout}
+                />
+              </SheetContent>
+            </Sheet>
 
-          <span className="text-sm font-semibold text-slate-800">{currentPageName}</span>
-        </div>
+            <span className="text-sm font-semibold text-slate-800">{currentPageName}</span>
+          </div>
 
-        <UserDropdown
-          userEmail={session?.user?.email}
-          onLogout={handleLogout}
-          className="hover:bg-slate-50"
-        />
-      </header>
-
-      {/* ══ Main Content ═════════════════════════════════════════════════════ */}
-      <div className="flex-1 flex flex-col min-w-0 lg:pl-64">
-
-        {/* Desktop top bar */}
-        <header className="hidden lg:flex h-14 items-center justify-between px-8 bg-white border-b border-slate-200 sticky top-0 z-20">
-          {/* Breadcrumbs */}
-          <nav className="flex items-center gap-1 text-sm">
-            {breadcrumbs.map((crumb, i) => (
-              <React.Fragment key={crumb.href}>
-                {i > 0 && (
-                  <ChevronRight className="w-3.5 h-3.5 text-slate-300 shrink-0" />
-                )}
-                {i < breadcrumbs.length - 1 ? (
-                  <Link
-                    to={crumb.href}
-                    className="text-slate-400 hover:text-slate-700 transition-colors"
-                  >
-                    {crumb.name}
-                  </Link>
-                ) : (
-                  <span className="text-slate-900 font-semibold">{crumb.name}</span>
-                )}
-              </React.Fragment>
-            ))}
-          </nav>
-
-          <div className="flex items-center gap-1">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-md"
-            >
-              <Bell size={16} />
-            </Button>
-            <div className="w-px h-5 bg-slate-200 mx-1" />
+          <div className="flex items-center gap-2">
+            <NotificationToggle />
             <UserDropdown
               userEmail={session?.user?.email}
               onLogout={handleLogout}
+              className="hover:bg-slate-50"
             />
           </div>
         </header>
 
-        {/* Page body */}
-        <main className="flex-1 p-4 md:p-6 lg:p-8 pt-16 lg:pt-6 pb-24 lg:pb-8 w-full max-w-[1600px] mx-auto">
-          <Outlet />
-        </main>
+        {/* ══ Main Content ═════════════════════════════════════════════════════ */}
+        <div className="flex-1 flex flex-col min-w-0 lg:pl-64">
+
+          {/* Desktop top bar */}
+          <header className="hidden lg:flex h-14 items-center justify-between px-8 bg-white border-b border-slate-200 sticky top-0 z-20">
+            {/* Breadcrumbs */}
+            <nav className="flex items-center gap-1 text-sm">
+              {breadcrumbs.map((crumb, i) => (
+                <React.Fragment key={crumb.href}>
+                  {i > 0 && (
+                    <ChevronRight className="w-3.5 h-3.5 text-slate-300 shrink-0" />
+                  )}
+                  {i < breadcrumbs.length - 1 ? (
+                    <Link
+                      to={crumb.href}
+                      className="text-slate-400 hover:text-slate-700 transition-colors"
+                    >
+                      {crumb.name}
+                    </Link>
+                  ) : (
+                    <span className="text-slate-900 font-semibold">{crumb.name}</span>
+                  )}
+                </React.Fragment>
+              ))}
+            </nav>
+
+            <div className="flex items-center gap-3">
+              <InstallAppButton />
+              <NotificationToggle />
+              <div className="w-px h-5 bg-slate-200" />
+              <UserDropdown
+                userEmail={session?.user?.email}
+                onLogout={handleLogout}
+              />
+            </div>
+          </header>
+
+          {/* Page body */}
+          <main className="flex-1 p-4 md:p-6 lg:p-8 pt-16 lg:pt-6 pb-24 lg:pb-8 w-full max-w-[1600px] mx-auto">
+            <Outlet />
+          </main>
+        </div>
       </div>
 
       {/* ══ Mobile Bottom Nav ════════════════════════════════════════════════ */}
-      <nav className="lg:hidden fixed bottom-0 left-0 right-0 h-16 bg-white border-t border-slate-200 flex items-stretch z-40">
+      <nav className="lg:hidden fixed bottom-0 left-0 right-0 h-16 bg-white/95 backdrop-blur border-t border-slate-200/80 flex items-stretch z-40 shadow-lg">
         {BOTTOM_NAV_ITEMS.map((item) => {
           const isActive =
             location.pathname === item.href ||
@@ -364,14 +383,14 @@ const AdminLayout: React.FC = () => {
               key={item.href}
               to={item.href}
               className={cn(
-                "relative flex-1 flex flex-col items-center justify-center gap-1 text-[10px] font-medium transition-colors",
-                isActive ? "text-brand-600" : "text-slate-400 hover:text-slate-600"
+                "relative flex-1 flex flex-col items-center justify-center gap-1 text-[11px] font-semibold transition-all duration-150 py-1 select-none",
+                isActive ? "text-brand-900" : "text-slate-500 hover:text-slate-900"
               )}
             >
-              <item.icon className={cn("w-5 h-5", isActive && "text-brand-600")} />
-              <span>{item.name}</span>
+              <item.icon className={cn("w-5 h-5 text-lg transition-transform", isActive ? "text-brand-900 scale-105" : "opacity-75")} />
+              <span className="truncate max-w-[68px] tracking-tight">{item.name}</span>
               {isActive && (
-                <span className="absolute top-0 left-1/2 -translate-x-1/2 w-6 h-0.5 bg-brand-gold rounded-b" />
+                <span className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-1 bg-brand-gold rounded-b-full shadow-xs" />
               )}
             </Link>
           );
@@ -380,9 +399,9 @@ const AdminLayout: React.FC = () => {
         {/* More — opens full sidebar sheet */}
         <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
           <SheetTrigger asChild>
-            <button className="flex-1 flex flex-col items-center justify-center gap-1 text-[10px] font-medium text-slate-400 hover:text-slate-600 transition-colors">
-              <MoreHorizontal className="w-5 h-5" />
-              <span>More</span>
+            <button className="flex-1 flex flex-col items-center justify-center gap-1 text-[11px] font-semibold text-slate-500 hover:text-slate-900 transition-colors py-1 select-none">
+              <MoreHorizontal className="w-5 h-5 text-lg opacity-75" />
+              <span className="tracking-tight">More</span>
             </button>
           </SheetTrigger>
         </Sheet>

@@ -15,7 +15,7 @@ interface NewsFeedSectionProps {
 }
 
 const NewsFeedSection: React.FC<NewsFeedSectionProps> = ({
-  withFilters = false,
+  withFilters: _withFilters = false,
   limit = 4,
 }) => {
   const [news, setNews] = useState<News[]>([]);

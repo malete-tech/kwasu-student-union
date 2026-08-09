@@ -2,8 +2,6 @@
 
 import React, { useState } from "react";
 import { SEO } from "@/components/SEO";
-import { Card, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -12,12 +10,12 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from "@/components/ui/form";
-import { Loader2 } from "@/components/ui/font-awesome-icon";
 import { api } from "@/lib/api";
 import { toast } from "sonner";
 import { ComplaintCategory } from "@/types";
 import { useSession } from "@/components/SessionContextProvider";
 import { Link } from "react-router-dom";
+import FadeIn from "@/components/FadeIn";
 
 const complaintCategories: ComplaintCategory[] = ['Welfare', 'Academics', 'Fees', 'Security', 'Other'];
 
@@ -76,7 +74,7 @@ const SubmitComplaintPage: React.FC = () => {
       };
 
       const newComplaint = await api.complaints.submit(complaintPayload);
-      toast.success(`Complaint submitted successfully! Your reference ID is ${newComplaint.id.substring(0, 8)}.`);
+      toast.success(`Complaint submitted successfully! Reference ID: ${newComplaint.id.substring(0, 8)}.`);
       form.reset({
         category: "",
         title: "",
@@ -100,97 +98,137 @@ const SubmitComplaintPage: React.FC = () => {
         description="Report student welfare, academic, or security issues directly to the Kwara State University Students' Union executive committee."
         url="https://kwasusu.com.ng/services/complaints"
       />
-      <div className="container py-12">
-        <Button asChild variant="ghost" className="mb-8 text-brand-600 hover:text-brand-700 -ml-4">
-          <Link to="/services">
-            <i className="fa-solid fa-arrow-left mr-2"></i> Back to Services
-          </Link>
-        </Button>
 
-        <h1 className="text-3xl sm:text-4xl font-bold text-center mb-4 text-brand-700">Submit a Complaint</h1>
-        <p className="text-center text-lg text-muted-foreground mb-10 max-w-2xl mx-auto">
-          Your feedback is important. Please fill out the form below to report an issue. All submissions are treated confidentially.
-        </p>
+      {/* Page Banner */}
+      <section className="relative w-full bg-brand-900 border-b border-brand-800 overflow-hidden">
+        {/* Subtle grid pattern */}
+        <div
+          className="absolute inset-0 opacity-[0.04]"
+          style={{
+            backgroundImage:
+              "repeating-linear-gradient(0deg, transparent, transparent 39px, hsl(150 60% 80%) 39px, hsl(150 60% 80%) 40px), repeating-linear-gradient(90deg, transparent, transparent 39px, hsl(150 60% 80%) 39px, hsl(150 60% 80%) 40px)",
+          }}
+          aria-hidden="true"
+        />
+        <div className="absolute top-0 left-0 right-0 h-[3px] bg-brand-gold" aria-hidden="true" />
 
-        <div className="max-w-3xl mx-auto">
-          <Card className="p-6 sm:p-8 shadow-xl border-brand-100">
-            <div className="flex items-center gap-3 mb-8 pb-4 border-b border-brand-50">
-              <div className="p-3 bg-brand-50 rounded-2xl text-brand-600">
-                <i className="fa-solid fa-comment-dots text-xl"></i>
+        <div className="container relative py-12 md:py-16">
+          <div className="max-w-2xl">
+            <Link
+              to="/services"
+              className="inline-flex items-center text-xs font-bold text-brand-300 hover:text-white mb-4 transition-colors"
+            >
+              <i className="fa-solid fa-arrow-left text-[10px] mr-2" aria-hidden="true" />
+              Back to Services
+            </Link>
+            <p className="text-brand-300 text-xs font-bold uppercase tracking-[0.15em] mb-4">
+              Student Support & Advocacy
+            </p>
+            <h1 className="text-3xl md:text-4xl font-extrabold text-white leading-tight mb-4">
+              Submit a{" "}
+              <span
+                className="text-brand-gold"
+                style={{
+                  textDecoration: "underline",
+                  textDecorationColor: "hsl(40 80% 60% / 0.35)",
+                  textUnderlineOffset: "6px",
+                }}
+              >
+                Complaint
+              </span>
+            </h1>
+            <p className="text-brand-200 text-sm leading-relaxed max-w-lg">
+              Report welfare, academic, or security concerns directly to the Union executive committee. Submissions are treated confidentially.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <div className="container max-w-2xl mx-auto py-10 px-4">
+        <FadeIn>
+          <div className="bg-white border border-gray-100 rounded p-6 sm:p-8">
+            <div className="flex items-center gap-3 mb-6 pb-4 border-b border-gray-100">
+              <div className="w-8 h-8 rounded bg-brand-50 text-brand-700 flex items-center justify-center shrink-0">
+                <i className="fa-solid fa-triangle-exclamation text-xs" aria-hidden="true" />
               </div>
-              <CardTitle className="text-2xl font-bold text-brand-900 uppercase">Complaint Details</CardTitle>
+              <div>
+                <h2 className="text-sm font-bold text-gray-900">Complaint Details</h2>
+                <p className="text-[11px] text-gray-500">Provide clear information regarding your complaint.</p>
+              </div>
             </div>
 
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
                 <FormField
                   control={form.control}
                   name="category"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="font-bold text-brand-700 uppercase text-xs tracking-wider">Category *</FormLabel>
+                      <FormLabel className="text-xs font-bold text-gray-700">Category *</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
-                          <SelectTrigger className="h-12 rounded-xl border-brand-100 focus-visible:ring-brand-gold">
+                          <SelectTrigger className="h-10 rounded border-gray-200 text-xs focus-visible:ring-brand-700">
                             <SelectValue placeholder="Select complaint category" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
                           {complaintCategories.map(cat => (
-                            <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                            <SelectItem key={cat} value={cat} className="text-xs">{cat}</SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
-                      <FormMessage />
+                      <FormMessage className="text-[11px]" />
                     </FormItem>
                   )}
                 />
+
                 <FormField
                   control={form.control}
                   name="title"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="font-bold text-brand-700 uppercase text-xs tracking-wider">Title/Summary *</FormLabel>
+                      <FormLabel className="text-xs font-bold text-gray-700">Subject / Summary *</FormLabel>
                       <FormControl>
-                        <Input placeholder="Issue with hostel water supply" {...field} className="h-12 rounded-xl border-brand-100 focus-visible:ring-brand-gold shadow-sm" />
+                        <Input placeholder="e.g. Issue with hostel water supply" {...field} className="h-10 rounded border-gray-200 text-xs focus-visible:ring-brand-700" />
                       </FormControl>
-                      <FormMessage />
+                      <FormMessage className="text-[11px]" />
                     </FormItem>
                   )}
                 />
+
                 <FormField
                   control={form.control}
                   name="description"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="font-bold text-brand-700 uppercase text-xs tracking-wider">Detailed Description *</FormLabel>
+                      <FormLabel className="text-xs font-bold text-gray-700">Detailed Description *</FormLabel>
                       <FormControl>
-                        <Textarea placeholder="Describe the issue in detail, including location and time..." rows={6} {...field} className="rounded-xl border-brand-100 focus-visible:ring-brand-gold shadow-sm" />
+                        <Textarea placeholder="Describe the incident or concern in detail..." rows={5} {...field} className="rounded border-gray-200 text-xs focus-visible:ring-brand-700" />
                       </FormControl>
-                      <FormMessage />
+                      <FormMessage className="text-[11px]" />
                     </FormItem>
                   )}
                 />
 
-                <div className="p-4 sm:p-6 bg-brand-50/50 rounded-2xl border border-brand-100 space-y-4">
-                  <h3 className="font-bold text-brand-700 uppercase text-xs tracking-wider mb-4">Contact Information</h3>
+                <div className="p-4 bg-gray-50/70 rounded border border-gray-100 space-y-3">
+                  <h3 className="text-xs font-bold text-gray-800 uppercase tracking-wider">Contact Settings</h3>
                   <FormField
                     control={form.control}
                     name="isAnonymous"
                     render={({ field }) => (
-                      <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-xl border p-4 bg-white shadow-sm">
+                      <FormItem className="flex flex-row items-start space-x-2.5 space-y-0 rounded p-3 bg-white border border-gray-100">
                         <FormControl>
                           <Checkbox
                             checked={field.value}
                             onCheckedChange={field.onChange}
                           />
                         </FormControl>
-                        <div className="space-y-1 leading-none">
-                          <FormLabel className="font-semibold text-brand-800">
+                        <div className="space-y-0.5 leading-none">
+                          <FormLabel className="text-xs font-semibold text-gray-900 cursor-pointer">
                             Submit Anonymously
                           </FormLabel>
-                          <FormDescription className="text-xs">
-                            Your identity will not be recorded, but we won't be able to contact you for updates.
+                          <FormDescription className="text-[11px] text-gray-500">
+                            Your identity will not be logged. Note that executives won't be able to send direct status updates.
                           </FormDescription>
                         </div>
                       </FormItem>
@@ -198,17 +236,17 @@ const SubmitComplaintPage: React.FC = () => {
                   />
 
                   {!isAnonymous && (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
                       <FormField
                         control={form.control}
                         name="contactEmail"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel className="text-xs font-semibold text-brand-600">Email</FormLabel>
+                            <FormLabel className="text-[11px] font-semibold text-gray-700">Email Address</FormLabel>
                             <FormControl>
-                              <Input type="email" placeholder="email@kwasu.edu.ng" {...field} className="h-11 rounded-xl border-brand-100 bg-white" />
+                              <Input type="email" placeholder="student@kwasu.edu.ng" {...field} className="h-9 text-xs rounded border-gray-200 bg-white" />
                             </FormControl>
-                            <FormMessage />
+                            <FormMessage className="text-[11px]" />
                           </FormItem>
                         )}
                       />
@@ -217,11 +255,11 @@ const SubmitComplaintPage: React.FC = () => {
                         name="contactPhone"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel className="text-xs font-semibold text-brand-600">Phone</FormLabel>
+                            <FormLabel className="text-[11px] font-semibold text-gray-700">Phone Number</FormLabel>
                             <FormControl>
-                              <Input type="tel" placeholder="+234..." {...field} className="h-11 rounded-xl border-brand-100 bg-white" />
+                              <Input type="tel" placeholder="+234..." {...field} className="h-9 text-xs rounded border-gray-200 bg-white" />
                             </FormControl>
-                            <FormMessage />
+                            <FormMessage className="text-[11px]" />
                           </FormItem>
                         )}
                       />
@@ -229,23 +267,30 @@ const SubmitComplaintPage: React.FC = () => {
                   )}
                 </div>
 
-                <Button type="submit" className="w-full h-14 bg-brand-700 hover:bg-brand-800 text-white rounded-2xl shadow-lg hover:shadow-xl transition-all text-lg font-bold" disabled={isSubmitting}>
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full h-10 bg-brand-900 hover:bg-brand-800 text-white rounded text-xs font-bold transition-colors inline-flex items-center justify-center gap-2"
+                >
                   {isSubmitting ? (
                     <>
-                      <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                      Submitting...
+                      <i className="fa-solid fa-spinner animate-spin text-xs" aria-hidden="true" />
+                      Submitting Complaint...
                     </>
                   ) : (
-                    "Submit Complaint"
+                    <>
+                      Submit Complaint
+                      <i className="fa-solid fa-paper-plane text-[10px]" aria-hidden="true" />
+                    </>
                   )}
-                </Button>
+                </button>
               </form>
             </Form>
-          </Card>
-        </div>
+          </div>
+        </FadeIn>
       </div>
     </>
   );
 };
 
-export default SubmitComplaintPage;
+export default SubmitComplaintPage;

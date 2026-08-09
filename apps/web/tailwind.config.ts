@@ -1,6 +1,9 @@
 import type { Config } from "tailwindcss";
+import tailwindcssAnimate from "tailwindcss-animate";
+import typography from "@tailwindcss/typography";
 
 export default {
+  darkMode: ["class"],
   content: [
     "./pages/**/*.{ts,tsx}",
     "./components/**/*.{ts,tsx}",
@@ -58,19 +61,19 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        brand: { // KWASU Brand Colors
-          50: "hsl(150 60% 95%)",
-          100: "hsl(150 60% 90%)",
-          200: "hsl(150 60% 80%)",
-          300: "hsl(150 60% 70%)",
-          400: "hsl(150 60% 50%)",
-          500: "hsl(150 60% 40%)", // Main Green
-          600: "hsl(150 60% 30%)",
-          700: "hsl(150 60% 20%)", // Deep Green
-          800: "hsl(150 60% 15%)",
-          900: "hsl(150 60% 10%)",
-          neon: "hsl(150 90% 25%)", // New neon-like dark green
-          gold: "hsl(40 80% 60%)", // Gold Accent
+        brand: {
+          50: "hsl(150 40% 98%)",
+          100: "hsl(150 35% 94%)",
+          200: "hsl(150 30% 86%)",
+          300: "hsl(150 25% 72%)",
+          400: "hsl(150 22% 52%)",
+          500: "hsl(150 25% 35%)",
+          600: "hsl(150 28% 28%)",
+          700: "hsl(150 32% 21%)",
+          800: "hsl(150 38% 15%)",
+          900: "hsl(150 48% 9%)",
+          950: "hsl(150 55% 5%)",
+          gold: "hsl(40 80% 60%)",
         },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
@@ -112,5 +115,5 @@ export default {
       },
     },
   },
-  plugins: [require("tailwindcss-animate"), require("@tailwindcss/typography")],
+  plugins: [tailwindcssAnimate, typography],
 } satisfies Config;

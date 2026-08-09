@@ -141,14 +141,14 @@ const ComplaintDetailPage: React.FC = () => {
             <Card className="shadow-lg rounded-xl p-6">
               <CardHeader className="pb-4">
                 <CardTitle className="text-2xl font-semibold text-brand-700">{complaint.title}</CardTitle>
-                <CardDescription className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-xs text-muted-foreground pt-1">
                   <Badge className={statusColors[complaint.status]}>
                     Status: {complaint.status}
                   </Badge>
                   <span className="text-sm text-muted-foreground">
                     Filed: {format(new Date(complaint.createdAt), "MMM dd, yyyy HH:mm")}
                   </span>
-                </CardDescription>
+                </div>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="border-t pt-4">
