@@ -1,8 +1,9 @@
 // Service Worker for KWASUSU ADMIN PWA & Push Notifications
 
-const CACHE_NAME = "kwasu-admin-v2";
+const CACHE_NAME = "kwasu-admin-v3";
 const ASSETS_TO_CACHE = [
   "/",
+  "/index.html",
   "/manifest.json",
   "/favicon.ico",
   "/logo.png",
@@ -33,22 +34,52 @@ self.addEventListener("activate", (event) => {
   );
 });
 
-// Fetch Event — Network first fallback to cache
+// Fetch Event — Offline-capable navigation & asset handler for Android WebAPK validation
 self.addEventListener("fetch", (event) => {
   if (event.request.method !== "GET") return;
 
+  // Handle HTML navigation requests (Chrome PWA WebAPK offline check)
+  if (event.request.mode === "navigate") {
+    event.respondWith(
+      fetch(event.request).catch(() => {
+        return caches.match("/index.html").then((response) => {
+          return response || caches.match("/");
+        });
+      })
+    );
+    return;
+  }
+
+  // Handle static assets & API fetches
   event.respondWith(
-    fetch(event.request)
-      .then((response) => {
-        if (response && response.status === 200 && response.type === "basic") {
-          const responseToCache = response.clone();
+    caches.match(event.request).then((cachedResponse) => {
+      if (cachedResponse) {
+        // Return cached asset and update in background
+        fetch(event.request).then((networkResponse) => {
+          if (networkResponse && networkResponse.status === 200) {
+            caches.open(CACHE_NAME).then((cache) => {
+              cache.put(event.request, networkResponse);
+            });
+          }
+        }).catch(() => {});
+        return cachedResponse;
+      }
+
+      return fetch(event.request).then((networkResponse) => {
+        if (networkResponse && networkResponse.status === 200 && networkResponse.type === "basic") {
+          const responseToCache = networkResponse.clone();
           caches.open(CACHE_NAME).then((cache) => {
             cache.put(event.request, responseToCache);
           });
         }
-        return response;
-      })
-      .catch(() => caches.match(event.request))
+        return networkResponse;
+      }).catch(() => {
+        // Fallback for navigation or image assets
+        if (event.request.headers.get("accept")?.includes("text/html")) {
+          return caches.match("/index.html") || caches.match("/");
+        }
+      });
+    })
   );
 });
 
